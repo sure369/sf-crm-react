@@ -55,7 +55,7 @@ const Accounts = () => {
     <Box m="20px">
       <Header
         title="Accounts"
-        subtitle="List of Account"
+        subtitle="List of Accounst"
       />
       <Box
         m="40px 0 0 0"
