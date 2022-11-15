@@ -14,6 +14,7 @@ import FAQ from "./scenes/faq";
 import Accounts from "./scenes/accounts";
 import Opportunities from "./scenes/opportunities";
 import Leads from "./scenes/leads";
+import FormikTest from "./scenes/formik/newform";
 import Geography from "./scenes/geography";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
@@ -38,7 +39,7 @@ function App() {
               <Route path="/opportunities" element={<Opportunities />} />
               <Route path="/leads" element={<Leads />} />
               <Route path="/team" element={<Team />} />
-              <Route path="/invoices" element={<Invoices />} />
+              <Route path="/invoices" element={<FormikTest />} />
               <Route path="/form" element={<Form />} />
               <Route path="/bar" element={<Bar />} />
               <Route path="/pie" element={<Pie />} />
