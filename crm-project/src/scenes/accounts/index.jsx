@@ -5,11 +5,8 @@ import { tokens } from "../../theme";
 import { mockAccountData } from "../../data/mockData";
 import Header from "../../components/Header";
 import { useTheme } from "@mui/material";
-import NewAccount from "./NewAccount";
-import {Modal} from '@mui/material';
-
-
-
+import AccountForm from "../formik/AccountForm";
+import "bootstrap/dist/css/bootstrap.css";
 
 const Accounts = () => {
   const theme = useTheme();
@@ -23,11 +20,11 @@ const Accounts = () => {
     
   const handleOpen = () => {
     setOpen(true);
+    console.log('test');     
   };
 
   const columns = [
-    { field: "id", headerName: "ID"},
-    {
+    { field: "id", headerName: "ID"},  {
       field: "name",
       headerName: "Name",
     //   flex: 1,
@@ -51,7 +48,14 @@ const Accounts = () => {
     }
   ];
 
+  if(open)
+  {
+    return(
+            <AccountForm/>
+    )
+  }
   return (
+    <>
     <Box m="20px">
       <Header
         title="Accounts"
@@ -89,7 +93,9 @@ const Accounts = () => {
           },
         }}
       >
-        <Button onClick={handleOpen} >New </Button>
+
+          <Button class="btn btn-primary " onClick={handleOpen} >New </Button>
+
        
         {/* <Modal
         onClose={handleClose}
@@ -117,7 +123,12 @@ const Accounts = () => {
           // components={{ Toolbar: GridToolbar }}
         />
       </Box>
+      
     </Box>
+
+   
+  
+    </>
   );
 };
 

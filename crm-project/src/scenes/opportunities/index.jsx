@@ -1,14 +1,30 @@
-import { Box } from "@mui/material";
+import React,{useState} from 'react';
+import { Box,Button } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import { mockOpportunitiesData } from "../../data/mockData";
 import Header from "../../components/Header";
 import { useTheme } from "@mui/material";
-
+import OpportunityForm from "../formik/OpportunityForm";
+import "bootstrap/dist/css/bootstrap.css";
 const Opportunities = () => {
     
   const theme = useTheme();
     const colors = tokens(theme.palette.mode);
+
+    
+  const [open, setOpen] = useState(false);
+  
+  const handleClose = () => {
+    setOpen(false);
+  };
+    
+  const handleOpen = () => {
+    setOpen(true);
+    console.log('test');     
+  };
+
+
 
   const columns = [
     { field: "id", headerName: "ID", flex: 0.5 },
@@ -33,6 +49,15 @@ const Opportunities = () => {
     
     },
   ];
+
+    
+  if(open)
+  {
+    return(
+            <OpportunityForm/>
+    )
+  }
+
 
   return (
     <Box m="20px">
@@ -72,6 +97,7 @@ const Opportunities = () => {
           },
         }}
       >
+         <Button class="btn btn-primary " onClick={handleOpen} >New </Button>
         <DataGrid
           rows={mockOpportunitiesData}
           columns={columns}
