@@ -5,6 +5,9 @@ import CurrencyInput from 'react-currency-input-field';
 import { Grid,Button ,FormControl} from "@mui/material";
 import axios from 'axios'
 
+const url ="http://localhost:4000/api/accountInsert";
+
+
 const initialValues = {
     accountName: '',
     accountNumber: '',
@@ -83,9 +86,10 @@ const AccountForm = () => {
                         await new Promise((resolve) => setTimeout(resolve, 500));
                         console.log("values", values);
 
-                        axios.postForm("http://localhost:4000/api/accountInsert")
+                        axios.post(url,values)
                         .then((res)=>{
                             console.log('post response',res);
+                            console.log('post ','data send');
                         })
                         .catch((error)=> {
                             console.log('error',error);
