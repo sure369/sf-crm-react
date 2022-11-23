@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import "bootstrap/dist/css/bootstrap.css";
+import { Grid,Button ,FormControl,InputAdornment } from "@mui/material";
 import CurrencyInput from 'react-currency-input-field';
-import DatePicker  from 'react-datepicker';
-import "react-datepicker/dist/react-datepicker.css";
-
+import DatePickerField from "./datePick";
+// import TextField from '@mui/material/TextField';
+// import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+// import { Dayjs } from 'dayjs';
 const initialValues={
                         accountName:'',
                         opportunityName:'',
@@ -29,16 +31,14 @@ const onSubmit= (values,{resetForm}) => {
 }
 
 const OpportunityForm = () => {
-
-    const[startDate,setStartDate] =useState(new Date());
+   
+     const[startDate,setStartDate] = useState(new Date())
 
     return (
     <div className="container mb-10">
-            {/* <div className="row mb-3"> */}
                 <div className="col-lg-12 text-center mb-3">
                     <h3>New Opportunity</h3>
                 </div>
-            {/* </div> */}
             <div class="container overflow-hidden ">
         <Formik
         initialValues={initialValues}
@@ -46,22 +46,24 @@ const OpportunityForm = () => {
                 onSubmit={onSubmit}
       >
         
-        <Form >
-        {/* <span className="text-danger">*</span> */}
-        <div class="row justify-content-center gy-4">
-            <div class="col-md-6 mb-0 ">
-                <label htmlFor="opportunityName" >Opportunity Name<span className="text-danger">*</span> </label>
+        <Form>
+        <FormControl>
+        <Grid container spacing={2}>
+            <Grid item xs={6} md={6}>
+            <label htmlFor="opportunityName" >Opportunity Name<span className="text-danger">*</span> </label>
                 <Field name='opportunityName' type="text" class="form-control"/>
                 <div style={{ color: 'red'}}>
                     <ErrorMessage name="opportunityName" />
-                </div>                
-            </div>
-            <div class="col-md-6 ">
-                <label htmlFor="accountName">Account Name </label>
+                </div>
+            </Grid>
+                            
+            <Grid item xs={6} md={6}>
+            <label htmlFor="accountName">Account Name </label>
                 <Field name="accountName" type="text"class="form-control" />
-            </div>
-            <div class="col-md-6">
-                <label htmlFor="stage">Opportunity Stage</label>
+            </Grid>
+                
+            <Grid item xs={6} md={6}>
+            <label htmlFor="stage">Opportunity Stage</label>
                 <Field name="stage" as="select" class="form-select">
                     <option value="">--Select--</option>
                     <option value="Prospecting">Prospecting</option>
@@ -73,10 +75,10 @@ const OpportunityForm = () => {
                     <option value="Closed Won">Closed Won</option>             
                     <option value="Closed Lost">Closed Lost</option>
                 </Field>
-            </div>
-
-            <div class="col-md-6">
-                <label htmlFor="type">Type</label>
+            </Grid>
+               
+            <Grid item xs={6} md={6}>
+            <label htmlFor="type">Type</label>
                 <Field name="type" as="select" class="form-select">
                     <option value="">--Select--</option>
                     <option value="New Customer">New Customer</option>
@@ -84,10 +86,12 @@ const OpportunityForm = () => {
                     <option value="Existing Customer - Replacement">Existing Customer - Replacement</option>
                     <option value="Existing Customer - Downgrade">Existing Customer - Downgrade</option>
                 </Field>
-            </div>
+            </Grid>
+              
+
             
-            <div class="col-md-6">
-                <label htmlFor="leadSource"> Lead Source</label>
+            <Grid item xs={6} md={6}>
+            <label htmlFor="leadSource"> Lead Source</label>
                 <Field name="leadSource" as="select" class="form-select">
                     <option value="">--Select--</option>
                     <option value="web">Web</option>
@@ -96,31 +100,37 @@ const OpportunityForm = () => {
                     <option value="Purchased List">Purchased List</option>
                     <option value="other">Other</option>
                 </Field>
-            </div>
-
-
-            <div class="col-md-6">
-                <label htmlFor="amount">Amount</label>
-                <CurrencyInput class="form-control" intlConfig={{ locale: 'en-US', currency: 'USD'  }} />
-            </div>
-
-            <div class="col-md-6">
+            </Grid>
+               
+            <Grid item xs={6} md={6}>
+                <label htmlFor="closeDate" >Close Date <span className="text-danger">*</span></label>
+                {/* <Field name="date"  component={DatePickerField} class="form-control"/>  */}
+                <DatePickerField  name="date" className="form-control"/>
+                
+               {/* <DatePickerField  name="date" className="form-control"/> */}
+            </Grid>
+            
+            {/* <Grid item xs={6} md={6}>
                 <label htmlFor="closeDate">Close Date <span className="text-danger">*</span></label>
+                <Field name="accountName" type="text"class="form-control" />
+
                 <DatePicker  selected={startDate} onChange={(date)=>setStartDate(date)} class="form-control"/>
-                {/* <div style={{ color: 'red'}}>
-                    <ErrorMessage name="email" />
-                </div>  */}
-            </div>
-           
-            <div class="col-md-12">
+            </Grid> */}
+
+            <Grid item xs={6} md={6}>
+            <label htmlFor="amount">Amount</label>
+                <CurrencyInput class="form-control" intlConfig={{ locale: 'en-US', currency: 'USD'  }} />
+            </Grid>           
+            <Grid item xs={12} md={12}>
                 <label htmlFor="description">Description</label>
                 <Field  as="textarea"  name="description"class="form-control" />
-            </div>
-            <div class="text-center " >
-                <button type="submit" class="btn btn-primary mr-1"  >Submit</button>
-                <button type="reset" class="btn btn-secondary "  text='clear all' >Clear</button>
-            </div>
-        </div>
+            </Grid>
+            <Grid item xs={12} md={12}>
+                                    <Button type='success' variant="contained" color="secondary">Submit</Button>
+                                    <Button type="reset" variant="contained" >Clear</Button>
+            </Grid>
+        </Grid>
+        </FormControl>
         </Form>
       </Formik>
       </div>
@@ -128,3 +138,159 @@ const OpportunityForm = () => {
     );
   }
 export default OpportunityForm
+
+// import { Box, Button, TextField,Grid } from "@mui/material";
+// import { Formik,Form, Field, ErrorMessage } from "formik";
+// import * as yup from "yup";
+// import useMediaQuery from "@mui/material/useMediaQuery";
+// import Header from "../../components/Header";
+
+// const initialValues = {
+//     opportunityName: "",
+//     accountName: "",
+//     type: "",
+//     leadSource: "",
+//     closeDate: "",
+//     stage: "",
+//     description:"",
+//   };
+
+
+// const validationSchema = yup.object().shape({
+//     opportunityName: yup.string().required("required"),
+//     stage: yup.string().required("required"),
+
+// });
+
+
+// const OpportunityForm = () => {
+//   const isNonMobile = useMediaQuery("(min-width:600px)");
+
+//   const handleFormSubmit = (values) => {
+//     console.log(values);
+//   };
+
+//   return (
+//     <Box m="20px">
+//       <Formik
+//             initialValues={initialValues}
+//             validationSchema={validationSchema}
+//             onSubmit={handleFormSubmit}
+//       >
+//        <Form>
+//        <Grid container spacing={2}>
+//                 <Grid item xs={6} md={6}>
+//                <label htmlFor="opportunityName" >Opportunity Name<span className="text-danger">*</span> </label>
+//                     <Field name='opportunityName' type="text" class="form-control"/>
+//                     <div style={{ color: 'red'}}>
+//                          <ErrorMessage name="opportunityName" />
+//                      </div>
+//               </Grid>
+//        </Form>
+//                  <TextField
+//                 fullWidth
+//                 type="text"
+//                 variant="filled"
+//                 label="opportunity Name"
+//                 onBlur={handleBlur}
+//                 onChange={handleChange}
+//                 value={values.opportunityName}
+//                 name="opportunityName"
+//                 error={!!touched.opportunityName && !!errors.opportunityName}
+//                 helperText={touched.opportunityName && errors.opportunityName}
+//                 sx={{ gridColumn: "span 2" }}
+//               />
+//               <TextField
+//                 fullWidth
+//                 type="text"
+//                 variant="filled"
+//                 label="Account Name"
+//                 onBlur={handleBlur}
+//                 onChange={handleChange}
+//                 value={values.accountName}
+//                 name="accountName"
+//                 error={!!touched.accountName && !!errors.accountName}
+//                 helperText={touched.accountName && errors.accountName}
+//                 sx={{ gridColumn: "span 2" }}
+//               />
+//               <TextField
+//                 fullWidth
+//                 variant="filled"
+//                 type="text"
+//                 label="Last Name"
+//                 onBlur={handleBlur}
+//                 onChange={handleChange}
+//                 value={values.lastName}
+//                 name="lastName"
+//                 error={!!touched.lastName && !!errors.lastName}
+//                 helperText={touched.lastName && errors.lastName}
+//                 sx={{ gridColumn: "span 2" }}
+//               />
+//               <TextField
+//                 fullWidth
+//                 variant="filled"
+//                 type="text"
+//                 label="Email"
+//                 onBlur={handleBlur}
+//                 onChange={handleChange}
+//                 value={values.email}
+//                 name="email"
+//                 error={!!touched.email && !!errors.email}
+//                 helperText={touched.email && errors.email}
+//                 sx={{ gridColumn: "span 4" }}
+//               />
+//               <TextField
+//                 fullWidth
+//                 variant="filled"
+//                 type="text"
+//                 label="Contact Number"
+//                 onBlur={handleBlur}
+//                 onChange={handleChange}
+//                 value={values.contact}
+//                 name="contact"
+//                 error={!!touched.contact && !!errors.contact}
+//                 helperText={touched.contact && errors.contact}
+//                 sx={{ gridColumn: "span 4" }}
+//               />
+//               <TextField
+//                 fullWidth
+//                 variant="filled"
+//                 type="text"
+//                 label="Address 1"
+//                 onBlur={handleBlur}
+//                 onChange={handleChange}
+//                 value={values.address1}
+//                 name="address1"
+//                 error={!!touched.address1 && !!errors.address1}
+//                 helperText={touched.address1 && errors.address1}
+//                 sx={{ gridColumn: "span 4" }}
+//               />
+//               <TextField
+//                 fullWidth
+//                 variant="filled"
+//                 type="text"
+//                 label="Address 2"
+//                 onBlur={handleBlur}
+//                 onChange={handleChange}
+//                 value={values.address2}
+//                 name="address2"
+//                 error={!!touched.address2 && !!errors.address2}
+//                 helperText={touched.address2 && errors.address2}
+//                 sx={{ gridColumn: "span 4" }}
+//               />
+//             </Box>
+//             <Box display="flex" justifyContent="end" mt="20px">
+//               <Button type="submit" color="secondary" variant="contained">
+//                 Create New User
+//               </Button>
+//             </Box>
+//           </form>
+//         )}
+//       </Formik>
+//     </Box>
+//   );
+// };
+
+
+
+// export default OpportunityForm;

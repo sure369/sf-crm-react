@@ -6,7 +6,7 @@ import { mockAccountData } from "../../data/mockData";
 import Header from "../../components/Header";
 import { useTheme } from "@mui/material";
 import AccountForm from "../formik/AccountForm";
-import "bootstrap/dist/css/bootstrap.css";
+
 
 const Accounts = () => {
   const theme = useTheme();
@@ -19,8 +19,7 @@ const Accounts = () => {
   };
     
   const handleOpen = () => {
-    setOpen(true);
-    console.log('test');     
+    setOpen(true);    
   };
 
   const columns = [

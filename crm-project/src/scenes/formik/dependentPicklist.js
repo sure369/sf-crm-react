@@ -56,6 +56,7 @@ function DependentPicklist() {
             <form onSubmit={handleSubmit}>
               <label htmlFor="country">Country</label>
               <Field
+                className="form-control"
                 id="country"
                 name="country"
                 as="select"
@@ -69,20 +70,21 @@ function DependentPicklist() {
                   setFieldValue("regions", _regions);
                 }}
               >
-                <option value="None">Select country</option>
+                <option value="None">--Select ountry--</option>
                 <option value="United States">United States</option>
                 <option value="Canada">Canada</option>
                 <option value="India">India</option>
               </Field>
               <label htmlFor="region">Region</label>
               <Field
+                className="form-control"
                 value={values.region}
                 id="region"
                 name="region"
                 as="select"
                 onChange={handleChange}
               >
-                <option value="None">Select region</option>
+                <option value="None">--Select City--</option>
                 {values.regions &&
                   values.regions.map((r) => (
                     <option key={r.value} value={r.vlue}>
@@ -90,7 +92,7 @@ function DependentPicklist() {
                     </option>
                   ))}
               </Field>
-
+{/* 
               <button
                 type="button"
                 className="outline"
@@ -101,7 +103,7 @@ function DependentPicklist() {
               </button>
               <button type="submit" disabled={isSubmitting}>
                 Submit
-              </button>
+              </button> */}
             </form>
           );
         }}
