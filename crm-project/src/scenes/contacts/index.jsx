@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useState,useEffect} from 'react';
 import { Box,Button } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
@@ -6,8 +6,29 @@ import { mockDataContacts } from "../../data/mockData";
 import Header from "../../components/Header";
 import { useTheme } from "@mui/material";
 import ContactForm from "../formik/ContactForm";
+import axios from 'axios';
 
 const Contacts = () => {
+
+  const url ="http://localhost:4000/contacts";
+
+  const[records,setRecords] = useState();
+
+  useEffect(()=>{
+  
+    axios.post(url)
+    .then(
+      (res) => {
+        console.log("inside get records", res);
+        // setRecords(res.data);
+      }
+    )
+    .catch((error)=> {
+      console.log('error',error);
+    })
+}, []);
+
+
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 

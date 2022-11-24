@@ -17,6 +17,9 @@ import ContactPageIcon from '@mui/icons-material/ContactPage';
 import DiamondIcon from '@mui/icons-material/Diamond';
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
+
+  console.log('title',title);
+  console.log('selected',selected);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   return (

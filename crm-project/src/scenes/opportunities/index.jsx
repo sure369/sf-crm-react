@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useState,useEffect} from 'react';
 import { Box,Button } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
@@ -6,9 +6,29 @@ import { mockOpportunitiesData } from "../../data/mockData";
 import Header from "../../components/Header";
 import { useTheme } from "@mui/material";
 import OpportunityForm from "../formik/OpportunityForm";
-import "bootstrap/dist/css/bootstrap.css";
+import axios from 'axios';
+
 const Opportunities = () => {
     
+
+  const url ="http://localhost:4000/opportunity";
+
+  const[records,setRecords] = useState();
+
+  useEffect(()=>{
+  
+    axios.post(url)
+    .then(
+      (res) => {
+        console.log("inside get records", res);
+        // setRecords(res.data);
+      }
+    )
+    .catch((error)=> {
+      console.log('error',error);
+    })
+}, []);
+
   const theme = useTheme();
     const colors = tokens(theme.palette.mode);
 
