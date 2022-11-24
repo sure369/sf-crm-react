@@ -57,10 +57,7 @@ const LeadForm = () => {
                 <Formik
                     initialValues={initialValues}
                     validationSchema={validationSchema}
-                    onSubmit={async (values, { resetForm }) => {
-                        await new Promise((resolve) => setTimeout(resolve, 500));
-                        console.log("values", values);
-
+                    onSubmit={ (values, { resetForm }) => {
                         axios.post(url,values)
                         .then((res)=>{
                             console.log('post response',res);
