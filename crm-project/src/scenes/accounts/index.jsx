@@ -23,14 +23,16 @@ const Accounts = () => {
   };
 
   const columns = [
-    { field: "id", headerName: "ID"},  {
-      field: "name",
+    { 
+      field: "id", 
+      headerName: "ID"
+    }, 
+    {
+      field: "accountName",
       headerName: "Name",
-    //   flex: 1,
-    //   cellClassName: "name-column--cell",
     },
     {
-      field: "city",
+      field: "billingCity",
       headerName: "City",
       headerAlign: "left",
       align: "left",

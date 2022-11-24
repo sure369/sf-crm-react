@@ -20,6 +20,7 @@ import LeadForm from "./scenes/formik/LeadForm";
 import MaterialUIPickers from "./scenes/formik/datePick";
 import FormikDepend from "./scenes/formik/formikDepend";
 import LookupOption from "./scenes/formik/lookup";
+import AppNavbar from "./scenes/global/AppNavbar";
 
 function App() {
   const [theme, colorMode] = useMode();

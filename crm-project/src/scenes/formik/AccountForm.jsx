@@ -5,6 +5,7 @@ import CurrencyInput from 'react-currency-input-field';
 import { Grid,Button ,FormControl} from "@mui/material";
 import axios from 'axios'
 
+import { mockAccountData } from "../../data/mockData";
 const url ="http://localhost:4000/api/accountInsert";
 
 
@@ -89,6 +90,7 @@ const AccountForm = () => {
                         axios.post(url,values)
                         .then((res)=>{
                             console.log('post response',res);
+                            mockAccountData.push(res.data)
                             console.log('post ','data send');
                             resetForm({ values: '' })
                         })
