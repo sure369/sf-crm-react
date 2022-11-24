@@ -2,6 +2,9 @@ import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Grid, Button, FormControl,Box ,TextField} from "@mui/material";
+import axios from 'axios'
+
+const url ="http://localhost:4000/api/leadInsert";
 
 const initialValues = {
     salutation: '',
@@ -54,7 +57,20 @@ const LeadForm = () => {
                 <Formik
                     initialValues={initialValues}
                     validationSchema={validationSchema}
-                    onSubmit={onSubmit}
+                    onSubmit={async (values, { resetForm }) => {
+                        await new Promise((resolve) => setTimeout(resolve, 500));
+                        console.log("values", values);
+
+                        axios.post(url,values)
+                        .then((res)=>{
+                            console.log('post response',res);
+                            console.log('post ','data send');
+                            resetForm({ values: '' })
+                        })
+                        .catch((error)=> {
+                            console.log('error',error);
+                          })
+                      }}
                 >
 
                     <Form >

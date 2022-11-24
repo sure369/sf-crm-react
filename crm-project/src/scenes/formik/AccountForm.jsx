@@ -82,7 +82,7 @@ const AccountForm = () => {
                 <Formik
                     initialValues={initialValues}
                     validationSchema={validationSchema}
-                    onSubmit={async (values) => {
+                    onSubmit={async (values, { resetForm }) => {
                         await new Promise((resolve) => setTimeout(resolve, 500));
                         console.log("values", values);
 
@@ -90,13 +90,11 @@ const AccountForm = () => {
                         .then((res)=>{
                             console.log('post response',res);
                             console.log('post ','data send');
+                            resetForm({ values: '' })
                         })
                         .catch((error)=> {
                             console.log('error',error);
                           })
-                        
-
-
                       }}
                 >
                    {(props) => {

@@ -8,6 +8,10 @@ import DatePickerField from "./datePick";
 // import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 // import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 // import { Dayjs } from 'dayjs';
+import axios from 'axios'
+
+const url ="http://localhost:4000/api/opportunityInsert";
+
 const initialValues={
                         accountName:'',
                         opportunityName:'',
@@ -43,7 +47,20 @@ const OpportunityForm = () => {
         <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
-                onSubmit={onSubmit}
+        onSubmit={async (values, { resetForm }) => {
+            await new Promise((resolve) => setTimeout(resolve, 500));
+            console.log("values", values);
+
+            axios.post(url,values)
+            .then((res)=>{
+                console.log('post response',res);
+                console.log('post ','data send');
+                resetForm({ values: '' })
+            })
+            .catch((error)=> {
+                console.log('error',error);
+              })
+          }}
       >
         
         <Form>

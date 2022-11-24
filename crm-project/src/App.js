@@ -46,14 +46,14 @@ function App() {
               <Route path="/new-leads" element={<LeadForm />} />
               <Route path="/form" element={<UserForm />} />
               <Route path="/faq" element={<FAQ />} />
-              <Route path="/test" element={<LookupOption/>} />
+              <Route path="/test" element={<DependentPicklist/>} />
 
               <Route path="/test-date" element={<MaterialUIPickers/>} />
             </Routes>
           </main>
         </div>
       </ThemeProvider>
-    </ColorModeContext.Provider>
+     </ColorModeContext.Provider>
   );
 }
 
