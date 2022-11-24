@@ -6,7 +6,6 @@ import { mockDataContacts } from "../../data/mockData";
 import Header from "../../components/Header";
 import { useTheme } from "@mui/material";
 import ContactForm from "../formik/ContactForm";
-import "bootstrap/dist/css/bootstrap.css";
 
 const Contacts = () => {
   const theme = useTheme();

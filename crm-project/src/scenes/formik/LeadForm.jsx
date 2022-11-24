@@ -39,15 +39,6 @@ const onSubmit = (values, { resetForm }) => {
 
 const LeadForm = () => {
     return (
-        <Box
-        component="form"
-        sx={{
-          '& .MuiTextField-root': { m: 1, width: '25ch' },
-        }}
-        noValidate
-        autoComplete="off"
-      >
-
 
         <div className="container mb-10">
             <div className="col-lg-12 text-center mb-3">
@@ -170,7 +161,6 @@ const LeadForm = () => {
                 </Formik>
             </div>
         </div>
-        </Box>
     );
   }
 export default LeadForm
