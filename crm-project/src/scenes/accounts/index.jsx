@@ -11,7 +11,7 @@ import axios from 'axios';
 import {  useNavigate } from "react-router-dom";
 
 
-const urlDelete ="http://localhost:4000/delete";
+const urlDelete ="http://localhost:4000/delete?code=";
 const urlAccount ="http://localhost:4000/accounts";
 
 const Accounts = () => {
@@ -65,7 +65,8 @@ const Accounts = () => {
     console.log('event',e);
     console.log('row',row);
     console.log('id',row._id);
-    axios.post(urlDelete,row._id)
+    // axios.post("http://localhost:5600/api/connection?code="+codeurl)
+    axios.post(urlDelete+row._id)
     .then((res)=>{
         console.log('post response',res);
         console.log('post ','data send');
