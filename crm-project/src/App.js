@@ -21,6 +21,8 @@ import MaterialUIPickers from "./scenes/formik/datePick";
 import FormikDepend from "./scenes/formik/formikDepend";
 import LookupOption from "./scenes/formik/lookup";
 import AppNavbar from "./scenes/global/AppNavbar";
+import TestForm from "./scenes/formik/TestForm";
+import AccountDetailPage from "./scenes/recordDetail";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -47,7 +49,8 @@ function App() {
               <Route path="/new-leads" element={<LeadForm />} />
               <Route path="/form" element={<UserForm />} />
               <Route path="/faq" element={<FAQ />} />
-              <Route path="/test" element={<DependentPicklist/>} />
+              <Route path="/test" element={<TestForm/>} />
+              <Route path="/accountDetailPage" element={<AccountDetailPage/>} />
 
               <Route path="/test-date" element={<MaterialUIPickers/>} />
             </Routes>

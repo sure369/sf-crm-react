@@ -4,10 +4,9 @@ import * as Yup from "yup";
 import CurrencyInput from 'react-currency-input-field';
 import { Grid,Button ,FormControl} from "@mui/material";
 import axios from 'axios'
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-import { mockAccountData } from "../../data/mockData";
 const url ="http://localhost:4000/api/accountInsert";
-
 
 const initialValues = {
     accountName: '',
@@ -83,20 +82,22 @@ const AccountForm = () => {
                 <Formik
                     initialValues={initialValues}
                     validationSchema={validationSchema}
-                    onSubmit={async (values, { resetForm }) => {
+                    onSubmit={async (values,{resetForm }) => {
                         await new Promise((resolve) => setTimeout(resolve, 500));
                         console.log("values", values);
 
                         axios.post(url,values)
                         .then((res)=>{
                             console.log('post response',res);
-                            mockAccountData.push(res.data)
                             console.log('post ','data send');
                             resetForm({ values: '' })
                         })
                         .catch((error)=> {
                             console.log('error',error);
                           })
+                        
+
+
                       }}
                 >
                    {(props) => {
@@ -266,7 +267,6 @@ const AccountForm = () => {
     );
   }
 export default AccountForm
-
 
 
 // import React from "react";

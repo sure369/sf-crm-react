@@ -3,6 +3,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Grid, Button, FormControl,Box ,TextField} from "@mui/material";
 import axios from 'axios'
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const url ="http://localhost:4000/api/leadInsert";
 

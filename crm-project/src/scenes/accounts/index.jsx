@@ -6,14 +6,30 @@ import { mockAccountData } from "../../data/mockData";
 import Header from "../../components/Header";
 import { useTheme } from "@mui/material";
 import AccountForm from "../formik/AccountForm";
-import axios from 'axios'
+import axios from 'axios';
+
+import {  useNavigate } from "react-router-dom";
+
+
+const url ="http://localhost:4000/delete";
 
 const Accounts = () => {
 
+  const navigate = useNavigate();
+
   const url ="http://localhost:4000/accounts";
 
-  const[records,setRecords] = useState();
+  const[records,setRecords] = useState([]);
+  const[showRecords,setShowRecords] =useState(false);
+  const [finalClickInfo, setFinalClickInfo] = useState(null);
 
+  const handleOnCellClick = (params) => {
+    setFinalClickInfo(params);
+    console.log('params',params.row);
+    const item=params.row;
+    console.log('item',item);
+    navigate("/accountDetailPage",{state:{record:{item}}})
+  };
   useEffect(()=>{
   
     axios.post(url)
@@ -26,6 +42,8 @@ const Accounts = () => {
     .catch((error)=> {
       console.log('error',error);
     })
+
+
 }, []);
 
 
@@ -41,10 +59,27 @@ const Accounts = () => {
   const handleOpen = () => {
     setOpen(true);    
   };
+  const onButtonClick = (e, row) => {
+    e.stopPropagation();
+    //do whatever you want with the row
+    console.log('event',e);
+    console.log('row',row);
+    console.log('id',row._id);
+    axios.post(url,row._id)
+    .then((res)=>{
+        console.log('post response',res);
+        console.log('post ','data send');
+      
+    })
+    .catch((error)=> {
+        console.log('error',error);
+      })
+    
 
+  };
   const columns = [
     { 
-      field: "id", 
+      field: "_id", 
       headerName: "ID"
     }, 
     {
@@ -66,8 +101,21 @@ const Accounts = () => {
       field: "industry",
       headerName: "Industry",
       flex: 1,
-    }
+    },
+    { field: 'actions', headerName: 'Actions',flex: 1, width: 400, renderCell: (params) => {
+      return (
+        <Button
+          onClick={(e) => onButtonClick(e, params.row)}
+          variant="contained" sx={{ bgcolor: 'red'}}
+        >
+          Delete
+        </Button>
+      );
+    } }
   ];
+
+ 
+
 
   if(open)
   {
@@ -75,10 +123,18 @@ const Accounts = () => {
             <AccountForm/>
     )
   }
-  return (
-    <>
-    <Box m="20px">
-      <Header
+  
+
+  if(records!==undefined)
+  {
+    console.log('records',records);
+
+  return(
+      <Box m="20px">
+
+
+
+       <Header
         title="Accounts"
         subtitle="List of Accounst"
       />
@@ -117,40 +173,22 @@ const Accounts = () => {
 
           <Button class="btn btn-primary " onClick={handleOpen} >New </Button>
 
-       
-        {/* <Modal
-        onClose={handleClose}
-        open={open}
-        style={{
-          position: 'absolute',
-          border: '2px solid #000',
-          backgroundColor: 'white',
-          boxShadow: '2px solid black',
-          height:1000,
-          width: 600,
-          margin: 'auto'
-        }}
-      >
-      <form>
-        <label>Name</label>
-        <input placeholder='string' ></input>
-      </form>
-        
-      </Modal> */}
 
         <DataGrid
-          rows={mockAccountData}
-          columns={columns}
-          // components={{ Toolbar: GridToolbar }}
-        />
+              rows={records}
+              columns={columns}
+              getRowId={(row) => row._id}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              onCellClick={handleOnCellClick}
+              components={{ Toolbar: GridToolbar }}
+        /> 
       </Box>
       
     </Box>
+    )
+  }
 
-   
-  
-    </>
-  );
 };
 
 export default Accounts;
