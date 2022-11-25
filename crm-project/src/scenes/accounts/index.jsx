@@ -11,13 +11,13 @@ import axios from 'axios';
 import {  useNavigate } from "react-router-dom";
 
 
-const url ="http://localhost:4000/delete";
+const urlDelete ="http://localhost:4000/delete";
+const urlAccount ="http://localhost:4000/accounts";
 
 const Accounts = () => {
 
   const navigate = useNavigate();
 
-  const url ="http://localhost:4000/accounts";
 
   const[records,setRecords] = useState([]);
   const[showRecords,setShowRecords] =useState(false);
@@ -32,7 +32,7 @@ const Accounts = () => {
   };
   useEffect(()=>{
   
-    axios.post(url)
+    axios.post(urlAccount)
     .then(
       (res) => {
         console.log("inside get records", res);
@@ -65,7 +65,7 @@ const Accounts = () => {
     console.log('event',e);
     console.log('row',row);
     console.log('id',row._id);
-    axios.post(url,row._id)
+    axios.post(urlDelete,row._id)
     .then((res)=>{
         console.log('post response',res);
         console.log('post ','data send');
