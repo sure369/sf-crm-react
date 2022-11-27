@@ -7,21 +7,27 @@ import Header from "../../components/Header";
 import { useTheme } from "@mui/material";
 import OpportunityForm from "../formik/OpportunityForm";
 import axios from 'axios';
+import {  useNavigate } from "react-router-dom";
 
 const Opportunities = () => {
-    
+  
+  const urlOpportunity ="http://localhost:4000/opportunity";
+  const urlDelete ="http://localhost:4000/delete?code=";
 
-  const url ="http://localhost:4000/opportunity";
-
-  const[records,setRecords] = useState();
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+  const[records,setRecords] = useState([]);
+  const [finalClickInfo, setFinalClickInfo] = useState(null);
 
   useEffect(()=>{
   
-    axios.post(url)
+    axios.post(urlOpportunity)
     .then(
       (res) => {
-        console.log("inside get records", res);
-        // setRecords(res.data);
+        console.log("res Opportunity records", res);
+        setRecords(res.data);
       }
     )
     .catch((error)=> {
@@ -29,12 +35,27 @@ const Opportunities = () => {
     })
 }, []);
 
-  const theme = useTheme();
-    const colors = tokens(theme.palette.mode);
-
-    
-  const [open, setOpen] = useState(false);
+  const handleOnCellClick = (params) => {
+    setFinalClickInfo(params);
+    console.log('selected record',params.row);
+    const item=params.row;
+    navigate("/opportunityDetailPage",{state:{record:{item}}})
+  };
   
+  const onHandleDelete = (e, row) => {
+    e.stopPropagation();
+    console.log('req delete rec',row);
+    console.log('req delete rec id',row._id);
+    
+    axios.post(urlDelete+row._id)
+    .then((res)=>{
+        console.log('api delete res',res); 
+    })
+    .catch((error)=> {
+        console.log('api delete error',error);
+      })
+  };
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -45,29 +66,40 @@ const Opportunities = () => {
   };
 
 
-
   const columns = [
-    { field: "id", headerName: "ID", flex: 0.5 },
+   
     {
-      field: "name",
+      field: "opportunityName",
       headerName: "Opportunity Name",
-      flex: 1,
-      cellClassName: "name-column--cell",
     },
+    { 
+      field: "accountName", 
+      headerName: "Account Name"
+    }, 
     {
       field: "type",
       headerName: "Type",
+    },
+    {
+      field: "leadSource",
+      headerName: "Lead Source",
+      flex: 1,
     },
     {
       field: "stage",
       headerName: "Stage",
       flex: 1,
     },
-    {
-      field: "closedate",
-      headerName: "Close Date",
-    
-    },
+    { field: 'actions', headerName: 'Actions',flex: 1, width: 400, renderCell: (params) => {
+      return (
+        <Button
+          onClick={(e) => onHandleDelete(e, params.row)}
+          variant="contained" sx={{ bgcolor: 'red'}}
+        >
+          Delete
+        </Button>
+      );
+    } }
   ];
 
     
@@ -78,7 +110,9 @@ const Opportunities = () => {
     )
   }
 
-
+  if(records.length>0)
+  {
+   
   return (
     <Box m="20px">
       <Header
@@ -119,13 +153,19 @@ const Opportunities = () => {
       >
          <Button class="btn btn-primary " onClick={handleOpen} >New </Button>
         <DataGrid
-          rows={mockOpportunitiesData}
+          rows={records}
           columns={columns}
+          getRowId={(row) => row._id}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          onCellClick={handleOnCellClick}
           components={{ Toolbar: GridToolbar }}
         />
       </Box>
     </Box>
   );
+
+      }
 };
 
 export default Opportunities;

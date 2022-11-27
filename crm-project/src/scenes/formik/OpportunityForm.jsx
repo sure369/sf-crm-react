@@ -19,6 +19,8 @@ const initialValues={
                         closeDate:'',
                         stage:'',
                         description:'',
+                        createdbyId: '',
+                        createdDate: '',
 }
 
 const validationSchema = Yup.object({

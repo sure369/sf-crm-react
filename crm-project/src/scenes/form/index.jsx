@@ -113,7 +113,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
 import { useState } from "react";
 
-const UserForm = () => {
+const NewForm = () => {
 
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
@@ -263,4 +263,4 @@ const initialValues = {
 
 
 
-export default UserForm;
+export default NewForm;

@@ -1,47 +1,47 @@
 import React,{useState,useEffect} from 'react';
-import { Box,Button } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
-import { mockLeadsData } from "../../data/mockData";
 import Header from "../../components/Header";
 import { useTheme } from "@mui/material";
-import LeadForm from "../formik/LeadForm";
-import axios from 'axios'
+import AccountForm from "../formik/AccountForm";
+import axios from 'axios';
+
 import {  useNavigate } from "react-router-dom";
 
-const Leads = () => {
-    
 
-  const urlLead ="http://localhost:4000/lead";
+
+
+const Inventories = () => {
+
   const urlDelete ="http://localhost:4000/delete?code=";
+  const urlAccount ="http://localhost:4000/Inveinventories";
+  const navigate = useNavigate();
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const[records,setRecords] = useState([]);
   const [finalClickInfo, setFinalClickInfo] = useState(null);
 
-  
   useEffect(()=>{
-  
-    axios.post(urlLead)
+    axios.post(urlAccount)
     .then(
       (res) => {
-        console.log("res Lead records", res);
+        console.log("res Account records", res);
         setRecords(res.data);
       }
     )
     .catch((error)=> {
-      console.log('res Lead error',error);
+      console.log('res Account error',error);
     })
   }, []);
 
   const handleOnCellClick = (params) => {
-    setFinalClickInfo(params);    
+    setFinalClickInfo(params);
     console.log('selected record',params.row);
     const item=params.row;
-     navigate("/leadDetailPage",{state:{record:{item}}})
+    navigate("/accountDetailPage",{state:{record:{item}}})
   };
 
   const handleClose = () => {
@@ -64,31 +64,28 @@ const Leads = () => {
         console.log('api delete error',error);
       })
   };
-
   const columns = [
     {
-      field: "lastName",
-      headerName: "Last Name",
-    },
-    {
-      field: "company",
-      headerName: "Company",
+      field: "projectName",
+      headerName: "Project Name",
     },
     { 
-      field: "leadSource", 
-      headerName: "Lead Source"
+      field: "propertyName", 
+      headerName: "Property Name"
     }, 
     {
-      field: "industry",
-      headerName: "Industry",
+      field: "type",
+      headerName: "Type",
     },
     {
-      field: "leadStatus",
-      headerName: "Lead Status",
+      field: "country",
+      headerName: "Country",
+      flex: 1,
     },
     {
-      field: "email",
-      headerName: "Email",
+      field: "status",
+      headerName: "status",
+      flex: 1,
     },
     { field: 'actions', headerName: 'Actions',flex: 1, width: 400, renderCell: (params) => {
       return (
@@ -102,20 +99,27 @@ const Leads = () => {
     } }
   ];
 
+ 
+
+
   if(open)
   {
     return(
-            <LeadForm/>
+            <AccountForm/>
     )
   }
+  
+
   if(records.length>0)
   {
+  return(
+      <Box m="20px">
 
-    return (
-    <Box m="20px">
-      <Header
-        title="Leads"
-        subtitle="List of Leads"
+
+
+       <Header
+        title="Inveinventories"
+        subtitle="List of Accounst"
       />
       <Box
         m="40px 0 0 0"
@@ -150,20 +154,24 @@ const Leads = () => {
         }}
       >
 
-        <Button class="btn btn-primary " onClick={handleOpen} >New </Button>
+          <Button class="btn btn-primary " onClick={handleOpen} >New </Button>
+
+
         <DataGrid
-         rows={records}
-         columns={columns}
-         getRowId={(row) => row._id}
-         pageSize={5}
-         rowsPerPageOptions={[5]}
-         onCellClick={handleOnCellClick}
-         components={{ Toolbar: GridToolbar }}
-        />
+              rows={records}
+              columns={columns}
+              getRowId={(row) => row._id}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              onCellClick={handleOnCellClick}
+              components={{ Toolbar: GridToolbar }}
+        /> 
       </Box>
+      
     </Box>
-  );
-  };
+    )
   }
 
-export default Leads;
+};
+
+export default Inventories;

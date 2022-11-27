@@ -1,69 +1,94 @@
-import React from "react";
+import React, { useEffect, useState } from 'react'
+import {useLocation} from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import CurrencyInput from 'react-currency-input-field';
 import { Grid,Button ,FormControl} from "@mui/material";
-import axios from 'axios'
+import { useParams,useNavigate } from "react-router-dom"
 import 'bootstrap/dist/css/bootstrap.min.css';
+import axios from 'axios'
 
-const url ="http://localhost:4000/api/contactInsert";
 
-const initialValues={
-                        accountName:'',
-                        salutation:'',
-                        firstName:'',
-                        lastName:'',
-                        dop:'',
-                        phone:'',
-                        department:'',
-                        leadSource:'',
-                        email:'',
-                        mailingAddress:'',
-                        description:'',
-                        createdbyId: '',
-                        createdDate: '',
-}
+const url ="http://localhost:4000/edit";
 
-const validationSchema = Yup.object({
-    lastName:Yup
+const ContactDetailPage = ({item}) => {
+
+    const [singleContact,setsingleContact]= useState(); 
+    const location = useLocation();
+    const navigate =useNavigate();
+
+    useEffect(()=>{
+        console.log('passed record',location.state.record.item);
+        setsingleContact(location.state.record.item);       
+    })
+
+    const initialValues = {
+        accountName: singleContact?.accountName ?? "",
+        lastName:  singleContact?.lastName ?? "",
+        dop: singleContact?.dop ?? "",
+        phone:  singleContact?.phone ?? "",
+        department:  singleContact?.department ?? "",
+        leadSource:  singleContact?.leadSource ?? "",
+        email:  singleContact?.email ?? "",
+        mailingAddress:  singleContact?.mailingAddress ?? "",
+        description:  singleContact?.description ?? "",
+        _id:   singleContact?._id ?? "",
+    }
+
+
+
+    const validationSchema = Yup.object({
+        lastName: Yup
             .string()
             .required('Required'),
-    email: Yup
+        email: Yup
             .string()
             .email('Invalid email address')
             .required('Required'),
-})
-
-const onSubmit= (values,{resetForm}) => {
-    console.log(values);
-    resetForm({values:''})
-}
-
-const ContactForm = () => {
-    return (
+    })
+    
+  return (
         <div className="container mb-10">
             <div className="col-lg-12 text-center mb-3">
-                <h3>New Contact</h3>
+                <h3>Contact Detail page</h3>
             </div>
+
             <div class="container overflow-hidden ">
+
                 <Formik
+                    enableReinitialize={true} 
                     initialValues={initialValues}
                     validationSchema={validationSchema}
-                    onSubmit={(values, { resetForm }) => {
+                    onSubmit={async (values) => {
+                        await new Promise((resolve) => setTimeout(resolve, 500));
+                        console.log("updated record values", values);  
+                        
                         axios.post(url,values)
                         .then((res)=>{
-                            console.log('post response',res);
-                            console.log('post ','data send');
-                            resetForm({ values: '' })
+                            console.log('updated record  response',res);
                         })
                         .catch((error)=> {
-                            console.log('error',error);
+                            console.log('updated record error',error);
                           })
+                        
                       }}
                 >
-                    <Form >
-                        <FormControl>
-                            <Grid container spacing={2}>
-                                    <Grid item xs={6} md={2}>
+                   {(props) => {
+                            const {
+                                values,
+                                dirty,
+                                isSubmitting,
+                                handleChange,
+                                handleSubmit,
+                                handleReset,
+                                setFieldValue,
+                            } = props;
+
+            return (
+                <form onSubmit={handleSubmit}>
+
+<Grid container spacing={2}>
+<Grid item xs={6} md={2}>
                                     <h6><label htmlFor="name">Name <span className="text-danger">*</span></label></h6>
                                     </Grid>
                                     <Grid item xs={6} md={2}>
@@ -124,15 +149,18 @@ const ContactForm = () => {
                                     <Field as="textarea" name="description" class="form-control" />
                                 </Grid>
                                 <Grid item xs={6} md={12} >
-                                    <Button type='success' variant="contained" color="secondary">Submit</Button>
-                                    <Button type="reset" variant="contained" >Clear</Button>
+                                <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Submit</Button>
+                                    <Button type="reset" variant="contained" onClick={handleReset}  disabled={!dirty || isSubmitting} >Clear</Button>
                                 </Grid>
                             </Grid>
-                        </FormControl>
-                    </Form>
+
+                </form>
+            )
+             }}
                 </Formik>
             </div>
-        </div>
-    );
-  }
-export default ContactForm
+        </div>   
+  )
+
+}
+export default ContactDetailPage;

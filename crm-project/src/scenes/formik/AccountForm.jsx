@@ -16,16 +16,12 @@ const initialValues = {
     type: '',
     phone: '',
     industry: '',
-    noofEmployees: '',
-    fax: '',
     billingAddress: '',
     billingCountry:'None',
     billingCity:'None',
     billingCities:[],
     shippingAddress: '',
-    website: '',
     description: '',
-    accountOwnerId: '',
     createdbyId: '',
     createdDate: '',
 
@@ -49,7 +45,7 @@ const citiesList = {
     ],
   };
 
-  const getie = (billingCountry) => {
+  const getCities = (billingCountry) => {
     return new Promise((resolve, reject) => {
       console.log("billingCountry", billingCountry);
       resolve(citiesList[billingCountry]||[]);
@@ -205,7 +201,7 @@ const AccountForm = () => {
                                         value={values.billingCountry}
                                         onChange={async (event) => {
                                         const value = event.target.value;
-                                        const _billingCities = await getie(value);
+                                        const _billingCities = await getCities(value);
                                         console.log(_billingCities);
                                         setFieldValue("billingCountry", value);
                                         setFieldValue("billingCity", "");

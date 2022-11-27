@@ -2,7 +2,6 @@ import React,{useState,useEffect} from 'react';
 import { Box, Button } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
-import { mockAccountData } from "../../data/mockData";
 import Header from "../../components/Header";
 import { useTheme } from "@mui/material";
 import AccountForm from "../formik/AccountForm";
@@ -11,47 +10,40 @@ import axios from 'axios';
 import {  useNavigate } from "react-router-dom";
 
 
-const urlDelete ="http://localhost:4000/delete?code=";
-const urlAccount ="http://localhost:4000/accounts";
+
 
 const Accounts = () => {
 
+  const urlDelete ="http://localhost:4000/delete?code=";
+  const urlAccount ="http://localhost:4000/accounts";
   const navigate = useNavigate();
 
-
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+  const [open, setOpen] = useState(false);
   const[records,setRecords] = useState([]);
-  const[showRecords,setShowRecords] =useState(false);
   const [finalClickInfo, setFinalClickInfo] = useState(null);
 
-  const handleOnCellClick = (params) => {
-    setFinalClickInfo(params);
-    console.log('params',params.row);
-    const item=params.row;
-    console.log('item',item);
-    navigate("/accountDetailPage",{state:{record:{item}}})
-  };
   useEffect(()=>{
-  
     axios.post(urlAccount)
     .then(
       (res) => {
-        console.log("inside get records", res);
+        console.log("res Account records", res);
         setRecords(res.data);
       }
     )
     .catch((error)=> {
-      console.log('error',error);
+      console.log('res Account error',error);
     })
+  }, []);
 
+  const handleOnCellClick = (params) => {
+    setFinalClickInfo(params);
+    console.log('selected record',params.row);
+    const item=params.row;
+    navigate("/accountDetailPage",{state:{record:{item}}})
+  };
 
-}, []);
-
-
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-
-  const [open, setOpen] = useState(false);
-  
   const handleClose = () => {
     setOpen(false);
   };
@@ -59,34 +51,28 @@ const Accounts = () => {
   const handleOpen = () => {
     setOpen(true);    
   };
-  const onButtonClick = (e, row) => {
+  const onHandleDelete = (e, row) => {
     e.stopPropagation();
-    //do whatever you want with the row
-    console.log('event',e);
-    console.log('row',row);
-    console.log('id',row._id);
-    // axios.post("http://localhost:5600/api/connection?code="+codeurl)
+    console.log('req delete rec',row);
+    console.log('req delete rec id',row._id);
+    
     axios.post(urlDelete+row._id)
     .then((res)=>{
-        console.log('post response',res);
-        console.log('post ','data send');
-      
+        console.log('api delete response',res);
     })
     .catch((error)=> {
-        console.log('error',error);
+        console.log('api delete error',error);
       })
-    
-
   };
   const columns = [
-    { 
-      field: "_id", 
-      headerName: "ID"
-    }, 
     {
       field: "accountName",
       headerName: "Name",
     },
+    { 
+      field: "phone", 
+      headerName: "Phone"
+    }, 
     {
       field: "billingCity",
       headerName: "City",
@@ -106,7 +92,7 @@ const Accounts = () => {
     { field: 'actions', headerName: 'Actions',flex: 1, width: 400, renderCell: (params) => {
       return (
         <Button
-          onClick={(e) => onButtonClick(e, params.row)}
+          onClick={(e) => onHandleDelete(e, params.row)}
           variant="contained" sx={{ bgcolor: 'red'}}
         >
           Delete
@@ -126,10 +112,8 @@ const Accounts = () => {
   }
   
 
-  if(records!==undefined)
+  if(records.length>0)
   {
-    console.log('records',records);
-
   return(
       <Box m="20px">
 

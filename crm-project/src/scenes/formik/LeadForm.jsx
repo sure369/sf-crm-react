@@ -19,6 +19,8 @@ const initialValues = {
     email: '',
     fax: '',
     description: '',
+    createdbyId: '',
+    createdDate: '',
 }
 
 const validationSchema = Yup.object({
@@ -65,8 +67,10 @@ const LeadForm = () => {
                     <Form >
                         <FormControl>
                             <Grid container spacing={2}>
-                                <Grid item xs={6} md={6}>
+                            <Grid item xs={6} md={2}>
                                     <h6><label htmlFor="name">Name <span className="text-danger">*</span></label></h6>
+                                    </Grid>
+                                    <Grid item xs={6} md={2}>
                                     <label htmlFor="salutation">Salutation  </label>
                                     <Field name="salutation" as="select" class="form-control">
                                         <option value="">--Select--</option>
@@ -76,14 +80,19 @@ const LeadForm = () => {
                                         <option value="Dr.">Dr.</option>
                                         <option value="Prof.">Prof.</option>
                                     </Field>
+                                    </Grid>
+                                    <Grid item xs={6} md={4}>
+
                                     <label htmlFor="firstName" >First Name</label>
                                     <Field name='firstName' type="text" class="form-control" />
-                                    <label htmlFor="lastName" >Last Name<span className="text-danger">*</span> </label>
+                                    </Grid>
+                                    <Grid item xs={6} md={4}>
+                                         <label htmlFor="lastName" >Last Name<span className="text-danger">*</span> </label>
                                     <Field name='lastName' type="text" class="form-control" />
                                     <div style={{ color: 'red' }}>
                                         <ErrorMessage name="lastName" />
                                     </div>
-                                </Grid>
+                                    </Grid>
                                 <Grid item xs={6} md={6}>
 
                                     <label htmlFor="company">Company</label>

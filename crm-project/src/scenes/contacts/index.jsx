@@ -7,20 +7,27 @@ import Header from "../../components/Header";
 import { useTheme } from "@mui/material";
 import ContactForm from "../formik/ContactForm";
 import axios from 'axios';
+import {  useNavigate } from "react-router-dom";
 
 const Contacts = () => {
+  
+  const urlContact ="http://localhost:4000/contacts";
+  const urlDelete ="http://localhost:4000/delete?code=";
 
-  const url ="http://localhost:4000/contacts";
-
-  const[records,setRecords] = useState();
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+  const[records,setRecords] = useState([]);
+  const [finalClickInfo, setFinalClickInfo] = useState(null);
 
   useEffect(()=>{
   
-    axios.post(url)
+    axios.post(urlContact)
     .then(
       (res) => {
-        console.log("inside get records", res);
-        // setRecords(res.data);
+        console.log("res Contact records", res);
+        setRecords(res.data);
       }
     )
     .catch((error)=> {
@@ -28,42 +35,51 @@ const Contacts = () => {
     })
 }, []);
 
+  const handleOnCellClick = (params) => {
+    setFinalClickInfo(params);
+    console.log('selected record',params.row);
+    const item=params.row;
+     navigate("/contactDetailPage",{state:{record:{item}}})
+  };
 
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-
-  
-  const [open, setOpen] = useState(false);
-  
   const handleClose = () => {
     setOpen(false);
   };
     
   const handleOpen = () => {
-    setOpen(true);
-    console.log('test');     
+    setOpen(true);   
   };
 
+  const onHandleDelete = (e, row) => {
+    e.stopPropagation();
+    console.log('req delete rec',row);
+    console.log('req delete rec id',row._id);
+    
+    axios.post(urlDelete+row._id)
+    .then((res)=>{
+        console.log('api delete res',res);
+    })
+    .catch((error)=> {
+        console.log('api delete  error',error);
+      })
+  };
 
   const columns = [
-    { field: "id", headerName: "ID", flex: 0.5 },
-    { field: "registrarId", headerName: "Registrar ID" },
     {
-      field: "name",
-      headerName: "Name",
-      flex: 1,
-      cellClassName: "name-column--cell",
+      field: "lastName",
+      headerName: "Last Name",
     },
-    {
-      field: "age",
-      headerName: "Age",
-      type: "number",
-      headerAlign: "left",
-      align: "left",
-    },
+    { 
+      field: "accountName", 
+      headerName: "Account Name"
+    }, 
     {
       field: "phone",
-      headerName: "Phone Number",
+      headerName: "Phone",
+    },
+    {
+      field: "leadSource",
+      headerName: "Lead Source",
       flex: 1,
     },
     {
@@ -71,23 +87,17 @@ const Contacts = () => {
       headerName: "Email",
       flex: 1,
     },
-    {
-      field: "address",
-      headerName: "Address",
-      flex: 1,
-    },
-    {
-      field: "city",
-      headerName: "City",
-      flex: 1,
-    },
-    {
-      field: "zipCode",
-      headerName: "Zip Code",
-      flex: 1,
-    },
+    { field: 'actions', headerName: 'Actions',flex: 1, width: 400, renderCell: (params) => {
+      return (
+        <Button
+          onClick={(e) => onHandleDelete(e, params.row)}
+          variant="contained" sx={{ bgcolor: 'red'}}
+        >
+          Delete
+        </Button>
+      );
+    } }
   ];
-
   
   if(open)
   {
@@ -95,6 +105,8 @@ const Contacts = () => {
             <ContactForm/>
     )
   }
+  if(records.length>0)
+  {
 
   return (
     <Box m="20px">
@@ -137,13 +149,17 @@ const Contacts = () => {
          <Button class="btn btn-primary " onClick={handleOpen} >New </Button>
 
         <DataGrid
-          rows={mockDataContacts}
+          rows={records}
           columns={columns}
+          getRowId={(row) => row._id}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          onCellClick={handleOnCellClick}
           components={{ Toolbar: GridToolbar }}
         />
       </Box>
     </Box>
   );
-};
+};}
 
 export default Contacts;

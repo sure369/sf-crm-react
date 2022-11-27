@@ -17,7 +17,7 @@ const AccountDetailPage = ({item}) => {
     const location = useLocation();
     const navigate =useNavigate();
     useEffect(()=>{
-        console.log('location',location.state.record.item);
+        console.log('passed record',location.state.record.item);
         setsingleAccount(location.state.record.item);       
     })
 
@@ -95,14 +95,14 @@ const citiesList = {
                     validationSchema={validationSchema}
                     onSubmit={async (values) => {
                         await new Promise((resolve) => setTimeout(resolve, 500));
-                        console.log("values", values);  
+                        console.log("updated record values", values);  
                         
                         axios.post(url,values)
                         .then((res)=>{
-                            console.log('post response',res);
+                            console.log('updated record  response',res);
                         })
                         .catch((error)=> {
-                            console.log('error',error);
+                            console.log('updated record  error',error);
                           })
                         
                       }}

@@ -9,6 +9,7 @@ import { tokens } from "../../theme";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
+import InventoryIcon from '@mui/icons-material/Inventory';
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
@@ -161,9 +162,9 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
             <Item
-              title="Manage Team"
-              to="/team"
-              icon={<PeopleOutlinedIcon />}
+              title="Inventory Management"
+              to="/inventories"
+              icon={<InventoryIcon />}
               selected={selected}
               setSelected={setSelected}
             />
@@ -176,8 +177,8 @@ const Sidebar = () => {
               Pages
             </Typography>
             <Item
-              title="Profile Form"
-              to="/form"
+              title="User Form"
+              to="/new-users"
               icon={<PersonOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
