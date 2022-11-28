@@ -64,7 +64,7 @@ const citiesList = {
     ],
   };
 
-  const getie = (billingCountry) => {
+  const getCities = (billingCountry) => {
     return new Promise((resolve, reject) => {
       console.log("billingCountry", billingCountry);
       resolve(citiesList[billingCountry]||[]);
@@ -212,7 +212,7 @@ const citiesList = {
                                         value={values.billingCountry}
                                         onChange={async (event) => {
                                         const value = event.target.value;
-                                        const _billingCities = await getie(value);
+                                        const _billingCities = await getCities(value);
                                         console.log(_billingCities);
                                         setFieldValue("billingCountry", value);
                                         setFieldValue("billingCity", "");
@@ -261,8 +261,8 @@ const citiesList = {
                                     <Field as="textarea" name="comments" class="form-control" />
                                 </Grid> 
                                 <Grid item xs={12} md={12}>
-                                    <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Submit</Button>
-                                    <Button type="reset" variant="contained" onClick={handleReset}  disabled={!dirty || isSubmitting} >Clear</Button>
+                                    <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Update</Button>
+                                    <Button type="reset" variant="contained" onClick={handleReset}  disabled={!dirty || isSubmitting} >Cancel</Button>
                                 </Grid>
                             </Grid>
                             </form>

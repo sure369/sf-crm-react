@@ -121,8 +121,8 @@ const ContactForm = () => {
                                     <Field as="textarea" name="description" class="form-control" />
                                 </Grid>
                                 <Grid item xs={6} md={12} >
-                                    <Button type='success' variant="contained" color="secondary">Submit</Button>
-                                    <Button type="reset" variant="contained" >Clear</Button>
+                                    <Button type='success' variant="contained" color="secondary">Save</Button>
+                                    <Button type="reset" variant="contained" >Cancel</Button>
                                 </Grid>
                             </Grid>
                         </FormControl>

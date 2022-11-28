@@ -69,7 +69,7 @@ const onSubmit = (values, { resetForm }) => {
 
 const AccountForm = () => {
 
-    const[showAlert,setShowAlert] = useState(null);
+    const[showAlert,setShowAlert] = useState(false);
 
     return (
         <div className="container mb-10">
@@ -90,16 +90,18 @@ const AccountForm = () => {
                         .then((res)=>{
                             
                             console.log('post response',res.data);
-                            setShowAlert(res.data);
-                            alert(res.data);
+                            setShowAlert(true)
+                            // alert(res.data);
                            
                             resetForm({ values: '' })
                         })
                         .catch((error)=> {
                             console.log('error',error);
-                            <Stack sx={{ width: '100%' }} spacing={2}>
-                            <Alert severity="error">{error.data}</Alert>
-                        </Stack>
+                            setShowAlert({
+                                show:true,
+                                message:error.message,
+                        })
+                         
                           })
                         
 
@@ -119,7 +121,9 @@ const AccountForm = () => {
 
             return (
                 <>
-
+       {
+        showAlert && <SimpleSnackbar/>
+       } 
                 <form onSubmit={handleSubmit}>
                             <Grid container spacing={2}>
                                  <Grid item xs={6} md={6}>
@@ -262,8 +266,8 @@ const AccountForm = () => {
                                     <Field as="textarea" name="comments" class="form-control" />
                                 </Grid> 
                                 <Grid item xs={12} md={12}>
-                                    <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Submit</Button>
-                                    <Button type="reset" variant="contained" onClick={handleReset}  disabled={!dirty || isSubmitting} >Clear</Button>
+                                    <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Save</Button>
+                                    <Button type="reset" variant="contained" onClick={handleReset}  disabled={!dirty || isSubmitting} >Cancel</Button>
                                 </Grid>
                             </Grid>
                             </form>

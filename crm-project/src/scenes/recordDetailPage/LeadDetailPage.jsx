@@ -180,8 +180,8 @@ const LeadDetailPage = ({item}) => {
                                     <Field as="textarea" name="description" class="form-control" />
                                 </Grid>
                                 <Grid item xs={12} md={12}>
-                                    <Button type='success' variant="contained" color="secondary">Submit</Button>
-                                    <Button type="reset" variant="contained" >Clear</Button>
+                                    <Button type='success' variant="contained" color="secondary">Update</Button>
+                                    <Button type="reset" variant="contained" >Cancel</Button>
                                 </Grid>
                             </Grid>
                 </form>

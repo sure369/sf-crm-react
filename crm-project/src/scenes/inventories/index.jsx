@@ -21,6 +21,7 @@ const Inventories = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [open, setOpen] = useState(false);
+  const[errorMassage,setErrorMessage]= useState(false);
   const[records,setRecords] = useState([]);
   const [finalClickInfo, setFinalClickInfo] = useState(null);
 
@@ -33,7 +34,9 @@ const Inventories = () => {
       }
     )
     .catch((error)=> {
+      setErrorMessage(true)
       console.log('res Inventory error',error);
+     
     })
   }, []);
 
@@ -100,7 +103,56 @@ const Inventories = () => {
   ];
 
  
+  if(errorMassage)
+  {
 
+      <Box m="20px">
+       <Header
+        title="Inveinventories"
+        subtitle="List of Accounst"
+      />
+      <Box
+        m="40px 0 0 0"
+        height="75vh"
+        sx={{
+          "& .MuiDataGrid-root": {
+            border: "none",
+          },
+          "& .MuiDataGrid-cell": {
+            borderBottom: "none",
+          },
+          "& .name-column--cell": {
+            color: colors.greenAccent[300],
+          },
+          "& .MuiDataGrid-columnHeaders": {
+            backgroundColor: colors.blueAccent[700],
+            borderBottom: "none",
+          },
+          "& .MuiDataGrid-virtualScroller": {
+            backgroundColor: colors.primary[400],
+          },
+          "& .MuiDataGrid-footerContainer": {
+            borderTop: "none",
+            backgroundColor: colors.blueAccent[700],
+          },
+          "& .MuiCheckbox-root": {
+            color: `${colors.greenAccent[200]} !important`,
+          },
+          "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+            color: `${colors.grey[100]} !important`,
+          },
+        }}
+      >
+
+          <Button class="btn btn-primary " onClick={handleOpen} >New </Button>
+          <div>No Records found </div>
+
+        
+      </Box>
+      
+    </Box>
+
+  }
 
   if(open)
   {
@@ -108,7 +160,7 @@ const Inventories = () => {
             <InventoryForm/>
     )
   }
-  
+ 
 
   if(records.length>0)
   {

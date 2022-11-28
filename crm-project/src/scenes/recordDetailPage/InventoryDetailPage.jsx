@@ -220,8 +220,8 @@ const citiesList = {
                                 </Grid>
                                
                                 <Grid item xs={12} md={12}>
-                                    <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Submit</Button>
-                                    <Button type="reset" variant="contained" onClick={handleReset}  disabled={!dirty || isSubmitting} >Clear</Button>
+                                    <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Update</Button>
+                                    <Button type="reset" variant="contained" onClick={handleReset}  disabled={!dirty || isSubmitting} >Cancel</Button>
                                 </Grid>
                             </Grid>
                             </form>

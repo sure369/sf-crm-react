@@ -86,9 +86,7 @@ const ContactDetailPage = ({item}) => {
 
             return (
                 <form onSubmit={handleSubmit}>
-
-<Grid container spacing={2}>
-
+                    <Grid container spacing={2}>
                                     <Grid item xs={6} md={2}>
                                     <label htmlFor="salutation">Salutation  </label>
                                     <Field name="salutation" as="select" class="form-control">
@@ -147,8 +145,8 @@ const ContactDetailPage = ({item}) => {
                                     <Field as="textarea" name="description" class="form-control" />
                                 </Grid>
                                 <Grid item xs={6} md={12} >
-                                <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Submit</Button>
-                                    <Button type="reset" variant="contained" onClick={handleReset}  disabled={!dirty || isSubmitting} >Clear</Button>
+                                <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Update</Button>
+                                    <Button type="reset" variant="contained" onClick={handleReset}  disabled={!dirty || isSubmitting}>Cancel</Button>
                                 </Grid>
                             </Grid>
 

@@ -177,6 +177,13 @@ const Sidebar = () => {
               Pages
             </Typography>
             <Item
+              title="User"
+              to="/users"
+              icon={<PersonOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
               title="User Form"
               to="/new-users"
               icon={<PersonOutlinedIcon />}

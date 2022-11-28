@@ -25,6 +25,7 @@ const Accounts = () => {
   const [finalClickInfo, setFinalClickInfo] = useState(null);
 
   useEffect(()=>{
+    
     axios.post(urlAccount)
     .then(
       (res) => {
@@ -35,7 +36,7 @@ const Accounts = () => {
     .catch((error)=> {
       console.log('res Account error',error);
     })
-  }, [records]);
+  }, []);
 
   const handleOnCellClick = (params) => {
     setFinalClickInfo(params);
