@@ -11,8 +11,8 @@ import {  useNavigate } from "react-router-dom";
 
 const Opportunities = () => {
   
-  const urlOpportunity ="http://localhost:4000/opportunity";
-  const urlDelete ="http://localhost:4000/delete?code=";
+  const urlOpportunity ="http://localhost:4000/opportunities";
+  const urlDelete ="http://localhost:4000/deleteOpportunity?code=";
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);

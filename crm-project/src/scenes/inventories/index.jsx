@@ -14,8 +14,8 @@ import {  useNavigate } from "react-router-dom";
 
 const Inventories = () => {
 
-  const urlDelete ="http://localhost:4000/delete?code=";
-  const urlAccount ="http://localhost:4000/Inveinventories";
+  const urlDelete ="http://localhost:4000/deleteInventory?code=";
+  const urlInventory ="http://localhost:4000/inveinventories";
   const navigate = useNavigate();
 
   const theme = useTheme();
@@ -25,7 +25,7 @@ const Inventories = () => {
   const [finalClickInfo, setFinalClickInfo] = useState(null);
 
   useEffect(()=>{
-    axios.post(urlAccount)
+    axios.post(urlInventory)
     .then(
       (res) => {
         console.log("res Account records", res);

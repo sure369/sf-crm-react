@@ -85,17 +85,13 @@ const UserForm = () => {
 
             return (
                 <form onSubmit={handleSubmit}>
-                            <Grid container spacing={2}>
-                            <Grid item xs={6} md={2}>
-                                    <h6><label htmlFor="name">Name <span className="text-danger">*</span></label></h6>
-                                    </Grid>
-                            
-                                    <Grid item xs={6} md={4}>
+                            <Grid container spacing={2}>                            
+                                    <Grid item xs={6} md={6}>
 
                                     <label htmlFor="firstName" >First Name</label>
                                     <Field name='firstName' type="text" class="form-control" />
                                     </Grid>
-                                    <Grid item xs={6} md={4}>
+                                    <Grid item xs={6} md={6}>
                                          <label htmlFor="lastName" >Last Name<span className="text-danger">*</span> </label>
                                     <Field name='lastName' type="text" class="form-control" />
                                     <div style={{ color: 'red' }}>

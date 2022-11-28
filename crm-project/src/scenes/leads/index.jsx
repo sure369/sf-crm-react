@@ -12,8 +12,8 @@ import {  useNavigate } from "react-router-dom";
 const Leads = () => {
     
 
-  const urlLead ="http://localhost:4000/lead";
-  const urlDelete ="http://localhost:4000/delete?code=";
+  const urlLead ="http://localhost:4000/leads";
+  const urlDelete ="http://localhost:4000/deleteLead?code=";
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
