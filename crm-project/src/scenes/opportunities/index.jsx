@@ -61,8 +61,8 @@ const Opportunities = () => {
   };
     
   const handleOpen = () => {
-    setOpen(true);
-    console.log('test');     
+    navigate('/new-opportunities')
+    // setOpen(true);  
   };
 
 

@@ -50,7 +50,8 @@ const Accounts = () => {
   };
     
   const handleOpen = () => {
-    setOpen(true);    
+    navigate('/new-accounts');
+    // setOpen(true);    
   };
   const onHandleDelete = (e, row) => {
     e.stopPropagation();
@@ -105,12 +106,12 @@ const Accounts = () => {
  
 
 
-  if(open)
-  {
-    return(
-            <AccountForm/>
-    )
-  }
+  // if(open)
+  // {
+  //   return(
+  //           <AccountForm/>
+  //   )
+  // }
   
 
   if(records.length>0)

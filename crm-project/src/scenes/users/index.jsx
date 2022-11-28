@@ -49,7 +49,8 @@ const Users = () => {
   };
     
   const handleOpen = () => {
-    setOpen(true);    
+   navigate('/new-users')
+    // setOpen(true);    
   };
   const onHandleDelete = (e, row) => {
     e.stopPropagation();

@@ -52,7 +52,8 @@ const Inventories = () => {
   };
     
   const handleOpen = () => {
-    setOpen(true);    
+  navigate('/new-inventories')
+    // setOpen(true);    
   };
   const onHandleDelete = (e, row) => {
     e.stopPropagation();

@@ -47,7 +47,8 @@ const Contacts = () => {
   };
     
   const handleOpen = () => {
-    setOpen(true);   
+    navigate('/new-contacts');
+    // setOpen(true);   
   };
 
   const onHandleDelete = (e, row) => {

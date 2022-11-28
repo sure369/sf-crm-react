@@ -49,7 +49,8 @@ const Leads = () => {
   };
     
   const handleOpen = () => {
-    setOpen(true);    
+    navigate('/new-leads')
+    // setOpen(true);    
   };
   const onHandleDelete = (e, row) => {
     e.stopPropagation();
