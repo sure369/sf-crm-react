@@ -10,29 +10,29 @@ import axios from 'axios'
 import DatePickerField from "../formik/datePick";
 
 
-const url ="http://localhost:4000/edit";
+const url ="http://localhost:4000/api/editOpportunity";
 
 const OpportunityDetailPage = ({item}) => {
 
-    const [singleContact,setsingleContact]= useState(); 
+    const [singleOpportunity,setsinglOpportunityt]= useState(); 
     const location = useLocation();
     const navigate =useNavigate();
 
     useEffect(()=>{
         console.log('passed record',location.state.record.item);
-        setsingleContact(location.state.record.item);       
+        setsinglOpportunityt(location.state.record.item);       
     })
 
     const initialValues = {
-        accountName: singleContact?.accountName ?? "",
-        opportunityName:  singleContact?.opportunityName ?? "",
-        type: singleContact?.type ?? "",
-        leadSource:  singleContact?.leadSource ?? "",
-        amount:  singleContact?.amount ?? "",
-        closeDate:  singleContact?.closeDate ?? "",
-        stage:  singleContact?.stage ?? "",       
-        description:  singleContact?.description ?? "",
-        _id:   singleContact?._id ?? "",
+        accountName: singleOpportunity?.accountName ?? "",
+        opportunityName:  singleOpportunity?.opportunityName ?? "",
+        type: singleOpportunity?.type ?? "",
+        leadSource:  singleOpportunity?.leadSource ?? "",
+        amount:  singleOpportunity?.amount ?? "",
+        closeDate:  singleOpportunity?.closeDate ?? "",
+        stage:  singleOpportunity?.stage ?? "",       
+        description:  singleOpportunity?.description ?? "",
+        _id:   singleOpportunity?._id ?? "",
     }
 
 

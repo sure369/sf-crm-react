@@ -2,7 +2,7 @@ import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import CurrencyInput from 'react-currency-input-field';
-import { Grid,Button ,FormControl} from "@mui/material";
+import { Grid,Button ,FormControl,Stack ,Alert} from "@mui/material";
 import axios from 'axios'
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -84,11 +84,17 @@ const AccountForm = () => {
                         axios.post(url,values)
                         .then((res)=>{
                             console.log('post response',res);
-                            console.log('post ','data send');
+                            
+                            <Stack sx={{ width: '100%' }} spacing={2}>
+                                <Alert severity="success">{res.data}</Alert>
+                            </Stack>
                             resetForm({ values: '' })
                         })
                         .catch((error)=> {
                             console.log('error',error);
+                            <Stack sx={{ width: '100%' }} spacing={2}>
+                            <Alert severity="error">{error.data}</Alert>
+                        </Stack>
                           })
                         
 

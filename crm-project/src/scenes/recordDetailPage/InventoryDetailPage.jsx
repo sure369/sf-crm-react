@@ -9,30 +9,30 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios'
 
 
-const url ="http://localhost:4000/edit";
+const url ="http://localhost:4000/api/editInventory";
 
 const InventoryDetailPage = ({item}) => {
 
-    const [singleAccount,setsingleAccount]= useState(); 
+    const [singleInventory,setsingleInventory]= useState(); 
     const location = useLocation();
     const navigate =useNavigate();
     useEffect(()=>{
         console.log('passed record',location.state.record.item);
-        setsingleAccount(location.state.record.item);       
+        setsingleInventory(location.state.record.item);       
     })
 
     const initialValues = {
-        projectName: singleAccount?.projectName ?? "",
-        propertyName:  singleAccount?.propertyName ?? "",
-        propertyUnitNumber: singleAccount?.propertyUnitNumber ?? "",
-        type:  singleAccount?.type ?? "",
-        tower:  singleAccount?.tower ?? "",
-        country:  singleAccount?.country ?? "",
-        city:  singleAccount?.city ?? "",
-        floor:  singleAccount?.floor ?? "",
-        status:  singleAccount?.status ?? "",
-        totalArea: singleAccount?.totalArea ?? "",
-        _id:   singleAccount?._id ?? "",
+        projectName: singleInventory?.projectName ?? "",
+        propertyName:  singleInventory?.propertyName ?? "",
+        propertyUnitNumber: singleInventory?.propertyUnitNumber ?? "",
+        type:  singleInventory?.type ?? "",
+        tower:  singleInventory?.tower ?? "",
+        country:  singleInventory?.country ?? "",
+        city:  singleInventory?.city ?? "",
+        floor:  singleInventory?.floor ?? "",
+        status:  singleInventory?.status ?? "",
+        totalArea: singleInventory?.totalArea ?? "",
+        _id:   singleInventory?._id ?? "",
     }
 
  

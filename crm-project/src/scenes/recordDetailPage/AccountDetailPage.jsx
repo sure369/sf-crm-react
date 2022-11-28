@@ -9,7 +9,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios'
 
 
-const url ="http://localhost:4000/edit";
+const url ="http://localhost:4000/api/editAccount";
 
 const AccountDetailPage = ({item}) => {
 

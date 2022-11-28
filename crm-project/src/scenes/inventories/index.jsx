@@ -15,7 +15,7 @@ import {  useNavigate } from "react-router-dom";
 const Inventories = () => {
 
   const urlDelete ="http://localhost:4000/api/deleteInventory?code=";
-  const urlInventory ="http://localhost:4000/api/inveinventories";
+  const urlInventory ="http://localhost:4000/api/inventories";
   const navigate = useNavigate();
 
   const theme = useTheme();

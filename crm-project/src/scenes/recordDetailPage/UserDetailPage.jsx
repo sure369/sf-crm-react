@@ -9,29 +9,29 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios'
 
 
-const url ="http://localhost:4000/edit";
+const url ="http://localhost:4000/api/editUser";
 
 const UserDetailPage = ({item}) => {
 
-    const [singleLead,setsingleLead]= useState(); 
+    const [singleUser,setsingleUser]= useState(); 
     const location = useLocation();
     const navigate =useNavigate();
 
     useEffect(()=>{
         console.log('passed record',location.state.record.item);
-        setsingleLead(location.state.record.item);       
+        setsingleUser(location.state.record.item);       
     })
 
     const initialValues = {
-        firstName: singleLead?.firstName ?? "",
-        lastName:  singleLead?.lastName ?? "",
-        username: singleLead?.username ?? "",
-        phone:  singleLead?.phone ?? "",
-        company:  singleLead?.company ?? "",
-        email:  singleLead?.email ?? "",
-        role:  singleLead?.role ?? "",
-        access:  singleLead?.access ?? "",
-        _id:   singleLead?._id ?? "",
+        firstName: singleUser?.firstName ?? "",
+        lastName:  singleUser?.lastName ?? "",
+        username: singleUser?.username ?? "",
+        phone:  singleUser?.phone ?? "",
+        company:  singleUser?.company ?? "",
+        email:  singleUser?.email ?? "",
+        role:  singleUser?.role ?? "",
+        access:  singleUser?.access ?? "",
+        _id:   singleUser?._id ?? "",
     }
 
 
