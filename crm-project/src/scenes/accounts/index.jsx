@@ -35,7 +35,7 @@ const Accounts = () => {
     .catch((error)=> {
       console.log('res Account error',error);
     })
-  }, []);
+  }, [records]);
 
   const handleOnCellClick = (params) => {
     setFinalClickInfo(params);

@@ -4,7 +4,7 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import { useTheme } from "@mui/material";
-import AccountForm from "../formik/AccountForm";
+import InventoryForm from "../formik/InventoryForm";
 import axios from 'axios';
 
 import {  useNavigate } from "react-router-dom";
@@ -41,7 +41,7 @@ const Inventories = () => {
     setFinalClickInfo(params);
     console.log('selected record',params.row);
     const item=params.row;
-    navigate("/accountDetailPage",{state:{record:{item}}})
+    navigate("/inventoryDetailPage",{state:{record:{item}}})
   };
 
   const handleClose = () => {
@@ -105,7 +105,7 @@ const Inventories = () => {
   if(open)
   {
     return(
-            <AccountForm/>
+            <InventoryForm/>
     )
   }
   
@@ -114,9 +114,6 @@ const Inventories = () => {
   {
   return(
       <Box m="20px">
-
-
-
        <Header
         title="Inveinventories"
         subtitle="List of Accounst"

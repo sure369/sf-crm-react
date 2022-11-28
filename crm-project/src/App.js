@@ -31,6 +31,7 @@ import UserForm from "./scenes/formik/UserForm";
 import UserDetailPage from "./scenes/recordDetailPage/UserDetailPage";
 import InventoryForm from "./scenes/formik/InventoryForm";
 import Inventories from "./scenes/inventories";
+import InventoryDetailPage from "./scenes/recordDetailPage/InventoryDetailPage";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -66,6 +67,7 @@ function App() {
               <Route path="/contactDetailPage" element={<ContactDetailPage/>} />
               <Route path="/opportunityDetailPage" element={<OpportunityDetailPage/>}/>
               <Route path="/leadDetailPage" element={<LeadDetailPage/>} />
+              <Route path="/inventoryDetailPage" element={<InventoryDetailPage/>}/>
               <Route path="/userDetailPage" element={<UserDetailPage/>} />
               <Route path="/test-date" element={<MaterialUIPickers/>} />
             </Routes>

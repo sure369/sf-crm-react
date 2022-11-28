@@ -5,6 +5,8 @@ import CurrencyInput from 'react-currency-input-field';
 import { Grid,Button ,FormControl,Stack ,Alert} from "@mui/material";
 import axios from 'axios'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { useState } from "react";
+import SimpleSnackbar from "../toast/test";
 
 const url ="http://localhost:4000/api/accountInsert";
 
@@ -66,6 +68,9 @@ const onSubmit = (values, { resetForm }) => {
 }
 
 const AccountForm = () => {
+
+    const[showAlert,setShowAlert] = useState(null);
+
     return (
         <div className="container mb-10">
             <div className="col-lg-12 text-center mb-3">
@@ -83,11 +88,11 @@ const AccountForm = () => {
 
                         axios.post(url,values)
                         .then((res)=>{
-                            console.log('post response',res);
                             
-                            <Stack sx={{ width: '100%' }} spacing={2}>
-                                <Alert severity="success">{res.data}</Alert>
-                            </Stack>
+                            console.log('post response',res.data);
+                            setShowAlert(res.data);
+                            alert(res.data);
+                           
                             resetForm({ values: '' })
                         })
                         .catch((error)=> {
@@ -113,6 +118,8 @@ const AccountForm = () => {
                             } = props;
 
             return (
+                <>
+
                 <form onSubmit={handleSubmit}>
                             <Grid container spacing={2}>
                                  <Grid item xs={6} md={6}>
@@ -260,12 +267,22 @@ const AccountForm = () => {
                                 </Grid>
                             </Grid>
                             </form>
+                        </>
             )
              }}
                 </Formik>
             </div>
         </div>
     );
+
+    // return 
+    // (
+    //     showAlert&&
+    //     <Stack sx={{ width: '100%' }} spacing={2}>
+    //     <Alert severity="success">{showAlert}</Alert>
+    // </Stack>
+    // )
+
   }
 export default AccountForm
 
