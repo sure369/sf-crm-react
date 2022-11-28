@@ -11,8 +11,8 @@ import {  useNavigate } from "react-router-dom";
 
 const Contacts = () => {
   
-  const urlContact ="http://localhost:4000/contacts";
-  const urlDelete ="http://localhost:4000/deleteContact?code=";
+  const urlContact ="http://localhost:4000/api/contacts";
+  const urlDelete ="http://localhost:4000/api/deleteContact?code=";
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);

@@ -24,7 +24,6 @@ const initialValues = {
     description: '',
     createdbyId: '',
     createdDate: '',
-
 }
 
 const citiesList = {

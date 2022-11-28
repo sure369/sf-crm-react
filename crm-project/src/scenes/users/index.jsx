@@ -14,8 +14,8 @@ import {  useNavigate } from "react-router-dom";
 
 const Users = () => {
 
-  const urlDelete ="http://localhost:4000/delete?code=";
-  const urlUsers ="http://localhost:4000/Users";
+  const urlDelete ="http://localhost:4000/api/delete?code=";
+  const urlUsers ="http://localhost:4000/api/Users";
   const navigate = useNavigate();
 
   const theme = useTheme();
@@ -89,12 +89,21 @@ const Users = () => {
     },
     { field: 'actions', headerName: 'Actions',flex: 1, width: 400, renderCell: (params) => {
       return (
-        <Button
-          onClick={(e) => onHandleDelete(e, params.row)}
-          variant="contained" sx={{ bgcolor: 'red'}}
+        <>
+          <Button
+          onClick={(e) =>handleOnCellClick (e, params.row)}
+          variant="contained" sx={{ bgcolor: 'blue'}}
         >
-          Delete
+          Edit
         </Button>
+          <Button
+            onClick={(e) => onHandleDelete(e, params.row)}
+            variant="contained" sx={{ bgcolor: 'red'}}
+          >
+            Delete
+          </Button>
+        </>
+       
       );
     } }
   ];

@@ -14,8 +14,8 @@ import {  useNavigate } from "react-router-dom";
 
 const Accounts = () => {
 
-  const urlDelete ="http://localhost:4000/deleteAccount?code=";
-  const urlAccount ="http://localhost:4000/accounts";
+  const urlDelete ="http://localhost:4000/api/deleteAccount?code=";
+  const urlAccount ="http://localhost:4000/api/accounts";
   const navigate = useNavigate();
 
   const theme = useTheme();
