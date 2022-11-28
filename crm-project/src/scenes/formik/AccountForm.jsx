@@ -7,6 +7,7 @@ import axios from 'axios'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState } from "react";
 import SimpleSnackbar from "../toast/test";
+import { useNavigate } from "react-router-dom";
 
 const url ="http://localhost:4000/api/accountInsert";
 
@@ -70,7 +71,7 @@ const onSubmit = (values, { resetForm }) => {
 const AccountForm = () => {
 
     const[showAlert,setShowAlert] = useState(false);
-
+    const navigate =useNavigate();
     return (
         <div className="container mb-10">
             <div className="col-lg-12 text-center mb-3">
@@ -92,6 +93,7 @@ const AccountForm = () => {
                             console.log('post response',res.data);
                             setShowAlert(true)
                             // alert(res.data);
+                            navigate(-1);
                            
                             resetForm({ values: '' })
                         })

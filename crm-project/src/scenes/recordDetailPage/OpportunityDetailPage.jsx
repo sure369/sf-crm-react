@@ -63,7 +63,8 @@ const OpportunityDetailPage = ({item}) => {
              .then((res)=>{
                  console.log('post response',res);
                  console.log('post ','data send');
-                 resetForm({ values: '' })
+                //  resetForm({ values: '' })
+                 navigate(-1)
              })
              .catch((error)=> {
                  console.log('error',error);

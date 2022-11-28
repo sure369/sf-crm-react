@@ -4,7 +4,7 @@ import * as Yup from "yup";
 import { Grid, Button, FormControl,Box ,TextField} from "@mui/material";
 import axios from 'axios'
 import 'bootstrap/dist/css/bootstrap.min.css';
-
+import { useNavigate } from "react-router-dom";
 const url ="http://localhost:4000/api/leadInsert";
 
 const initialValues = {
@@ -41,6 +41,9 @@ const onSubmit = (values, { resetForm }) => {
 }
 
 const LeadForm = () => {
+
+    const navigate= useNavigate();
+
     return (
 
         <div className="container mb-10">
@@ -57,6 +60,7 @@ const LeadForm = () => {
                             console.log('post response',res);
                             console.log('post ','data send');
                             resetForm({ values: '' })
+                            navigate(-1);
                         })
                         .catch((error)=> {
                             console.log('error',error);

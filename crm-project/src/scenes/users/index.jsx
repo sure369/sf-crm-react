@@ -4,7 +4,7 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import { useTheme } from "@mui/material";
-import AccountForm from "../formik/AccountForm";
+import UserForm from "../formik/UserForm";
 import axios from 'axios';
 
 import {  useNavigate } from "react-router-dom";
@@ -114,7 +114,7 @@ const Users = () => {
   if(open)
   {
     return(
-            <AccountForm/>
+            <UserForm/>
     )
   }
   

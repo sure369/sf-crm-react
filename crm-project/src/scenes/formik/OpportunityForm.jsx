@@ -6,7 +6,7 @@ import CurrencyInput from 'react-currency-input-field';
 import DatePickerField from "./datePick";
 import axios from 'axios'
 import 'bootstrap/dist/css/bootstrap.min.css';
-
+import { useNavigate } from "react-router-dom";
 
 const url ="http://localhost:4000/api/opportunityInsert";
 
@@ -37,6 +37,7 @@ const onSubmit= (values,{resetForm}) => {
 const OpportunityForm = () => {
    
      const[startDate,setStartDate] = useState(new Date())
+    const navigate=useNavigate();
 
     return (
     <div className="container mb-10">
@@ -54,6 +55,7 @@ const OpportunityForm = () => {
                 console.log('post response',res);
                 console.log('post ','data send');
                 resetForm({ values: '' })
+                navigate(-1)
             })
             .catch((error)=> {
                 console.log('error',error);

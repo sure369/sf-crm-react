@@ -5,6 +5,7 @@ import CurrencyInput from 'react-currency-input-field';
 import { Grid,Button ,FormControl} from "@mui/material";
 import axios from 'axios'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { useNavigate } from "react-router-dom";
 
 const url ="http://localhost:4000/api/userInsert";
 
@@ -48,6 +49,8 @@ const onSubmit = (values, { resetForm }) => {
 }
 
 const UserForm = () => {
+const navigate= useNavigate();
+
     return (
         <div className="container mb-10">
             <div className="col-lg-12 text-center mb-3">
@@ -68,6 +71,7 @@ const UserForm = () => {
                             console.log('post response',res);
                             console.log('post ','data send');
                             resetForm({ values: '' })
+                            navigate(-1)
                         })
                         .catch((error)=> {
                             console.log('error',error);
