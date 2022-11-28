@@ -28,12 +28,12 @@ const Inventories = () => {
     axios.post(urlInventory)
     .then(
       (res) => {
-        console.log("res Account records", res);
+        console.log("res Inventory records", res);
         setRecords(res.data);
       }
     )
     .catch((error)=> {
-      console.log('res Account error',error);
+      console.log('res Inventory error',error);
     })
   }, []);
 
