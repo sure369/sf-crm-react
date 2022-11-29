@@ -1,50 +1,66 @@
-import * as React from 'react';
-import Button from '@mui/material/Button';
-import Snackbar from '@mui/material/Snackbar';
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
+import {Snackbar,Alert} from"@mui/material";
+import { useState } from "react";
 
-export default function SimpleSnackbar() {
-  const [open, setOpen] = React.useState(false);
+export default function SimpleSnackbar({message,showAlert,onClose,severity}) {
 
-  const handleClick = () => {
-    setOpen(true);
-  };
 
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-
-    setOpen(false);
-  };
-
-  const action = (
-    <React.Fragment>
-      <Button color="secondary" size="small" onClick={handleClose}>
-        UNDO
-      </Button>
-      <IconButton
-        size="small"
-        aria-label="close"
-        color="inherit"
-        onClick={handleClose}
-      >
-        <CloseIcon fontSize="small" />
-      </IconButton>
-    </React.Fragment>
-  );
-
-  return (
-    <div>
-      <Button onClick={handleClick}>Open simple snackbar</Button>
+  console.log('message',message);
+  console.log('showAlert',showAlert);
+  console.log('onClose',onClose);
+    return (
+  
+     
       <Snackbar
-        open={open}
-        autoHideDuration={6000}
-        onClose={handleClose}
-        message="Note archived"
-        action={action}
-      />
-    </div>
-  );
-}
+      
+      key={Math.random()}
+      anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'center'
+      }}
+      open={showAlert}
+      autoHideDuration={5000}
+      message={message}
+      onClose={onClose}
+      ContentProps={{ bgcolor:"red",color:'green'}}
+  >
+      <Alert onClose={onClose} severity={severity}>
+      {message}
+      </Alert>
+  </Snackbar>
+ 
+    )
+};
+
+// import {Snackbar,Alert} from"@mui/material";
+// import { useState } from "react";
+
+// export default function SimpleSnackbar({message,showAlert,onClose}  ) {
+
+//   const [value, setValue] = useState(message);
+
+//   console.log('message',message)
+//   console.log('showAlert',showAlert)
+//   console.log('onClose',onClose)
+  
+
+//     return (
+//       <Snackbar
+      
+//       key={Math.random()}
+//       anchorOrigin={{
+//           vertical: 'top',
+//           horizontal: 'center'
+//       }}
+//       open={showAlert}
+//       autoHideDuration={5000}
+//       message={message}
+//       onClose={onClose}
+//       ContentProps={{ bgcolor:"red",color:'green'}}
+//   >
+//       <Alert onClose={onClose} severity="success">
+//       {message}
+//       </Alert>
+//   </Snackbar>
+ 
+//     )
+// };

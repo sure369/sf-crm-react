@@ -68,10 +68,24 @@ const onSubmit = (values, { resetForm }) => {
     resetForm({ values: '' })
 }
 
+
+
 const AccountForm = () => {
 
     const[showAlert,setShowAlert] = useState(false);
+    const[alertMessage,setAlertMessage]=useState();
+    const[alertSeverity,setAlertSeverity]=useState();
+    const[alertNotes,setAlertNotes]=useState({
+                                        isShow:false,
+                                        message:'',
+                                        severity:''
+                                    })
     const navigate =useNavigate();
+
+    const callback=()=>{
+        setShowAlert(false)
+    }
+
     return (
         <div className="container mb-10">
             <div className="col-lg-12 text-center mb-3">
@@ -91,23 +105,36 @@ const AccountForm = () => {
                         .then((res)=>{
                             
                             console.log('post response',res.data);
+                            // setAlertNotes({
+                            //     isShow:true,
+                            //     message:res.data,
+                            //     severity:'success',
+                            //     mode:callback()
+                            // })
                             setShowAlert(true)
-                            // alert(res.data);
-                            navigate(-1);
+                            setAlertMessage(res.data)
+                            setAlertSeverity('success')
+
+                            setTimeout(() => {
+                                navigate(-1);
+                            }, 2000);
+                          
                            
                             resetForm({ values: '' })
                         })
                         .catch((error)=> {
                             console.log('error',error);
-                            setShowAlert({
-                                show:true,
-                                message:error.message,
-                        })
+                            setShowAlert(false)
+                            setAlertMessage(error.message)
+                            setAlertSeverity('error')
+                            // setAlertNotes({
+                            //     isShow:true,
+                            //     message:error.message,
+                            //     severity:'error',
+                            //     mode:callback()
+                            // })
                          
                           })
-                        
-
-
                       }}
                 >
                    {(props) => {
@@ -123,8 +150,12 @@ const AccountForm = () => {
 
             return (
                 <>
+        {/* {
+             showAlert? <SimpleSnackbar obj={alertNotes} /> :<SimpleSnackbar obj={alertNotes} />
+        }  */}
+             
        {
-        showAlert && <SimpleSnackbar/>
+        showAlert? <SimpleSnackbar severity={alertSeverity}  message={alertMessage} showAlert={showAlert} onClose={callback} /> :<SimpleSnackbar message={showAlert}/>
        } 
                 <form onSubmit={handleSubmit}>
                             <Grid container spacing={2}>

@@ -25,7 +25,13 @@ const Accounts = () => {
   const [finalClickInfo, setFinalClickInfo] = useState(null);
 
   useEffect(()=>{
-    
+    fetchRecords();
+   
+  }, []
+  
+  );
+
+  const fetchRecords = ()=>{
     axios.post(urlAccount)
     .then(
       (res) => {
@@ -36,8 +42,7 @@ const Accounts = () => {
     .catch((error)=> {
       console.log('res Account error',error);
     })
-  }, []);
-
+  }
   const handleOnCellClick = (params) => {
     setFinalClickInfo(params);
     console.log('selected record',params.row);
@@ -61,6 +66,7 @@ const Accounts = () => {
     axios.post(urlDelete+row._id)
     .then((res)=>{
         console.log('api delete response',res);
+        fetchRecords();
     })
     .catch((error)=> {
         console.log('api delete error',error);
