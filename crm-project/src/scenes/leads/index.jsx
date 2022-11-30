@@ -1,10 +1,8 @@
 import React,{useState,useEffect} from 'react';
-import { Box,Button } from "@mui/material";
+import { useTheme,Box,Button } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
-import { mockLeadsData } from "../../data/mockData";
 import Header from "../../components/Header";
-import { useTheme } from "@mui/material";
 import LeadForm from "../formik/LeadForm";
 import axios from 'axios'
 import {  useNavigate } from "react-router-dom";
@@ -18,13 +16,17 @@ const Leads = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
   const[records,setRecords] = useState([]);
   const [finalClickInfo, setFinalClickInfo] = useState(null);
 
   
   useEffect(()=>{
+
+    fetchRecords();
   
+  }, []);
+
+  const fetchRecords =()=>{
     axios.post(urlLead)
     .then(
       (res) => {
@@ -35,7 +37,7 @@ const Leads = () => {
     .catch((error)=> {
       console.log('res Lead error',error);
     })
-  }, []);
+  }
 
   const handleOnCellClick = (params) => {
     setFinalClickInfo(params);    
@@ -43,14 +45,9 @@ const Leads = () => {
     const item=params.row;
      navigate("/leadDetailPage",{state:{record:{item}}})
   };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
     
   const handleOpen = () => {
-    navigate('/new-leads')
-    // setOpen(true);    
+    navigate('/new-leads')   
   };
   const onHandleDelete = (e, row) => {
     e.stopPropagation();
@@ -60,6 +57,7 @@ const Leads = () => {
     axios.post(urlDelete+row._id)
     .then((res)=>{
         console.log('api delete response',res);
+        fetchRecords();
     })
     .catch((error)=> {
         console.log('api delete error',error);
@@ -103,20 +101,13 @@ const Leads = () => {
     } }
   ];
 
-  if(open)
-  {
-    return(
-            <LeadForm/>
-    )
-  }
   if(records.length>0)
   {
-
     return (
     <Box m="20px">
       <Header
-        title="Leads"
-        subtitle="List of Leads"
+          title="Leads"
+          subtitle="List of Leads"
       />
       <Box
         m="40px 0 0 0"
@@ -151,19 +142,25 @@ const Leads = () => {
         }}
       >
 
-        <Button class="btn btn-primary " onClick={handleOpen} >New </Button>
+        <Button 
+            class="btn btn-primary "
+            onClick={handleOpen} 
+        >
+            New 
+        </Button>
+
         <DataGrid
-         rows={records}
-         columns={columns}
-         getRowId={(row) => row._id}
-         pageSize={5}
-         rowsPerPageOptions={[5]}
-         onCellClick={handleOnCellClick}
-         components={{ Toolbar: GridToolbar }}
+            rows={records}
+            columns={columns}
+            getRowId={(row) => row._id}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            onCellClick={handleOnCellClick}
+            components={{ Toolbar: GridToolbar }}
         />
       </Box>
     </Box>
-  );
+    );
   };
   }
 

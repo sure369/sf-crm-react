@@ -1,10 +1,13 @@
-import React from "react";
+import React ,{useState}from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Grid,Button ,FormControl, Input} from "@mui/material";
 import axios from 'axios'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from "react-router-dom";
+import { useRef } from "react";
+import Thumb from "./Thumb";
+import SimpleSnackbar from "../toast/test";
 
 const url ="http://localhost:4000/api/contactInsert";
 
@@ -20,7 +23,8 @@ const initialValues={
                         email:'',
                         mailingAddress:'',
                         description:'',
-                        files:'',
+                        file:'',
+                        date:'',
                         createdbyId: '',
                         createdDate: '',
 }
@@ -43,6 +47,19 @@ const onSubmit= (values,{resetForm}) => {
 const ContactForm = () => {
 
     const navigate =useNavigate();
+    const fileRef = useRef();
+    const[showAlert,setShowAlert] = useState(false);
+    const[alertMessage,setAlertMessage]=useState();
+    const[alertSeverity,setAlertSeverity]=useState();
+    const[alertNotes,setAlertNotes]=useState({
+                                        isShow:false,
+                                        message:'',
+                                        severity:''
+                                    })
+
+    const toastCloseCallback=()=>{
+        setShowAlert(false)
+    }
 
     return (
         <div className="container mb-10">
@@ -59,92 +76,140 @@ const ContactForm = () => {
                         .then((res)=>{
                             console.log('post response',res);
                             console.log('post ','data send');
+                           
+                            setShowAlert(true)
+                            setAlertMessage(res.data)
+                            setAlertSeverity('success')
+
+                            setTimeout(() => {
+                                navigate(-1);
+                            }, 2000);
+
                             resetForm({ values: '' })
-                            navigate(-1);
                         })
                         .catch((error)=> {
                             console.log('error',error);
-                          })
+                            setShowAlert(true)
+                            setAlertMessage(error.message)
+                            setAlertSeverity('error')
+
+                        })
                       }}
-                      render={({ values, handleSubmit, setFieldValue }) => {
-                        return(
-                            <Form >
-                            <FormControl>
-                                <Grid container spacing={2}>
-                                        <Grid item xs={6} md={2}>
-                                        <label htmlFor="salutation">Salutation  </label>
-                                        <Field name="salutation" as="select" class="form-control">
-                                            <option value="">--Select--</option>
-                                            <option value="Mr.">Mr.</option>
-                                            <option value="Ms.">Ms.</option>
-                                            <option value="Mrs.">Mrs.</option>
-                                            <option value="Dr.">Dr.</option>
-                                            <option value="Prof.">Prof.</option>
-                                        </Field>
-                                        </Grid>
-                                        <Grid item xs={6} md={4}>
-    
-                                        <label htmlFor="firstName" >First Name</label>
-                                        <Field name='firstName' type="text" class="form-control" />
-                                        </Grid>
-                                        <Grid item xs={6} md={6}>
-                                             <label htmlFor="lastName" >Last Name<span className="text-danger">*</span> </label>
-                                        <Field name='lastName' type="text" class="form-control" />
-                                        <div style={{ color: 'red' }}>
-                                            <ErrorMessage name="lastName" />
-                                        </div>
-                                        </Grid>
-                                    <Grid item xs={6} md={6}>
-                                        <label htmlFor="accountName">Account Name </label>
-                                        <Field name="accountName" type="text" class="form-control" />
-                                    </Grid>
-                                    <Grid item xs={6} md={6}>
-                                        <label htmlFor="phone">Phone</label>
-                                        <Field name="phone" type="phone" class="form-control" />
-                                    </Grid>
-                                    <Grid item xs={6} md={6}>
-                                        <label htmlFor="department">Department</label>
-                                        <Field name="department" type="text" class="form-control" />
-                                    </Grid>
-                                    <Grid item xs={6} md={6}>
-                                        <label htmlFor="email">Email <span className="text-danger">*</span></label>
-                                        <Field name="email" type="text" class="form-control" />
-                                        <div style={{ color: 'red' }}>
-                                            <ErrorMessage name="email" />
-                                        </div>
-                                    </Grid>
-                                    <Grid item xs={6} md={6}>
-                                        <label htmlFor="leadSource"> lead Source</label>
-                                        <Field name="leadSource" as="select" class="form-select">
-                                            <option value="">--Select--</option>
-                                            <option value="web">Web</option>
-                                            <option value="phone Inquiry">phone Inquiry</option>
-                                            <option value="Partner Referral">Partner Referral</option>
-                                            <option value="Purchased List">Purchased List</option>
-                                            <option value="other">Other</option>
-                                        </Field>
-                                    </Grid>
-                                    <Grid Grid item xs={6} md={6}>
-                                        <label htmlFor="files">File</label>
-                                        <input id="file" name="file" type="file" onChange={(event) => {
-                    setFieldValue("file", event.currentTarget.files[0]);
-                  }} className="form-control" />
-                                    </Grid>
-                                    <Grid Grid item xs={6} md={12}>
-                                        <label htmlFor="description">Description</label>
-                                        <Field as="textarea" name="description" class="form-control" />
-                                    </Grid>
-                                    <Grid item xs={6} md={12} >
-                                        <Button type='success' variant="contained" color="secondary">Save</Button>
-                                        <Button type="reset" variant="contained" >Cancel</Button>
-                                    </Grid>
-                                </Grid>
-                            </FormControl>
-                        </Form>
-                        )}}
-                />
-                                 </div>
+                     >
+
+{/* {({ setFieldValue, handleSubmit }) => ( */}
+                {
+                (props) => {
+                            const {
+                                values,
+                                dirty,
+                                isSubmitting,
+                                handleChange,
+                                handleSubmit,
+                                handleReset,
+                                setFieldValue,
+                            } = props;
+    return(
+        <>
+             {
+            showAlert? <SimpleSnackbar severity={alertSeverity}  message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> :<SimpleSnackbar message={showAlert}/>
+           }
+
+       
+         <form onSubmit={handleSubmit}>
+
+            <FormControl>
+             <Grid container spacing={2}>
+            <Grid item xs={6} md={2}>
+            <label htmlFor="salutation">Salutation  </label>
+            <Field name="salutation" as="select" class="form-control">
+                <option value="">--Select--</option>
+                <option value="Mr.">Mr.</option>
+                <option value="Ms.">Ms.</option>
+                <option value="Mrs.">Mrs.</option>
+                <option value="Dr.">Dr.</option>
+                <option value="Prof.">Prof.</option>
+            </Field>
+            </Grid>
+            <Grid item xs={6} md={4}>
+
+            <label htmlFor="firstName" >First Name</label>
+            <Field name='firstName' type="text" class="form-control" />
+            </Grid>
+            <Grid item xs={6} md={6}>
+                 <label htmlFor="lastName" >Last Name<span className="text-danger">*</span> </label>
+            <Field name='lastName' type="text" class="form-control" />
+            <div style={{ color: 'red' }}>
+                <ErrorMessage name="lastName" />
+            </div>
+            </Grid>
+        <Grid item xs={6} md={6}>
+            <label htmlFor="accountName">Account Name </label>
+            <Field name="accountName" type="text" class="form-control" />
+        </Grid>
+        <Grid item xs={6} md={6}>
+            <label htmlFor="phone">Phone</label>
+            <Field name="phone" type="phone" class="form-control" />
+        </Grid>
+        <Grid item xs={6} md={6}>
+            <label htmlFor="department">Department</label>
+            <Field name="department" type="text" class="form-control" />
+        </Grid>
+        <Grid item xs={6} md={6}>
+            <label htmlFor="email">Email <span className="text-danger">*</span></label>
+            <Field name="email" type="text" class="form-control" />
+            <div style={{ color: 'red' }}>
+                <ErrorMessage name="email" />
+            </div>
+        </Grid>
+        <Grid item xs={6} md={6}>
+            <label htmlFor="leadSource"> lead Source</label>
+            <Field name="leadSource" as="select" class="form-select">
+                <option value="">--Select--</option>
+                <option value="web">Web</option>
+                <option value="phone Inquiry">phone Inquiry</option>
+                <option value="Partner Referral">Partner Referral</option>
+                <option value="Purchased List">Purchased List</option>
+                <option value="other">Other</option>
+            </Field>
+        </Grid>
+        <Grid Grid item xs={6} md={6}>
+            <label htmlFor="files">File</label>
+            {/* <Field
+                innerRef={fileRef}
+                name="files"
+                type="file"
+                multiple
+                class="form-control"
+                onchange={(event)=>{setFieldValue('file',event.target.files)}}
+            /> */}
+
+           
+            <input id="file" name="file" type="file" multiple onChange={(event) => {
+            setFieldValue("file", event.currentTarget.files);
+            }} className="form-control" />
+        </Grid>
+        <Grid item xs={6} md={6}>
+            <label htmlFor="date">date</label>
+            <Field name="date" type="date" class="form-control" />
+        </Grid>
+        <Grid Grid item xs={6} md={12}>
+            <label htmlFor="description">Description</label>
+            <Field as="textarea" name="description" class="form-control" />
+        </Grid>
+        <Grid item xs={6} md={12} >
+            <Button type='success' variant="contained" color="secondary">Save</Button>
+            <Button type="reset" variant="contained" >Cancel</Button>
+        </Grid>
+    </Grid>
+</FormControl>
+</form>
+        </>
+    )
+                }}
+     </Formik>
+  </div>
         </div>
-    );
+    )
   }
 export default ContactForm

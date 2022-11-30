@@ -141,6 +141,16 @@ const ContactDetailPage = ({item}) => {
                                         <option value="other">Other</option>
                                     </Field>
                                 </Grid>
+                                <Grid Grid item xs={6} md={6}>
+                                    <label htmlFor="files">File</label>          
+                                    <input id="file" name="file" type="file" multiple onChange={(event) => {
+                                    setFieldValue("file", event.currentTarget.files);
+                                    }} className="form-control" />
+                                </Grid>
+                                <Grid item xs={6} md={6}>
+                                    <label htmlFor="date">date</label>
+                                    <Field name="date" type="date" class="form-control" />
+                                </Grid>
                                 <Grid Grid item xs={6} md={12}>
                                     <label htmlFor="description">Description</label>
                                     <Field as="textarea" name="description" class="form-control" />

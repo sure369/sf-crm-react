@@ -1,10 +1,12 @@
-import React from "react";
+import React,{useState} from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Grid, Button, FormControl,Box ,TextField} from "@mui/material";
 import axios from 'axios'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from "react-router-dom";
+import SimpleSnackbar from "../toast/test";
+
 const url ="http://localhost:4000/api/leadInsert";
 
 const initialValues = {
@@ -43,7 +45,18 @@ const onSubmit = (values, { resetForm }) => {
 const LeadForm = () => {
 
     const navigate= useNavigate();
+    const[showAlert,setShowAlert] = useState(false);
+    const[alertMessage,setAlertMessage]=useState();
+    const[alertSeverity,setAlertSeverity]=useState();
+    const[alertNotes,setAlertNotes]=useState({
+                                        isShow:false,
+                                        message:'',
+                                        severity:''
+                                    })
 
+    const toastCloseCallback=()=>{
+        setShowAlert(false)
+    }
     return (
 
         <div className="container mb-10">
@@ -68,7 +81,24 @@ const LeadForm = () => {
                       }}
                 >
 
-                    <Form >
+                {
+                (props) => {
+                            const {
+                                values,
+                                dirty,
+                                isSubmitting,
+                                handleChange,
+                                handleSubmit,
+                                handleReset,
+                                setFieldValue,
+                            } = props;
+    return(
+        <>
+             {
+            showAlert? <SimpleSnackbar severity={alertSeverity}  message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> :<SimpleSnackbar message={showAlert}/>
+           }
+
+                    <form onSubmit={handleSubmit} >
                         <FormControl>
                             <Grid container spacing={2}>
                       
@@ -169,8 +199,11 @@ const LeadForm = () => {
                                 </Grid>
                             </Grid>
                         </FormControl>
-                    </Form>
-                </Formik>
+                        </form>
+        </>
+    )
+                }}
+     </Formik>
             </div>
         </div>
     );

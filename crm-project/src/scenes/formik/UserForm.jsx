@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState} from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import CurrencyInput from 'react-currency-input-field';
@@ -6,6 +6,7 @@ import { Grid,Button ,FormControl} from "@mui/material";
 import axios from 'axios'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from "react-router-dom";
+import SimpleSnackbar from "../toast/test"
 
 const url ="http://localhost:4000/api/userInsert";
 
@@ -48,8 +49,20 @@ const onSubmit = (values, { resetForm }) => {
     resetForm({ values: '' })
 }
 
-const UserForm = () => {
-const navigate= useNavigate();
+    const UserForm = () => {
+    const navigate= useNavigate();
+    const[showAlert,setShowAlert] = useState(false);
+    const[alertMessage,setAlertMessage]=useState();
+    const[alertSeverity,setAlertSeverity]=useState();
+    const[alertNotes,setAlertNotes]=useState({
+                                        isShow:false,
+                                        message:'',
+                                        severity:''
+                                    })
+
+    const toastCloseCallback=()=>{
+        setShowAlert(false)
+    }
 
     return (
         <div className="container mb-10">
@@ -90,6 +103,12 @@ const navigate= useNavigate();
                             } = props;
 
             return (
+                <>
+                {
+               showAlert? <SimpleSnackbar severity={alertSeverity}  message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> :<SimpleSnackbar message={showAlert}/>
+              }
+   
+          
                 <form onSubmit={handleSubmit}>
                             <Grid container spacing={2}>                            
                                     <Grid item xs={6} md={6}>
@@ -155,9 +174,10 @@ const navigate= useNavigate();
                                 </Grid>
                             </Grid>
                             </form>
-            )
-             }}
-                </Formik>
+        </>
+    )
+                }}
+     </Formik>
             </div>
         </div>
     );

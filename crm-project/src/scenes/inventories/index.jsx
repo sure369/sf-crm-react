@@ -1,31 +1,29 @@
 import React,{useState,useEffect} from 'react';
-import { Box, Button } from "@mui/material";
+import { Box, Button ,useTheme} from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
-import { useTheme } from "@mui/material";
-import InventoryForm from "../formik/InventoryForm";
 import axios from 'axios';
-
 import {  useNavigate } from "react-router-dom";
-
-
-
 
 const Inventories = () => {
 
   const urlDelete ="http://localhost:4000/api/deleteInventory?code=";
   const urlInventory ="http://localhost:4000/api/inventories";
-  const navigate = useNavigate();
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [open, setOpen] = useState(false);
-  const[errorMassage,setErrorMessage]= useState(false);
+  const navigate = useNavigate();
   const[records,setRecords] = useState([]);
   const [finalClickInfo, setFinalClickInfo] = useState(null);
 
   useEffect(()=>{
+
+    fetchRecords();
+
+  }, []);
+
+  const fetchRecords =()=>{
     axios.post(urlInventory)
     .then(
       (res) => {
@@ -34,11 +32,9 @@ const Inventories = () => {
       }
     )
     .catch((error)=> {
-      setErrorMessage(true)
       console.log('res Inventory error',error);
-     
     })
-  }, []);
+  }
 
   const handleOnCellClick = (params) => {
     setFinalClickInfo(params);
@@ -47,13 +43,8 @@ const Inventories = () => {
     navigate("/inventoryDetailPage",{state:{record:{item}}})
   };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
-    
   const handleOpen = () => {
-  navigate('/new-inventories')
-    // setOpen(true);    
+    navigate('/new-inventories')
   };
   const onHandleDelete = (e, row) => {
     e.stopPropagation();
@@ -63,6 +54,7 @@ const Inventories = () => {
     axios.post(urlDelete+row._id)
     .then((res)=>{
         console.log('api delete response',res);
+        fetchRecords();
     })
     .catch((error)=> {
         console.log('api delete error',error);
@@ -104,22 +96,13 @@ const Inventories = () => {
   ];
 
  
-
-  if(open)
-  {
-    return(
-            <InventoryForm/>
-    )
-  }
- 
-
   if(records.length>0)
   {
   return(
       <Box m="20px">
        <Header
-        title="Inventories"
-        subtitle="List of Inventory"
+          title="Inventories"
+          subtitle="List of Inventory"
       />
       <Box
         m="40px 0 0 0"
@@ -154,8 +137,12 @@ const Inventories = () => {
         }}
       >
 
-          <Button class="btn btn-primary " onClick={handleOpen} >New </Button>
-
+      <Button 
+          class="btn btn-primary " 
+          onClick={handleOpen} 
+      >
+          New 
+      </Button>
 
         <DataGrid
               rows={records}
@@ -167,11 +154,9 @@ const Inventories = () => {
               components={{ Toolbar: GridToolbar }}
         /> 
       </Box>
-      
     </Box>
     )
   }
-
 };
 
 export default Inventories;

@@ -2,10 +2,8 @@ import React,{useState,useEffect} from 'react';
 import { Box,Button } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
-import { mockDataContacts } from "../../data/mockData";
 import Header from "../../components/Header";
 import { useTheme } from "@mui/material";
-import ContactForm from "../formik/ContactForm";
 import axios from 'axios';
 import {  useNavigate } from "react-router-dom";
 
@@ -17,12 +15,15 @@ const Contacts = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
   const[records,setRecords] = useState([]);
   const [finalClickInfo, setFinalClickInfo] = useState(null);
 
   useEffect(()=>{
+    fetchRecords();
   
+  }, []);
+
+  const fetchRecords=()=>{
     axios.post(urlContact)
     .then(
       (res) => {
@@ -33,7 +34,7 @@ const Contacts = () => {
     .catch((error)=> {
       console.log('error',error);
     })
-}, []);
+  }
 
   const handleOnCellClick = (params) => {
     setFinalClickInfo(params);
@@ -42,13 +43,8 @@ const Contacts = () => {
      navigate("/contactDetailPage",{state:{record:{item}}})
   };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
-    
   const handleOpen = () => {
     navigate('/new-contacts');
-    // setOpen(true);   
   };
 
   const onHandleDelete = (e, row) => {
@@ -59,6 +55,7 @@ const Contacts = () => {
     axios.post(urlDelete+row._id)
     .then((res)=>{
         console.log('api delete res',res);
+        fetchRecords();
     })
     .catch((error)=> {
         console.log('api delete  error',error);
@@ -100,13 +97,8 @@ const Contacts = () => {
     } }
   ];
   
-  if(open)
-  {
-    return(
-            <ContactForm/>
-    )
-  }
-  if(records.length>0)
+
+  if(records.length>=0)
   {
 
   return (

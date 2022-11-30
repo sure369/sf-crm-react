@@ -82,7 +82,7 @@ const AccountForm = () => {
                                     })
     const navigate =useNavigate();
 
-    const callback=()=>{
+    const toastCloseCallback=()=>{
         setShowAlert(false)
     }
 
@@ -109,7 +109,7 @@ const AccountForm = () => {
                             //     isShow:true,
                             //     message:res.data,
                             //     severity:'success',
-                            //     mode:callback()
+                            //     mode:toastCloseCallback()
                             // })
                             setShowAlert(true)
                             setAlertMessage(res.data)
@@ -124,14 +124,14 @@ const AccountForm = () => {
                         })
                         .catch((error)=> {
                             console.log('error',error);
-                            setShowAlert(false)
+                            setShowAlert(true)
                             setAlertMessage(error.message)
                             setAlertSeverity('error')
                             // setAlertNotes({
                             //     isShow:true,
                             //     message:error.message,
                             //     severity:'error',
-                            //     mode:callback()
+                            //     mode:toastCloseCallback()
                             // })
                          
                           })
@@ -155,7 +155,7 @@ const AccountForm = () => {
         }  */}
              
        {
-        showAlert? <SimpleSnackbar severity={alertSeverity}  message={alertMessage} showAlert={showAlert} onClose={callback} /> :<SimpleSnackbar message={showAlert}/>
+        showAlert? <SimpleSnackbar severity={alertSeverity}  message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> :<SimpleSnackbar message={showAlert}/>
        } 
                 <form onSubmit={handleSubmit}>
                             <Grid container spacing={2}>
@@ -178,6 +178,10 @@ const AccountForm = () => {
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="phone">Phone</label>
                                     <Field name="phone" type="phone" class="form-control" />
+                                </Grid>
+                                <Grid item xs={6} md={6}>
+                                    <label htmlFor="date">date</label>
+                                    <Field name="date" type="date" class="form-control" />
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="rating"> Rating

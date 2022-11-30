@@ -1,34 +1,33 @@
 import React,{useState,useEffect} from 'react';
-import { Box, Button } from "@mui/material";
+import { Box, Button,useTheme } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
-import { useTheme } from "@mui/material";
-import AccountForm from "../formik/AccountForm";
 import axios from 'axios';
-
 import {  useNavigate } from "react-router-dom";
-
-
-
+import SimpleSnackbar from "../toast/test";
 
 const Accounts = () => {
 
   const urlDelete ="http://localhost:4000/api/deleteAccount?code=";
   const urlAccount ="http://localhost:4000/api/accounts";
-  const navigate = useNavigate();
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
   const[records,setRecords] = useState([]);
   const [finalClickInfo, setFinalClickInfo] = useState(null);
 
+  //toast 
+  const[showAlert,setShowAlert] = useState(false);
+    const[alertMessage,setAlertMessage]=useState();
+    const[alertSeverity,setAlertSeverity]=useState();
+
   useEffect(()=>{
+
     fetchRecords();
    
-  }, []
-  
+    }, []
   );
 
   const fetchRecords = ()=>{
@@ -43,20 +42,16 @@ const Accounts = () => {
       console.log('res Account error',error);
     })
   }
+
   const handleOnCellClick = (params) => {
     setFinalClickInfo(params);
     console.log('selected record',params.row);
     const item=params.row;
     navigate("/accountDetailPage",{state:{record:{item}}})
   };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-    
+ 
   const handleOpen = () => {
-    navigate('/new-accounts');
-    // setOpen(true);    
+    navigate('/new-accounts');  
   };
   const onHandleDelete = (e, row) => {
     e.stopPropagation();
@@ -67,11 +62,24 @@ const Accounts = () => {
     .then((res)=>{
         console.log('api delete response',res);
         fetchRecords();
+        //delete show toast
+        setShowAlert(true)
+        setAlertMessage(res.data)
+        setAlertSeverity('success')
     })
     .catch((error)=> {
         console.log('api delete error',error);
+         //delete show toast
+         setShowAlert(true)
+         setAlertMessage(error.message)
+         setAlertSeverity('error')
       })
   };
+
+  const toastCloseCallback=()=>{
+    setShowAlert(false)
+}
+
   const columns = [
     {
       field: "accountName",
@@ -84,8 +92,6 @@ const Accounts = () => {
     {
       field: "billingCity",
       headerName: "City",
-      headerAlign: "left",
-      align: "left",
     },
     {
       field: "type",
@@ -103,33 +109,26 @@ const Accounts = () => {
           onClick={(e) => onHandleDelete(e, params.row)}
           variant="contained" sx={{ bgcolor: 'red'}}
         >
+            {
+       showAlert? <SimpleSnackbar severity={alertSeverity}  message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> :<SimpleSnackbar message={showAlert}/>
+      } 
           Delete
         </Button>
       );
     } }
   ];
 
- 
-
-
-  // if(open)
-  // {
-  //   return(
-  //           <AccountForm/>
-  //   )
-  // }
-  
-
   if(records.length>0)
   {
   return(
+    // {
+    //   showAlert? <SimpleSnackbar severity={alertSeverity}  message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> :<SimpleSnackbar message={showAlert}/>
+    //  } 
+
       <Box m="20px">
-
-
-
        <Header
-        title="Accounts"
-        subtitle="List of Accounst"
+          title="Accounts"
+          subtitle="List of Accounst"
       />
       <Box
         m="40px 0 0 0"
@@ -164,10 +163,14 @@ const Accounts = () => {
         }}
       >
 
-          <Button class="btn btn-primary " onClick={handleOpen} >New </Button>
+      <Button 
+          class="btn btn-primary" 
+          onClick={handleOpen} 
+      >
+              New 
+      </Button>
 
-
-        <DataGrid
+      <DataGrid
               rows={records}
               columns={columns}
               getRowId={(row) => row._id}
@@ -175,13 +178,11 @@ const Accounts = () => {
               rowsPerPageOptions={[5]}
               onCellClick={handleOnCellClick}
               components={{ Toolbar: GridToolbar }}
-        /> 
-      </Box>
-      
+      /> 
+    </Box> 
     </Box>
     )
   }
-
 };
 
 export default Accounts;

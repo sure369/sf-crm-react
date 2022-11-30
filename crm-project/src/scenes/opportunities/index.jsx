@@ -1,10 +1,9 @@
 import React,{useState,useEffect} from 'react';
-import { Box,Button } from "@mui/material";
+import { Box,Button ,useTheme} from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import { mockOpportunitiesData } from "../../data/mockData";
 import Header from "../../components/Header";
-import { useTheme } from "@mui/material";
 import OpportunityForm from "../formik/OpportunityForm";
 import axios from 'axios';
 import {  useNavigate } from "react-router-dom";
@@ -17,12 +16,17 @@ const Opportunities = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
   const[records,setRecords] = useState([]);
   const [finalClickInfo, setFinalClickInfo] = useState(null);
 
   useEffect(()=>{
   
+    fetchRecords();
+    
+    }, []
+  );
+
+  const fetchRecords=()=>{
     axios.post(urlOpportunity)
     .then(
       (res) => {
@@ -33,7 +37,11 @@ const Opportunities = () => {
     .catch((error)=> {
       console.log('error',error);
     })
-}, []);
+  }
+
+  const handleOpen = () => {
+    navigate('/new-opportunities')
+  };
 
   const handleOnCellClick = (params) => {
     setFinalClickInfo(params);
@@ -50,24 +58,14 @@ const Opportunities = () => {
     axios.post(urlDelete+row._id)
     .then((res)=>{
         console.log('api delete res',res); 
+        fetchRecords();
     })
     .catch((error)=> {
         console.log('api delete error',error);
       })
   };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
-    
-  const handleOpen = () => {
-    navigate('/new-opportunities')
-    // setOpen(true);  
-  };
-
-
   const columns = [
-   
     {
       field: "opportunityName",
       headerName: "Opportunity Name",
@@ -101,14 +99,6 @@ const Opportunities = () => {
       );
     } }
   ];
-
-    
-  if(open)
-  {
-    return(
-            <OpportunityForm/>
-    )
-  }
 
   if(records.length>0)
   {
@@ -151,21 +141,26 @@ const Opportunities = () => {
           },
         }}
       >
-         <Button class="btn btn-primary " onClick={handleOpen} >New </Button>
-        <DataGrid
-          rows={records}
-          columns={columns}
-          getRowId={(row) => row._id}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-          onCellClick={handleOnCellClick}
-          components={{ Toolbar: GridToolbar }}
+      <Button 
+          class="btn btn-primary " 
+          onClick={handleOpen} 
+      >
+          New 
+      </Button>
+      
+      <DataGrid
+              rows={records}
+              columns={columns}
+              getRowId={(row) => row._id}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              onCellClick={handleOnCellClick}
+              components={{ Toolbar: GridToolbar }}
         />
       </Box>
     </Box>
   );
-
-      }
+ }
 };
 
 export default Opportunities;
