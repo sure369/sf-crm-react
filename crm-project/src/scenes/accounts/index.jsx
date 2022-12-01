@@ -6,6 +6,7 @@ import Header from "../../components/Header";
 import axios from 'axios';
 import {  useNavigate } from "react-router-dom";
 import SimpleSnackbar from "../toast/test";
+import ContactForm from '../formik/ContactForm';
 
 const Accounts = () => {
 
@@ -16,6 +17,7 @@ const Accounts = () => {
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
   const[records,setRecords] = useState([]);
+  const[recNames,setRecNames]=useState([]);
   const [finalClickInfo, setFinalClickInfo] = useState(null);
 
   //toast 
@@ -36,7 +38,13 @@ const Accounts = () => {
       (res) => {
         console.log("res Account records", res);
         setRecords(res.data);
-      }
+      //   const emls = res.data.emls.map(function(item, i){
+      //     return {
+      //         value:item.accountName, title:item.accountName
+      //         }
+      //  })
+      //  setRecNames(emls);
+       }
     )
     .catch((error)=> {
       console.log('res Account error',error);
@@ -118,12 +126,14 @@ const Accounts = () => {
     } }
   ];
 
-  if(records.length>0)
+  if(records.length>=0)
   {
+   console.log('name',recNames); 
   return(
     // {
     //   showAlert? <SimpleSnackbar severity={alertSeverity}  message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> :<SimpleSnackbar message={showAlert}/>
     //  } 
+<>
 
       <Box m="20px">
        <Header
@@ -181,6 +191,7 @@ const Accounts = () => {
       /> 
     </Box> 
     </Box>
+    </>
     )
   }
 };

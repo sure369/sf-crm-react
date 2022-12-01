@@ -1,11 +1,13 @@
 import React,{useState,useEffect} from 'react';
-import { Box, Button ,useTheme} from "@mui/material";
+import { Box, Button ,IconButton,useTheme} from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import UserForm from "../formik/UserForm";
 import axios from 'axios';
 import {  useNavigate } from "react-router-dom";
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 
 const Users = () => {
 
@@ -38,10 +40,11 @@ const Users = () => {
     })
   }
 
-  const handleOnCellClick = (params) => {
-    setFinalClickInfo(params);
-    console.log('selected record',params.row);
-    const item=params.row;
+  const handleOnCellClick = (e,row) => {
+    // setFinalClickInfo(params);
+    console.log('selected record',e);
+    console.log('req selected  rec',row);
+    const item=row;
     navigate("/userDetailPage",{state:{record:{item}}})
   };
     
@@ -51,6 +54,8 @@ const Users = () => {
 
   const onHandleDelete = (e, row) => {
     e.stopPropagation();
+    
+    console.log('eee',e);
     console.log('req delete rec',row);
     console.log('req delete rec id',row._id);
     
@@ -90,19 +95,34 @@ const Users = () => {
     { field: 'actions', headerName: 'Actions',flex: 1, width: 400, renderCell: (params) => {
       return (
         <>
-          <Button
-          onClick={(e) =>handleOnCellClick (e, params.row)}
-          variant="contained" sx={{ bgcolor: 'blue'}}
-        >
-          Edit
-        </Button>
-          <Button
-            onClick={(e) => onHandleDelete(e, params.row)}
-            variant="contained" sx={{ bgcolor: 'red'}}
-          >
-            Delete
-          </Button>
+
+          <IconButton style={{ padding: '20px' }}>
+
+            <EditIcon onClick={(e) => handleOnCellClick(e, params.row)} />
+
+          </IconButton>
+          <IconButton style={{ padding: '20px' }}>
+
+            <DeleteIcon onClick={(e) => onHandleDelete(e, params.row)} />
+
+          </IconButton>
         </>
+        // <>
+        //   <Button
+        //   onClick={(e) =>handleOnCellClick (e, params.row)}
+        //   variant="contained" sx={{ bgcolor: 'blue'}}
+        // >
+        //   Edit
+        // </Button>
+        //   <Button
+        //     onClick={(e) => onHandleDelete(e, params.row)}
+        //     variant="contained" sx={{ bgcolor: 'red'}}
+        //   >
+        //     Delete
+        //   </Button>
+        // </>
+
+        
        
       );
     } }
@@ -161,7 +181,7 @@ const Users = () => {
               getRowId={(row) => row._id}
               pageSize={5}
               rowsPerPageOptions={[5]}
-              onCellClick={handleOnCellClick}
+              // onCellClick={handleOnCellClick}
               components={{ Toolbar: GridToolbar }}
         /> 
       </Box>

@@ -32,6 +32,7 @@ import UserDetailPage from "./scenes/recordDetailPage/UserDetailPage";
 import InventoryForm from "./scenes/formik/InventoryForm";
 import Inventories from "./scenes/inventories";
 import InventoryDetailPage from "./scenes/recordDetailPage/InventoryDetailPage";
+import EventForm from "./scenes/formik/EventForm";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -59,6 +60,7 @@ function App() {
               <Route path="/new-leads" element={<LeadForm />} />
               <Route path="/new-users" element={<UserForm/>} />
               <Route path="/new-inventories" element={<InventoryForm/>}/>
+              <Route path="/new-event" element={<EventForm/>}/>
               <Route path="/form" element={<NewForm />} />
               <Route path="/team" element={<Team />} />
               <Route path="/faq" element={<FAQ />} />

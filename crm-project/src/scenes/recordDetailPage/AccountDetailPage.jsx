@@ -13,12 +13,14 @@ const url ="http://localhost:4000/api/editAccount";
 
 const AccountDetailPage = ({item}) => {
 
-    const [singleAccount,setsingleAccount]= useState(); 
+    const [singleAccount,setsingleAccount]= useState();   
+    const[records,setRecords] = useState([]);
     const location = useLocation();
     const navigate =useNavigate();
     useEffect(()=>{
         console.log('passed record',location.state.record.item);
-        setsingleAccount(location.state.record.item);       
+        setsingleAccount(location.state.record.item);
+        //  setRecords(location.state.accounts.records)       
     })
 
     const initialValues = {
@@ -276,3 +278,4 @@ const citiesList = {
 
 }
 export default AccountDetailPage;
+
