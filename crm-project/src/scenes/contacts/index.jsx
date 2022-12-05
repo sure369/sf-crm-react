@@ -45,7 +45,8 @@ const Contacts = () => {
   }
 
   const handleOpen = () => {
-    navigate('/new-contacts');
+    // navigate('/new-contacts');
+    navigate("/contactDetailPage",{state:{record:{}}})
   };
 
   const handleOnCellClick = (e,row) => {

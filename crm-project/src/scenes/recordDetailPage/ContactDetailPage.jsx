@@ -5,37 +5,60 @@ import * as Yup from "yup";
 import CurrencyInput from 'react-currency-input-field';
 import { Grid,Button ,FormControl} from "@mui/material";
 import { useParams,useNavigate } from "react-router-dom"
-import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios'
+import SimpleSnackbar from "../toast/test";
+import "../formik/FormStyles.css"
 
-
-const url ="http://localhost:4000/api/editContact";
+const url ="http://localhost:4000/api/UpsertContact";
+const fetchAccountsUrl = "http://localhost:4000/api/accountsname";
 
 const ContactDetailPage = ({item}) => {
 
     const [singleContact,setsingleContact]= useState(); 
+    const[accNames,setAccNames]= useState([]);
     const location = useLocation();
     const navigate =useNavigate();
+    const [showNew, setshowNew] = useState()
+    const [showAlert, setShowAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState();
+    const [alertSeverity, setAlertSeverity] = useState();
 
     useEffect(()=>{
         console.log('passed record',location.state.record.item);
-        setsingleContact(location.state.record.item);       
-    })
+        setsingleContact(location.state.record.item); 
+        setshowNew(!location.state.record.item) 
+        fetchAccountsName();  
+    },[])
 
-    const initialValues = {
+    const fetchAccountsName = () => {
+        axios.post(fetchAccountsUrl)
+            .then((res) => {
+                console.log('res fetchAccountsUrl', res.data)
+
+                setAccNames(res.data)
+
+            })
+            .catch((error) => {
+                console.log('error fetchAccountsUrl', error);
+            })
+    }
+    const savedValues = {
         accountName: singleContact?.accountName ?? "",
+        salutation:  singleContact?.salutation ?? "",
+        firstName:  singleContact?.firstName ?? "",
         lastName:  singleContact?.lastName ?? "",
         dop: singleContact?.dop ?? "",
         phone:  singleContact?.phone ?? "",
         department:  singleContact?.department ?? "",
         leadSource:  singleContact?.leadSource ?? "",
         email:  singleContact?.email ?? "",
+        file:singleContact?.file ?? "",
         mailingAddress:  singleContact?.mailingAddress ?? "",
         description:  singleContact?.description ?? "",
-        _id:   singleContact?._id ?? "",
+        createdbyId:  singleContact?.createdbyId ?? "",
+        createdDate: singleContact?.createdDate ?? "",
+        _id:   singleContact?._id ?? "", 
     }
-
-
 
     const validationSchema = Yup.object({
         lastName: Yup
@@ -47,31 +70,40 @@ const ContactDetailPage = ({item}) => {
             .required('Required'),
     })
     
-  return (
+    const toastCloseCallback = () => {
+        setShowAlert(false)
+    }
+
+    return (
         <div className="container mb-10">
             <div className="col-lg-12 text-center mb-3">
-                <h3>Contact Detail page</h3>
+                {
+                    showNew ? <h3>New Contact </h3> : <h3>Contact Detail Page </h3>
+                }
             </div>
-
             <div class="container overflow-hidden ">
-
                 <Formik
                     enableReinitialize={true} 
-                    initialValues={initialValues}
+                    initialValues={savedValues}
                     validationSchema={validationSchema}
                     onSubmit={async (values) => {
                         await new Promise((resolve) => setTimeout(resolve, 500));
-                        console.log("updated record values", values);  
+                        console.log("upsert record values", values);  
                         
                         axios.post(url,values)
                         .then((res)=>{
-                            console.log('updated record  response',res);
-                            // navigate(-1)
+                            console.log('upsert record  response',res);
+                            setShowAlert(true)
+                            setAlertMessage(res.data)
+                            setAlertSeverity('success')
+                            navigate(-1);
                         })
                         .catch((error)=> {
-                            console.log('updated record error',error);
-                          })
-                        
+                            console.log('upsert record error',error);
+                            setShowAlert(true)
+                            setAlertMessage(error.message)
+                            setAlertSeverity('error') 
+                        })                   
                       }}
                 >
                    {(props) => {
@@ -86,7 +118,11 @@ const ContactDetailPage = ({item}) => {
                             } = props;
 
             return (
-                <form onSubmit={handleSubmit}>
+                <>
+                    {
+                        showAlert ? <SimpleSnackbar severity={alertSeverity} message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> : <SimpleSnackbar message={showAlert} />
+                    }
+                <Form>
                     <Grid container spacing={2}>
                                     <Grid item xs={6} md={2}>
                                     <label htmlFor="salutation">Salutation  </label>
@@ -155,13 +191,25 @@ const ContactDetailPage = ({item}) => {
                                     <label htmlFor="description">Description</label>
                                     <Field as="textarea" name="description" class="form-control" />
                                 </Grid>
-                                <Grid item xs={6} md={12} >
-                                <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Update</Button>
-                                    <Button type="reset" variant="contained" onClick={handleReset}  disabled={!dirty || isSubmitting}>Cancel</Button>
-                                </Grid>
+                                 <div>
+                                           {
+                                                showNew ?
+                                                    <Grid item xs={12} md={12}>
+                                                        <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Save</Button>
+                                                        <Button type="reset" variant="contained" onClick={handleReset} disabled={!dirty || isSubmitting} >Cancel</Button>
+                                                    </Grid>
+                                                    :
+                                                    <Grid item xs={12} md={12}>
+                                                        <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Update</Button>
+                                                        <Button type="reset" variant="contained" onClick={handleReset} disabled={!dirty || isSubmitting} >Cancel</Button>
+                                                    </Grid>
+
+                                            } 
+                                        </div>
                             </Grid>
 
-                </form>
+                </Form>
+                </>
             )
              }}
                 </Formik>

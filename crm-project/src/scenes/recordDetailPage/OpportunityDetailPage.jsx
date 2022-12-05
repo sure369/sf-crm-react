@@ -2,27 +2,32 @@ import React, { useEffect, useState } from 'react'
 import {useLocation} from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import CurrencyInput from 'react-currency-input-field';
-import { Grid,Button ,FormControl} from "@mui/material";
+import { Grid,Button ,Forminput} from "@mui/material";
 import { useParams,useNavigate } from "react-router-dom"
-import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios'
+import SimpleSnackbar from "../toast/test";
+import "../formik/FormStyles.css"
 
 
-const url ="http://localhost:4000/api/editOpportunity";
+const url ="http://localhost:4000/api/UpsertOpportunity";
 
 const OpportunityDetailPage = ({item}) => {
 
     const [singleOpportunity,setSinglOpportunity]= useState(); 
     const location = useLocation();
     const navigate =useNavigate();
+    const [showNew, setshowNew] = useState()
+    const [showAlert, setShowAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState();
+    const [alertSeverity, setAlertSeverity] = useState();
 
     useEffect(()=>{
         console.log('passed record',location.state.record.item);
-        setSinglOpportunity(location.state.record.item);       
-    })
+        setSinglOpportunity(location.state.record.item); 
+        setshowNew(!location.state.record.item)     
+    },[])
 
-    const initialValues = {
+    const savedValues = {
         accountName: singleOpportunity?.accountName ?? "",
         opportunityName:  singleOpportunity?.opportunityName ?? "",
         type: singleOpportunity?.type ?? "",
@@ -43,18 +48,24 @@ const OpportunityDetailPage = ({item}) => {
             .string()
             .required('Required'),
     })
-    const[startDate,setStartDate] = useState(new Date())
+
+    const toastCloseCallback = () => {
+        setShowAlert(false)
+    }
+
   return (
       
 
      <div className="container mb-10">
-                 <div className="col-lg-12 text-center mb-3">
-                     <h3> Opportunity Detail page</h3>
-                 </div>
+               <div className="col-lg-12 text-center mb-3">
+                {
+                    showNew ? <h3>New Opportunity</h3> : <h3>Opportunity Detail Page </h3>
+                }
+            </div>
              <div class="container overflow-hidden ">
          <Formik
           enableReinitialize={true} 
-         initialValues={initialValues}
+         initialValues={savedValues}
          validationSchema={validationSchema}
          onSubmit={ (values, { resetForm }) => {
             console.log('values',values)
@@ -62,22 +73,40 @@ const OpportunityDetailPage = ({item}) => {
              axios.post(url,values)
              .then((res)=>{
                  console.log('post response',res);
-                 console.log('post ','data send');
-                //  resetForm({ values: '' })
+                 setShowAlert(true)
+                 setAlertMessage(res.data)
+                 setAlertSeverity('success')
                  navigate(-1)
              })
              .catch((error)=> {
                  console.log('error',error);
+                 setShowAlert(true)
+                setAlertMessage(error.message)
+                setAlertSeverity('error')
                })
            }}
        >
-         
+        {(props) => {
+                        const {
+                            values,
+                            dirty,
+                            isSubmitting,
+                            handleChange,
+                            handleSubmit,
+                            handleReset,
+                            setFieldValue,
+                        } = props;
+
+        return (
+                            <>
+                                {
+                                    showAlert ? <SimpleSnackbar severity={alertSeverity} message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> : <SimpleSnackbar message={showAlert} />
+                                }  
          <Form>
-         <FormControl>
          <Grid container spacing={2}>
              <Grid item xs={6} md={6}>
              <label htmlFor="opportunityName" >Opportunity Name<span className="text-danger">*</span> </label>
-                 <Field name='opportunityName' type="text" class="form-control"/>
+                 <Field name='opportunityName' type="text" class="form-input"/>
                  <div style={{ color: 'red'}}>
                      <ErrorMessage name="opportunityName" />
                  </div>
@@ -85,12 +114,12 @@ const OpportunityDetailPage = ({item}) => {
                              
              <Grid item xs={6} md={6}>
              <label htmlFor="accountName">Account Name </label>
-                 <Field name="accountName" type="text"class="form-control" />
+                 <Field name="accountName" type="text"class="form-input" />
              </Grid>
                  
              <Grid item xs={6} md={6}>
              <label htmlFor="stage">Opportunity Stage</label>
-                 <Field name="stage" as="select" class="form-select">
+                 <Field name="stage" as="select" class="form-input">
                      <option value="">--Select--</option>
                      <option value="Prospecting">Prospecting</option>
                      <option value="Needs Analysis">Needs Analysis</option>
@@ -105,7 +134,7 @@ const OpportunityDetailPage = ({item}) => {
                 
              <Grid item xs={6} md={6}>
              <label htmlFor="type">Type</label>
-                 <Field name="type" as="select" class="form-select">
+                 <Field name="type" as="select" class="form-input">
                      <option value="">--Select--</option>
                      <option value="New Customer">New Customer</option>
                      <option value="Existing Customer - Upgrade">Existing Customer - Upgrade</option>
@@ -118,7 +147,7 @@ const OpportunityDetailPage = ({item}) => {
              
              <Grid item xs={6} md={6}>
              <label htmlFor="leadSource"> Lead Source</label>
-                 <Field name="leadSource" as="select" class="form-select">
+                 <Field name="leadSource" as="select" class="form-input">
                      <option value="">--Select--</option>
                      <option value="web">Web</option>
                      <option value="phone Inquiry">phone Inquiry</option>
@@ -132,19 +161,32 @@ const OpportunityDetailPage = ({item}) => {
  
              <Grid item xs={6} md={6}>
              <label htmlFor="amount">Amount</label>
-                 <CurrencyInput class="form-control" intlConfig={{ locale: 'en-US', currency: 'USD'  }} />
+                 <Field class="form-input" name="amount" />
              </Grid>           
              <Grid item xs={12} md={12}>
                  <label htmlFor="description">Description</label>
-                 <Field  as="textarea"  name="description"class="form-control" />
+                 <Field  as="textarea"  name="description"class="form-input" />
              </Grid>
-             <Grid item xs={12} md={12}>
-                <Button type='success' variant="contained" color="secondary">Update</Button>
-                <Button type="reset" variant="contained" >Cancel</Button>
-             </Grid>
+             <div>
+                                           {
+                                                showNew ?
+                                                    <Grid item xs={12} md={12}>
+                                                        <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Save</Button>
+                                                        <Button type="reset" variant="contained" onClick={handleReset} disabled={!dirty || isSubmitting} >Cancel</Button>
+                                                    </Grid>
+                                                    :
+                                                    <Grid item xs={12} md={12}>
+                                                        <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Update</Button>
+                                                        <Button type="reset" variant="contained" onClick={handleReset} disabled={!dirty || isSubmitting} >Cancel</Button>
+                                                    </Grid>
+
+                                            } 
+                                        </div>
          </Grid>
-         </FormControl>
          </Form>
+         </>
+        )
+                            }}
        </Formik>
        </div>
      </div>
@@ -180,7 +222,7 @@ export default OpportunityDetailPage;
 // import { Formik, Form, Field, ErrorMessage } from "formik";
 // import * as Yup from "yup";
 // import CurrencyInput from 'react-currency-input-field';
-// import { Grid,Button ,FormControl} from "@mui/material";
+// import { Grid,Button ,Forminput} from "@mui/material";
 // import { useParams,useNavigate } from "react-router-dom"
 // import 'bootstrap/dist/css/bootstrap.min.css';
 // import axios from 'axios'
@@ -266,7 +308,7 @@ export default OpportunityDetailPage;
 //             <Grid container spacing={2}>
 //             <Grid item xs={6} md={6}>
 //             <label htmlFor="opportunityName" >Opportunity Name<span className="text-danger">*</span> </label>
-//                 <Field name='opportunityName' type="text" class="form-control"/>
+//                 <Field name='opportunityName' type="text" class="form-input"/>
 //                 <div style={{ color: 'red'}}>
 //                     <ErrorMessage name="opportunityName" />
 //                 </div>
@@ -274,7 +316,7 @@ export default OpportunityDetailPage;
                             
 //             <Grid item xs={6} md={6}>
 //             <label htmlFor="accountName">Account Name </label>
-//                 <Field name="accountName" type="text"class="form-control" />
+//                 <Field name="accountName" type="text"class="form-input" />
 //             </Grid>
                 
 //             <Grid item xs={6} md={6}>
@@ -319,7 +361,7 @@ export default OpportunityDetailPage;
                
 //             {/* <Grid item xs={6} md={6}>
 //                 <label htmlFor="closeDate" >Close Date</label>
-//                 <DatePickerField  name="date" className="form-control"/>
+//                 <DatePickerField  name="date" className="form-input"/>
                 
             
 //             </Grid> */}
@@ -327,11 +369,11 @@ export default OpportunityDetailPage;
 
 //             <Grid item xs={6} md={6}>
 //             <label htmlFor="amount">Amount</label>
-//                 <CurrencyInput class="form-control" intlConfig={{ locale: 'en-US', currency: 'USD'  }} />
+//                 <CurrencyInput class="form-input" intlConfig={{ locale: 'en-US', currency: 'USD'  }} />
 //             </Grid>           
 //             <Grid item xs={12} md={12}>
 //                 <label htmlFor="description">Description</label>
-//                 <Field  as="textarea"  name="description"class="form-control" />
+//                 <Field  as="textarea"  name="description"class="form-input" />
 //             </Grid>
 //             <Grid item xs={6} md={12} >
 //                 <Button type='success' variant="contained" color="secondary" onClick={handleSubmit} disabled={isSubmitting}>Submit</Button>

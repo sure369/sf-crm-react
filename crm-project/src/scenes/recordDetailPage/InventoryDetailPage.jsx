@@ -2,26 +2,31 @@ import React, { useEffect, useState } from 'react'
 import {useLocation} from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import CurrencyInput from 'react-currency-input-field';
-import { Grid,Button ,FormControl} from "@mui/material";
+import { Grid,Button ,} from "@mui/material";
 import { useParams,useNavigate } from "react-router-dom"
-import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios'
+import SimpleSnackbar from "../toast/test";
+import "../formik/FormStyles.css"
 
-
-const url ="http://localhost:4000/api/editInventory";
+const url ="http://localhost:4000/api/UpsertInventory";
 
 const InventoryDetailPage = ({item}) => {
 
     const [singleInventory,setsingleInventory]= useState(); 
     const location = useLocation();
     const navigate =useNavigate();
+    const [showNew, setshowNew] = useState()
+    const [showAlert, setShowAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState();
+    const [alertSeverity, setAlertSeverity] = useState();
+
     useEffect(()=>{
         console.log('passed record',location.state.record.item);
-        setsingleInventory(location.state.record.item);       
-    })
+        setsingleInventory(location.state.record.item); 
+        setshowNew(!location.state.record.item)      
+    },[])
 
-    const initialValues = {
+    const savedValues = {
         projectName: singleInventory?.projectName ?? "",
         propertyName:  singleInventory?.propertyName ?? "",
         propertyUnitNumber: singleInventory?.propertyUnitNumber ?? "",
@@ -32,10 +37,10 @@ const InventoryDetailPage = ({item}) => {
         floor:  singleInventory?.floor ?? "",
         status:  singleInventory?.status ?? "",
         totalArea: singleInventory?.totalArea ?? "",
+        createdbyId: singleInventory?.createdbyId ?? "",
+        createdDate: singleInventory?.createdDate ?? "",
         _id:   singleInventory?._id ?? "",
     }
-
- 
     
 const citiesList = {
     UAE: [
@@ -62,7 +67,6 @@ const citiesList = {
     });
   };
 
-
   const validationSchema = Yup.object({
     projectName: Yup
         .string()
@@ -78,32 +82,42 @@ const citiesList = {
         .required('Required'),
 })
 
+const toastCloseCallback = () => {
+    setShowAlert(false)
+}
   return (
         <div className="container mb-10">
-            <div className="col-lg-12 text-center mb-3">
-                <h3>Inventory Detail page</h3>
+          <div className="col-lg-12 text-center mb-3">
+                {
+                    showNew ? <h3>New Property</h3> : <h3>Property Detail Page </h3>
+                }
             </div>
 
             <div class="container overflow-hidden ">
 
                 <Formik
                     enableReinitialize={true} 
-                    initialValues={initialValues}
+                    initialValues={savedValues}
                     validationSchema={validationSchema}
-                    onSubmit={async (values) => {
-                        await new Promise((resolve) => setTimeout(resolve, 500));
-                        console.log("updated record values", values);  
+                    onSubmit={ (values) => {
+                       
+                        console.log("upsert record values", values);  
                         
                         axios.post(url,values)
                         .then((res)=>{
-                            console.log('updated record  response',res);
+                            console.log('upsert record  response',res);
+                            setShowAlert(true)
+                            setAlertMessage(res.data)
+                            setAlertSeverity('success')
                             navigate(-1)
                         })
                         .catch((error)=> {
-                            console.log('updated record  error',error);
-                          })
-                        
-                      }}
+                            console.log('upsert record  error',error);
+                            setShowAlert(true)
+                            setAlertMessage(error.message)
+                            setAlertSeverity('error')
+                        }) 
+                    }}
                 >
                    {(props) => {
                             const {
@@ -117,29 +131,36 @@ const citiesList = {
                             } = props;
 
             return (
-                <form onSubmit={handleSubmit}>
+                <>
+                    {
+                        showAlert ? 
+                            <SimpleSnackbar severity={alertSeverity} message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> :
+                            <SimpleSnackbar message={showAlert} />
+                    }
+
+                    <Form>
                             <Grid container spacing={2}>
                                  <Grid item xs={6} md={6}>
                                     <label htmlFor="projectName">Project Name <span className="text-danger">*</span> </label>
-                                    <Field name="projectName" type="text" class="form-control" /> 
+                                    <Field name="projectName" type="text" class="form-input" /> 
                                     <div style={{ color: 'red' }}>
                                         <ErrorMessage name="projectName" />
                                     </div>
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="propertyName">Property Name <span className="text-danger">*</span> </label>
-                                    <Field name="propertyName" type="text" class="form-control" />
+                                    <Field name="propertyName" type="text" class="form-input" />
                                     <div style={{ color: 'red' }}>
                                         <ErrorMessage name="propertyName" />
                                     </div>
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="propertyUnitNumber">Property Unit Number</label>
-                                    <Field name="propertyUnitNumber" type="text" class="form-control" />
+                                    <Field name="propertyUnitNumber" type="text" class="form-input" />
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="type">Type <span className="text-danger">*</span> </label>
-                                    <Field name="type" as="select" class="form-select">
+                                    <Field name="type" as="select" class="form-input">
                                         <option value="">--Select--</option>
                                         <option value="apartment ">Apartment </option>
                                         <option value="Commercial Space"> Commercial Space</option>
@@ -153,7 +174,7 @@ const citiesList = {
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="status">Status <span className="text-danger">*</span> </label>
-                                    <Field name="status" as="select" class="form-select">
+                                    <Field name="status" as="select" class="form-input">
                                         <option value="">--Select--</option>
                                         <option value="avilable ">Avilable </option>
                                         <option value="sold"> Sold</option>
@@ -166,12 +187,12 @@ const citiesList = {
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="tower">Tower </label>
-                                    <Field name="tower" type="text" class="form-control" />
+                                    <Field name="tower" type="text" class="form-input" />
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                 <label htmlFor="country">Country</label>
                                     <Field
-                                        className="form-control"
+                                        className="form-input"
                                         id="country"
                                         name="country"
                                         as="select"
@@ -194,7 +215,7 @@ const citiesList = {
                                 <Grid item xs={6} md={6}>
                                 <label htmlFor="city">City</label>
                                     <Field
-                                        className="form-control"
+                                        className="form-input"
                                         value={values.city}
                                         id="city"
                                         name="city"
@@ -213,25 +234,35 @@ const citiesList = {
 
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="floor">Floor</label>
-                                    <Field name="floor" type="text" class="form-control" />
+                                    <Field name="floor" type="text" class="form-input" />
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="totalarea">Total Area</label>
-                                    <Field name="totalarea" type="text" class="form-control" />
+                                    <Field name="totalarea" type="text" class="form-input" />
                                 </Grid>
-                               
-                                <Grid item xs={12} md={12}>
-                                    <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Update</Button>
-                                    <Button type="reset" variant="contained" onClick={handleReset}  disabled={!dirty || isSubmitting} >Cancel</Button>
-                                </Grid>
+                                <div>
+                                    {
+                                        showNew ?
+                                            <Grid item xs={12} md={12}>
+                                                <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Save</Button>
+                                                <Button type="reset" variant="contained" onClick={handleReset} disabled={!dirty || isSubmitting} >Cancel</Button>
+                                            </Grid>
+                                            :
+                                            <Grid item xs={12} md={12}>
+                                                <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Update</Button>
+                                                <Button type="reset" variant="contained" onClick={handleReset} disabled={!dirty || isSubmitting} >Cancel</Button>
+                                            </Grid>
+                                    } 
+                                </div>
                             </Grid>
-                            </form>
-            )
-             }}
+                            </Form>
+                            </>
+                        )
+                    }}
                 </Formik>
             </div>
         </div>   
-  )
+    )
 
 }
 export default InventoryDetailPage;

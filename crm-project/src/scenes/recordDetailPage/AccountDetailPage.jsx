@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { Grid, Button, Forminput } from "@mui/material";
+import { Grid, Button, } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom"
 import axios from 'axios'
 import SimpleSnackbar from "../toast/test";
@@ -13,7 +13,6 @@ const url = "http://localhost:4000/api/UpsertAccount";
 const AccountDetailPage = ({ item }) => {
 
     const [singleAccount, setsingleAccount] = useState();
-    const [records, setRecords] = useState([]);
     const location = useLocation();
     const navigate = useNavigate();
     const [showNew, setshowNew] = useState()
@@ -26,7 +25,7 @@ const AccountDetailPage = ({ item }) => {
         setsingleAccount(location.state.record.item);
         console.log('true', !location.state.record.item);
         setshowNew(!location.state.record.item)
-    })
+    },[])
 
     const savedValues = {
         accountName: singleAccount?.accountName ?? "",
@@ -91,7 +90,7 @@ const AccountDetailPage = ({ item }) => {
         <div className="container mb-10">
             <div className="col-lg-12 text-center mb-3">
                 {
-                    showNew ? <h3>Account Page</h3> : <h3>Account Detail Page </h3>
+                    showNew ? <h3>New Account</h3> : <h3>Account Detail Page </h3>
                 }
             </div>
             <div class="container overflow-hidden ">
@@ -101,23 +100,22 @@ const AccountDetailPage = ({ item }) => {
                     validationSchema={validationSchema}
                     onSubmit={async (values) => {
                         await new Promise((resolve) => setTimeout(resolve, 500));
-                        console.log("updated record values", values);
+                        console.log("upsert record values", values);
 
                         axios.post(url, values)
                             .then((res) => {
-                                console.log('updated record  response', res);
+                                console.log('upsert record  response', res);
                                 setShowAlert(true)
                                 setAlertMessage(res.data)
                                 setAlertSeverity('success')
                                 navigate(-1);
                             })
                             .catch((error) => {
-                                console.log('updated record  error', error);
+                                console.log('upsert record  error', error);
                                 setShowAlert(true)
                                 setAlertMessage(error.message)
                                 setAlertSeverity('error')
                             })
-
                     }}
                 >
                     {(props) => {
@@ -152,17 +150,14 @@ const AccountDetailPage = ({ item }) => {
                                         </Grid>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="annualRevenue">Aannual Revenue</label>
-                                            <Field class="form-input" type="currency" name="annualRevenue" />
-                                            {/* <Field name="annualRevenue" type="number" class="form-input"/> */}
+                                            <Field class="form-input" type="nu,ber" name="annualRevenue" />
                                         </Grid>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="phone">Phone</label>
                                             <Field name="phone" type="phone" class="form-input" />
                                         </Grid>
                                         <Grid item xs={6} md={6}>
-                                            <label htmlFor="rating"> Rating
-                                                <span className="text-danger">*</span>
-                                            </label>
+                                            <label htmlFor="rating"> Rating<span className="text-danger">*</span></label>
                                             <Field name="rating" as="select" class="form-input">
                                                 <option value="">--Select--</option>
                                                 <option value="Hot">Hot</option>
@@ -262,24 +257,12 @@ const AccountDetailPage = ({ item }) => {
                                                     ))}
                                             </Field>
                                         </Grid>
-                                        <Grid item xs={6} md={6}>
-                                            <label htmlFor="lookup">Lookup</label>
-                                            <Field name="lookup" type="text" class="form-input" />
-                                        </Grid>
-                                        <Grid item xs={6} md={6}>
-                                            <label htmlFor="website">Website</label>
-                                            <Field name="website" type="text" class="form-input" />
-                                        </Grid>
-                                        <Grid item xs={6} md={6}>
-                                            <label htmlFor="fax">Fax</label>
-                                            <Field name="fax" type="text" class="form-input" />
-                                        </Grid>
                                         <Grid item xs={12} md={12}>
-                                            <label htmlFor="comments">Comments</label>
-                                            <Field as="textarea" name="comments" class="form-input" />
+                                            <label htmlFor="description">Description</label>
+                                            <Field as="textarea" name="description" class="form-input" />
                                         </Grid>
                                         <div>
-                                            {
+                                           {
                                                 showNew ?
                                                     <Grid item xs={12} md={12}>
                                                         <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Save</Button>
@@ -290,8 +273,7 @@ const AccountDetailPage = ({ item }) => {
                                                         <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Update</Button>
                                                         <Button type="reset" variant="contained" onClick={handleReset} disabled={!dirty || isSubmitting} >Cancel</Button>
                                                     </Grid>
-
-                                            }
+                                            } 
                                         </div>
                                     </Grid>
                                 </Form>

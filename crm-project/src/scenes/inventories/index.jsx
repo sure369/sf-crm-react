@@ -44,7 +44,8 @@ const Inventories = () => {
   }
 
   const handleOpen = () => {
-    navigate('/new-inventories')
+    // navigate('/new-inventories')
+    navigate("/inventoryDetailPage", {state:{record: {}}})
   };
 
   const handleOnCellClick = (e, row) => {
