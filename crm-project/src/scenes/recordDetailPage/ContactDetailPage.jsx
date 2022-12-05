@@ -66,7 +66,7 @@ const ContactDetailPage = ({item}) => {
                         axios.post(url,values)
                         .then((res)=>{
                             console.log('updated record  response',res);
-                            navigate(-1)
+                            // navigate(-1)
                         })
                         .catch((error)=> {
                             console.log('updated record error',error);

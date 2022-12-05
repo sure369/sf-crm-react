@@ -33,6 +33,8 @@ import InventoryForm from "./scenes/formik/InventoryForm";
 import Inventories from "./scenes/inventories";
 import InventoryDetailPage from "./scenes/recordDetailPage/InventoryDetailPage";
 import EventForm from "./scenes/formik/EventForm";
+import ComboBox from "./scenes/formik/lookup";
+import SimpleAccordion from "./scenes/recordDetailPage/TestAccordion";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -64,7 +66,9 @@ function App() {
               <Route path="/form" element={<NewForm />} />
               <Route path="/team" element={<Team />} />
               <Route path="/faq" element={<FAQ />} />
-              <Route path="/test" element={<TestForm/>} />
+              
+              <Route path="/test1" element={<TestForm/>} />
+              <Route path="/test" element={<SimpleAccordion/>} />
               <Route path="/accountDetailPage" element={<AccountDetailPage/>} />
               <Route path="/contactDetailPage" element={<ContactDetailPage/>} />
               <Route path="/opportunityDetailPage" element={<OpportunityDetailPage/>}/>

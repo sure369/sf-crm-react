@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react';
-import { Box, Button,useTheme } from "@mui/material";
+import { Box, Button,useTheme ,IconButton} from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
@@ -7,6 +7,9 @@ import axios from 'axios';
 import {  useNavigate } from "react-router-dom";
 import SimpleSnackbar from "../toast/test";
 import ContactForm from '../formik/ContactForm';
+// import{DeleteIcon,EditIcon} from '@mui/icons-material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 
 const Accounts = () => {
 
@@ -22,8 +25,8 @@ const Accounts = () => {
 
   //toast 
   const[showAlert,setShowAlert] = useState(false);
-    const[alertMessage,setAlertMessage]=useState();
-    const[alertSeverity,setAlertSeverity]=useState();
+  const[alertMessage,setAlertMessage]=useState();
+  const[alertSeverity,setAlertSeverity]=useState();
 
   useEffect(()=>{
 
@@ -38,29 +41,24 @@ const Accounts = () => {
       (res) => {
         console.log("res Account records", res);
         setRecords(res.data);
-      //   const emls = res.data.emls.map(function(item, i){
-      //     return {
-      //         value:item.accountName, title:item.accountName
-      //         }
-      //  })
-      //  setRecNames(emls);
        }
     )
     .catch((error)=> {
       console.log('res Account error',error);
     })
   }
+  const handleOpen = () => {
+    //  navigate('/new-accounts'); 
+     navigate("/accountDetailPage",{state:{record:{}}})
+  };
 
-  const handleOnCellClick = (params) => {
-    setFinalClickInfo(params);
-    console.log('selected record',params.row);
-    const item=params.row;
+  const handleOnCellClick = (e,row) => {
+    setFinalClickInfo(e);
+    console.log('selected record',row);
+    const item=row;
     navigate("/accountDetailPage",{state:{record:{item}}})
   };
  
-  const handleOpen = () => {
-    navigate('/new-accounts');  
-  };
   const onHandleDelete = (e, row) => {
     e.stopPropagation();
     console.log('req delete rec',row);
@@ -86,54 +84,55 @@ const Accounts = () => {
 
   const toastCloseCallback=()=>{
     setShowAlert(false)
-}
+  }
 
   const columns = [
     {
-      field: "accountName",
-      headerName: "Name",
+      field: "accountName",headerName: "Name",
+      headerAlign: 'center',align: 'center',flex: 1,
     },
     { 
-      field: "phone", 
-      headerName: "Phone"
+      field: "phone", headerName: "Phone",
+      headerAlign: 'center', align: 'center',flex: 1,
     }, 
     {
-      field: "billingCity",
-      headerName: "City",
+      field: "billingCity",headerName: "City",
+      headerAlign: 'center',align: 'center',flex: 1,
     },
     {
-      field: "type",
-      headerName: "Type",
-      flex: 1,
+      field: "type", headerName: "Type",
+      headerAlign: 'center',align: 'center',flex: 1,
     },
     {
-      field: "industry",
-      headerName: "Industry",
-      flex: 1,
+      field: "industry",headerName: "Industry",
+      headerAlign: 'center',align: 'center',flex: 1,
     },
-    { field: 'actions', headerName: 'Actions',flex: 1, width: 400, renderCell: (params) => {
-      return (
-        <Button
-          onClick={(e) => onHandleDelete(e, params.row)}
-          variant="contained" sx={{ bgcolor: 'red'}}
-        >
-            {
-       showAlert? <SimpleSnackbar severity={alertSeverity}  message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> :<SimpleSnackbar message={showAlert}/>
-      } 
-          Delete
-        </Button>
-      );
-    } }
+    { 
+      field: 'actions', headerName: 'Actions',
+      headerAlign: 'center',align: 'center',width: 400, flex: 1, 
+      renderCell: (params) => {
+        return (
+          <>
+            <IconButton style={{ padding: '20px' }}>
+              <EditIcon onClick={(e) => handleOnCellClick(e, params.row)} />
+            </IconButton>
+            <IconButton style={{ padding: '20px' }}>
+              <DeleteIcon onClick={(e) => onHandleDelete(e, params.row)} />
+            </IconButton>
+          </>
+        )} 
+      }
   ];
 
   if(records.length>=0)
   {
    console.log('name',recNames); 
   return(
-    // {
-    //   showAlert? <SimpleSnackbar severity={alertSeverity}  message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> :<SimpleSnackbar message={showAlert}/>
-    //  } 
-<>
+    <>
+    {
+      showAlert? <SimpleSnackbar severity={alertSeverity}  message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> :<SimpleSnackbar message={showAlert}/>
+     } 
+
 
       <Box m="20px">
        <Header
@@ -186,7 +185,8 @@ const Accounts = () => {
               getRowId={(row) => row._id}
               pageSize={5}
               rowsPerPageOptions={[5]}
-              onCellClick={handleOnCellClick}
+             
+              // onCellClick={handleOnCellClick}
               components={{ Toolbar: GridToolbar }}
       /> 
     </Box> 

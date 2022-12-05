@@ -8,6 +8,7 @@ import axios from 'axios';
 import {  useNavigate } from "react-router-dom";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import SimpleSnackbar from "../toast/test";
 
 const Users = () => {
 
@@ -19,6 +20,11 @@ const Users = () => {
   const navigate = useNavigate();
   const[records,setRecords] = useState([]);
   const [finalClickInfo, setFinalClickInfo] = useState(null);
+
+  //toast 
+  const[showAlert,setShowAlert] = useState(false);
+  const[alertMessage,setAlertMessage]=useState();
+  const[alertSeverity,setAlertSeverity]=useState();
 
   useEffect(()=>{
    
@@ -41,8 +47,7 @@ const Users = () => {
   }
 
   const handleOnCellClick = (e,row) => {
-    // setFinalClickInfo(params);
-    console.log('selected record',e);
+     setFinalClickInfo(e);
     console.log('req selected  rec',row);
     const item=row;
     navigate("/userDetailPage",{state:{record:{item}}})
@@ -54,8 +59,6 @@ const Users = () => {
 
   const onHandleDelete = (e, row) => {
     e.stopPropagation();
-    
-    console.log('eee',e);
     console.log('req delete rec',row);
     console.log('req delete rec id',row._id);
     
@@ -63,74 +66,69 @@ const Users = () => {
     .then((res)=>{
         console.log('api delete response',res);
         fetchRecords();
+        //delete show toast
+        setShowAlert(true)
+        setAlertMessage(res.data)
+        setAlertSeverity('success')
     })
     .catch((error)=> {
         console.log('api delete error',error);
+        //delete show toast
+        setShowAlert(true)
+        setAlertMessage(error.message)
+        setAlertSeverity('error')
       })
   };
 
+  const toastCloseCallback=()=>{
+    setShowAlert(false)
+  }
   const columns = [
     {
-      field: "firstName",
-      headerName: "First Name",
+      field: "firstName",headerName: "First Name",
+      headerAlign: 'center',align: 'center',flex: 1,
     },
     { 
-      field: "lastName", 
-      headerName: "Last Name"
+      field: "lastName",headerName: "Last Name",
+      headerAlign: 'center',align: 'center',flex: 1,
     }, 
     {
-      field: "email",
-      headerName: "Email",
+      field: "email",headerName: "Email",
+      headerAlign: 'center',align: 'center',flex: 1,
     },
     {
-      field: "role",
-      headerName: "Role",
-      flex: 1,
+      field: "role",headerName: "Role",
+      headerAlign: 'center',align: 'center',flex: 1,
     },
     {
-      field: "access",
-      headerName: "Access",
-      flex: 1,
+      field: "access",headerName: "Access",
+      headerAlign: 'center',align: 'center',flex: 1,
     },
-    { field: 'actions', headerName: 'Actions',flex: 1, width: 400, renderCell: (params) => {
+    { 
+      field: 'actions', headerName: 'Actions', width: 400,
+      headerAlign: 'center',align: 'center',flex: 1,
+      renderCell: (params) => {
       return (
         <>
-
           <IconButton style={{ padding: '20px' }}>
-
             <EditIcon onClick={(e) => handleOnCellClick(e, params.row)} />
-
           </IconButton>
           <IconButton style={{ padding: '20px' }}>
-
             <DeleteIcon onClick={(e) => onHandleDelete(e, params.row)} />
-
           </IconButton>
-        </>
-        // <>
-        //   <Button
-        //   onClick={(e) =>handleOnCellClick (e, params.row)}
-        //   variant="contained" sx={{ bgcolor: 'blue'}}
-        // >
-        //   Edit
-        // </Button>
-        //   <Button
-        //     onClick={(e) => onHandleDelete(e, params.row)}
-        //     variant="contained" sx={{ bgcolor: 'red'}}
-        //   >
-        //     Delete
-        //   </Button>
-        // </>
-
-        
-       
+        </>      
       );
     } }
   ];
 
-  if(records.length>0)
+  if(records.length>=0)
   {
   return(
+    <>
+    {
+      showAlert? <SimpleSnackbar severity={alertSeverity}  message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> :<SimpleSnackbar message={showAlert}/>
+     } 
+
       <Box m="20px">
       <Header
         title="Users"
@@ -186,6 +184,7 @@ const Users = () => {
         /> 
       </Box>
     </Box>
+    </>
     )
   }
 };

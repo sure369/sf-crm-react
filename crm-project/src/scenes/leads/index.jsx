@@ -1,15 +1,17 @@
 import React,{useState,useEffect} from 'react';
-import { useTheme,Box,Button } from "@mui/material";
+import { useTheme,Box,Button,IconButton } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import LeadForm from "../formik/LeadForm";
+import SimpleSnackbar from "../toast/test";
 import axios from 'axios'
 import {  useNavigate } from "react-router-dom";
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 
 const Leads = () => {
     
-
   const urlLead ="http://localhost:4000/api/leads";
   const urlDelete ="http://localhost:4000/api/deleteLead?code=";
 
@@ -19,7 +21,11 @@ const Leads = () => {
   const[records,setRecords] = useState([]);
   const [finalClickInfo, setFinalClickInfo] = useState(null);
 
-  
+  //toast 
+  const[showAlert,setShowAlert] = useState(false);
+  const[alertMessage,setAlertMessage]=useState();
+  const[alertSeverity,setAlertSeverity]=useState();
+
   useEffect(()=>{
 
     fetchRecords();
@@ -38,17 +44,17 @@ const Leads = () => {
       console.log('res Lead error',error);
     })
   }
-
-  const handleOnCellClick = (params) => {
-    setFinalClickInfo(params);    
-    console.log('selected record',params.row);
-    const item=params.row;
-     navigate("/leadDetailPage",{state:{record:{item}}})
-  };
-    
   const handleOpen = () => {
     navigate('/new-leads')   
   };
+
+  const handleOnCellClick = (e,row) => {
+    setFinalClickInfo(e);    
+    console.log('selected record',row);
+    const item=row;
+     navigate("/leadDetailPage",{state:{record:{item}}})
+  };
+    
   const onHandleDelete = (e, row) => {
     e.stopPropagation();
     console.log('req delete rec',row);
@@ -58,52 +64,72 @@ const Leads = () => {
     .then((res)=>{
         console.log('api delete response',res);
         fetchRecords();
+         //delete show toast
+         setShowAlert(true)
+         setAlertMessage(res.data)
+         setAlertSeverity('success')
     })
     .catch((error)=> {
         console.log('api delete error',error);
+        //delete show toast
+        setShowAlert(true)
+        setAlertMessage(error.message)
+        setAlertSeverity('error')
       })
   };
-
+  const toastCloseCallback=()=>{
+    setShowAlert(false)
+  }
   const columns = [
     {
-      field: "lastName",
-      headerName: "Last Name",
+      field: "lastName",headerName: "Last Name",
+      headerAlign: 'center',align: 'center',flex: 1,
     },
     {
-      field: "company",
-      headerName: "Company",
+      field: "company",headerName: "Company",      
+      headerAlign: 'center',align: 'center',flex: 1,
     },
     { 
-      field: "leadSource", 
-      headerName: "Lead Source"
+      field: "leadSource",headerName: "Lead Source",
+      headerAlign: 'center',align: 'center',flex: 1,
     }, 
     {
-      field: "industry",
-      headerName: "Industry",
+      field: "industry",headerName: "Industry",
+      headerAlign: 'center',align: 'center',flex: 1,
     },
     {
-      field: "leadStatus",
-      headerName: "Lead Status",
+      field: "leadStatus",headerName: "Lead Status",
+      headerAlign: 'center',align: 'center',flex: 1,
     },
     {
-      field: "email",
-      headerName: "Email",
+      field: "email",headerName: "Email",
+      headerAlign: 'center',align: 'center',flex: 1,
     },
-    { field: 'actions', headerName: 'Actions',flex: 1, width: 400, renderCell: (params) => {
+    { 
+      field: 'actions', headerName: 'Actions',
+      headerAlign: 'center',align: 'center',width: 400, flex: 1, 
+      renderCell: (params) => {
       return (
-        <Button
-          onClick={(e) => onHandleDelete(e, params.row)}
-          variant="contained" sx={{ bgcolor: 'red'}}
-        >
-          Delete
-        </Button>
+        <>
+            <IconButton style={{ padding: '20px' }}>
+              <EditIcon onClick={(e) => handleOnCellClick(e, params.row)} />
+            </IconButton>
+            <IconButton style={{ padding: '20px' }}>
+              <DeleteIcon onClick={(e) => onHandleDelete(e, params.row)} />
+            </IconButton>
+          </>
       );
     } }
   ];
 
-  if(records.length>0)
+  if(records.length>=0)
   {
     return (
+      <>
+      {
+        showAlert? <SimpleSnackbar severity={alertSeverity}  message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> :<SimpleSnackbar message={showAlert}/>
+       }
+
     <Box m="20px">
       <Header
           title="Leads"
@@ -160,6 +186,7 @@ const Leads = () => {
         />
       </Box>
     </Box>
+    </>
     );
   };
   }

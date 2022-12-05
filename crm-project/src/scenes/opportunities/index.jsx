@@ -1,12 +1,15 @@
 import React,{useState,useEffect} from 'react';
-import { Box,Button ,useTheme} from "@mui/material";
+import { Box,Button ,useTheme,IconButton} from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import { mockOpportunitiesData } from "../../data/mockData";
 import Header from "../../components/Header";
 import OpportunityForm from "../formik/OpportunityForm";
 import axios from 'axios';
+import SimpleSnackbar from "../toast/test";
 import {  useNavigate } from "react-router-dom";
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 
 const Opportunities = () => {
   
@@ -18,6 +21,10 @@ const Opportunities = () => {
   const navigate = useNavigate();
   const[records,setRecords] = useState([]);
   const [finalClickInfo, setFinalClickInfo] = useState(null);
+  //toast 
+  const[showAlert,setShowAlert] = useState(false);
+  const[alertMessage,setAlertMessage]=useState();
+  const[alertSeverity,setAlertSeverity]=useState();
 
   useEffect(()=>{
   
@@ -43,10 +50,10 @@ const Opportunities = () => {
     navigate('/new-opportunities')
   };
 
-  const handleOnCellClick = (params) => {
-    setFinalClickInfo(params);
-    console.log('selected record',params.row);
-    const item=params.row;
+  const handleOnCellClick =(e,row) => {
+    setFinalClickInfo(e);
+    console.log('selected record',row);
+    const item=row;
     navigate("/opportunityDetailPage",{state:{record:{item}}})
   };
   
@@ -59,51 +66,71 @@ const Opportunities = () => {
     .then((res)=>{
         console.log('api delete res',res); 
         fetchRecords();
+        //delete show toast
+        setShowAlert(true)
+        setAlertMessage(res.data)
+        setAlertSeverity('success')
     })
     .catch((error)=> {
         console.log('api delete error',error);
+         //delete show toast
+         setShowAlert(true)
+         setAlertMessage(error.message)
+         setAlertSeverity('error')
       })
   };
 
+  const toastCloseCallback=()=>{
+    setShowAlert(false)
+  }
+
   const columns = [
     {
-      field: "opportunityName",
-      headerName: "Opportunity Name",
+      field: "opportunityName",headerName: "Opportunity Name",
+      headerAlign: 'center',align: 'center',flex: 1,
     },
     { 
-      field: "accountName", 
-      headerName: "Account Name"
+      field: "accountName",headerName: "Account Name",
+      headerAlign: 'center',align: 'center',flex: 1,
     }, 
     {
-      field: "type",
-      headerName: "Type",
+      field: "type",headerName: "Type", 
+      headerAlign: 'center',align: 'center',flex: 1,
     },
     {
-      field: "leadSource",
-      headerName: "Lead Source",
-      flex: 1,
+      field: "leadSource",headerName: "Lead Source",
+      headerAlign: 'center',align: 'center',flex: 1,
     },
     {
-      field: "stage",
-      headerName: "Stage",
-      flex: 1,
+      field: "stage",headerName: "Stage",
+      headerAlign: 'center',align: 'center',flex: 1,
     },
-    { field: 'actions', headerName: 'Actions',flex: 1, width: 400, renderCell: (params) => {
+    { 
+      field: 'actions', headerName: 'Actions',
+      headerAlign: 'center',align: 'center',flex: 1, width: 400,
+      renderCell: (params) => {
       return (
-        <Button
-          onClick={(e) => onHandleDelete(e, params.row)}
-          variant="contained" sx={{ bgcolor: 'red'}}
-        >
-          Delete
-        </Button>
-      );
-    } }
+        <>
+          <IconButton style={{ padding: '20px' }}>
+            <EditIcon onClick={(e) => handleOnCellClick(e, params.row)} />
+          </IconButton>
+          <IconButton style={{ padding: '20px' }}>
+            <DeleteIcon onClick={(e) => onHandleDelete(e, params.row)} />
+          </IconButton>
+        </>
+      )} 
+    }
   ];
 
-  if(records.length>0)
+  if(records.length>=0)
   {
    
   return (
+    <>
+    {
+      showAlert? <SimpleSnackbar severity={alertSeverity}  message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> :<SimpleSnackbar message={showAlert}/>
+     }
+
     <Box m="20px">
       <Header
         title="Opportunities"
@@ -154,12 +181,13 @@ const Opportunities = () => {
               getRowId={(row) => row._id}
               pageSize={5}
               rowsPerPageOptions={[5]}
-              onCellClick={handleOnCellClick}
+              // onCellClick={handleOnCellClick}
               components={{ Toolbar: GridToolbar }}
         />
       </Box>
     </Box>
-  );
+    </>
+  )
  }
 };
 

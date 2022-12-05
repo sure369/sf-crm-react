@@ -4,10 +4,11 @@ import * as Yup from "yup";
 import CurrencyInput from 'react-currency-input-field';
 import { Grid,Button ,FormControl,Stack ,Alert} from "@mui/material";
 import axios from 'axios'
-import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState } from "react";
 import SimpleSnackbar from "../toast/test";
 import { useNavigate } from "react-router-dom";
+import "./FormStyles.css"
 
 const url ="http://localhost:4000/api/accountInsert";
 
@@ -157,37 +158,37 @@ const AccountForm = () => {
        {
         showAlert? <SimpleSnackbar severity={alertSeverity}  message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> :<SimpleSnackbar message={showAlert}/>
        } 
-                <form onSubmit={handleSubmit}>
+                <Form>
                             <Grid container spacing={2}>
                                  <Grid item xs={6} md={6}>
                                     <label htmlFor="accountName">Name  <span className="text-danger">*</span></label>
-                                    <Field name="accountName" type="text" class="form-control" />
+                                    <Field name="accountName" type="text" class="form-input" />
                                     <div style={{ color: 'red' }}>
                                         <ErrorMessage name="accountName" />
                                     </div>
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="accountNumber">Account Number </label>
-                                    <Field name="accountNumber" type="text" class="form-control" />
+                                    <Field name="accountNumber" type="text" class="form-input" />
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="annualRevenue">Aannual Revenue</label>
-                                    <CurrencyInput class="form-control" intlConfig={{ locale: 'en-US', currency: 'USD' }} />
-                                    {/* <Field name="annualRevenue" type="number" class="form-control"/> */}
+                                    <CurrencyInput class="form-input" intlConfig={{ locale: 'en-US', currency: 'USD' }} />
+                                    {/* <Field name="annualRevenue" type="number" class="form-input"/> */}
                                  </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="phone">Phone</label>
-                                    <Field name="phone" type="phone" class="form-control" />
+                                    <Field name="phone" type="phone" class="form-input" />
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="date">date</label>
-                                    <Field name="date" type="date" class="form-control" />
+                                    <Field name="date" type="date" class="form-input" />
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="rating"> Rating
                                         <span className="text-danger">*</span>
                                     </label>
-                                    <Field name="rating" as="select" class="form-select">
+                                    <Field name="rating" as="select" class="form-input">
                                         <option value="">--Select--</option>
                                         <option value="Hot">Hot</option>
                                         <option value="Warm">Warm</option>
@@ -199,7 +200,7 @@ const AccountForm = () => {
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="type">Type</label>
-                                    <Field name="type" as="select" class="form-select">
+                                    <Field name="type" as="select" class="form-input">
                                         <option value="">--Select--</option>
                                         <option value="Prospect">Prospect</option>
                                         <option value="Customer - Direct">Customer - Direct</option>
@@ -212,7 +213,7 @@ const AccountForm = () => {
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="industry">Industry</label>
-                                    <Field name="industry" as="select" class="form-select">
+                                    <Field name="industry" as="select" class="form-input">
                                         <option value="">--Select--</option>
                                         <option value="Agriculture" >Agriculture</option>
                                         <option value="Banking" >Banking</option>
@@ -232,22 +233,22 @@ const AccountForm = () => {
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="noofEmployees">Number of Employees</label>
-                                    <Field name="noofEmployees" type="text" class="form-control" />
+                                    <Field name="noofEmployees" type="text" class="form-input" />
                                 </Grid>
                                
                              
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="billingAddress">Billing Address </label>
-                                    <Field name="billingAddress" type="text" class="form-control" />
+                                    <Field name="billingAddress" type="text" class="form-input" />
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="shippingAddress">Shipping Address </label>
-                                    <Field name="shippingAddress" type="text" class="form-control" />
+                                    <Field name="shippingAddress" type="text" class="form-input" />
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                 <label htmlFor="billingCountry">Billing Country</label>
                                     <Field
-                                        className="form-control"
+                                        className="form-input"
                                         id="billingCountry"
                                         name="billingCountry"
                                         as="select"
@@ -270,7 +271,7 @@ const AccountForm = () => {
                                 <Grid item xs={6} md={6}>
                                 <label htmlFor="billingCity">Billing City</label>
                                     <Field
-                                        className="form-control"
+                                        className="form-input"
                                         value={values.billingCity}
                                         id="billingCity"
                                         name="billingCity"
@@ -288,26 +289,26 @@ const AccountForm = () => {
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="lookup">Lookup</label>
-                                    <Field name="lookup" type="text" class="form-control" />
+                                    <Field name="lookup" type="text" class="form-input" />
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="website">Website</label>
-                                    <Field name="website" type="text" class="form-control" />
+                                    <Field name="website" type="text" class="form-input" />
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="fax">Fax</label>
-                                    <Field name="fax" type="text" class="form-control" />
+                                    <Field name="fax" type="text" class="form-input" />
                                 </Grid>
                                 <Grid item xs={12} md={12}>
                                     <label htmlFor="comments">Comments</label>
-                                    <Field as="textarea" name="comments" class="form-control" />
+                                    <Field as="textarea" name="comments" class="form-input" />
                                 </Grid> 
                                 <Grid item xs={12} md={12}>
                                     <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Save</Button>
                                     <Button type="reset" variant="contained" onClick={handleReset}  disabled={!dirty || isSubmitting} >Cancel</Button>
                                 </Grid>
                             </Grid>
-                            </form>
+                            </Form>
                         </>
             )
              }}
@@ -415,7 +416,7 @@ export default AccountForm
 
 //                             <Grid item xs={6} md={6}>
 //                                     <label htmlFor="billingCountry">Billing Country </label>
-//                                     <DependentPicklist  name="billingCountry" className="form-control"/>
+//                                     <DependentPicklist  name="billingCountry" className="form-input"/>
 
 //                                      {/* <Field name="billingCountry" as="select" class="form-select">
 //                                         <option value="">--Select--</option>
@@ -443,7 +444,7 @@ export default AccountForm
 
 //                                 <Grid item xs={6} md={6}>
 //                                     <label htmlFor="accountName">Name  <span className="text-danger">*</span></label>
-//                                     <Field name="accountName" type="text" class="form-control" />
+//                                     <Field name="accountName" type="text" class="form-input" />
 //                                     <div style={{ color: 'red' }}>
 //                                         <ErrorMessage name="accountName" />
 //                                     </div>
@@ -451,16 +452,16 @@ export default AccountForm
 
 //                                 <Grid item xs={6} md={6}>
 //                                     <label htmlFor="accountNumber">Account Number </label>
-//                                     <Field name="accountNumber" type="text" class="form-control" />
+//                                     <Field name="accountNumber" type="text" class="form-input" />
 //                                 </Grid>
 //                                 <Grid item xs={6} md={6}>
 //                                     <label htmlFor="annualRevenue">Aannual Revenue</label>
-//                                     <CurrencyInput class="form-control" intlConfig={{ locale: 'en-US', currency: 'USD' }} />
-//                                     {/* <Field name="annualRevenue" type="number" class="form-control"/> */}
+//                                     <CurrencyInput class="form-input" intlConfig={{ locale: 'en-US', currency: 'USD' }} />
+//                                     {/* <Field name="annualRevenue" type="number" class="form-input"/> */}
 //                                 </Grid>
 //                                 <Grid item xs={6} md={6}>
 //                                     <label htmlFor="phone">Phone</label>
-//                                     <Field name="phone" type="phone" class="form-control" />
+//                                     <Field name="phone" type="phone" class="form-input" />
 //                                 </Grid>
 //                                 <Grid item xs={6} md={6}>
 //                                     <label htmlFor="rating"> Rating
@@ -511,29 +512,29 @@ export default AccountForm
 //                                 </Grid>
 //                                 <Grid item xs={6} md={6}>
 //                                     <label htmlFor="noofEmployees">Number of Employees</label>
-//                                     <Field name="noofEmployees" type="text" class="form-control" />
+//                                     <Field name="noofEmployees" type="text" class="form-input" />
 //                                 </Grid>
                                
                              
 //                                 <Grid item xs={6} md={6}>
 //                                     <label htmlFor="billingAddress">Billing Address </label>
-//                                     <Field name="billingAddress" type="text" class="form-control" />
+//                                     <Field name="billingAddress" type="text" class="form-input" />
 //                                 </Grid>
 //                                 <Grid item xs={6} md={6}>
 //                                     <label htmlFor="shippingAddress">Shipping Address </label>
-//                                     <Field name="shippingAddress" type="text" class="form-control" />
+//                                     <Field name="shippingAddress" type="text" class="form-input" />
 //                                 </Grid>
 //                                 <Grid item xs={6} md={6}>
 //                                     <label htmlFor="website">Website</label>
-//                                     <Field name="website" type="text" class="form-control" />
+//                                     <Field name="website" type="text" class="form-input" />
 //                                 </Grid>
 //                                 <Grid item xs={6} md={6}>
 //                                     <label htmlFor="fax">Fax</label>
-//                                     <Field name="fax" type="text" class="form-control" />
+//                                     <Field name="fax" type="text" class="form-input" />
 //                                 </Grid>
 //                                 <Grid item xs={12} md={12}>
 //                                     <label htmlFor="comments">Comments</label>
-//                                     <Field as="textarea" name="comments" class="form-control" />
+//                                     <Field as="textarea" name="comments" class="form-input" />
 //                                 </Grid>
 //                                 <Grid item xs={12} md={12}>
 //                                     <Button type='success' variant="contained" color="secondary">Submit</Button>

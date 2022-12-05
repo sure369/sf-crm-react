@@ -134,35 +134,35 @@ const Sidebar = () => {
               Data
             </Typography>
             <Item
-              title="Account"
+              title="Accounts"
               to="/accounts"
               icon={<PeopleOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
              <Item
-              title="Contact"
+              title="Contacts"
               to="/contacts"
               icon={<ContactPageIcon />}
               selected={selected}
               setSelected={setSelected}
             />
              <Item
-              title="Opportunity"
+              title="Opportunities"
               to="/opportunities"
               icon={<DiamondIcon />}
               selected={selected}
               setSelected={setSelected}
             />
              <Item
-              title="Lead"
+              title="Leads"
               to="/leads"
               icon={<AssistantPhotoIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
-              title="Inventory Management"
+              title="Inventories"
               to="/inventories"
               icon={<InventoryIcon />}
               selected={selected}
@@ -177,7 +177,7 @@ const Sidebar = () => {
               Pages
             </Typography>
             <Item
-              title="User"
+              title="Users"
               to="/users"
               icon={<PersonOutlinedIcon />}
               selected={selected}
