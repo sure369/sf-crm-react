@@ -10,6 +10,13 @@ export default function ComboBox() {
       id="combo-box-demo"
       options={top100Films}
       sx={{ width: 300 }}
+      onChange={(e,value)=>{
+        console.log('value',value);
+      }}
+      getOptionSelected={(option,value)=>{
+        console.log('option',option);
+        console.log('value',value);
+      }}
       renderInput={(params) => 
    
               <TextField {...params} label="Movie" />

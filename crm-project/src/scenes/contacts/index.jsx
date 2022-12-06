@@ -169,7 +169,14 @@ const Contacts = () => {
           },
         }}
       >
-         <Button class="btn btn-primary " onClick={handleOpen} >New </Button>
+         <div  className='btn-test'>
+            <Button 
+               variant="contained" color="info" 
+               onClick={handleOpen} 
+            >
+                  New 
+          </Button>
+        </div>
 
         <DataGrid
           rows={records}

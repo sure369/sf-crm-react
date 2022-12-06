@@ -4,7 +4,6 @@ import * as Yup from "yup";
 import CurrencyInput from 'react-currency-input-field';
 import { Grid,Button ,FormControl} from "@mui/material";
 import axios from 'axios'
-import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from "react-router-dom";
 import SimpleSnackbar from "../toast/test"
 

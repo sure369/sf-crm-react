@@ -67,7 +67,7 @@ function App() {
               <Route path="/team" element={<Team />} />
               <Route path="/faq" element={<FAQ />} />
               
-              <Route path="/test1" element={<TestForm/>} />
+              <Route path="/test1" element={<ComboBox/>} />
               <Route path="/test" element={<SimpleAccordion/>} />
               <Route path="/accountDetailPage" element={<AccountDetailPage/>} />
               <Route path="/contactDetailPage" element={<ContactDetailPage/>} />

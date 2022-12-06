@@ -123,7 +123,7 @@ const Inventories = () => {
   ];
 
 
-  if (records.length > 0) {
+  if (records.length >=0) {
     return (
       <>
         {
@@ -168,11 +168,14 @@ const Inventories = () => {
             }}
           >
 
-            <Button class="btn btn-primary " onClick={handleOpen}
+        <div  className='btn-test'>
+            <Button 
+               variant="contained" color="info" 
+               onClick={handleOpen} 
             >
-              New
-            </Button>
-
+                  New 
+          </Button>
+        </div>
             <DataGrid
               rows={records}
               columns={columns}

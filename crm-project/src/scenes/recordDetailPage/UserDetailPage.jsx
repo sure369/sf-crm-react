@@ -3,26 +3,31 @@ import {useLocation} from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import CurrencyInput from 'react-currency-input-field';
-import { Grid,Button ,FormControl} from "@mui/material";
+import { Grid,Button ,Forminput,DialogActions} from "@mui/material";
 import { useParams,useNavigate } from "react-router-dom"
-import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios'
+import SimpleSnackbar from "../toast/test";
+import "../formik/FormStyles.css"
 
-
-const url ="http://localhost:4000/api/editUser";
+const url ="http://localhost:4000/api/UpsertUser";
 
 const UserDetailPage = ({item}) => {
 
     const [singleUser,setsingleUser]= useState(); 
     const location = useLocation();
     const navigate =useNavigate();
+    const [showNew, setshowNew] = useState()
+    const [showAlert, setShowAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState();
+    const [alertSeverity, setAlertSeverity] = useState();
 
     useEffect(()=>{
         console.log('passed record',location.state.record.item);
         setsingleUser(location.state.record.item);       
-    })
+        setshowNew(!location.state.record.item)
+    },[])
 
-    const initialValues = {
+    const savedValues = {
         firstName: singleUser?.firstName ?? "",
         lastName:  singleUser?.lastName ?? "",
         username: singleUser?.username ?? "",
@@ -56,17 +61,21 @@ const UserDetailPage = ({item}) => {
         .required('Required'),
     })
     
+    const toastCloseCallback = () => {
+        setShowAlert(false)
+    }
+
   return (
-        <div className="container mb-10">
-            <div className="col-lg-12 text-center mb-3">
-                <h3>User Detail page</h3>
+    <Grid item xs={12} style={{margin:"20px"}}>          
+            <div style={{textAlign:"center" ,marginBottom:"10px"}}>
+                {
+                    showNew ? <h3>New User</h3> : <h3>User Detail Page </h3>
+                }
             </div>
-
-            <div class="container overflow-hidden ">
-
+           <div>
                 <Formik
                     enableReinitialize={true} 
-                    initialValues={initialValues}
+                    initialValues={savedValues}
                     validationSchema={validationSchema}
                     onSubmit={async (values) => {
                         await new Promise((resolve) => setTimeout(resolve, 500));
@@ -95,42 +104,47 @@ const UserDetailPage = ({item}) => {
                             } = props;
 
             return (
-                <form onSubmit={handleSubmit}>
+                <>
+                {
+                    showAlert ? <SimpleSnackbar severity={alertSeverity} message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> : <SimpleSnackbar message={showAlert} />
+                }
+
+                <Form>
                         <Grid container spacing={2}>
                             
                                     <Grid item xs={6} md={6}>
 
                                     <label htmlFor="firstName" >First Name</label>
-                                    <Field name='firstName' type="text" class="form-control" />
+                                    <Field name='firstName' type="text" class="form-input" />
                                     </Grid>
                                     <Grid item xs={6} md={6}>
                                          <label htmlFor="lastName" >Last Name<span className="text-danger">*</span> </label>
-                                    <Field name='lastName' type="text" class="form-control" />
+                                    <Field name='lastName' type="text" class="form-input" />
                                     <div style={{ color: 'red' }}>
                                         <ErrorMessage name="lastName" />
                                     </div>
                                     </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="email">Email <span className="text-danger">*</span> </label>
-                                    <Field name="email" type="text" class="form-control" />
+                                    <Field name="email" type="text" class="form-input" />
                                     <div style={{ color: 'red' }}>
                                         <ErrorMessage name="email" />
                                     </div>
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="username">username<span className="text-danger">*</span> </label>
-                                    <Field name="username" type="text" class="form-control" />
+                                    <Field name="username" type="text" class="form-input" />
                                     <div style={{ color: 'red' }}>
                                         <ErrorMessage name="username" />
                                     </div>
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="phone">phone<span className="text-danger">*</span> </label>
-                                    <Field name="phone" type="text" class="form-control" />
+                                    <Field name="phone" type="text" class="form-input" />
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="role">role <span className="text-danger">*</span> </label>
-                                    <Field name="role" as="select" class="form-select">
+                                    <Field name="role" as="select" class="form-input">
                                         <option value="">--Select--</option>
                                         <option value="CEO">CEO</option>
                                         <option value="Sales Director"> Sales Director</option>
@@ -143,7 +157,7 @@ const UserDetailPage = ({item}) => {
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="access">Access <span className="text-danger">*</span> </label>
-                                    <Field name="access" as="select" class="form-select">
+                                    <Field name="access" as="select" class="form-input">
                                         <option value="">--Select--</option>
                                         <option value="Read">Read</option>
                                         <option value="Read/Create"> Read-Create</option>
@@ -155,17 +169,29 @@ const UserDetailPage = ({item}) => {
                                     </div>
                                 </Grid>
                                
-                                <Grid item xs={12} md={12}>
-                                    <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Update</Button>
-                                    <Button type="reset" variant="contained" onClick={handleReset}  disabled={!dirty || isSubmitting} >Cancel</Button>
-                                </Grid>
+                              
                             </Grid>
-                </form>
+                            <div className='action-buttons'>
+                                        <DialogActions sx={{ justifyContent: "space-between" }}>
+
+                                       
+                                           {
+                                                showNew ?
+                                                <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Save</Button>
+                                                    :
+                                                    
+                                                        <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Update</Button>
+                                           }                                      
+                                        <Button type="reset" variant="contained" onClick={handleReset} disabled={!dirty || isSubmitting}  >Cancel</Button>
+                                        </DialogActions>     
+                                       </div>
+                                </Form>
+                            </>
             )
              }}
                 </Formik>
             </div>
-        </div>   
+        </Grid>   
   )
 
 }

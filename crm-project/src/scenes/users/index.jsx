@@ -54,7 +54,7 @@ const Users = () => {
   };
     
   const handleOpen = () => {
-   navigate('/new-users')
+    navigate("/userDetailPage",{state:{record:{}}})
   };
 
   const onHandleDelete = (e, row) => {
@@ -166,12 +166,14 @@ const Users = () => {
           },
         }}
       >
-      <Button 
-          class="btn btn-primary " 
-          onClick={handleOpen} 
-      >
-            New 
-      </Button>
+     <div  className='btn-test'>
+            <Button 
+               variant="contained" color="info" 
+               onClick={handleOpen} 
+            >
+                  New 
+          </Button>
+        </div>
 
       <DataGrid
               rows={records}

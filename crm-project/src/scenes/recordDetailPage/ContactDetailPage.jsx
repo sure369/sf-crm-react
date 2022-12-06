@@ -3,7 +3,7 @@ import {useLocation} from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import CurrencyInput from 'react-currency-input-field';
-import { Grid,Button ,FormControl} from "@mui/material";
+import { Grid,Button ,Forminput,DialogActions,Autocomplete,TextField} from "@mui/material";
 import { useParams,useNavigate } from "react-router-dom"
 import axios from 'axios'
 import SimpleSnackbar from "../toast/test";
@@ -22,13 +22,21 @@ const ContactDetailPage = ({item}) => {
     const [showAlert, setShowAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState();
     const [alertSeverity, setAlertSeverity] = useState();
+    const [formValue,setFormValue]=useState()
 
     useEffect(()=>{
         console.log('passed record',location.state.record.item);
         setsingleContact(location.state.record.item); 
         setshowNew(!location.state.record.item) 
         fetchAccountsName();  
+       if(!location.state.record.item) {
+        setFormValue(initialValue)}
+        else{
+            setFormValue(savedValues)
+        }
     },[])
+
+    
 
     const fetchAccountsName = () => {
         axios.post(fetchAccountsUrl)
@@ -42,6 +50,24 @@ const ContactDetailPage = ({item}) => {
                 console.log('error fetchAccountsUrl', error);
             })
     }
+    const initialValue = {
+        accountName: '',
+        salutation:  '',
+        firstName: '',
+        lastName:  '',
+        dop: '',
+        phone:  '',
+        department:'',  
+        leadSource:  '',
+        email:  '',
+        file:'',
+        mailingAddress: '', 
+        description:  '',
+        createdbyId:  '',
+        createdDate: '',
+       
+    }
+
     const savedValues = {
         accountName: singleContact?.accountName ?? "",
         salutation:  singleContact?.salutation ?? "",
@@ -74,17 +100,18 @@ const ContactDetailPage = ({item}) => {
         setShowAlert(false)
     }
 
+
     return (
-        <div className="container mb-10">
-            <div className="col-lg-12 text-center mb-3">
+        <Grid item xs={12} style={{margin:"20px"}}>          
+            <div style={{textAlign:"center" ,marginBottom:"10px"}}>
                 {
                     showNew ? <h3>New Contact </h3> : <h3>Contact Detail Page </h3>
                 }
             </div>
-            <div class="container overflow-hidden ">
+            <div>
                 <Formik
                     enableReinitialize={true} 
-                    initialValues={savedValues}
+                    initialValues={formValue}
                     validationSchema={validationSchema}
                     onSubmit={async (values) => {
                         await new Promise((resolve) => setTimeout(resolve, 500));
@@ -126,7 +153,7 @@ const ContactDetailPage = ({item}) => {
                     <Grid container spacing={2}>
                                     <Grid item xs={6} md={2}>
                                     <label htmlFor="salutation">Salutation  </label>
-                                    <Field name="salutation" as="select" class="form-control">
+                                    <Field name="salutation" as="select" class="form-input">
                                         <option value="">--Select--</option>
                                         <option value="Mr.">Mr.</option>
                                         <option value="Ms.">Ms.</option>
@@ -138,37 +165,52 @@ const ContactDetailPage = ({item}) => {
                                     <Grid item xs={6} md={4}>
 
                                     <label htmlFor="firstName" >First Name</label>
-                                    <Field name='firstName' type="text" class="form-control" />
+                                    <Field name='firstName' type="text" class="form-input" />
                                     </Grid>
                                     <Grid item xs={6} md={6}>
                                          <label htmlFor="lastName" >Last Name<span className="text-danger">*</span> </label>
-                                    <Field name='lastName' type="text" class="form-control" />
+                                    <Field name='lastName' type="text" class="form-input" />
                                     <div style={{ color: 'red' }}>
                                         <ErrorMessage name="lastName" />
                                     </div>
                                     </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="accountName">Account Name </label>
-                                    <Field name="accountName" type="text" class="form-control" />
+                                    {/* <Field name='accountName' type="text" class="form-input" >
+
+                                    </Field> */}
+                                    {/* <Autocomplete
+                                        name="accountName"
+                                        options={accNames}
+                                        getOptionLabel={option => option.accountName ||''}
+                                        onChange={(e, value) => {
+                                        console.log('value',value)
+                                        setFieldValue("accountName", value)
+                                        }}
+                                        renderInput={params => (
+                                        <Field component={TextField} {...params} name="accountName"  variant="outlined" fullWidth/>
+                                        )}
+                                    /> */}
+
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="phone">Phone</label>
-                                    <Field name="phone" type="phone" class="form-control" />
+                                    <Field name="phone" type="phone" class="form-input" />
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="department">Department</label>
-                                    <Field name="department" type="text" class="form-control" />
+                                    <Field name="department" type="text" class="form-input" />
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="email">Email <span className="text-danger">*</span></label>
-                                    <Field name="email" type="text" class="form-control" />
+                                    <Field name="email" type="text" class="form-input" />
                                     <div style={{ color: 'red' }}>
                                         <ErrorMessage name="email" />
                                     </div>
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="leadSource"> lead Source</label>
-                                    <Field name="leadSource" as="select" class="form-select">
+                                    <Field name="leadSource" as="select" class="form-input">
                                         <option value="">--Select--</option>
                                         <option value="web">Web</option>
                                         <option value="phone Inquiry">phone Inquiry</option>
@@ -181,40 +223,38 @@ const ContactDetailPage = ({item}) => {
                                     <label htmlFor="files">File</label>          
                                     <input id="file" name="file" type="file" multiple onChange={(event) => {
                                     setFieldValue("file", event.currentTarget.files);
-                                    }} className="form-control" />
+                                    }} className="form-input" />
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="date">date</label>
-                                    <Field name="date" type="date" class="form-control" />
+                                    <Field name="date" type="date" class="form-input" />
                                 </Grid>
                                 <Grid Grid item xs={6} md={12}>
                                     <label htmlFor="description">Description</label>
-                                    <Field as="textarea" name="description" class="form-control" />
+                                    <Field as="textarea" name="description" class="form-input" />
                                 </Grid>
-                                 <div>
+                                </Grid>
+                                <div className='action-buttons'>
+                                        <DialogActions sx={{ justifyContent: "space-between" }}>
+
+                                       
                                            {
                                                 showNew ?
-                                                    <Grid item xs={12} md={12}>
-                                                        <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Save</Button>
-                                                        <Button type="reset" variant="contained" onClick={handleReset} disabled={!dirty || isSubmitting} >Cancel</Button>
-                                                    </Grid>
+                                                <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Save</Button>
                                                     :
-                                                    <Grid item xs={12} md={12}>
+                                                    
                                                         <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Update</Button>
-                                                        <Button type="reset" variant="contained" onClick={handleReset} disabled={!dirty || isSubmitting} >Cancel</Button>
-                                                    </Grid>
-
-                                            } 
-                                        </div>
-                            </Grid>
-
+                                           }                                      
+                                        <Button type="reset" variant="contained" onClick={handleReset} disabled={!dirty || isSubmitting}  >Cancel</Button>
+                                        </DialogActions>     
+                                       </div>
                 </Form>
                 </>
             )
              }}
                 </Formik>
             </div>
-        </div>   
+        </Grid>   
   )
 
 }

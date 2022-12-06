@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import {useLocation} from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { Grid,Button ,Forminput} from "@mui/material";
+import { Grid,Button ,Forminput,DialogActions} from "@mui/material";
 import { useParams,useNavigate } from "react-router-dom"
 import axios from 'axios'
 import SimpleSnackbar from "../toast/test";
@@ -56,13 +56,13 @@ const OpportunityDetailPage = ({item}) => {
   return (
       
 
-     <div className="container mb-10">
-               <div className="col-lg-12 text-center mb-3">
-                {
-                    showNew ? <h3>New Opportunity</h3> : <h3>Opportunity Detail Page </h3>
-                }
-            </div>
-             <div class="container overflow-hidden ">
+    <Grid item xs={12} style={{margin:"20px"}}>          
+    <div style={{textAlign:"center" ,marginBottom:"10px"}}>
+        {
+            showNew ? <h3>New Opportunity</h3> : <h3>Opportunity Detail Page </h3>
+        }
+    </div>
+   <div>
          <Formik
           enableReinitialize={true} 
          initialValues={savedValues}
@@ -167,29 +167,29 @@ const OpportunityDetailPage = ({item}) => {
                  <label htmlFor="description">Description</label>
                  <Field  as="textarea"  name="description"class="form-input" />
              </Grid>
-             <div>
+           
+         </Grid>
+         <div className='action-buttons'>
+                                        <DialogActions sx={{ justifyContent: "space-between" }}>
+
+                                       
                                            {
                                                 showNew ?
-                                                    <Grid item xs={12} md={12}>
-                                                        <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Save</Button>
-                                                        <Button type="reset" variant="contained" onClick={handleReset} disabled={!dirty || isSubmitting} >Cancel</Button>
-                                                    </Grid>
+                                                <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Save</Button>
                                                     :
-                                                    <Grid item xs={12} md={12}>
+                                                    
                                                         <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Update</Button>
-                                                        <Button type="reset" variant="contained" onClick={handleReset} disabled={!dirty || isSubmitting} >Cancel</Button>
-                                                    </Grid>
-
-                                            } 
-                                        </div>
-         </Grid>
+                                           }                                      
+                                        <Button type="reset" variant="contained" onClick={handleReset} disabled={!dirty || isSubmitting}  >Cancel</Button>
+                                        </DialogActions>     
+                                       </div>
          </Form>
          </>
         )
                             }}
        </Formik>
        </div>
-     </div>
+     </Grid>
      )
 
 }

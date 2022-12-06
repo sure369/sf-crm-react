@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import {useLocation} from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { Grid,Button ,} from "@mui/material";
+import { Grid,Button ,DialogActions} from "@mui/material";
 import { useParams,useNavigate } from "react-router-dom"
 import axios from 'axios'
 import SimpleSnackbar from "../toast/test";
@@ -86,15 +86,13 @@ const toastCloseCallback = () => {
     setShowAlert(false)
 }
   return (
-        <div className="container mb-10">
-          <div className="col-lg-12 text-center mb-3">
+    <Grid item xs={12} style={{margin:"20px"}}>          
+            <div style={{textAlign:"center" ,marginBottom:"10px"}}>
                 {
-                    showNew ? <h3>New Property</h3> : <h3>Property Detail Page </h3>
+                    showNew ? <h3>New Inventory</h3> : <h3>Inventory Detail Page </h3>
                 }
             </div>
-
-            <div class="container overflow-hidden ">
-
+           <div>
                 <Formik
                     enableReinitialize={true} 
                     initialValues={savedValues}
@@ -240,28 +238,29 @@ const toastCloseCallback = () => {
                                     <label htmlFor="totalarea">Total Area</label>
                                     <Field name="totalarea" type="text" class="form-input" />
                                 </Grid>
-                                <div>
-                                    {
-                                        showNew ?
-                                            <Grid item xs={12} md={12}>
+                                </Grid>
+                                <div className='action-buttons'>
+                                        <DialogActions sx={{ justifyContent: "space-between" }}>
+
+                                       
+                                           {
+                                                showNew ?
                                                 <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Save</Button>
-                                                <Button type="reset" variant="contained" onClick={handleReset} disabled={!dirty || isSubmitting} >Cancel</Button>
-                                            </Grid>
-                                            :
-                                            <Grid item xs={12} md={12}>
-                                                <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Update</Button>
-                                                <Button type="reset" variant="contained" onClick={handleReset} disabled={!dirty || isSubmitting} >Cancel</Button>
-                                            </Grid>
-                                    } 
-                                </div>
-                            </Grid>
+                                                    :
+                                                    
+                                                        <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Update</Button>
+                                           }                                      
+                                        <Button type="reset" variant="contained" onClick={handleReset} disabled={!dirty || isSubmitting}  >Cancel</Button>
+                                        </DialogActions>     
+                                       </div>
+                        
                             </Form>
                             </>
                         )
                     }}
                 </Formik>
             </div>
-        </div>   
+        </Grid>   
     )
 
 }

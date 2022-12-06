@@ -45,7 +45,8 @@ const Leads = () => {
     })
   }
   const handleOpen = () => {
-    navigate('/new-leads')   
+    // navigate('/new-leads')  
+    navigate("/leadDetailPage",{state:{record:{}}}) 
   };
 
   const handleOnCellClick = (e,row) => {
@@ -168,12 +169,14 @@ const Leads = () => {
         }}
       >
 
-        <Button 
-            class="btn btn-primary "
-            onClick={handleOpen} 
-        >
-            New 
-        </Button>
+<div  className='btn-test'>
+            <Button 
+               variant="contained" color="info" 
+               onClick={handleOpen} 
+            >
+                  New 
+          </Button>
+        </div>
 
         <DataGrid
             rows={records}
