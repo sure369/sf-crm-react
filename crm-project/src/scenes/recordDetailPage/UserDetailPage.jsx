@@ -27,16 +27,31 @@ const UserDetailPage = ({item}) => {
         setshowNew(!location.state.record.item)
     },[])
 
+    const initialValues = {
+        firstName: '',
+        lastName: '',
+        username: '',
+        email: '',
+        phone:'',
+        company: '',
+        role: '',
+        access: '',
+        createdbyId: '',
+        createdDate: '',
+    }
+
     const savedValues = {
         firstName: singleUser?.firstName ?? "",
         lastName:  singleUser?.lastName ?? "",
         username: singleUser?.username ?? "",
+        email:  singleUser?.email ?? "",
         phone:  singleUser?.phone ?? "",
         company:  singleUser?.company ?? "",
-        email:  singleUser?.email ?? "",
         role:  singleUser?.role ?? "",
         access:  singleUser?.access ?? "",
         _id:   singleUser?._id ?? "",
+        createdbyId:  singleUser?.createdbyId ?? "",
+        createdDate: singleUser?.createdDate ?? "",
     }
 
 
@@ -75,7 +90,7 @@ const UserDetailPage = ({item}) => {
            <div>
                 <Formik
                     enableReinitialize={true} 
-                    initialValues={savedValues}
+                    initialValues={showNew ? initialValues : savedValues}
                     validationSchema={validationSchema}
                     onSubmit={async (values) => {
                         await new Promise((resolve) => setTimeout(resolve, 500));

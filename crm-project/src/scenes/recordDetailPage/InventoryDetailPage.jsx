@@ -19,12 +19,29 @@ const InventoryDetailPage = ({item}) => {
     const [showAlert, setShowAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState();
     const [alertSeverity, setAlertSeverity] = useState();
-
+  
+    
     useEffect(()=>{
         console.log('passed record',location.state.record.item);
         setsingleInventory(location.state.record.item); 
         setshowNew(!location.state.record.item)      
     },[])
+
+    
+const initialValues = {
+    projectName: '',
+    propertyName: '',
+    propertyUnitNumber: '',
+    type: '',
+    tower: '',
+    country: '',
+    city: '',
+    floor: '',
+    status: '',
+    totalArea: '',
+    createdbyId: '',
+    createdDate: '',
+}
 
     const savedValues = {
         projectName: singleInventory?.projectName ?? "",
@@ -95,7 +112,7 @@ const toastCloseCallback = () => {
            <div>
                 <Formik
                     enableReinitialize={true} 
-                    initialValues={savedValues}
+                    initialValues={showNew?initialValues:savedValues}
                     validationSchema={validationSchema}
                     onSubmit={ (values) => {
                        

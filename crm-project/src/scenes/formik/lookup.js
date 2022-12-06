@@ -6,12 +6,13 @@ export default function ComboBox() {
   console.log('100',top100Films)
   return (
     <Autocomplete
-      disablePortal
+      // disablePortal
       id="combo-box-demo"
       options={top100Films}
       sx={{ width: 300 }}
       onChange={(e,value)=>{
         console.log('value',value);
+        console.log('e',e)
       }}
       getOptionSelected={(option,value)=>{
         console.log('option',option);

@@ -25,7 +25,27 @@ const AccountDetailPage = ({ item }) => {
         setsingleAccount(location.state.record.item);
         console.log('true', !location.state.record.item);
         setshowNew(!location.state.record.item)
+     
     },[])
+
+    const initialValues = {
+        accountName: '',
+        accountNumber: '',
+        annualRevenue: '',
+        rating: '',
+        type: '',
+        phone: '',
+        industry: '',
+        billingAddress: '',
+        billingCountry:'',
+        billingCity:'',
+        billingCities:[],
+        shippingAddress: '',
+        website:'',
+        description: '',
+        createdbyId: '',
+        createdDate: '',
+    }
 
     const savedValues = {
         accountName: singleAccount?.accountName ?? "",
@@ -97,7 +117,7 @@ const AccountDetailPage = ({ item }) => {
            <div>
                 <Formik
                     enableReinitialize={true}
-                    initialValues={savedValues}
+                    initialValues={showNew?initialValues:savedValues}
                     validationSchema={validationSchema}
                     onSubmit={async (values) => {
                         await new Promise((resolve) => setTimeout(resolve, 500));

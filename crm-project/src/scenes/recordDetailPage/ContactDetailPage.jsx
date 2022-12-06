@@ -22,21 +22,16 @@ const ContactDetailPage = ({item}) => {
     const [showAlert, setShowAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState();
     const [alertSeverity, setAlertSeverity] = useState();
-    const [formValue,setFormValue]=useState()
 
     useEffect(()=>{
         console.log('passed record',location.state.record.item);
         setsingleContact(location.state.record.item); 
         setshowNew(!location.state.record.item) 
-        fetchAccountsName();  
-       if(!location.state.record.item) {
-        setFormValue(initialValue)}
-        else{
-            setFormValue(savedValues)
-        }
+        fetchAccountsName();      
     },[])
 
     
+
 
     const fetchAccountsName = () => {
         axios.post(fetchAccountsUrl)
@@ -50,7 +45,7 @@ const ContactDetailPage = ({item}) => {
                 console.log('error fetchAccountsUrl', error);
             })
     }
-    const initialValue = {
+    const initialValues = {
         accountName: '',
         salutation:  '',
         firstName: '',
@@ -69,6 +64,7 @@ const ContactDetailPage = ({item}) => {
     }
 
     const savedValues = {
+       
         accountName: singleContact?.accountName ?? "",
         salutation:  singleContact?.salutation ?? "",
         firstName:  singleContact?.firstName ?? "",
@@ -111,7 +107,7 @@ const ContactDetailPage = ({item}) => {
             <div>
                 <Formik
                     enableReinitialize={true} 
-                    initialValues={formValue}
+                    initialValues={showNew?initialValues:savedValues }
                     validationSchema={validationSchema}
                     onSubmit={async (values) => {
                         await new Promise((resolve) => setTimeout(resolve, 500));
@@ -179,7 +175,7 @@ const ContactDetailPage = ({item}) => {
                                     {/* <Field name='accountName' type="text" class="form-input" >
 
                                     </Field> */}
-                                    {/* <Autocomplete
+                                     <Autocomplete
                                         name="accountName"
                                         options={accNames}
                                         getOptionLabel={option => option.accountName ||''}
@@ -190,7 +186,7 @@ const ContactDetailPage = ({item}) => {
                                         renderInput={params => (
                                         <Field component={TextField} {...params} name="accountName"  variant="outlined" fullWidth/>
                                         )}
-                                    /> */}
+                                    /> 
 
                                 </Grid>
                                 <Grid item xs={6} md={6}>

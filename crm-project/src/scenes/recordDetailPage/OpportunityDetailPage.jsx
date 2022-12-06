@@ -27,6 +27,19 @@ const OpportunityDetailPage = ({item}) => {
         setshowNew(!location.state.record.item)     
     },[])
 
+    const initialValues = {
+        accountName: '',
+        opportunityName: '',
+        type: '',
+        leadSource: '',
+        amount: '',
+        closeDate: '',
+        stage: '',
+        description: '',
+        createdbyId: '',
+        createdDate: '',
+    }
+
     const savedValues = {
         accountName: singleOpportunity?.accountName ?? "",
         opportunityName:  singleOpportunity?.opportunityName ?? "",
@@ -35,9 +48,9 @@ const OpportunityDetailPage = ({item}) => {
         amount:  singleOpportunity?.amount ?? "",
         closeDate:  singleOpportunity?.closeDate ?? "",
         stage:  singleOpportunity?.stage ?? "",
+        description:  singleOpportunity?.description ?? "",
         createdbyId:  singleOpportunity?.createdbyId ?? "",
         createdDate:  singleOpportunity?.createdDate ?? "",
-        description:  singleOpportunity?.description ?? "",
         _id:   singleOpportunity?._id ?? "",
     }
 
@@ -65,7 +78,7 @@ const OpportunityDetailPage = ({item}) => {
    <div>
          <Formik
           enableReinitialize={true} 
-         initialValues={savedValues}
+         initialValues={showNew ? initialValues : savedValues}
          validationSchema={validationSchema}
          onSubmit={ (values, { resetForm }) => {
             console.log('values',values)

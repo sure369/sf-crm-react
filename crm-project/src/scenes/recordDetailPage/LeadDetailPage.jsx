@@ -27,15 +27,35 @@ const LeadDetailPage = ({item}) => {
         setshowNew(!location.state.record.item)
     },[])      
 
+    const initialValues = {
+        salutation: '',
+        firstName: '',
+        lastName: '',
+        company: '',
+        phone: '',
+        leadSource: '',
+        industry: '',
+        leadStatus: '',
+        email: '',
+        description: '',
+        createdbyId: '',
+        createdDate: '',
+    }
+
+    
     const savedValues = {
+        salutation:singleLead?.salutation ?? "",
+        firstName:singleLead?.firstName ?? "",
         lastName:  singleLead?.lastName ?? "",
         company: singleLead?.company ?? "",
         phone:  singleLead?.phone ?? "",
-        email:  singleLead?.email ?? "",
         leadSource:  singleLead?.leadSource ?? "",
         industry:  singleLead?.industry ?? "",
         leadStatus:  singleLead?.leadStatus ?? "",
+        email:  singleLead?.email ?? "",
         description:  singleLead?.description ?? "",
+        createdbyId:  singleLead?.createdbyId ?? "",
+        createdDate: singleLead?.createdDate ?? "",
         _id:   singleLead?._id ?? "",
     }
 
@@ -67,7 +87,7 @@ const LeadDetailPage = ({item}) => {
    <div>
                 <Formik
                     enableReinitialize={true} 
-                    initialValues={savedValues}
+                    initialValues={showNew?initialValues:savedValues}
                     validationSchema={validationSchema}
                     onSubmit={async (values) => {
                         await new Promise((resolve) => setTimeout(resolve, 500));
