@@ -104,8 +104,9 @@ const ContactDetailPage = ({item}) => {
     }
 
     const FetchAccountsName = (e) => {
-        axios.post(fetchAccountsbyNameUrl,e)
+        axios.post(`${fetchAccountsbyNameUrl}?searchKey=${e}`)
             .then((res) => {
+                console.log('value',e)
                 console.log('res fetchAccountsbyNameUrl', res.data)
                 setAccNames(res.data)
             })
