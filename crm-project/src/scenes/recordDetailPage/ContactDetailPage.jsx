@@ -10,7 +10,8 @@ import SimpleSnackbar from "../toast/test";
 import "../formik/FormStyles.css"
 
 const url ="http://localhost:4000/api/UpsertContact";
-const fetchAccountsUrl = "http://localhost:4000/api/accountsname";
+const fetchAccountsbyNameUrl = "http://localhost:4000/api/accountsname";
+const fetchAccountsUrl = "http://localhost:4000/api/accountsRecentName";
 
 const ContactDetailPage = ({item}) => {
 
@@ -103,16 +104,26 @@ const ContactDetailPage = ({item}) => {
     }
 
     const FetchAccountsName = (e) => {
-        axios.post(fetchAccountsUrl,e)
+        axios.post(fetchAccountsbyNameUrl,e)
             .then((res) => {
-                console.log('res fetchAccountsUrl', res.data)
-
+                console.log('res fetchAccountsbyNameUrl', res.data)
                 setAccNames(res.data)
-
             })
             .catch((error) => {
-                console.log('error fetchAccountsUrl', error);
+                console.log('error fetchAccountsbyNameUrl', error);
             })
+    }
+
+    const blur =() =>{
+        console.log('inside blur')
+        axios.post(fetchAccountsUrl)
+        .then((res) => {
+            console.log('res fetchAccountsUrl', res.data)
+            setAccNames(res.data)
+        })
+        .catch((error) => {
+            console.log('error fetchAccountsUrl', error);
+        })
     }
 
     return (
@@ -193,7 +204,10 @@ const ContactDetailPage = ({item}) => {
                                     </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="accountName">Account Name </label>
-                                    <Field name="accountName" type="text"class="form-input" onchange={fetchAcc(values.accountName)} />
+                                    <Field name="accountName" type="text"class="form-input"
+                                     onchange={fetchAcc(values.accountName)} 
+                                     onClick={blur}
+                                     />
 
                                      {/* <Autocomplete
                                         name="accountName"

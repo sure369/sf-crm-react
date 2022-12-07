@@ -2,7 +2,6 @@ import { useState } from "react";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
-
 import AppBar from '@mui/material/AppBar';
 import "react-pro-sidebar/dist/css/styles.css";
 import { tokens } from "../../theme";
@@ -93,6 +92,7 @@ const Sidebar = () => {
           {!isCollapsed && (
             <Box mb="25px">
               <Box display="flex" justifyContent="center" alignItems="center">
+           
                 <img
                   alt="profile-user"
                   width="100px"
