@@ -95,7 +95,25 @@ const ContactDetailPage = ({item}) => {
     const toastCloseCallback = () => {
         setShowAlert(false)
     }
+    const fetchAcc =(e)=>{
+        console.log('event value',e);
+       console.log(e.length>=3)
+     let x = (e.length>=3 ?  FetchAccountsName(e) :'type 3 characters')
 
+    }
+
+    const FetchAccountsName = (e) => {
+        axios.post(fetchAccountsUrl,e)
+            .then((res) => {
+                console.log('res fetchAccountsUrl', res.data)
+
+                setAccNames(res.data)
+
+            })
+            .catch((error) => {
+                console.log('error fetchAccountsUrl', error);
+            })
+    }
 
     return (
         <Grid item xs={12} style={{margin:"20px"}}>          
@@ -119,7 +137,10 @@ const ContactDetailPage = ({item}) => {
                             setShowAlert(true)
                             setAlertMessage(res.data)
                             setAlertSeverity('success')
-                            navigate(-1);
+                            setTimeout(()=>{
+                                navigate(-1);
+                            },2000)
+                           
                         })
                         .catch((error)=> {
                             console.log('upsert record error',error);
@@ -172,10 +193,9 @@ const ContactDetailPage = ({item}) => {
                                     </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="accountName">Account Name </label>
-                                    {/* <Field name='accountName' type="text" class="form-input" >
+                                    <Field name="accountName" type="text"class="form-input" onchange={fetchAcc(values.accountName)} />
 
-                                    </Field> */}
-                                     <Autocomplete
+                                     {/* <Autocomplete
                                         name="accountName"
                                         options={accNames}
                                         getOptionLabel={option => option.accountName ||''}
@@ -186,7 +206,7 @@ const ContactDetailPage = ({item}) => {
                                         renderInput={params => (
                                         <Field component={TextField} {...params} name="accountName"  variant="outlined" fullWidth/>
                                         )}
-                                    /> 
+                                    />  */}
 
                                 </Grid>
                                 <Grid item xs={6} md={6}>

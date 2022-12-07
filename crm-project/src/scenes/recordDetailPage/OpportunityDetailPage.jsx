@@ -10,6 +10,7 @@ import "../formik/FormStyles.css"
 
 
 const url ="http://localhost:4000/api/UpsertOpportunity";
+const fetchAccountsUrl = "http://localhost:4000/api/accountsname";
 
 const OpportunityDetailPage = ({item}) => {
 
@@ -20,7 +21,7 @@ const OpportunityDetailPage = ({item}) => {
     const [showAlert, setShowAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState();
     const [alertSeverity, setAlertSeverity] = useState();
-
+    const[accNames,setAccNames]= useState([]);
     useEffect(()=>{
         console.log('passed record',location.state.record.item);
         setSinglOpportunity(location.state.record.item); 
@@ -66,6 +67,26 @@ const OpportunityDetailPage = ({item}) => {
         setShowAlert(false)
     }
 
+    const fetchAcc =(e)=>{
+        console.log('event value',e);
+       console.log(e.length>3)
+      let x = (e.length>=3 ?  fetchAccountsName(e) :'type 3 characters')
+   
+    //    fetchAccountsName(e)
+    }
+
+    const fetchAccountsName = (e) => {
+        axios.post(fetchAccountsUrl,e)
+            .then((res) => {
+                console.log('res fetchAccountsUrl', res.data)
+
+                setAccNames(res.data)
+
+            })
+            .catch((error) => {
+                console.log('error fetchAccountsUrl', error);
+            })
+    }
   return (
       
 
@@ -89,7 +110,10 @@ const OpportunityDetailPage = ({item}) => {
                  setShowAlert(true)
                  setAlertMessage(res.data)
                  setAlertSeverity('success')
-                 navigate(-1)
+                
+                 setTimeout(() => {
+                    navigate(-1)
+                 }, 2000);
              })
              .catch((error)=> {
                  console.log('error',error);
@@ -127,7 +151,7 @@ const OpportunityDetailPage = ({item}) => {
                              
              <Grid item xs={6} md={6}>
              <label htmlFor="accountName">Account Name </label>
-                 <Field name="accountName" type="text"class="form-input" />
+                 <Field name="accountName" type="text"class="form-input" onchange={fetchAcc(values.accountName)} />
              </Grid>
                  
              <Grid item xs={6} md={6}>

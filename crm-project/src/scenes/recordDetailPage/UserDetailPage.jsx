@@ -94,16 +94,26 @@ const UserDetailPage = ({item}) => {
                     validationSchema={validationSchema}
                     onSubmit={async (values) => {
                         await new Promise((resolve) => setTimeout(resolve, 500));
-                        console.log("updated record values", values);  
+                        console.log("upsert  record values", values);  
                         
                         axios.post(url,values)
                         .then((res)=>{
-                            console.log('updated record  response',res);
-                            navigate(-1);
+                            console.log('upsert record  response',res);
+                            setShowAlert(true)
+                            setAlertMessage(res.data)
+                            setAlertSeverity('success')
+                           
+                            setTimeout(() => {
+                                navigate(-1);
+                            }, 2000);
+
                         })
                         .catch((error)=> {
-                            console.log('updated record error',error);
-                          })
+                            console.log('upsert record  error', error);
+                            setShowAlert(true)
+                            setAlertMessage(error.message)
+                            setAlertSeverity('error')
+                        })
                         
                       }}
                 >

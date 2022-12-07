@@ -71,6 +71,10 @@ const LeadDetailPage = ({item}) => {
         leadStatus: Yup
             .string()
             .required('Required'),
+        email:Yup
+            .string()
+            .email('Invalid email address')
+            .required('Required'),
     })
 
     const toastCloseCallback = () => {
@@ -99,13 +103,16 @@ const LeadDetailPage = ({item}) => {
                             setShowAlert(true)
                             setAlertMessage(res.data)
                             setAlertSeverity('success')
-                            navigate(-1)
+                            setTimeout(() => {
+                                navigate(-1)
+                            }, 2000);
+                            
                         })
                         .catch((error)=> {
                             console.log('upsert record error',error);
                             setShowAlert(true)
                             setAlertMessage(error.message)
-                            setAlertSeverity('success')
+                            setAlertSeverity('error')
                         })
                         
                       }}
@@ -154,7 +161,7 @@ const LeadDetailPage = ({item}) => {
                                     </Grid>
                                 <Grid item xs={6} md={6}>
 
-                                    <label htmlFor="company">Company</label>
+                                    <label htmlFor="company">Company<span className="text-danger">*</span></label>
                                     <Field name="company" type="text" class="form-input" />
                                     <div style={{ color: 'red' }}>
                                         <ErrorMessage name="company" />
@@ -211,6 +218,9 @@ const LeadDetailPage = ({item}) => {
                                         <option value="closed-converted">Closed-Converted</option>
                                         <option value="closed-not converted">closed-Not Converted</option>
                                     </Field>
+                                    <div style={{ color: 'red' }}>
+                                        <ErrorMessage name="leadStatus" />
+                                    </div>
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="fax">Fax</label>

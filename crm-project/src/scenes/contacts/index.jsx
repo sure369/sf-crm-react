@@ -123,9 +123,6 @@ const Contacts = () => {
   ];
   
 
-  if(records.length>=0)
-  {
-
   return (
     <>
     {
@@ -191,6 +188,6 @@ const Contacts = () => {
     </Box>
     </>
   );
-};}
+}
 
 export default Contacts;

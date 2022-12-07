@@ -129,7 +129,10 @@ const AccountDetailPage = ({ item }) => {
                                 setShowAlert(true)
                                 setAlertMessage(res.data)
                                 setAlertSeverity('success')
-                                navigate(-1);
+                              
+                                setTimeout(()=>{
+                                    navigate(-1);
+                                },1000)
                             })
                             .catch((error) => {
                                 console.log('upsert record  error', error);
@@ -153,7 +156,7 @@ const AccountDetailPage = ({ item }) => {
                         return (
                             <>
                                 {
-                                    showAlert ? <SimpleSnackbar severity={alertSeverity} message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> : <SimpleSnackbar message={showAlert} />
+                                    showAlert ? <SimpleSnackbar severity={alertSeverity} message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> :  <SimpleSnackbar />
                                 }
 
                                 <Form>

@@ -124,7 +124,10 @@ const toastCloseCallback = () => {
                             setShowAlert(true)
                             setAlertMessage(res.data)
                             setAlertSeverity('success')
-                            navigate(-1)
+                            setTimeout(()=>{
+                                navigate(-1)
+                            },2000)
+                           
                         })
                         .catch((error)=> {
                             console.log('upsert record  error',error);

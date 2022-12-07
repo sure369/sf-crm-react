@@ -47,9 +47,9 @@ function App() {
         <div className="app">
           <Sidebar isSidebar={isSidebar} />
           <main className="content">
-            <Topbar setIsSidebar={setIsSidebar} />
+            {/* <Topbar setIsSidebar={setIsSidebar} /> */}
             <Routes>
-              <Route path="/" element={< HomePage/>} />
+              <Route path="/" element={< Accounts/>} />
               <Route path="/accounts" element={<Accounts />} />
               <Route path="/contacts" element={<Contacts />} />
               <Route path="/opportunities" element={<Opportunities />} />

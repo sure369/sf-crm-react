@@ -6,8 +6,6 @@ import Header from "../../components/Header";
 import axios from 'axios';
 import {  useNavigate } from "react-router-dom";
 import SimpleSnackbar from "../toast/test";
-import ContactForm from '../formik/ContactForm';
-// import{DeleteIcon,EditIcon} from '@mui/icons-material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 
@@ -60,10 +58,10 @@ const Accounts = () => {
   };
  
   const onHandleDelete = (e, row) => {
-    e.stopPropagation();
+    // e.stopPropagation();
     console.log('req delete rec',row);
     console.log('req delete rec id',row._id);
-    
+ 
     axios.post(urlDelete+row._id)
     .then((res)=>{
         console.log('api delete response',res);
@@ -76,6 +74,7 @@ const Accounts = () => {
     .catch((error)=> {
         console.log('api delete error',error);
          //delete show toast
+
          setShowAlert(true)
          setAlertMessage(error.message)
          setAlertSeverity('error')
@@ -84,6 +83,7 @@ const Accounts = () => {
 
   const toastCloseCallback=()=>{
     setShowAlert(false)
+    
   }
 
   const columns = [
@@ -124,22 +124,17 @@ const Accounts = () => {
       }
   ];
 
-  if(records.length>=0)
-  {
-   console.log('name',recNames); 
   return(
     <>
     {
-      showAlert? <SimpleSnackbar severity={alertSeverity}  message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> :<SimpleSnackbar message={showAlert}/>
-     } 
-
-
+     showAlert && <SimpleSnackbar severity={alertSeverity}  message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> 
+    } 
       <Box m="20px">
        <Header
           title="Accounts"
-          subtitle="List of Accounst"
+          subtitle="List of Accounts"
       />
-      <Box
+       <Box
         m="40px 0 0 0"
         height="75vh"
         sx={{
@@ -170,7 +165,7 @@ const Accounts = () => {
             color: `${colors.grey[100]} !important`,
           },
         }}
-      >
+      > 
         <div  className='btn-test'>
             <Button 
                variant="contained" color="info" 
@@ -196,6 +191,6 @@ const Accounts = () => {
     </>
     )
   }
-};
+// };
 
 export default Accounts;

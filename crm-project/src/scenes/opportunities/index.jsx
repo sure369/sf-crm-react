@@ -124,8 +124,6 @@ const Opportunities = () => {
     }
   ];
 
-  if(records.length>=0)
-  {
    
   return (
     <>
@@ -193,6 +191,6 @@ const Opportunities = () => {
     </>
   )
  }
-};
+
 
 export default Opportunities;

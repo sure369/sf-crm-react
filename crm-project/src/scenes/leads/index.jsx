@@ -123,8 +123,7 @@ const Leads = () => {
     } }
   ];
 
-  if(records.length>=0)
-  {
+
     return (
       <>
       {
@@ -192,6 +191,5 @@ const Leads = () => {
     </>
     );
   };
-  }
 
 export default Leads;

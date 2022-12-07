@@ -123,7 +123,6 @@ const Inventories = () => {
   ];
 
 
-  if (records.length >=0) {
     return (
       <>
         {
@@ -190,6 +189,5 @@ const Inventories = () => {
       </>
     )
   }
-};
 
 export default Inventories;
