@@ -92,6 +92,12 @@ const Contacts = () => {
     { 
       field: "accountName",headerName: "Account Name",
       headerAlign: 'center',align: 'center',flex: 1,
+      renderCell: (params) => {
+        console.log('params',params.formattedValue.accountName)
+        return <div className="rowitem">
+          {params.formattedValue.accountName}
+        </div>;
+      },
     }, 
     {
       field: "phone",headerName: "Phone",

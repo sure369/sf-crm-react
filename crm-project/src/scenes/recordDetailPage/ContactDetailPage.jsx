@@ -27,6 +27,7 @@ const ContactDetailPage = ({item}) => {
     useEffect(()=>{
         console.log('passed record',location.state.record.item);
         setsingleContact(location.state.record.item); 
+       
         setshowNew(!location.state.record.item) 
         fetchAccountsName();      
     },[])
@@ -47,7 +48,7 @@ const ContactDetailPage = ({item}) => {
             })
     }
     const initialValues = {
-        accountName: '',
+        accountName: {accountName:"",id:""},
         salutation:  '',
         firstName: '',
         lastName:  '',
@@ -66,7 +67,7 @@ const ContactDetailPage = ({item}) => {
 
     const savedValues = {
        
-        accountName: singleContact?.accountName ?? "",
+        accountName:singleContact?.accountName??"",
         salutation:  singleContact?.salutation ?? "",
         firstName:  singleContact?.firstName ?? "",
         lastName:  singleContact?.lastName ?? "",
@@ -97,16 +98,15 @@ const ContactDetailPage = ({item}) => {
         setShowAlert(false)
     }
     const fetchAcc =(e)=>{
-        console.log('event value',e);
-       console.log(e.length>=3)
-     let x = (e.length>=3 ?  FetchAccountsName(e) :'type 3 characters')
+     
+     return (e.length>=3 ?  FetchAccountsbyName(e) :'type 3 characters')
 
     }
 
-    const FetchAccountsName = (e) => {
+    const FetchAccountsbyName = (e) => {
+        
         axios.post(`${fetchAccountsbyNameUrl}?searchKey=${e}`)
             .then((res) => {
-                console.log('value',e)
                 console.log('res fetchAccountsbyNameUrl', res.data)
                 setAccNames(res.data)
             })
@@ -205,23 +205,43 @@ const ContactDetailPage = ({item}) => {
                                     </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="accountName">Account Name </label>
-                                    <Field name="accountName" type="text"class="form-input"
-                                     onchange={fetchAcc(values.accountName)} 
+                                    {/* <Field name="accountName" class="form-input"
+                                     onchange={FetchAccountsbyName(values.accountName)} 
                                      onClick={blur}
-                                     />
+                                    
+                                     /> */}
 
-                                     {/* <Autocomplete
+                                      <Autocomplete
                                         name="accountName"
                                         options={accNames}
                                         getOptionLabel={option => option.accountName ||''}
+                                        // disableCloseOnSelect
+                                        isOptionEqualToValue={(option, value) =>
+                                             option.accountName === value.accountName
+                                         }
                                         onChange={(e, value) => {
-                                        console.log('value',value)
-                                        setFieldValue("accountName", value)
+                                            console.log('onchange value',value.accountName)
+                                          
+                                            setFieldValue("accountName", value)
                                         }}
+                                        value={values.accountName}
+                                        onInputChange={(event, newInputValue) => {
+                                            console.log('newInputValue',newInputValue);
+                                            axios.post(`${fetchAccountsbyNameUrl}?searchKey=${newInputValue}`)
+                                            .then((res) => {
+                                                console.log('res fetchAccountsbyNameUrl', res.data)
+                                                if(typeof(res.data)=== "object"){
+                                                    setAccNames(res.data)
+                                                }
+                                            })
+                                            .catch((error) => {
+                                                console.log('error fetchAccountsbyNameUrl', error);
+                                            })
+                                          }}
                                         renderInput={params => (
-                                        <Field component={TextField} {...params} name="accountName"  variant="outlined" fullWidth/>
+                                        <Field component={TextField} {...params} name="accountName" />
                                         )}
-                                    />  */}
+                                    />  
 
                                 </Grid>
                                 <Grid item xs={6} md={6}>
