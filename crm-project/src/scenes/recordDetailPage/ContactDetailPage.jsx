@@ -48,7 +48,8 @@ const ContactDetailPage = ({item}) => {
             })
     }
     const initialValues = {
-        accountName: {accountName:"",id:""},
+        Account:"",
+        // accountName: {accountName:"",id:""},
         salutation:  '',
         firstName: '',
         lastName:  '',
@@ -66,8 +67,8 @@ const ContactDetailPage = ({item}) => {
     }
 
     const savedValues = {
-       
-        accountName:singleContact?.accountName??"",
+        Account:singleContact?.accountName??"",
+        // accountName:singleContact?.accountName??"",
         salutation:  singleContact?.salutation ?? "",
         firstName:  singleContact?.firstName ?? "",
         lastName:  singleContact?.lastName ?? "",
@@ -220,11 +221,12 @@ const ContactDetailPage = ({item}) => {
                                              option.accountName === value.accountName
                                          }
                                         onChange={(e, value) => {
-                                            console.log('onchange value',value.accountName)
+                                           
                                           
-                                            setFieldValue("accountName", value)
+                                            // setFieldValue("accountName", value)
+                                             setFieldValue("Account",value.id)
                                         }}
-                                        value={values.accountName}
+                                        value={values.id}
                                         onInputChange={(event, newInputValue) => {
                                             console.log('newInputValue',newInputValue);
                                             axios.post(`${fetchAccountsbyNameUrl}?searchKey=${newInputValue}`)
