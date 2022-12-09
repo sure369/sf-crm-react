@@ -76,27 +76,8 @@ const UserDetailPage = ({item}) => {
         .required('Required'),
     })
     
-    const toastCloseCallback = () => {
-        setShowAlert(false)
-    }
-
-  return (
-    <Grid item xs={12} style={{margin:"20px"}}>          
-            <div style={{textAlign:"center" ,marginBottom:"10px"}}>
-                {
-                    showNew ? <h3>New User</h3> : <h3>User Detail Page </h3>
-                }
-            </div>
-           <div>
-                <Formik
-                    enableReinitialize={true} 
-                    initialValues={showNew ? initialValues : savedValues}
-                    validationSchema={validationSchema}
-                    onSubmit={async (values) => {
-                        await new Promise((resolve) => setTimeout(resolve, 500));
-                        console.log("upsert  record values", values);  
-                        
-                        axios.post(url,values)
+    const formSubmission =(values)=>{
+        axios.post(url,values)
                         .then((res)=>{
                             console.log('upsert record  response',res);
                             setShowAlert(true)
@@ -114,8 +95,25 @@ const UserDetailPage = ({item}) => {
                             setAlertMessage(error.message)
                             setAlertSeverity('error')
                         })
-                        
-                      }}
+    }
+
+    const toastCloseCallback = () => {
+        setShowAlert(false)
+    }
+
+  return (
+    <Grid item xs={12} style={{margin:"20px"}}>          
+            <div style={{textAlign:"center" ,marginBottom:"10px"}}>
+                {
+                    showNew ? <h3>New User</h3> : <h3>User Detail Page </h3>
+                }
+            </div>
+           <div>
+                <Formik
+                    enableReinitialize={true} 
+                    initialValues={showNew ? initialValues : savedValues}
+                    validationSchema={validationSchema}
+                    onSubmit={ (values) => {formSubmission(values)}}    
                 >
                    {(props) => {
                             const {

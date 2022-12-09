@@ -27,13 +27,14 @@ const Accounts = () => {
   const[alertSeverity,setAlertSeverity]=useState();
 
   useEffect(()=>{
-
+console.log('inside account index')
     fetchRecords();
    
     }, []
   );
 
   const fetchRecords = ()=>{
+    console.log('urlAccount',urlAccount);
     axios.post(urlAccount)
     .then(
       (res) => {

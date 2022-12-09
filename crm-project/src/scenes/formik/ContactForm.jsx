@@ -1,3 +1,191 @@
+// import * as React from 'react';
+// import {Formik, Form, Field} from 'formik';
+// import {
+//   Box,
+//   Button,
+//   LinearProgress,
+//   MenuItem,
+//   FormControl,
+//   FormControlLabel,
+// } from '@mui/material';
+// import * as Yup from "yup";
+// // import {LocalizationProvider} from '@mui/lab';
+
+// // import AdapterDateFns from '@mui/lab/AdapterDateFns';
+// import MuiTextField from '@mui/material/TextField';
+// import { Grid,Button ,Forminput,DialogActions,TextField,Autocomplete} from "@mui/material";
+
+// import {TimePicker, DatePicker, DateTimePicker} from 'formik-mui-lab';
+
+// import {UpperCasingTextField} from './UpperCasingTextField';
+// import {top100Films, ranges} from './data';
+
+
+
+// const ContactForm = () => {
+
+//     const validationSchema = Yup.object({
+//         opportunityName: Yup
+//             .string()
+//             .required('Required'),
+//     })
+
+//     const initialValues={
+//         email: '',
+//         password: '',
+//         select: '0-20',
+//         tags: [],
+//         rememberMe: true,
+//         date: new Date(),
+//         time: new Date(),
+//         dateTime: new Date(),
+//         toggle: [],
+//         autocomplete: [],
+//     }
+
+//     const formSubmission=(values)=>{
+//         console.log('values',values);
+//     }
+//   <Formik
+
+//     initialValues={initialValues}
+//     validationSchema={validationSchema}
+//     onSubmit={(values) => {formSubmission(values)}}
+//   >
+    
+//     {({values, submitForm, resetForm, isSubmitting, touched, errors}) => (
+    
+//         <Form>
+//           <Box margin={1}>
+//             <Field
+//               component={UpperCasingTextField}
+//               name="email"
+//               type="email"
+//               label="Email"
+//               helperText="Please Enter Email"
+//             />
+//           </Box>
+//           <Box margin={1}>
+//             <Field
+//               component={TextField}
+//               type="password"
+//               label="Password"
+//               name="password"
+//             />
+//           </Box>
+//           <Box margin={1}>
+//             <FormControlLabel
+//               control={
+//                 <Field component={Switch} type="checkbox" name="rememberMe" />
+//               }
+//               label="Remember Me"
+//             />
+//           </Box>
+//           <Box margin={1}>
+//             <Field
+//               component={TextField}
+//               type="text"
+//               name="select"
+//               label="With Select"
+//               select
+//               variant="standard"
+//               helperText="Please select Range"
+//               margin="normal"
+//               InputLabelProps={{
+//                 shrink: true,
+//               }}
+//             >
+//               {ranges.map((option) => (
+//                 <MenuItem key={option.value} value={option.value}>
+//                   {option.label}
+//                 </MenuItem>
+//               ))}
+//             </Field>
+//           </Box>
+//           <Box margin={1}>
+//             <FormControl sx={{minWidth: 120}}>
+//               <Field
+//                 component={Select}
+//                 type="text"
+//                 label="Tags"
+//                 name="tags"
+//                 multiple={true}
+//                 inputProps={{name: 'tags', id: 'tags'}}
+//               >
+//                 <MenuItem value="dogs">Dogs</MenuItem>
+//                 <MenuItem value="cats">Cats</MenuItem>
+//                 <MenuItem value="rats">Rats</MenuItem>
+//                 <MenuItem value="snakes">Snakes</MenuItem>
+//               </Field>
+//             </FormControl>
+//           </Box>
+//           {isSubmitting && <LinearProgress />}
+//           <Box margin={1}>
+//             <Field component={TimePicker} name="time" label="Time" />
+//           </Box>
+//           <Box margin={1}>
+//             <Field component={DatePicker} name="date" label="Date" />
+//           </Box>
+//           <Box margin={1}>
+//             <Field
+//               component={DateTimePicker}
+//               name="dateTime"
+//               label="Date Time"
+//             />
+//           </Box>
+        
+//           <Box margin={1}>
+//             <Field
+//               name="autocomplete"
+//               multiple
+//               component={Autocomplete}
+//               options={top100Films}
+//               getOptionLabel={(option) => option.title}
+//               style={{width: 300}}
+//               renderInput={(params) => (
+//                 <MuiTextField
+//                   {...params}
+//                   name="autocomplete"
+//                   error={touched['autocomplete'] && !!errors['autocomplete']}
+//                   helperText={touched['autocomplete'] && errors['autocomplete']}
+//                   label="Autocomplete"
+//                   variant="outlined"
+//                 />
+//               )}
+//             />
+//           </Box>
+//           <Box margin={1}>
+//             <Button
+//               sx={{margin: 1}}
+//               variant="contained"
+//               color="primary"
+//               disabled={isSubmitting}
+//               onClick={submitForm}
+//             >
+//               Submit
+//             </Button>
+//             <Button
+//               sx={{margin: 1}}
+//               variant="contained"
+//               color="secondary"
+//               disabled={isSubmitting}
+//               onClick={() => {
+//                 resetForm();
+//               }}
+//             >
+//               Reset
+//             </Button>
+//           </Box>
+//           <pre>{JSON.stringify(values, null, 2)}</pre>
+//         </Form>
+//     )}
+//   </Formik>
+
+//             }
+// export default ContactForm
+
+
+
 import React, { useState, useEffect } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
@@ -91,43 +279,33 @@ const ContactForm = () => {
                     initialValues={initialValues}
                     validationSchema={validationSchema}
                     onSubmit={(values, { resetForm }) => {
-                        console.log(values);
-                        axios.post(url, values)
-                            .then((res) => {
-                                console.log('post response', res);
-                                console.log('post ', 'data send');
+                        console.log('values',values);
+                        // axios.post(url, values)
+                        //     .then((res) => {
+                        //         console.log('post response', res);
+                        //         console.log('post ', 'data send');
 
-                                setShowAlert(true)
-                                setAlertMessage(res.data)
-                                setAlertSeverity('success')
+                        //         setShowAlert(true)
+                        //         setAlertMessage(res.data)
+                        //         setAlertSeverity('success')
 
-                                setTimeout(() => {
-                                    navigate(-1);
-                                }, 2000);
+                        //         setTimeout(() => {
+                        //             navigate(-1);
+                        //         }, 2000);
 
-                                resetForm({ values: '' })
-                            })
-                            .catch((error) => {
-                                console.log('error', error);
-                                setShowAlert(true)
-                                setAlertMessage(error.message)
-                                setAlertSeverity('error')
+                        //         resetForm({ values: '' })
+                        //     })
+                        //     .catch((error) => {
+                        //         console.log('error', error);
+                        //         setShowAlert(true)
+                        //         setAlertMessage(error.message)
+                        //         setAlertSeverity('error')
 
-                            })
+                        //     })
                     }}
                 >
-                    {(props) => {
-                        const {
-                            values,
-                            dirty,
-                            isSubmitting,
-                            handleChange,
-                            handleSubmit,
-                            handleReset,
-                            setFieldValue,
-                        } = props;
-                        return (
-                            <>
+                 {({values,setFieldValue}) => (
+                    <>
                                 {
                                     showAlert ? <SimpleSnackbar severity={alertSeverity} message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> : <SimpleSnackbar message={showAlert} />
                                 }
@@ -146,9 +324,7 @@ const ContactForm = () => {
                                             </Field>
                                         </Grid>
                                         <Grid item xs={6} md={4}>
-
-                                            <label htmlFor="firstName" >First Name</label>
-                                            <Field name='firstName' type="text" class="form-input" />
+                                        <Field component={TextField} name="firstName" label="first  Name" variant="outlined" fullWidth  />
                                         </Grid>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="lastName" >Last Name<span className="text-danger">*</span> </label>
@@ -273,7 +449,7 @@ const ContactForm = () => {
                                 </Form>
                             </>
                         )
-                    }}
+                    }
                 </Formik>
             </div>
         </div>

@@ -27,6 +27,7 @@ const Contacts = () => {
     const[alertSeverity,setAlertSeverity]=useState();
 
   useEffect(()=>{
+    console.log('contact index')
     fetchRecords();
   
   }, []);
@@ -93,9 +94,9 @@ const Contacts = () => {
       field: "accountName",headerName: "Account Name",
       headerAlign: 'center',align: 'center',flex: 1,
       renderCell: (params) => {
-        // console.log('params',params.formattedValue.accountName)
+      
         return <div className="rowitem">
-          {/* {params.formattedValue.accountName} */}
+          {params.row.Accountdetails[0].accountName}
         </div>;
       },
     }, 

@@ -102,6 +102,25 @@ const AccountDetailPage = ({ item }) => {
             .required('Required'),
     })
 
+    const formSubmission=(values)=>{
+        axios.post(url, values)
+        .then((res) => {
+            console.log('upsert record  response', res);
+            setShowAlert(true)
+            setAlertMessage(res.data)
+            setAlertSeverity('success')
+          
+            setTimeout(()=>{
+                navigate(-1);
+            },1000)
+        })
+        .catch((error) => {
+            console.log('upsert record  error', error);
+            setShowAlert(true)
+            setAlertMessage(error.message)
+            setAlertSeverity('error')
+        })
+    }
     const toastCloseCallback = () => {
         setShowAlert(false)
     }
@@ -119,28 +138,7 @@ const AccountDetailPage = ({ item }) => {
                     enableReinitialize={true}
                     initialValues={showNew?initialValues:savedValues}
                     validationSchema={validationSchema}
-                    onSubmit={async (values) => {
-                        await new Promise((resolve) => setTimeout(resolve, 500));
-                        console.log("upsert record values", values);
-
-                        axios.post(url, values)
-                            .then((res) => {
-                                console.log('upsert record  response', res);
-                                setShowAlert(true)
-                                setAlertMessage(res.data)
-                                setAlertSeverity('success')
-                              
-                                setTimeout(()=>{
-                                    navigate(-1);
-                                },1000)
-                            })
-                            .catch((error) => {
-                                console.log('upsert record  error', error);
-                                setShowAlert(true)
-                                setAlertMessage(error.message)
-                                setAlertSeverity('error')
-                            })
-                    }}
+                    onSubmit={ (values) => {formSubmission(values)}}
                 >
                     {(props) => {
                         const {

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import {useLocation} from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { Grid,Button ,Forminput,DialogActions} from "@mui/material";
+import { Grid,Button ,Forminput,DialogActions,TextField,Autocomplete} from "@mui/material";
 import { useParams,useNavigate } from "react-router-dom"
 import axios from 'axios'
 import SimpleSnackbar from "../toast/test";
@@ -10,9 +10,15 @@ import "../formik/FormStyles.css"
 
 
 const url ="http://localhost:4000/api/UpsertOpportunity";
-const fetchAccountsUrl = "http://localhost:4000/api/accountsname";
+const fetchRecentLeads= "http://localhost:4000/api/recentLeads";
+const fetchLeadsbyName ="http://localhost:4000/api/LeadsbyName";
+const fetchRecentInventories= "http://localhost:4000/api/propertyRecentName";
+const fetchInventoriesbyName ="http://localhost:4000/api/InventoryName";
+
 
 const OpportunityDetailPage = ({item}) => {
+
+ 
 
     const [singleOpportunity,setSinglOpportunity]= useState(); 
     const location = useLocation();
@@ -21,15 +27,23 @@ const OpportunityDetailPage = ({item}) => {
     const [showAlert, setShowAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState();
     const [alertSeverity, setAlertSeverity] = useState();
-    const[accNames,setAccNames]= useState([]);
+    const [leadsRecords,setLeadsRecords]= useState([]);
+    const [inventoriesRecord,setInventoriesRecord]= useState([]);
     useEffect(()=>{
         console.log('passed record',location.state.record.item);
+        console.log('inside opportunity');
         setSinglOpportunity(location.state.record.item); 
-        setshowNew(!location.state.record.item)     
+        setshowNew(!location.state.record.item)  
+        // FetchRecentLeads();
+        console.log('inside opportunity');
+         getRecentInventories();
     },[])
 
     const initialValues = {
-        accountName: '',
+        Lead: '',
+        leadName: {leadName:"",id:""},
+        Inventory:'',
+        inventoryName: {inventoryName:"",id:""},
         opportunityName: '',
         type: '',
         leadSource: '',
@@ -42,7 +56,10 @@ const OpportunityDetailPage = ({item}) => {
     }
 
     const savedValues = {
-        accountName: singleOpportunity?.accountName ?? "",
+         Lead: singleOpportunity?.Lead ?? "",
+         leadName:singleOpportunity?.leadName ?? "",
+         Inventory: singleOpportunity?.Inventory ?? "",
+         inventoryName: singleOpportunity?.inventoryName ?? "",
         opportunityName:  singleOpportunity?.opportunityName ?? "",
         type: singleOpportunity?.type ?? "",
         leadSource:  singleOpportunity?.leadSource ?? "",
@@ -54,57 +71,15 @@ const OpportunityDetailPage = ({item}) => {
         createdDate:  singleOpportunity?.createdDate ?? "",
         _id:   singleOpportunity?._id ?? "",
     }
-
-
-
     const validationSchema = Yup.object({
         opportunityName: Yup
             .string()
             .required('Required'),
     })
 
-    const toastCloseCallback = () => {
-        setShowAlert(false)
-    }
-
-    const fetchAcc =(e)=>{
-        console.log('event value',e);
-       console.log(e.length>3)
-      let x = (e.length>=3 ?  fetchAccountsName(e) :'type 3 characters')
-   
-    //    fetchAccountsName(e)
-    }
-
-    const fetchAccountsName = (e) => {
-        axios.post(fetchAccountsUrl,e)
-            .then((res) => {
-                console.log('res fetchAccountsUrl', res.data)
-
-                setAccNames(res.data)
-
-            })
-            .catch((error) => {
-                console.log('error fetchAccountsUrl', error);
-            })
-    }
-  return (
-      
-
-    <Grid item xs={12} style={{margin:"20px"}}>          
-    <div style={{textAlign:"center" ,marginBottom:"10px"}}>
-        {
-            showNew ? <h3>New Opportunity</h3> : <h3>Opportunity Detail Page </h3>
-        }
-    </div>
-   <div>
-         <Formik
-          enableReinitialize={true} 
-         initialValues={showNew ? initialValues : savedValues}
-         validationSchema={validationSchema}
-         onSubmit={ (values, { resetForm }) => {
-            console.log('values',values)
-
-             axios.post(url,values)
+    const formSubmission =(values)=>{
+        console.log('inside fn',values);
+        axios.post(url,values)
              .then((res)=>{
                  console.log('post response',res);
                  setShowAlert(true)
@@ -121,8 +96,75 @@ const OpportunityDetailPage = ({item}) => {
                 setAlertMessage(error.message)
                 setAlertSeverity('error')
                })
-           }}
-       >
+    }
+
+    const toastCloseCallback = () => {
+        setShowAlert(false)
+    }
+
+    const FetchRecentLeads =()=>{
+        axios.post(fetchRecentLeads)
+        .then((res) => {
+            console.log('res fetchRecentLeads', res.data)
+            setLeadsRecords(res.data)
+        })
+        .catch((error) => {
+            console.log('error fetchRecentLeads', error);
+        })
+    }
+    const FetchLeadsbyName =(newInputValue) =>{
+        axios.post(`${fetchLeadsbyName}?searchKey=${newInputValue}`)
+        .then((res) => {
+            console.log('res fetchLeadsbyName', res.data)
+            if(typeof(res.data)=== "object"){
+                setLeadsRecords(res.data)
+            }
+        })
+        .catch((error) => {
+            console.log('error fetchLeadsbyName', error);
+        })
+    }
+    const getRecentInventories =()=>{
+        
+        console.log('inside getRecentInventories',fetchRecentInventories);
+        axios.post(fetchRecentInventories)
+        .then((res) => {
+            console.log('res fetchRecentInventories', res.data)
+            setInventoriesRecord(res.data)
+        })
+        .catch((error) => {
+            console.log('error fetchRecentInventories', error);
+        })
+    }
+    const FetchInventoriesbyName =(newInputValue) =>{
+        console.log('search inventory')
+        axios.post(`${fetchInventoriesbyName}?searchKey=${newInputValue}`)
+        .then((res) => {
+            console.log('res fetchInventoriesbyName', res.data)
+            if(typeof(res.data)=== "object"){
+                setInventoriesRecord(res.data)
+            }
+        })
+        .catch((error) => {
+            console.log('error fetchInventoriesbyName', error);
+        })
+    }
+
+  return (
+      
+    <Grid item xs={12} style={{margin:"20px"}}>          
+    <div style={{textAlign:"center" ,marginBottom:"10px"}}>
+        {
+            showNew ? <h3>New Opportunity</h3> : <h3>Opportunity Detail Page </h3>
+        }
+    </div>
+    <div>
+        <Formik
+            enableReinitialize={true} 
+            initialValues={showNew ? initialValues : savedValues}
+            validationSchema={validationSchema}
+            onSubmit={ (values, { resetForm }) => {formSubmission(values)}}
+        >
         {(props) => {
                         const {
                             values,
@@ -135,10 +177,10 @@ const OpportunityDetailPage = ({item}) => {
                         } = props;
 
         return (
-                            <>
-                                {
-                                    showAlert ? <SimpleSnackbar severity={alertSeverity} message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> : <SimpleSnackbar message={showAlert} />
-                                }  
+        <>
+            {
+                showAlert ? <SimpleSnackbar severity={alertSeverity} message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> : <SimpleSnackbar message={showAlert} />
+            }  
          <Form>
          <Grid container spacing={2}>
              <Grid item xs={6} md={6}>
@@ -148,12 +190,64 @@ const OpportunityDetailPage = ({item}) => {
                      <ErrorMessage name="opportunityName" />
                  </div>
              </Grid>
-                             
+            
              <Grid item xs={6} md={6}>
-             <label htmlFor="accountName">Account Name </label>
-                 <Field name="accountName" type="text"class="form-input" onchange={fetchAcc(values.accountName)} />
+             <label htmlFor="Inventory">Inventory Name </label>
+                <Autocomplete
+                            name="Inventory"
+                            options={inventoriesRecord}
+                            getOptionLabel={option => option.propertyName ||''}
+                            isOptionEqualToValue={(option, value) =>
+                                option.name === value.name
+                            }
+                            onChange={(e, value) => {
+                                setFieldValue("Inventory",value.id)
+                                setFieldValue("propertyName", value)
+                            }}
+                            value={values.Inventory}
+                            onInputChange={(event, newInputValue) => {
+                                console.log('newInputValue',newInputValue);
+                                if(newInputValue.length>=3){
+                                    FetchInventoriesbyName(newInputValue);
+                                }
+                            }}
+                            renderInput={params => (
+                            <Field component={TextField} {...params} name="Inventory" />
+                            )}
+                />  
+
+             </Grid>``
+
+             <Grid item xs={6} md={6}>
+             <label htmlFor="Lead">Lead Name </label>
+                <Autocomplete
+                            name="Lead"
+                            options={leadsRecords}
+                            value={values.Lead}
+                            getOptionLabel={option => option.leadName ||''}
+                            isOptionEqualToValue={(option, value) =>
+                                option.id === value.name
+                            }
+                            onChange={(e, value) => {
+                                setFieldValue("Lead",value.id)
+                                setFieldValue("leadName",value)
+                            }}
+                            
+                            onInputChange={(event, newInputValue) => {
+                                console.log('newInputValue',newInputValue);
+                                if(newInputValue.length>=3){
+                                    FetchLeadsbyName(newInputValue);
+                                }
+                            }}
+                            renderInput={params => (
+                            <Field component={TextField} {...params} name="Lead" />
+                            )}
+                />  
+
              </Grid>
-                 
+            
+         
+
              <Grid item xs={6} md={6}>
              <label htmlFor="stage">Opportunity Stage</label>
                  <Field name="stage" as="select" class="form-input">

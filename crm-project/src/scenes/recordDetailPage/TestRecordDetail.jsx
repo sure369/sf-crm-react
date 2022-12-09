@@ -10,10 +10,8 @@ import SimpleSnackbar from "../toast/test";
 import "../formik/FormStyles.css"
 
 const url ="http://localhost:4000/api/UpsertContact";
-const fetchAccountsbyName = "http://localhost:4000/api/accountsname";
-// const fetchRecentAccounts = "http://localhost:4000/api/accountsRecentName";
 
-const ContactDetailPage = ({item}) => {
+const TestRecordDetail = ({item}) => {
 
     const [singleContact,setsingleContact]= useState(); 
     const[accNames,setAccNames]= useState([]);
@@ -29,22 +27,13 @@ const ContactDetailPage = ({item}) => {
         setsingleContact(location.state.record.item); 
        
         setshowNew(!location.state.record.item) 
-        // fetchAccountsName();      
+       
     },[])
 
-    // const fetchAccountsName = () => {
-    //     axios.post(fetchRecentAccounts)
-    //         .then((res) => {
-    //             console.log('res fetchRecentAccounts', res.data)
-    //             setAccNames(res.data)
-    //         })
-    //         .catch((error) => {
-    //             console.log('error fetchRecentAccounts', error);
-    //         })
-    // }
+  
     const initialValues = {
         Account:"",
-        accountName: {accountName:"",id:""},
+        // accountName: {accountName:"",id:""},
         salutation:  '',
         firstName: '',
         lastName:  '',
@@ -63,7 +52,7 @@ const ContactDetailPage = ({item}) => {
 
     const savedValues = {
         Account:singleContact?.Account??"",
-        accountName:singleContact?.Accountdetails[0].accountName??"",
+        // accountName:singleContact?.accountName??"",
         salutation:  singleContact?.salutation ?? "",
         firstName:  singleContact?.firstName ?? "",
         lastName:  singleContact?.lastName ?? "",
@@ -116,25 +105,13 @@ const ContactDetailPage = ({item}) => {
         setShowAlert(false)
     }
 
-    const FetchAccountsbyName = (newInputValue) => {
-        
-        axios.post(`${fetchAccountsbyName}?searchKey=${newInputValue}`)
-        .then((res) => {
-            console.log('res fetchAccountsbyName', res.data)
-            if(typeof(res.data)=== "object"){
-                setAccNames(res.data)
-            }
-        })
-        .catch((error) => {
-            console.log('error fetchAccountsbyName', error);
-        })
-    }
+   
 
     return (
         <Grid item xs={12} style={{margin:"20px"}}>          
             <div style={{textAlign:"center" ,marginBottom:"10px"}}>
                 {
-                    showNew ? <h3>New Contact </h3> : <h3>Contact Detail Page </h3>
+                    showNew ? <h3>New test </h3> : <h3>test Detail Page </h3>
                 }
             </div>
             <div>
@@ -164,7 +141,7 @@ const ContactDetailPage = ({item}) => {
                     <Grid container spacing={2}>
                                     <Grid item xs={6} md={2}>
                                     <label htmlFor="salutation">Salutation  </label>
-                                    <Field name="salutation" as="select" class="form-input">
+                                    <Field component={TextField} name="salutation" as="select" class="form-input">
                                         <option value="">--Select--</option>
                                         <option value="Mr.">Mr.</option>
                                         <option value="Ms.">Ms.</option>
@@ -176,90 +153,40 @@ const ContactDetailPage = ({item}) => {
                                     <Grid item xs={6} md={4}>
 
                                     <label htmlFor="firstName" >First Name</label>
-                                    <Field name='firstName' type="text" class="form-input" />
+                                    <Field component={TextField} name='firstName' type="text" class="form-input" />
                                     </Grid>
                                     <Grid item xs={6} md={6}>
                                          <label htmlFor="lastName" >Last Name<span className="text-danger">*</span> </label>
-                                    <Field name='lastName' type="text" class="form-input" />
+                                    <Field component={TextField} name='lastName' type="text" class="form-input" />
                                     <div style={{ color: 'red' }}>
                                         <ErrorMessage name="lastName" />
                                     </div>
                                     </Grid>
                                 <Grid item xs={6} md={6}>
-                                    <label htmlFor="Account">Account Name </label>
-                                    {/* <Field name="accountName" class="form-input"
-                                     onchange={FetchAccountsbyName(values.accountName)} 
-                                     onClick={blur}
-                                    
-                                     /> */}
+                                    <label htmlFor="accountName">Account Name </label>
+                                 
 
-                                    <Autocomplete
-                                            name="Account"
-                                            options={accNames}
-                                            value={values.Account}
-                                            getOptionLabel={option => option.accountName ||''}
-                                            // disableCloseOnSelect
-                                            isOptionEqualToValue={(option, value) =>
-                                               option.id ===value                                           
-                                            }
-                                            onChange={(e, value) => {
-                                                // console.log('onchange value',value.accountName)
-                                                setFieldValue("Account", value.id ||'')
-                                                setFieldValue("accountName", value ||'')
-                                            }}
-                                            onClick={()=>{
-                                                FetchAccountsbyName('');
-                                            }}
-                                            onInputChange={(event, newInputValue) => {
-                                                console.log('newInputValue',newInputValue);
-                                             
-                                                            FetchAccountsbyName(newInputValue);
-                                                
-                                            }}
-                                            renderInput={params => (
-                                            <Field component={TextField} {...params} name="Account" />
-                                            )}
-                                            // name="Account"
-                                            // options={accNames}
-                                            // getOptionLabel={option => option.accountName ||''}
-                                            // isOptionEqualToValue={(option, value) =>
-                                            //     option.id === value
-                                            // }
-                                            // onChange={(e, value) => {
-                                            //     setFieldValue("accountName",value)
-                                            //     setFieldValue("Account",value.id)
-                                            // }}
-                                            // value={values.Account}
-                                            // onInputChange={(event, newInputValue) => {
-                                            //     console.log('newInputValue',newInputValue);
-                                            //     if(newInputValue.length>=3){
-                                            //         FetchAccountsbyName(newInputValue);
-                                            //     }
-                                            // }}
-                                            // renderInput={(params) => 
-                                            //     <Field component={TextField} {...params} name="Account" />
-                                            // }
-                                    />  
+                                  
 
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="phone">Phone</label>
-                                    <Field name="phone" type="phone" class="form-input" />
+                                    <Field component={TextField} name="phone" type="phone" class="form-input" />
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="department">Department</label>
-                                    <Field name="department" type="text" class="form-input" />
+                                    <Field component={TextField} name="department" type="text" class="form-input" />
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="email">Email <span className="text-danger">*</span></label>
-                                    <Field name="email" type="text" class="form-input" />
+                                    <Field  component={TextField} name="email" type="text" class="form-input" />
                                     <div style={{ color: 'red' }}>
                                         <ErrorMessage name="email" />
                                     </div>
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="leadSource"> lead Source</label>
-                                    <Field name="leadSource" as="select" class="form-input">
+                                    <Field component={TextField} name="leadSource" as="select" class="form-input">
                                         <option value="">--Select--</option>
                                         <option value="web">Web</option>
                                         <option value="phone Inquiry">phone Inquiry</option>
@@ -276,11 +203,11 @@ const ContactDetailPage = ({item}) => {
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="date">date</label>
-                                    <Field name="date" type="date" class="form-input" />
+                                    <Field component={TextField} name="date" type="date" class="form-input" />
                                 </Grid>
                                 <Grid Grid item xs={6} md={12}>
                                     <label htmlFor="description">Description</label>
-                                    <Field as="textarea" name="description" class="form-input" />
+                                    <Field component={TextField} as="textarea" name="description" class="form-input" />
                                 </Grid>
                                 </Grid>
                                 <div className='action-buttons'>
@@ -307,4 +234,4 @@ const ContactDetailPage = ({item}) => {
   )
 
 }
-export default ContactDetailPage;
+export default TestRecordDetail;
