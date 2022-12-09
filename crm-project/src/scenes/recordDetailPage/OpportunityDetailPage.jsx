@@ -34,7 +34,7 @@ const OpportunityDetailPage = ({item}) => {
         console.log('inside opportunity');
         setSinglOpportunity(location.state.record.item); 
         setshowNew(!location.state.record.item)  
-        FetchInventoriesbyName('')
+        FetchInventoriesbyName('');
         FetchLeadsbyName('');
     },[])
 
@@ -112,6 +112,8 @@ const OpportunityDetailPage = ({item}) => {
     //     })
     // }
     const FetchLeadsbyName =(newInputValue) =>{
+        console.log('inside FetchLeadsbyName fn');
+        console.log('newInputValue',newInputValue)
         axios.post(`${fetchLeadsbyName}?searchKey=${newInputValue}`)
         .then((res) => {
             console.log('res fetchLeadsbyName', res.data)

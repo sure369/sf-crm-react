@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import AccountDetailPage from '../recordDetailPage/AccountDetailPage';
 import EventForm from '../formik/EventForm';
+import AccountForm from '../formik/AccountForm';
 
 function Item(props) {
   const { sx, ...other } = props;
@@ -45,13 +46,8 @@ export default function FlexShrink() {
       <Box
         sx={{ display: 'flex', p: 1, bgcolor: 'background.paper', borderRadius: 1 }}
       >
-        <Item sx={{ width: '100%' }}>
-            {/* <AccountDetailPage/> */} Item 1 
-        </Item>
-        <Item sx={{ flexShrink: 1 }}>
-            {/* <EventForm/> */}Item 2
-        </Item>
-        {/* <Item sx={{ flexShrink: 0 }}>Item 3</Item> */}
+      {/* <AccountDetailPage item={undefined} /> */}
+      <AccountForm/>
       </Box>
     </div>
   );
