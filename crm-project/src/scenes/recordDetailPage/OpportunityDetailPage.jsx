@@ -10,15 +10,13 @@ import "../formik/FormStyles.css"
 
 
 const url ="http://localhost:4000/api/UpsertOpportunity";
-const fetchRecentLeads= "http://localhost:4000/api/recentLeads";
+// const fetchRecentLeads= "http://localhost:4000/api/recentLeads";
 const fetchLeadsbyName ="http://localhost:4000/api/LeadsbyName";
 const fetchRecentInventories= "http://localhost:4000/api/propertyRecentName";
 const fetchInventoriesbyName ="http://localhost:4000/api/InventoryName";
 
 
 const OpportunityDetailPage = ({item}) => {
-
- 
 
     const [singleOpportunity,setSinglOpportunity]= useState(); 
     const location = useLocation();
@@ -29,14 +27,13 @@ const OpportunityDetailPage = ({item}) => {
     const [alertSeverity, setAlertSeverity] = useState();
     const [leadsRecords,setLeadsRecords]= useState([]);
     const [inventoriesRecord,setInventoriesRecord]= useState([]);
+
     useEffect(()=>{
         console.log('passed record',location.state.record.item);
         console.log('inside opportunity');
         setSinglOpportunity(location.state.record.item); 
         setshowNew(!location.state.record.item)  
-        // FetchRecentLeads();
-        console.log('inside opportunity');
-         getRecentInventories();
+        FetchInventoriesbyName('')
     },[])
 
     const initialValues = {
@@ -102,16 +99,16 @@ const OpportunityDetailPage = ({item}) => {
         setShowAlert(false)
     }
 
-    const FetchRecentLeads =()=>{
-        axios.post(fetchRecentLeads)
-        .then((res) => {
-            console.log('res fetchRecentLeads', res.data)
-            setLeadsRecords(res.data)
-        })
-        .catch((error) => {
-            console.log('error fetchRecentLeads', error);
-        })
-    }
+    // const FetchRecentLeads =()=>{
+    //     axios.post(fetchRecentLeads)
+    //     .then((res) => {
+    //         console.log('res fetchRecentLeads', res.data)
+    //         setLeadsRecords(res.data)
+    //     })
+    //     .catch((error) => {
+    //         console.log('error fetchRecentLeads', error);
+    //     })
+    // }
     const FetchLeadsbyName =(newInputValue) =>{
         axios.post(`${fetchLeadsbyName}?searchKey=${newInputValue}`)
         .then((res) => {
@@ -124,20 +121,19 @@ const OpportunityDetailPage = ({item}) => {
             console.log('error fetchLeadsbyName', error);
         })
     }
-    const getRecentInventories =()=>{
+    // const getRecentInventories =()=>{
         
-        console.log('inside getRecentInventories',fetchRecentInventories);
-        axios.post(fetchRecentInventories)
-        .then((res) => {
-            console.log('res fetchRecentInventories', res.data)
-            setInventoriesRecord(res.data)
-        })
-        .catch((error) => {
-            console.log('error fetchRecentInventories', error);
-        })
-    }
+    //     console.log('inside getRecentInventories',fetchRecentInventories);
+    //     axios.post(fetchRecentInventories)
+    //     .then((res) => {
+    //         console.log('res fetchRecentInventories', res.data)
+    //         setInventoriesRecord(res.data)
+    //     })
+    //     .catch((error) => {
+    //         console.log('error fetchRecentInventories', error);
+    //     })
+    // }
     const FetchInventoriesbyName =(newInputValue) =>{
-        console.log('search inventory')
         axios.post(`${fetchInventoriesbyName}?searchKey=${newInputValue}`)
         .then((res) => {
             console.log('res fetchInventoriesbyName', res.data)
@@ -196,15 +192,22 @@ const OpportunityDetailPage = ({item}) => {
                 <Autocomplete
                             name="Inventory"
                             options={inventoriesRecord}
+                            value={values.Inventory}
                             getOptionLabel={option => option.propertyName ||''}
                             isOptionEqualToValue={(option, value) =>
-                                option.name === value.name
+                                option.id === value
+                             
                             }
                             onChange={(e, value) => {
-                                setFieldValue("Inventory",value.id)
-                                setFieldValue("propertyName", value)
+                                setFieldValue("Inventory",value.id ||'')
+                                setFieldValue("propertyName", value||'')
                             }}
-                            value={values.Inventory}
+                            // onClick={()=>{
+                            //     FetchInventoriesbyName('');
+                            // }}
+                            // onBlur={()=>{
+                            //     FetchInventoriesbyName('');
+                            // }}
                             onInputChange={(event, newInputValue) => {
                                 console.log('newInputValue',newInputValue);
                                 if(newInputValue.length>=3){
@@ -216,7 +219,7 @@ const OpportunityDetailPage = ({item}) => {
                             )}
                 />  
 
-             </Grid>``
+             </Grid>
 
              <Grid item xs={6} md={6}>
              <label htmlFor="Lead">Lead Name </label>

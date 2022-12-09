@@ -29,7 +29,8 @@ const ContactDetailPage = ({item}) => {
         setsingleContact(location.state.record.item); 
        
         setshowNew(!location.state.record.item) 
-        // fetchAccountsName();      
+        // fetchAccountsName();     
+        FetchAccountsbyName(''); 
     },[])
 
     // const fetchAccountsName = () => {
@@ -196,20 +197,30 @@ const ContactDetailPage = ({item}) => {
                                     <Autocomplete
                                             name="Account"
                                             options={accNames}
-                                            value={values.Account}
+                                            value= {values.Account}
+                                            // {accNames.filter((item) => {
+                                            //     return item.countryId === values.countryId;
+                                            //   })[0] || ""}
+                                         
                                             getOptionLabel={option => option.accountName ||''}
-                                            // disableCloseOnSelect
+                                           
                                             isOptionEqualToValue={(option, value) =>
                                                option.id ===value                                           
                                             }
                                             onChange={(e, value) => {
-                                                // console.log('onchange value',value.accountName)
+                                              
                                                 setFieldValue("Account", value.id ||'')
                                                 setFieldValue("accountName", value ||'')
+                                               
                                             }}
-                                            onClick={()=>{
-                                                FetchAccountsbyName('');
-                                            }}
+                                            // onClick={()=>{
+                                            //     console.log('inside onclick')
+                                            //     FetchAccountsbyName('');
+                                            // }}
+                                            // onBlur={()=>{  
+                                            //     console.log('inside onBlur')
+                                            //     FetchAccountsbyName('');
+                                            // }}
                                             onInputChange={(event, newInputValue) => {
                                                 console.log('newInputValue',newInputValue);
                                              
