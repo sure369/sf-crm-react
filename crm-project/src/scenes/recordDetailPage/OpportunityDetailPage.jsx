@@ -40,7 +40,7 @@ const OpportunityDetailPage = ({item}) => {
 
     const initialValues = {
         Lead: '',
-        leadName: {leadName:"",id:""},
+        leadName: {firstName:"",id:""},
         Inventory:'',
         inventoryName: {inventoryName:"",id:""},
         opportunityName: '',
@@ -56,7 +56,7 @@ const OpportunityDetailPage = ({item}) => {
 
     const savedValues = {
          Lead: singleOpportunity?.Lead ?? "",
-         leadName:singleOpportunity?.leadName ?? "",
+         leadName:singleOpportunity?.firstName ?? "",
          Inventory: singleOpportunity?.Inventory ?? "",
          inventoryName: singleOpportunity?.inventoryName ?? "",
         opportunityName:  singleOpportunity?.opportunityName ?? "",
