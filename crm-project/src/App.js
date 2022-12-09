@@ -36,6 +36,7 @@ import EventForm from "./scenes/formik/EventForm";
 import ComboBox from "./scenes/formik/lookup";
 import SimpleAccordion from "./scenes/recordDetailPage/TestAccordion";
 import TestRecordDetail from "./scenes/recordDetailPage/TestRecordDetail";
+import FlexShrink from "./scenes/z/Flex";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -68,7 +69,7 @@ function App() {
               <Route path="/team" element={<Team />} />
               <Route path="/faq" element={<FAQ />} />
               
-              <Route path="/test1" element={<ComboBox/>} />
+              <Route path="/test1" element={<FlexShrink/>} />
               <Route path="/test" element={<ContactForm/>} />
               <Route path="/accountDetailPage" element={<AccountDetailPage/>} />
               <Route path="/contactDetailPage" element={<ContactDetailPage/>} />

@@ -11,8 +11,9 @@ import "../formik/FormStyles.css"
 
 const url ="http://localhost:4000/api/UpsertOpportunity";
 // const fetchRecentLeads= "http://localhost:4000/api/recentLeads";
+
+// const fetchRecentInventories= "http://localhost:4000/api/propertyRecentName";
 const fetchLeadsbyName ="http://localhost:4000/api/LeadsbyName";
-const fetchRecentInventories= "http://localhost:4000/api/propertyRecentName";
 const fetchInventoriesbyName ="http://localhost:4000/api/InventoryName";
 
 
@@ -34,6 +35,7 @@ const OpportunityDetailPage = ({item}) => {
         setSinglOpportunity(location.state.record.item); 
         setshowNew(!location.state.record.item)  
         FetchInventoriesbyName('')
+        FetchLeadsbyName('');
     },[])
 
     const initialValues = {
@@ -202,12 +204,6 @@ const OpportunityDetailPage = ({item}) => {
                                 setFieldValue("Inventory",value.id ||'')
                                 setFieldValue("propertyName", value||'')
                             }}
-                            // onClick={()=>{
-                            //     FetchInventoriesbyName('');
-                            // }}
-                            // onBlur={()=>{
-                            //     FetchInventoriesbyName('');
-                            // }}
                             onInputChange={(event, newInputValue) => {
                                 console.log('newInputValue',newInputValue);
                                 if(newInputValue.length>=3){

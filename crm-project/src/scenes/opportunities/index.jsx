@@ -92,8 +92,14 @@ const Opportunities = () => {
       headerAlign: 'center',align: 'center',flex: 1,
     },
     { 
-      field: "accountName",headerName: "Account Name",
+      field: "inventoryName",headerName: "Inventory Name",
       headerAlign: 'center',align: 'center',flex: 1,
+      renderCell: (params) => {
+      
+        return <div className="rowitem">
+          {params.row.Propertydetails[0].propertyName}
+        </div>;
+      },
     }, 
     {
       field: "type",headerName: "Type", 

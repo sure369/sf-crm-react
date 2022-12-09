@@ -42,10 +42,103 @@ const NewForm = () => {
                 "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
               }}
             >
-              <Field
+            
+               <Field
                 label="First Name"
+                name="firstName"
+                value={values.firstName}
+                component={TextField}
+                fullWidth
               />
-              {/* <TextField
+               <Field
+                label="Last Name"
+                name="lastName"
+                component={TextField}
+                fullWidth
+              />
+             
+               <Field
+                label="Phone "
+                name="phone"
+                component={TextField}
+                fullWidth
+              />
+              <Field
+                label="Email"
+                name="email"
+                component={TextField}
+                fullWidth
+              />
+               <Field
+                label="department "
+                name="department"
+                component={TextField}
+                
+                fullWidth
+              />
+               <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="mailingAddress 1"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.mailingAddress}
+                name="mailingAddress"
+                error={!!touched.mailingAddress && !!errors.mailingAddress}
+                helperText={touched.mailingAddress && errors.mailingAddress}
+                sx={{ gridColumn: "span 4" }}
+              />
+               
+       
+          </Box>
+          <Box display="flex" justifyContent="end" mt="20px">
+              <Button type="submit" color="secondary" variant="contained">
+                Create New User
+              </Button>
+            </Box> 
+          </Form>
+        )}
+      </Formik>
+    </Box>
+  );
+};
+
+const phoneRegExp =
+  /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
+
+const checkoutSchema = yup.object().shape({
+  firstName: yup.string().required("required"),
+  lastName: yup.string().required("required"),
+  email: yup.string().email("invalid email").required("required"),
+  phone: yup
+    .string()
+    .matches(phoneRegExp, "Phone number is not valid")
+    .required("required"),
+});
+const initialValues = {
+  accountName: '',
+  salutation: '',
+  firstName: '',
+  lastName: '',
+  dop: '',
+  phone: '',
+  department: '',
+  leadSource: '',
+  email: '',
+  mailingAddress: '',
+  description: '',
+  file: '',
+  date: '',
+  createdbyId: '',
+  createdDate: '',
+};
+
+
+
+export default NewForm;
+
+{/* <TextField
                 fullWidth
                 variant="filled"
                 type="text"
@@ -57,10 +150,10 @@ const NewForm = () => {
                 error={!!touched.firstName && !!errors.firstName}
                 helperText={touched.firstName && errors.firstName}
                 sx={{ gridColumn: "span 2" }}
-              /> */}
-              <TextField
+              /> 
+               <TextField
                 fullWidth
-                variant="filled"
+                // variant="filled"
                 type="text"
                 label="Last Name"
                 onBlur={handleBlur}
@@ -129,36 +222,4 @@ const NewForm = () => {
                 Create New User
               </Button>
             </Box>
-          </Form>
-        )}
-      </Formik>
-    </Box>
-  );
-};
-
-const phoneRegExp =
-  /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
-
-const checkoutSchema = yup.object().shape({
-  firstName: yup.string().required("required"),
-  lastName: yup.string().required("required"),
-  email: yup.string().email("invalid email").required("required"),
-  contact: yup
-    .string()
-    .matches(phoneRegExp, "Phone number is not valid")
-    .required("required"),
-  address1: yup.string().required("required"),
-  address2: yup.string().required("required"),
-});
-const initialValues = {
-  firstName: "",
-  lastName: "",
-  email: "",
-  contact: "",
-  address1: "",
-  address2: "",
-};
-
-
-
-export default NewForm;
+          </Form> */}

@@ -83,17 +83,7 @@ const ContactForm = () => {
     const toastCloseCallback = () => {
         setShowAlert(false)
     }
-    return (
-        <div className="container mb-10">
-            <div className="col-lg-12 text-center mb-3">
-                <h3>New Contact</h3>
-            </div>
-            <div class="container overflow-hidden ">
-                <Formik
-                    initialValues={initialValues}
-                    validationSchema={validationSchema}
-                    onSubmit={(values, { resetForm }) => {
-                        console.log('values',values);
+    const formsubmission=(values)=>{
                         // axios.post(url, values)
                         //     .then((res) => {
                         //         console.log('post response', res);
@@ -116,9 +106,28 @@ const ContactForm = () => {
                         //         setAlertSeverity('error')
 
                         //     })
+    }
+    return (
+        <div className="container mb-10">
+            <div className="col-lg-12 text-center mb-3">
+                <h3>New Contact</h3>
+            </div>
+            <div class="container overflow-hidden ">
+                <Formik
+                    initialValues={initialValues}
+                    validationSchema={validationSchema}
+                    onSubmit={(values, { resetForm }) => {
+                        console.log('values',values);
+                        formsubmission(values);
+                       
                     }}
                 >
-                 {({values,setFieldValue}) => (
+                 {({ values,
+          errors,
+          touched,
+          handleBlur,
+          handleChange,
+          handleSubmit,setFieldValue}) => (
                     <>
                                 {
                                     showAlert ? <SimpleSnackbar severity={alertSeverity} message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> : <SimpleSnackbar message={showAlert} />
