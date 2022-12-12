@@ -132,6 +132,7 @@ const ContactDetailPage = ({item}) => {
     }
 
     return (
+        <div className="App" >
         <Grid item xs={12} style={{margin:"20px"}}>          
             <div style={{textAlign:"center" ,marginBottom:"10px"}}>
                 {
@@ -314,7 +315,8 @@ const ContactDetailPage = ({item}) => {
              }}
                 </Formik>
             </div>
-        </Grid>   
+        </Grid>  
+        </div> 
   )
 
 }

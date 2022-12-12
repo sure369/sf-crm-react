@@ -1,14 +1,16 @@
 import React,{useState,useEffect} from 'react';
 import { Box, Button ,IconButton,useTheme} from "@mui/material";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar,
+  gridPageCountSelector,gridPageSelector,
+  useGridApiContext,useGridSelector} from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
-import UserForm from "../formik/UserForm";
 import axios from 'axios';
 import {  useNavigate } from "react-router-dom";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import SimpleSnackbar from "../toast/test";
+import Pagination from '@mui/material/Pagination';
 
 const Users = () => {
 
@@ -83,6 +85,22 @@ const Users = () => {
   const toastCloseCallback=()=>{
     setShowAlert(false)
   }
+  
+  function CustomPagination() {
+    const apiRef = useGridApiContext();
+    const page = useGridSelector(apiRef, gridPageSelector);
+    const pageCount = useGridSelector(apiRef, gridPageCountSelector);
+  
+    return (
+      <Pagination
+        color="primary"
+        count={pageCount}
+        page={page + 1}
+        onChange={(event, value) => apiRef.current.setPage(value - 1)}
+      />
+    );
+  }
+
   const columns = [
     {
       field: "firstName",headerName: "First Name",
@@ -155,7 +173,7 @@ const Users = () => {
             backgroundColor: colors.primary[400],
           },
           "& .MuiDataGrid-footerContainer": {
-            borderTop: "none",
+            borderBottom: "none",
             backgroundColor: colors.blueAccent[700],
           },
           "& .MuiCheckbox-root": {
@@ -182,7 +200,9 @@ const Users = () => {
               pageSize={5}
               rowsPerPageOptions={[5]}
               // onCellClick={handleOnCellClick}
-              components={{ Toolbar: GridToolbar }}
+              components={{
+                Pagination:CustomPagination,
+                 Toolbar: GridToolbar }}
         /> 
       </Box>
     </Box>

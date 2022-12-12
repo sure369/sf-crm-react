@@ -6,6 +6,7 @@ import EventForm from '../formik/EventForm';
 import AccountForm from '../formik/AccountForm';
 
 function Item(props) {
+    console.log('props',props)
   const { sx, ...other } = props;
   return (
     <Box
@@ -47,7 +48,9 @@ export default function FlexShrink() {
         sx={{ display: 'flex', p: 1, bgcolor: 'background.paper', borderRadius: 1 }}
       >
       {/* <AccountDetailPage item={undefined} /> */}
-      <AccountForm/>
+      {/* <AccountForm/> */}
+      <Item sx={{ width: '100%' }}><AccountForm/></Item>
+        <Item sx={{ flexShrink: 1 }}><EventForm/></Item>
       </Box>
     </div>
   );

@@ -1,6 +1,8 @@
 import React,{useState,useEffect} from 'react';
 import { useTheme,Box,Button,IconButton } from "@mui/material";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar,
+  gridPageCountSelector,gridPageSelector,
+  useGridApiContext,useGridSelector} from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import LeadForm from "../formik/LeadForm";
@@ -9,6 +11,7 @@ import axios from 'axios'
 import {  useNavigate } from "react-router-dom";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import Pagination from '@mui/material/Pagination';
 
 const Leads = () => {
     
@@ -78,9 +81,26 @@ const Leads = () => {
         setAlertSeverity('error')
       })
   };
+
   const toastCloseCallback=()=>{
     setShowAlert(false)
   }
+
+  function CustomPagination() {
+    const apiRef = useGridApiContext();
+    const page = useGridSelector(apiRef, gridPageSelector);
+    const pageCount = useGridSelector(apiRef, gridPageCountSelector);
+  
+    return (
+      <Pagination
+        color="primary"
+        count={pageCount}
+        page={page + 1}
+        onChange={(event, value) => apiRef.current.setPage(value - 1)}
+      />
+    );
+  }
+
   const columns = [
     {
       field: "lastName",headerName: "Last Name",
@@ -156,7 +176,7 @@ const Leads = () => {
             backgroundColor: colors.primary[400],
           },
           "& .MuiDataGrid-footerContainer": {
-            borderTop: "none",
+            borderBottom: "none",
             backgroundColor: colors.blueAccent[700],
           },
           "& .MuiCheckbox-root": {
@@ -184,7 +204,8 @@ const Leads = () => {
             pageSize={5}
             rowsPerPageOptions={[5]}
             onCellClick={handleOnCellClick}
-            components={{ Toolbar: GridToolbar }}
+            components={{ Pagination:CustomPagination,
+               Toolbar: GridToolbar }}
         />
       </Box>
     </Box>

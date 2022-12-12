@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { Grid, Button,DialogActions,Box } from "@mui/material";
+import { Grid, Button,DialogActions,Box ,TextField,Autocomplete} from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom"
 import axios from 'axios'
 import SimpleSnackbar from "../toast/test";
 import "../formik/FormStyles.css"
 
 const url = "http://localhost:4000/api/UpsertAccount";
+const fetchInventoriesbyName ="http://localhost:4000/api/InventoryName";
 
 const AccountDetailPage = ({ item }) => {
 
@@ -19,18 +20,22 @@ const AccountDetailPage = ({ item }) => {
     const [showAlert, setShowAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState();
     const [alertSeverity, setAlertSeverity] = useState();
+    const [inventoriesRecord,setInventoriesRecord]= useState([]);
 
     useEffect(() => {
         console.log('passed record', location.state.record.item);
         setsingleAccount(location.state.record.item);
         console.log('true', !location.state.record.item);
         setshowNew(!location.state.record.item)
+        FetchInventoriesbyName('');
      
     },[])
 
     const initialValues = {
         accountName: '',
         accountNumber: '',
+        Inventory:'',
+        inventoryName: {inventoryName:"",id:""},
         annualRevenue: '',
         rating: '',
         type: '',
@@ -50,6 +55,8 @@ const AccountDetailPage = ({ item }) => {
     const savedValues = {
         accountName: singleAccount?.accountName ?? "",
         accountNumber: singleAccount?.accountNumber ?? "",
+        Inventory:singleAccount?.Inventory ?? "",
+        inventoryName:singleAccount?.inventoryName ?? "",
         annualRevenue: singleAccount?.annualRevenue ?? "",
         rating: singleAccount?.rating ?? "",
         type: singleAccount?.type ?? "",
@@ -103,6 +110,7 @@ const AccountDetailPage = ({ item }) => {
     })
 
     const formSubmission=(values)=>{
+        console.log('form submit',values)
         axios.post(url, values)
         .then((res) => {
             console.log('upsert record  response', res);
@@ -123,6 +131,19 @@ const AccountDetailPage = ({ item }) => {
     }
     const toastCloseCallback = () => {
         setShowAlert(false)
+    }
+
+    const FetchInventoriesbyName =(newInputValue) =>{
+        axios.post(`${fetchInventoriesbyName}?searchKey=${newInputValue}`)
+        .then((res) => {
+            console.log('res fetchInventoriesbyName', res.data)
+            if(typeof(res.data)=== "object"){
+                setInventoriesRecord(res.data)
+            }
+        })
+        .catch((error) => {
+            console.log('error fetchInventoriesbyName', error);
+        })
     }
 
     return (
@@ -170,6 +191,34 @@ const AccountDetailPage = ({ item }) => {
                                             <label htmlFor="accountNumber">Account Number </label>
                                             <Field name="accountNumber" type="text" class="form-input" />
                                         </Grid>
+                                        <Grid item xs={6} md={6}>
+                                            <label htmlFor="Inventory">Inventory Name </label>
+                                            <Autocomplete
+                                                name="Inventory"
+                                                options={inventoriesRecord}
+                                                value={values.Inventory}
+                                                getOptionLabel={option => option.propertyName || ''}
+                                                isOptionEqualToValue={(option, value) =>
+                                                    option.id === value
+
+                                                }
+                                                onChange={(e, value) => {
+                                                    setFieldValue("Inventory", value.id || '')
+                                                    setFieldValue("propertyName", value || '')
+                                                }}
+                                                onInputChange={(event, newInputValue) => {
+                                                    console.log('newInputValue', newInputValue);
+                                                    if (newInputValue.length >= 3) {
+                                                        FetchInventoriesbyName(newInputValue);
+                                                    }
+                                                }}
+                                                renderInput={params => (
+                                                    <Field component={TextField} {...params} name="Inventory" />
+                                                )}
+                                            />
+
+                                        </Grid>
+
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="annualRevenue">Aannual Revenue</label>
                                             <Field class="form-input" type="nu,ber" name="annualRevenue" />

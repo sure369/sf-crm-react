@@ -15,7 +15,7 @@ import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import AssistantPhotoIcon from '@mui/icons-material/AssistantPhoto';
 import ContactPageIcon from '@mui/icons-material/ContactPage';
 import DiamondIcon from '@mui/icons-material/Diamond';
-
+import mainLogo  from '../assets/user image.png';
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -54,6 +54,7 @@ const Sidebar = () => {
         },
         "& .pro-inner-item:hover": {
           color: "#868dfb !important",
+          //  color: "#868dfb !important",
         },
         "& .pro-menu-item.active": {
           color: "#6870fa !important",
@@ -97,7 +98,8 @@ const Sidebar = () => {
                   alt="profile-user"
                   width="100px"
                   height="100px"
-                  src={`../../assets/user image.png`}
+                  src={mainLogo}
+                  // src={`../../assets/user image.png`}
                   style={{ cursor: "pointer", borderRadius: "50%" }}
                 />
               </Box>
@@ -126,13 +128,34 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
 
-            <Typography
+            {/* <Typography
               variant="h6"
               color={colors.grey[300]}
               sx={{ m: "15px 0 5px 20px" }}
             >
               Data
-            </Typography>
+            </Typography> */}
+             <Item
+              title="Leads"
+              to="/leads"
+              icon={<AssistantPhotoIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Opportunities"
+              to="/opportunities"
+              icon={<DiamondIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Inventories"
+              to="/inventories"
+              icon={<InventoryIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
             <Item
               title="Accounts"
               to="/accounts"
@@ -147,27 +170,6 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
-             <Item
-              title="Opportunities"
-              to="/opportunities"
-              icon={<DiamondIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-             <Item
-              title="Leads"
-              to="/leads"
-              icon={<AssistantPhotoIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Inventories"
-              to="/inventories"
-              icon={<InventoryIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
             <Item
               title="Users"
               to="/users"
@@ -175,6 +177,7 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
+           
             {/* <Typography
               variant="h6"
               color={colors.grey[300]}

@@ -1,6 +1,8 @@
 import React,{useState,useEffect} from 'react';
 import { Box,Button,IconButton } from "@mui/material";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar,
+  gridPageCountSelector,gridPageSelector,
+  useGridApiContext,useGridSelector} from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import { useTheme } from "@mui/material";
@@ -9,6 +11,7 @@ import SimpleSnackbar from "../toast/test";
 import {  useNavigate } from "react-router-dom";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import Pagination from '@mui/material/Pagination';
 
 const Contacts = () => {
   
@@ -85,6 +88,21 @@ const Contacts = () => {
     setShowAlert(false)
   }
 
+  function CustomPagination() {
+    const apiRef = useGridApiContext();
+    const page = useGridSelector(apiRef, gridPageSelector);
+    const pageCount = useGridSelector(apiRef, gridPageCountSelector);
+  
+    return (
+      <Pagination
+        color="primary"
+        count={pageCount}
+        page={page + 1}
+        onChange={(event, value) => apiRef.current.setPage(value - 1)}
+      />
+    );
+  }
+
   const columns = [
     {
       field: "lastName",headerName: "Last Name",
@@ -94,10 +112,17 @@ const Contacts = () => {
       field: "accountName",headerName: "Account Name",
       headerAlign: 'center',align: 'center',flex: 1,
       renderCell: (params) => {
-      
+      if(params.row.Accountdetails.length>0){
         return <div className="rowitem">
           {params.row.Accountdetails[0].accountName}
         </div>;
+      }
+      else{
+        return <div className="rowitem">
+          {null}
+          </div>
+      }
+        
       },
     }, 
     {
@@ -162,8 +187,9 @@ const Contacts = () => {
             backgroundColor: colors.primary[400],
           },
           "& .MuiDataGrid-footerContainer": {
-            borderTop: "none",
+            // borderTop: "none",
             backgroundColor: colors.blueAccent[700],
+            borderBottom: "none",
           },
           "& .MuiCheckbox-root": {
             color: `${colors.greenAccent[200]} !important`,
@@ -189,7 +215,9 @@ const Contacts = () => {
           pageSize={5}
           rowsPerPageOptions={[5]}
           // onCellClick={handleOnCellClick}
-          components={{ Toolbar: GridToolbar }}
+          components={{ Toolbar: GridToolbar ,
+                        Pagination:CustomPagination,
+                        }}
         />
       </Box>
     </Box>

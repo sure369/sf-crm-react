@@ -1,6 +1,8 @@
 import React,{useState,useEffect} from 'react';
 import { Box, Button,useTheme ,IconButton} from "@mui/material";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar,
+  gridPageCountSelector,gridPageSelector,
+  useGridApiContext,useGridSelector} from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import axios from 'axios';
@@ -8,6 +10,7 @@ import {  useNavigate } from "react-router-dom";
 import SimpleSnackbar from "../toast/test";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import Pagination from '@mui/material/Pagination';
 
 const Accounts = () => {
 
@@ -87,6 +90,21 @@ console.log('inside account index')
     
   }
 
+  function CustomPagination() {
+    const apiRef = useGridApiContext();
+    const page = useGridSelector(apiRef, gridPageSelector);
+    const pageCount = useGridSelector(apiRef, gridPageCountSelector);
+  
+    return (
+      <Pagination
+        color="primary"
+        count={pageCount}
+        page={page + 1}
+        onChange={(event, value) => apiRef.current.setPage(value - 1)}
+      />
+    );
+  }
+
   const columns = [
     {
       field: "accountName",headerName: "Name",
@@ -156,7 +174,8 @@ console.log('inside account index')
             backgroundColor: colors.primary[400],
           },
           "& .MuiDataGrid-footerContainer": {
-            borderTop: "none",
+            borderBottom: "none",
+            // borderBottomStyle:{{sx:r}},
             backgroundColor: colors.blueAccent[700],
           },
           "& .MuiCheckbox-root": {
@@ -185,7 +204,8 @@ console.log('inside account index')
               rowsPerPageOptions={[5]}
              
               // onCellClick={handleOnCellClick}
-              components={{ Toolbar: GridToolbar }}
+              components={{ Toolbar: GridToolbar,
+                            Pagination:CustomPagination, }}
       /> 
     </Box> 
     </Box>

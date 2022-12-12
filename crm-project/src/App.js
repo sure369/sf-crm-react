@@ -46,12 +46,12 @@ function App() {
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <div className="app">
+        <div className="app" style={{height: "fit-content"}}>
           <Sidebar isSidebar={isSidebar} />
-          <main className="content">
+          <main className="content" style={{height: "fit-content"}}>
             {/* <Topbar setIsSidebar={setIsSidebar} /> */}
             <Routes>
-              <Route path="/" element={< Accounts/>} />
+              <Route path="/" element={< Inventories/>} />
               <Route path="/accounts" element={<Accounts />} />
               <Route path="/contacts" element={<Contacts />} />
               <Route path="/opportunities" element={<Opportunities />} />
