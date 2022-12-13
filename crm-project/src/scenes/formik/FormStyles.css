@@ -1,0 +1,32 @@
+
+.form-input, select {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+   
+  }
+.font-style{
+  font-size: small;
+}
+  .action-buttons{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+ 
+  }
+
+  .btn-test{
+    display: flex;
+    align-items: end;
+    justify-content: flex-end;
+    color: none;
+
+  }
+  .text-danger{
+    color: red;
+  }
