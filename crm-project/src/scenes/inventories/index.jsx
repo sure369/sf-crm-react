@@ -56,7 +56,8 @@ const Inventories = () => {
     setFinalClickInfo(e);
     console.log('selected record', row);
     const item = row;
-    navigate("/inventoryDetailPage", { state: { record: { item } } })
+    
+    // navigate("/inventoryDetailPage", { state: { record: { item } } })
   };
 
 

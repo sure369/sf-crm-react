@@ -20,6 +20,7 @@ import LeadForm from "./scenes/formik/LeadForm";
 import MaterialUIPickers from "./scenes/formik/datePick";
 import FormikDepend from "./scenes/formik/formikDepend";
 import LookupOption from "./scenes/formik/lookup";
+<<<<<<< Updated upstream
 import AppNavbar from "./scenes/global/AppNavbar";
 import TestForm from "./scenes/formik/TestForm";
 import AccountDetailPage from "./scenes/recordDetailPage/AccountDetailPage";
@@ -37,6 +38,8 @@ import ComboBox from "./scenes/formik/lookup";
 import SimpleAccordion from "./scenes/recordDetailPage/TestAccordion";
 import TestRecordDetail from "./scenes/recordDetailPage/TestRecordDetail";
 import FlexShrink from "./scenes/z/Flex";
+=======
+>>>>>>> Stashed changes
 
 function App() {
   const [theme, colorMode] = useMode();
