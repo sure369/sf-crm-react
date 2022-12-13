@@ -1,12 +1,10 @@
-import * as React from 'react';
+import React,{useEffect} from 'react';
 import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
-import AccountDetailPage from '../recordDetailPage/AccountDetailPage';
-import EventForm from '../formik/EventForm';
-import AccountForm from '../formik/AccountForm';
+import Inventories from '../inventories';
+import Test from './Test';
 
 function Item(props) {
-    console.log('props',props)
   const { sx, ...other } = props;
   return (
     <Box
@@ -41,7 +39,9 @@ Item.propTypes = {
   ]),
 };
 
-export default function FlexShrink() {
+const FlexShrink = () => {
+  
+
   return (
     <div style={{ width: '100%' }}>
       <Box
@@ -49,9 +49,10 @@ export default function FlexShrink() {
       >
       {/* <AccountDetailPage item={undefined} /> */}
       {/* <AccountForm/> */}
-      <Item sx={{ width: '100%' }}><AccountForm/></Item>
-        <Item sx={{ flexShrink: 1 }}><EventForm/></Item>
+      <Item sx={{ width: '50%' }}><Test/></Item>
+        <Item sx={{ width: '50%' }}> <Inventories/> </Item>
       </Box>
     </div>
   );
 }
+export default  FlexShrink

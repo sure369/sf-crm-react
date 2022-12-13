@@ -20,7 +20,6 @@ import LeadForm from "./scenes/formik/LeadForm";
 import MaterialUIPickers from "./scenes/formik/datePick";
 import FormikDepend from "./scenes/formik/formikDepend";
 import LookupOption from "./scenes/formik/lookup";
-<<<<<<< Updated upstream
 import AppNavbar from "./scenes/global/AppNavbar";
 import TestForm from "./scenes/formik/TestForm";
 import AccountDetailPage from "./scenes/recordDetailPage/AccountDetailPage";
@@ -38,9 +37,6 @@ import ComboBox from "./scenes/formik/lookup";
 import SimpleAccordion from "./scenes/recordDetailPage/TestAccordion";
 import TestRecordDetail from "./scenes/recordDetailPage/TestRecordDetail";
 import FlexShrink from "./scenes/z/Flex";
-=======
->>>>>>> Stashed changes
-
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
@@ -59,7 +55,7 @@ function App() {
               <Route path="/contacts" element={<Contacts />} />
               <Route path="/opportunities" element={<Opportunities />} />
               <Route path="/leads" element={<Leads />} />
-              <Route path="/inventories" element={<Inventories/>} />
+              <Route path="/inventories" element={<FlexShrink/>} />
               <Route path="/users" element={<Users />} />
               <Route path="/new-accounts" element={<AccountForm />} />
               <Route path="/new-contacts" element={<ContactForm />} />

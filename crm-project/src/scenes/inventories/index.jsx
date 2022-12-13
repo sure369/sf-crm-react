@@ -11,6 +11,8 @@ import SimpleSnackbar from "../toast/test";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import Pagination from '@mui/material/Pagination';
+import FlexShrink from '../z/Flex';
+import Test from '../z/Test';
 
 const Inventories = () => {
 
@@ -56,7 +58,7 @@ const Inventories = () => {
     setFinalClickInfo(e);
     console.log('selected record', row);
     const item = row;
-    
+    <Test data={item}/>
     // navigate("/inventoryDetailPage", { state: { record: { item } } })
   };
 
@@ -201,9 +203,10 @@ const Inventories = () => {
               getRowId={(row) => row._id}
               pageSize={5}
               rowsPerPageOptions={[5]}
-              onCellClick={handleOnCellClick}
+              // onCellClick={handleOnCellClick}
               components={{ Pagination:CustomPagination,
                  Toolbar: GridToolbar }}
+              
             />
           </Box>
         </Box>
