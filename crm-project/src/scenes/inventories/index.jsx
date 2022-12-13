@@ -42,6 +42,7 @@ const Inventories = () => {
         (res) => {
           console.log("res Inventory records", res);
           setRecords(res.data);
+          
         }
       )
       .catch((error) => {
@@ -55,10 +56,11 @@ const Inventories = () => {
   };
 
   const handleOnCellClick = (e, row) => {
-    setFinalClickInfo(e);
-    console.log('selected record', row);
+    // setFinalClickInfo(e);
+    console.log('selected record', e);
     const item = row;
-    <Test data={item}/>
+    console.log('item',item);
+    // <Test data={}/>
     // navigate("/inventoryDetailPage", { state: { record: { item } } })
   };
 
@@ -203,7 +205,7 @@ const Inventories = () => {
               getRowId={(row) => row._id}
               pageSize={5}
               rowsPerPageOptions={[5]}
-              // onCellClick={handleOnCellClick}
+               onCellClick={handleOnCellClick}
               components={{ Pagination:CustomPagination,
                  Toolbar: GridToolbar }}
               

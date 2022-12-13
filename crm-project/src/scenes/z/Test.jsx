@@ -8,10 +8,14 @@ import axios from 'axios'
 import SimpleSnackbar from "../toast/test";
 import "../formik/FormStyles.css"
 
-const url ="http://localhost:4000/api/UpsertInventory";
 
 const Test = ({item}) => {
-    console.log('item',item);
+
+// const [rec,setRec]=useState({city:"Dubai",country:"UAE",projectName:"property",
+//                             propertyName: "LT",status:"available ",type:"Commercial Space",
+//                             _id:"6396c6aa468e1e2c0d809b22"})
+
+
     useEffect(()=>{
         
     console.log('data',item);
