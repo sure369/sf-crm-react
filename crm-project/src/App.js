@@ -37,6 +37,7 @@ import ComboBox from "./scenes/formik/lookup";
 import SimpleAccordion from "./scenes/recordDetailPage/TestAccordion";
 import TestRecordDetail from "./scenes/recordDetailPage/TestRecordDetail";
 import FlexShrink from "./scenes/z/Flex";
+
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
@@ -86,3 +87,95 @@ function App() {
 }
 
 export default App;
+
+
+// sidebar //
+    // return (
+    //   <ColorModeContext.Provider value={colorMode}>
+    //     <ThemeProvider theme={theme}>
+    //       <CssBaseline />
+    //       <div className="app" style={{height: "fit-content"}}>
+    //         <Sidebar isSidebar={isSidebar} />
+    //         <main className="content" style={{height: "fit-content"}}>
+    //           {/* <Topbar setIsSidebar={setIsSidebar} /> */}
+    //           <Routes>
+    //             <Route path="/" element={< Inventories/>} />
+    //             <Route path="/accounts" element={<Accounts />} />
+    //             <Route path="/contacts" element={<Contacts />} />
+    //             <Route path="/opportunities" element={<Opportunities />} />
+    //             <Route path="/leads" element={<Leads />} />
+    //             <Route path="/inventories" element={<FlexShrink/>} />
+    //             <Route path="/users" element={<Users />} />
+    //             <Route path="/new-accounts" element={<AccountForm />} />
+    //             <Route path="/new-contacts" element={<ContactForm />} />
+    //             <Route path="/new-opportunities" element={<OpportunityForm />} />
+    //             <Route path="/new-leads" element={<LeadForm />} />
+    //             <Route path="/new-users" element={<UserForm/>} />
+    //             <Route path="/new-inventories" element={<InventoryForm/>}/>
+    //             <Route path="/new-event" element={<EventForm/>}/>
+    //             <Route path="/form" element={<NewForm />} />
+    //             <Route path="/team" element={<Team />} />
+    //             <Route path="/faq" element={<FAQ />} />
+                
+    //             <Route path="/test1" element={<FlexShrink/>} />
+    //             <Route path="/test" element={<ContactForm/>} />
+    //             <Route path="/accountDetailPage" element={<AccountDetailPage/>} />
+    //             <Route path="/contactDetailPage" element={<ContactDetailPage/>} />
+    //             <Route path="/opportunityDetailPage" element={<OpportunityDetailPage/>}/>
+    //             <Route path="/leadDetailPage" element={<LeadDetailPage/>} />
+    //             <Route path="/inventoryDetailPage" element={<InventoryDetailPage/>}/>
+    //             <Route path="/userDetailPage" element={<UserDetailPage/>} />
+    //             <Route path="/test-date" element={<MaterialUIPickers/>} />
+    //           </Routes>
+    //         </main>
+    //       </div>
+    //     </ThemeProvider>
+    //    </ColorModeContext.Provider>
+    // );
+  // sidebar //
+
+  //Navbar //
+    // return (
+    //   <ColorModeContext.Provider value={colorMode}>
+    //     <ThemeProvider theme={theme}>
+    //       <CssBaseline />
+         
+    //        <Navbar/>
+    //        <main className="content" style={{height: "fit-content"}}>
+    //           <Routes>
+               
+    //             <Route path="/" element={< InventoryMobile/>} />
+    //             <Route path="/accounts" element={<Accounts />} />
+    //             <Route path="/contacts" element={<Contacts />} />
+    //             <Route path="/opportunities" element={<Opportunities />} />
+    //             <Route path="/leads" element={<Leads />} />
+    //             <Route path="/inventories" element={<FlexShrink/>} />
+    //             <Route path="/users" element={<Users />} />
+    //             <Route path="/new-accounts" element={<AccountForm />} />
+    //             <Route path="/new-contacts" element={<ContactForm />} />
+    //             <Route path="/new-opportunities" element={<OpportunityForm />} />
+    //             <Route path="/new-leads" element={<LeadForm />} />
+    //             <Route path="/new-users" element={<UserForm/>} />
+    //             <Route path="/new-inventories" element={<InventoryForm/>}/>
+    //             <Route path="/new-event" element={<EventForm/>}/>
+    //             <Route path="/form" element={<NewForm />} />
+    //             <Route path="/team" element={<Team />} />
+    //             <Route path="/faq" element={<FAQ />} />
+                
+    //             <Route path="/test1" element={<FlexShrink/>} />
+    //             <Route path="/test" element={<ContactForm/>} />
+    //             <Route path="/accountDetailPage" element={<AccountDetailPage/>} />
+    //             <Route path="/contactDetailPage" element={<ContactDetailPage/>} />
+    //             <Route path="/opportunityDetailPage" element={<OpportunityDetailPage/>}/>
+    //             <Route path="/leadDetailPage" element={<LeadDetailPage/>} />
+    //             <Route path="/inventoryDetailPage" element={<InventoryDetailPage/>}/>
+    //             <Route path="/userDetailPage" element={<UserDetailPage/>} />
+    //             <Route path="/test-date" element={<MaterialUIPickers/>} />
+             
+    //           </Routes>
+    //           </main>
+      
+    //     </ThemeProvider>
+    //    </ColorModeContext.Provider>
+    // );
+  //Navbar //

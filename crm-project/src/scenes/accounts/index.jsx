@@ -195,18 +195,20 @@ console.log('inside account index')
           </Button>
         </div>
       
+      {/* <div style={{height: '500px', width: '100%' }}> */}
 
       <DataGrid
               rows={records}
               columns={columns}
               getRowId={(row) => row._id}
-              pageSize={10}
-              rowsPerPageOptions={[5]}
+              pageSize={7}
+              rowsPerPageOptions={[7]}
              
               // onCellClick={handleOnCellClick}
               components={{ Toolbar: GridToolbar,
                             Pagination:CustomPagination, }}
       /> 
+      {/* </div> */}
     </Box> 
     </Box>
     </>

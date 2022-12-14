@@ -64,7 +64,8 @@ const ContactDetailPage = ({item}) => {
 
     const savedValues = {
         Account:singleContact?.Account??"",
-        accountName:singleContact?.Accountdetails[0].accountName??"",
+        accountName:singleContact?.accountName??"",
+        // accountName:singleContact?.Accountdetails[0].accountName??"",
         salutation:  singleContact?.salutation ?? "",
         firstName:  singleContact?.firstName ?? "",
         lastName:  singleContact?.lastName ?? "",

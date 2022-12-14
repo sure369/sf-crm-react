@@ -197,8 +197,8 @@ const Users = () => {
               rows={records}
               columns={columns}
               getRowId={(row) => row._id}
-              pageSize={10}
-              rowsPerPageOptions={[5]}
+              pageSize={7}
+              rowsPerPageOptions={[7]}
               // onCellClick={handleOnCellClick}
               components={{
                 Pagination:CustomPagination,

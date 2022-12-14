@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react';
-import { Box,Button,IconButton } from "@mui/material";
+import { Box,Button,IconButton ,Typography ,Modal } from "@mui/material";
 import { DataGrid, GridToolbar,
   gridPageCountSelector,gridPageSelector,
   useGridApiContext,useGridSelector} from "@mui/x-data-grid";
@@ -12,6 +12,18 @@ import {  useNavigate } from "react-router-dom";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import Pagination from '@mui/material/Pagination';
+
+const modalStyle = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
 
 const Contacts = () => {
   
@@ -26,8 +38,13 @@ const Contacts = () => {
 
   //toast 
   const[showAlert,setShowAlert] = useState(false);
-    const[alertMessage,setAlertMessage]=useState();
-    const[alertSeverity,setAlertSeverity]=useState();
+  const[alertMessage,setAlertMessage]=useState();
+  const[alertSeverity,setAlertSeverity]=useState();
+
+  //modal
+  const [open, setOpen] = React.useState(true);
+  const handleModalOpen = () => setOpen(true);
+  const handleModalClose = () => setOpen(false);
 
   useEffect(()=>{
     console.log('contact index')
@@ -62,26 +79,46 @@ const Contacts = () => {
  
  
   const onHandleDelete = (e, row) => {
+      
+      <Modal
+        open={true}
+        onClose={handleModalClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={modalStyle}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Text in a modal
+          </Typography>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+            </Typography>
+        </Box>
+
+      </Modal>
+
+
+
     e.stopPropagation();
     console.log('req delete rec',row);
     console.log('req delete rec id',row._id);
     
-    axios.post(urlDelete+row._id)
-    .then((res)=>{
-        console.log('api delete response',res);
-        fetchRecords();
-        //delete show toast
-        setShowAlert(true)
-        setAlertMessage(res.data)
-        setAlertSeverity('success')
-    })
-    .catch((error)=> {
-        console.log('api delete error',error);
-         //delete show toast
-         setShowAlert(true)
-         setAlertMessage(error.message)
-         setAlertSeverity('error')
-      })
+    // axios.post(urlDelete+row._id)
+    // .then((res)=>{
+    //     console.log('api delete response',res);
+    //     fetchRecords();
+    //     //delete show toast
+    //     setShowAlert(true)
+    //     setAlertMessage(res.data)
+    //     setAlertSeverity('success')
+    // })
+    // .catch((error)=> {
+    //     console.log('api delete error',error);
+    //      //delete show toast
+    //      setShowAlert(true)
+    //      setAlertMessage(error.message)
+    //      setAlertSeverity('error')
+    //   })
   };
 
   const toastCloseCallback=()=>{
@@ -212,8 +249,8 @@ const Contacts = () => {
           rows={records}
           columns={columns}
           getRowId={(row) => row._id}
-          pageSize={10}
-          rowsPerPageOptions={[5]}
+          pageSize={7}
+          rowsPerPageOptions={[7]}
           // onCellClick={handleOnCellClick}
           components={{ Toolbar: GridToolbar ,
                         Pagination:CustomPagination,
