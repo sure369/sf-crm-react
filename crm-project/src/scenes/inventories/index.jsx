@@ -203,7 +203,7 @@ const Inventories = () => {
               rows={records}
               columns={columns}
               getRowId={(row) => row._id}
-              pageSize={5}
+              pageSize={10}
               rowsPerPageOptions={[5]}
                onCellClick={handleOnCellClick}
               components={{ Pagination:CustomPagination,

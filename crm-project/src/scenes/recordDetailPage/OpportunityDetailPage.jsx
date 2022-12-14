@@ -293,7 +293,7 @@ const OpportunityDetailPage = ({item}) => {
  
              <Grid item xs={6} md={6}>
              <label htmlFor="amount">Amount</label>
-                 <Field class="form-input" name="amount" />
+                 <Field class="form-input" type='number' name="amount" />
              </Grid>           
              <Grid item xs={12} md={12}>
                  <label htmlFor="description">Description</label>

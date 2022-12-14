@@ -108,13 +108,26 @@ const Opportunities = () => {
       headerAlign: 'center',align: 'center',flex: 1,
     },
     { 
-      field: "inventoryName",headerName: "Inventory Name",
+      field: "propertyName",headerName: "Inventory Name",
       headerAlign: 'center',align: 'center',flex: 1,
       renderCell: (params) => {
       
-        return <div className="rowitem">
-          {params.row.Propertydetails[0].propertyName}
-        </div>;
+        console.log('params.row.Propertydetails',params)
+        if(params.row.Propertydetails.length>0){
+          console.log('params',params.row.Propertydetails.length>0)
+          return <div className="rowitem">
+            {params.row.Propertydetails[0].propertyName}
+          </div>;
+        }
+        else{
+          return <div className="rowitem">
+            {null}
+            </div>
+        }
+
+        // return <div className="rowitem">
+        //   {params.row.Propertydetails[0].propertyName}
+        // </div>;
       },
     }, 
     {
@@ -203,7 +216,7 @@ const Opportunities = () => {
               rows={records}
               columns={columns}
               getRowId={(row) => row._id}
-              pageSize={5}
+              pageSize={10}
               rowsPerPageOptions={[5]}
               // onCellClick={handleOnCellClick}
               components={{ 
