@@ -7,6 +7,9 @@ import { useParams,useNavigate } from "react-router-dom"
 import axios from 'axios'
 import SimpleSnackbar from "../toast/test";
 import "../formik/FormStyles.css"
+import Divider from '@mui/material/Divider';
+import EventForm from '../formik/EventForm';
+import NewEventForm from '../formik/NewEvent';
 
 const url ="http://localhost:4000/api/UpsertLead";
 
@@ -101,6 +104,16 @@ const LeadDetailPage = ({item}) => {
         setShowAlert(false)
     }
 
+
+
+    const callEvent =(savedValues) =>{
+
+        console.log('button click',savedValues);
+        let item=savedValues
+       navigate('/test1',{state:{record:{item}}})
+
+    }
+
   return (
     <Grid item xs={12} style={{margin:"20px"}}>          
     <div style={{textAlign:"center" ,marginBottom:"10px"}}>
@@ -108,6 +121,14 @@ const LeadDetailPage = ({item}) => {
             showNew ? <h3>New Lead</h3> : <h3>Lead Detail Page </h3>
         }
     </div>
+    <div style={{textAlign:"end" ,marginBottom:"10px"}}>
+        
+        {
+ showNew ? null : <button onClick={ () => callEvent(savedValues)  }>New Event</button>
+        }
+   
+    </div>
+
    <div>
                 <Formik
                     enableReinitialize={true} 
@@ -229,6 +250,10 @@ const LeadDetailPage = ({item}) => {
                                     <Field as="textarea" name="description" class="form-input" />
                                 </Grid>                               
                             </Grid>
+                            <Divider />
+
+<Divider />
+
                             <div className='action-buttons'>
                                         <DialogActions sx={{ justifyContent: "space-between" }}>
 

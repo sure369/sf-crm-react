@@ -112,9 +112,8 @@ const Opportunities = () => {
       headerAlign: 'center',align: 'center',flex: 1,
       renderCell: (params) => {
       
-        console.log('params.row.Propertydetails',params)
         if(params.row.Propertydetails.length>0){
-          console.log('params',params.row.Propertydetails.length>0)
+         
           return <div className="rowitem">
             {params.row.Propertydetails[0].propertyName}
           </div>;

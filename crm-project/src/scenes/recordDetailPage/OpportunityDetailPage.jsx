@@ -43,6 +43,8 @@ const OpportunityDetailPage = ({item}) => {
         leadName: {firstName:"",id:""},
         Inventory:'',
         inventoryName: {inventoryName:"",id:""},
+        Propertydetails:'',
+        Leaddetails:'',
         opportunityName: '',
         type: '',
         leadSource: '',
@@ -59,6 +61,8 @@ const OpportunityDetailPage = ({item}) => {
          leadName:singleOpportunity?.firstName ?? "",
          Inventory: singleOpportunity?.Inventory ?? "",
          inventoryName: singleOpportunity?.inventoryName ?? "",
+         Propertydetails:singleOpportunity?.Propertydetails[0].propertyName ??"",
+         Leaddetails:singleOpportunity?.Leaddetails[0].firstName ??"",
         opportunityName:  singleOpportunity?.opportunityName ?? "",
         type: singleOpportunity?.type ?? "",
         leadSource:  singleOpportunity?.leadSource ?? "",
@@ -140,7 +144,7 @@ const OpportunityDetailPage = ({item}) => {
     const FetchInventoriesbyName =(newInputValue) =>{
         axios.post(`${fetchInventoriesbyName}?searchKey=${newInputValue}`)
         .then((res) => {
-            console.log('res fetchInventoriesbyName', res.data)
+            console.log('res fetch Inventoriesby Name', res.data)
             if(typeof(res.data)=== "object"){
                 setInventoriesRecord(res.data)
             }
@@ -196,12 +200,17 @@ const OpportunityDetailPage = ({item}) => {
                 <Autocomplete
                             name="Inventory"
                             options={inventoriesRecord}
-                            value={values.Inventory}
-                            getOptionLabel={option => option.propertyName ||''}
-                            isOptionEqualToValue={(option, value) =>
-                                option.id === value
-                             
-                            }
+                            value={values.Propertydetails}
+                            // getOptionLabel={(option)=>{
+                            //     console.log('option',option.propertyName);
+                            // }}
+
+                             getOptionLabel={option =>  option.propertyName ||''}
+                            //  isOptionEqualToValue = {(option,value)=>
+                            //           option.propertyName === value
+                            //   }
+
+                         
                             onChange={(e, value) => {
                                 setFieldValue("Inventory",value.id ||'')
                                 setFieldValue("propertyName", value||'')
@@ -224,11 +233,9 @@ const OpportunityDetailPage = ({item}) => {
                 <Autocomplete
                             name="Lead"
                             options={leadsRecords}
-                            value={values.Lead}
+                            value={values.Leaddetails}
                             getOptionLabel={option => option.leadName ||''}
-                            isOptionEqualToValue={(option, value) =>
-                                option.id === value.name
-                            }
+                           
                             onChange={(e, value) => {
                                 setFieldValue("Lead",value.id)
                                 setFieldValue("leadName",value)

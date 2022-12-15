@@ -80,22 +80,22 @@ const Contacts = () => {
  
   const onHandleDelete = (e, row) => {
       
-      <Modal
-        open={true}
-        onClose={handleModalClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={modalStyle}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Text in a modal
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-            </Typography>
-        </Box>
+      // <Modal
+      //   open={true}
+      //   onClose={handleModalClose}
+      //   aria-labelledby="modal-modal-title"
+      //   aria-describedby="modal-modal-description"
+      // >
+      //   <Box sx={modalStyle}>
+      //     <Typography id="modal-modal-title" variant="h6" component="h2">
+      //       Text in a modal
+      //     </Typography>
+      //     <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+      //       Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+      //       </Typography>
+      //   </Box>
 
-      </Modal>
+      // </Modal>
 
 
 
@@ -103,22 +103,22 @@ const Contacts = () => {
     console.log('req delete rec',row);
     console.log('req delete rec id',row._id);
     
-    // axios.post(urlDelete+row._id)
-    // .then((res)=>{
-    //     console.log('api delete response',res);
-    //     fetchRecords();
-    //     //delete show toast
-    //     setShowAlert(true)
-    //     setAlertMessage(res.data)
-    //     setAlertSeverity('success')
-    // })
-    // .catch((error)=> {
-    //     console.log('api delete error',error);
-    //      //delete show toast
-    //      setShowAlert(true)
-    //      setAlertMessage(error.message)
-    //      setAlertSeverity('error')
-    //   })
+    axios.post(urlDelete+row._id)
+    .then((res)=>{
+        console.log('api delete response',res);
+        fetchRecords();
+        //delete show toast
+        setShowAlert(true)
+        setAlertMessage(res.data)
+        setAlertSeverity('success')
+    })
+    .catch((error)=> {
+        console.log('api delete error',error);
+         //delete show toast
+         setShowAlert(true)
+         setAlertMessage(error.message)
+         setAlertSeverity('error')
+      })
   };
 
   const toastCloseCallback=()=>{
