@@ -33,6 +33,11 @@ const ContactDetailPage = ({item}) => {
         FetchAccountsbyName(''); 
     },[])
 
+ 
+
+    // const convertDate = singleContact.dop;
+    // console.log('convertDate',convertDate)
+
     // const fetchAccountsName = () => {
     //     axios.post(fetchRecentAccounts)
     //         .then((res) => {

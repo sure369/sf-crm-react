@@ -38,6 +38,9 @@ import SimpleAccordion from "./scenes/recordDetailPage/TestAccordion";
 import TestRecordDetail from "./scenes/recordDetailPage/TestRecordDetail";
 import FlexShrink from "./scenes/z/Flex";
 import NewEventForm from "./scenes/formik/NewEvent";
+import FlexLeadEvent from "./scenes/z/FlexLeadEvent";
+import TaskDetailPage from "./scenes/recordDetailPage/TaskDetailPage";
+import Task from "./scenes/tasks";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -58,6 +61,7 @@ function App() {
               <Route path="/opportunities" element={<Opportunities />} />
               <Route path="/leads" element={<Leads />} />
               <Route path="/inventories" element={<FlexShrink/>} />
+              <Route path="/task" element={<Task />} />
               <Route path="/users" element={<Users />} />
               <Route path="/new-accounts" element={<AccountForm />} />
               <Route path="/new-contacts" element={<ContactForm />} />
@@ -70,13 +74,16 @@ function App() {
               <Route path="/team" element={<Team />} />
               <Route path="/faq" element={<FAQ />} />
               
+               
               <Route path="/test1" element={<NewEventForm/>} />
+              <Route path="/test2" element={<FlexLeadEvent/>} />
               <Route path="/test" element={<ContactForm/>} />
               <Route path="/accountDetailPage" element={<AccountDetailPage/>} />
               <Route path="/contactDetailPage" element={<ContactDetailPage/>} />
               <Route path="/opportunityDetailPage" element={<OpportunityDetailPage/>}/>
               <Route path="/leadDetailPage" element={<LeadDetailPage/>} />
               <Route path="/inventoryDetailPage" element={<InventoryDetailPage/>}/>
+              <Route path="/taskDetailPage" element={<TaskDetailPage/>}/>
               <Route path="/userDetailPage" element={<UserDetailPage/>} />
               <Route path="/test-date" element={<MaterialUIPickers/>} />
             </Routes>

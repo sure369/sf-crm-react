@@ -16,6 +16,8 @@ import AssistantPhotoIcon from '@mui/icons-material/AssistantPhoto';
 import ContactPageIcon from '@mui/icons-material/ContactPage';
 import DiamondIcon from '@mui/icons-material/Diamond';
 import mainLogo  from '../assets/user image.png';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -176,6 +178,14 @@ const Sidebar = () => {
               icon={<PersonOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
+            />
+            <Item
+              title="Task"
+              to="/task"
+              icon={<AssignmentIcon />}
+              selected={selected}
+              setSelected={setSelected}
+          
             />
            
             {/* <Typography

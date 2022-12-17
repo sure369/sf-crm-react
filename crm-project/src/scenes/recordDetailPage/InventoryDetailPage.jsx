@@ -101,6 +101,7 @@ const citiesList = {
 
 const formSubmission =(values)=>{
       
+    console.log('values',values)
     axios.post(url,values)
     .then((res)=>{
         console.log('upsert record  response',res);

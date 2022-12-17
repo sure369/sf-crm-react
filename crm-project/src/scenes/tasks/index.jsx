@@ -1,27 +1,27 @@
 import React,{useState,useEffect} from 'react';
-import { useTheme,Box,Button,IconButton } from "@mui/material";
+import { Box, Button,useTheme ,IconButton} from "@mui/material";
 import { DataGrid, GridToolbar,
   gridPageCountSelector,gridPageSelector,
   useGridApiContext,useGridSelector} from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
-import LeadForm from "../formik/LeadForm";
-import SimpleSnackbar from "../toast/test";
-import axios from 'axios'
+import axios from 'axios';
 import {  useNavigate } from "react-router-dom";
+import SimpleSnackbar from "../toast/test";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import Pagination from '@mui/material/Pagination';
 
-const Leads = () => {
-    
-  const urlLead ="http://localhost:4000/api/leads";
-  const urlDelete ="http://localhost:4000/api/deleteLead?code=";
+const Task = () => {
+
+  const urlDelete ="http://localhost:4000/api/deleteTask?code=";
+  const urlTask ="http://localhost:4000/api/Task";
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
   const[records,setRecords] = useState([]);
+  const[recNames,setRecNames]=useState([]);
   const [finalClickInfo, setFinalClickInfo] = useState(null);
 
   //toast 
@@ -30,61 +30,63 @@ const Leads = () => {
   const[alertSeverity,setAlertSeverity]=useState();
 
   useEffect(()=>{
-
+    console.log('inside task index')
     fetchRecords();
-  
-  }, []);
+   
+    }, []
+  );
 
-  const fetchRecords =()=>{
-    axios.post(urlLead)
+  const fetchRecords = ()=>{
+    console.log('urlTask',urlTask);
+    axios.post(urlTask)
     .then(
       (res) => {
-        console.log("res Lead records", res);
+        console.log("res task records", res);
         setRecords(res.data);
-      }
+       }
     )
     .catch((error)=> {
-      console.log('res Lead error',error);
+      console.log('res task error',error);
     })
   }
   const handleOpen = () => {
-    // navigate('/new-leads')  
-    navigate("/leadDetailPage",{state:{record:{}}}) 
+   
+     navigate("/taskDetailPage",{state:{record:{}}})
   };
 
   const handleOnCellClick = (e,row) => {
-    setFinalClickInfo(e);    
+    setFinalClickInfo(e);
     console.log('selected record',row);
     const item=row;
-    navigate("/test2",{state:{record:{item}}})
-    //  navigate("/leadDetailPage",{state:{record:{item}}})
+    navigate("/taskDetailPage",{state:{record:{item}}})
   };
-    
+ 
   const onHandleDelete = (e, row) => {
-    e.stopPropagation();
+    // e.stopPropagation();
     console.log('req delete rec',row);
     console.log('req delete rec id',row._id);
-    
+ 
     axios.post(urlDelete+row._id)
     .then((res)=>{
         console.log('api delete response',res);
         fetchRecords();
-         //delete show toast
-         setShowAlert(true)
-         setAlertMessage(res.data)
-         setAlertSeverity('success')
+        //delete show toast
+        setShowAlert(true)
+        setAlertMessage(res.data)
+        setAlertSeverity('success')
     })
     .catch((error)=> {
         console.log('api delete error',error);
-        //delete show toast
-        setShowAlert(true)
-        setAlertMessage(error.message)
-        setAlertSeverity('error')
+         //delete show toast
+         setShowAlert(true)
+         setAlertMessage(error.message)
+         setAlertSeverity('error')
       })
   };
 
   const toastCloseCallback=()=>{
     setShowAlert(false)
+    
   }
 
   function CustomPagination() {
@@ -104,35 +106,28 @@ const Leads = () => {
 
   const columns = [
     {
-      field: "lastName",headerName: "Last Name",
+      field: "subject",headerName: "Subject",
       headerAlign: 'center',align: 'center',flex: 1,
     },
     {
-      field: "company",headerName: "Company",      
-      headerAlign: 'center',align: 'center',flex: 1,
-    },
+        field: "taskName",headerName: "Task Name",
+        headerAlign: 'center',align: 'center',flex: 1,
+      },
     { 
-      field: "leadSource",headerName: "Lead Source",
-      headerAlign: 'center',align: 'center',flex: 1,
+      field: "realatedTo", headerName: "Realated To",
+      headerAlign: 'center', align: 'center',flex: 1,
     }, 
     {
-      field: "industry",headerName: "Industry",
+      field: "object",headerName: "Object",
       headerAlign: 'center',align: 'center',flex: 1,
     },
-    {
-      field: "leadStatus",headerName: "Lead Status",
-      headerAlign: 'center',align: 'center',flex: 1,
-    },
-    {
-      field: "email",headerName: "Email",
-      headerAlign: 'center',align: 'center',flex: 1,
-    },
+    
     { 
       field: 'actions', headerName: 'Actions',
       headerAlign: 'center',align: 'center',width: 400, flex: 1, 
       renderCell: (params) => {
-      return (
-        <>
+        return (
+          <>
             <IconButton style={{ padding: '20px' }}>
               <EditIcon onClick={(e) => handleOnCellClick(e, params.row)} />
             </IconButton>
@@ -140,23 +135,21 @@ const Leads = () => {
               <DeleteIcon onClick={(e) => onHandleDelete(e, params.row)} />
             </IconButton>
           </>
-      );
-    } }
+        )} 
+      }
   ];
 
-
-    return (
-      <>
-      {
-        showAlert? <SimpleSnackbar severity={alertSeverity}  message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> :<SimpleSnackbar message={showAlert}/>
-       }
-
-    <Box m="20px">
-      <Header
-          title="Leads"
-          subtitle="List of Leads"
+  return(
+    <>
+    {
+     showAlert && <SimpleSnackbar severity={alertSeverity}  message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> 
+    } 
+      <Box m="20px">
+       <Header
+          title="Task"
+          subtitle="List of Task"
       />
-      <Box
+       <Box
         m="40px 0 0 0"
         height="75vh"
         sx={{
@@ -178,6 +171,7 @@ const Leads = () => {
           },
           "& .MuiDataGrid-footerContainer": {
             borderBottom: "none",
+            // borderBottomStyle:{{sx:r}},
             backgroundColor: colors.blueAccent[700],
           },
           "& .MuiCheckbox-root": {
@@ -187,9 +181,8 @@ const Leads = () => {
             color: `${colors.grey[100]} !important`,
           },
         }}
-      >
-
-<div  className='btn-test'>
+      > 
+        <div  className='btn-test'>
             <Button 
                variant="contained" color="info" 
                onClick={handleOpen} 
@@ -197,21 +190,26 @@ const Leads = () => {
                   New 
           </Button>
         </div>
+      
+      {/* <div style={{height: '500px', width: '100%' }}> */}
 
-        <DataGrid
-            rows={records}
-            columns={columns}
-            getRowId={(row) => row._id}
-            pageSize={7}
-            rowsPerPageOptions={[7]}
-            onCellClick={handleOnCellClick}
-            components={{ Pagination:CustomPagination,
-               Toolbar: GridToolbar }}
-        />
-      </Box>
+      <DataGrid
+              rows={records}
+              columns={columns}
+              getRowId={(row) => row._id}
+              pageSize={7}
+              rowsPerPageOptions={[7]}
+             
+              // onCellClick={handleOnCellClick}
+              components={{ Toolbar: GridToolbar,
+                            Pagination:CustomPagination, }}
+      /> 
+      {/* </div> */}
+    </Box> 
     </Box>
     </>
-    );
-  };
+    )
+  }
+// };
 
-export default Leads;
+export default Task;
