@@ -87,9 +87,10 @@ const TaskDetailPage = ({ item }) => {
             .required('Required'),
         attachments: Yup
            .mixed()
-        //    .required('Required')
+           .nullable()
+           .notRequired()
         //    .test('FILE_SIZE',"Too big !",(value)=>value <1024*1024)
-           .test('FILE_TYPE',"Invalid!",(value)=> value && ['image/jpg','image/jpeg','image/gif','image/png'].includes(value.type))
+        //   .test('FILE_TYPE',"Invalid!",(value)=> value && ['image/jpg','image/jpeg','image/gif','image/png'].includes(value.type))
           ,
 
     })
