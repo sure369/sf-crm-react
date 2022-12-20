@@ -98,9 +98,9 @@ const LeadDetailPage = ({ item }) => {
 
         if (showNew) {
 
-            // let d = new Date();
-            // const formatDate =  [d.getMonth()+1, d.getDate(),d.getFullYear()].join('/')+' '+
-            //                     [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
+            let d = new Date();
+            const formatDate =  [d.getMonth()+1, d.getDate(),d.getFullYear()].join('/')+' '+
+                                [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
             const formData = new FormData();
             formData.append('salutation', values.salutation);
             formData.append('firstName', values.firstName);
@@ -112,8 +112,8 @@ const LeadDetailPage = ({ item }) => {
             formData.append('leadStatus', values.leadStatus);
             formData.append('email', values.email);
             formData.append('createdbyId', values.createdbyId);
-            formData.append('createdDate', new Date());//formatDate
-            formData.append('modifiedDate', new Date()); //formatDate
+            formData.append('createdDate',formatDate);// new Date()
+            formData.append('modifiedDate', formatDate); //new Date()
             // formData.append('_id',values._id)
             console.log('form convert formData ', formData)
             axios.post(url, formData)
@@ -135,9 +135,9 @@ const LeadDetailPage = ({ item }) => {
                 })
         }
         else if (!showNew) {
-            // let d = new Date();
-            //     const formatDate =  [d.getMonth()+1, d.getDate(),d.getFullYear()].join('/')+' '+
-            //                         [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
+            let d = new Date();
+                const formatDate =  [d.getDate() , d.getMonth()+1,d.getFullYear()].join('/')+' '+
+                                   [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
             const formData = new FormData();
             formData.append('salutation', values.salutation);
             formData.append('firstName', values.firstName);
@@ -150,7 +150,7 @@ const LeadDetailPage = ({ item }) => {
             formData.append('email', values.email);
             formData.append('createdbyId', values.createdbyId);
             formData.append('createdDate', values.createdDate);
-            formData.append('modifiedDate', new Date());//formatDate  //.toLocaleString(undefined, {timeZone: 'Asia/Kolkata'}())
+            formData.append('modifiedDate',formatDate);//new Date().toLocaleString(undefined, {timeZone: 'Asia/Kolkata'}())
             formData.append('_id', values._id)
 
             console.log('form convert formData ', formData)

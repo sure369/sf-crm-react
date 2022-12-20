@@ -50,6 +50,7 @@ const OpportunityDetailPage = ({item}) => {
         description: '',
         createdbyId: '',
         createdDate:'',
+        modifiedDate:'',
     }
 
     const savedValues = {
@@ -68,6 +69,7 @@ const OpportunityDetailPage = ({item}) => {
         description:  singleOpportunity?.description ?? "",
         createdbyId:  singleOpportunity?.createdbyId ?? "",
         createdDate:  singleOpportunity?.createdDate ?? "",
+        modifiedDate: singleOpportunity?.modifiedDate ?? "", 
         _id:   singleOpportunity?._id ?? "",
     }
     const validationSchema = Yup.object({
@@ -79,7 +81,28 @@ const OpportunityDetailPage = ({item}) => {
     const formSubmission =(values)=>{
         console.log('form submission value',values);
 
-        axios.post(url,values)
+        if (showNew) {
+
+            let d = new Date();
+            const formatDate =  [d.getDate(), d.getMonth()+1,d.getFullYear()].join('/')+' '+
+                                [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
+            const formData = new FormData();
+            formData.append('Lead', values.Lead);
+            formData.append('Inventory', values.Inventory);
+            formData.append('opportunityName', values.opportunityName);
+            formData.append('type', values.type);
+            formData.append('leadSource', values.leadSource);
+            formData.append('amount', values.amount);
+            formData.append('closeDate', values.closeDate);
+            formData.append('stage', values.stage);
+            formData.append('description', values.description);
+            formData.append('createdbyId', values.createdbyId);
+            formData.append('createdDate', formatDate);//new Date()
+            formData.append('modifiedDate', formatDate); //new Date()
+            // formData.append('_id',values._id)
+            console.log('form convert formData ', formData)
+
+        axios.post(url,formData)
              .then((res)=>{
                  console.log('post response',res);
                  setShowAlert(true)
@@ -96,6 +119,45 @@ const OpportunityDetailPage = ({item}) => {
                 setAlertMessage(error.message)
                 setAlertSeverity('error')
                })
+        }
+        else if (!showNew) {
+            let d = new Date();
+                const formatDate =  [d.getDate(), d.getMonth()+1,d.getFullYear()].join('/')+' '+
+                                    [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
+            const formData = new FormData();
+            formData.append('Lead', values.Lead);
+            formData.append('Inventory', values.Inventory);
+            formData.append('opportunityName', values.opportunityName);
+            formData.append('type', values.type);
+            formData.append('leadSource', values.leadSource);
+            formData.append('amount', values.amount);
+            formData.append('closeDate', values.closeDate);
+            formData.append('stage', values.stage);
+            formData.append('description', values.description);
+            formData.append('createdbyId', values.createdbyId);
+            formData.append('createdDate', values.createdDate);
+            formData.append('modifiedDate', formatDate);//new Date()  //.toLocaleString(undefined, {timeZone: 'Asia/Kolkata'}())
+            formData.append('_id', values._id)
+
+            axios.post(url,formData)
+             .then((res)=>{
+                 console.log('post response',res);
+                 setShowAlert(true)
+                 setAlertMessage(res.data)
+                 setAlertSeverity('success')
+                
+                 setTimeout(() => {
+                    navigate(-1)
+                 }, 2000);
+             })
+             .catch((error)=> {
+                 console.log('error',error);
+                 setShowAlert(true)
+                setAlertMessage(error.message)
+                setAlertSeverity('error')
+               })
+
+        }
     }
 
     const toastCloseCallback = () => {
@@ -283,17 +345,22 @@ const OpportunityDetailPage = ({item}) => {
                  <label htmlFor="description">Description</label>
                  <Field  as="textarea"  name="description"class="form-input" />
              </Grid>
-             <Grid item xs={6} md={6}>
-                {/* value is aagined to  the fields */}
-                <label htmlFor="createdDate" >created Date</label>
-                <Field name='createdDate' type="text" class="form-input"  onchange={(e)=>{setFieldValue('createdDate',new Date())}} value={new Date()}/>
-            </Grid>
+             {!showNew && (
+                 <>
 
-                                <Grid item xs={6} md={6}>
-                                    {/* value is aagined to  the fields */}
-                                    <label htmlFor="modifiedDate" >Modified Date</label>
-                                    <Field name='modifiedDate' type="text" class="form-input" value={new Date()}  editable={false}/>
-                                </Grid>
+                <Grid item xs={6} md={6}>
+                    {/* value is aagined to  the fields */}
+                    <label htmlFor="createdDate" >created Date</label>
+                    <Field name='createdDate' type="text" class="form-input" disabled />
+                </Grid>
+
+                <Grid item xs={6} md={6}>
+                    {/* value is aagined to  the fields */}
+                    <label htmlFor="modifiedDate" >Modified Date</label>
+                    <Field name='modifiedDate' type="text" class="form-input" disabled/>
+                </Grid>
+                </>
+            )}
          </Grid>
          <div className='action-buttons'>
                                         <DialogActions sx={{ justifyContent: "space-between" }}>
