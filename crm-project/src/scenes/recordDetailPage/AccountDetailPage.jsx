@@ -352,14 +352,12 @@ const AccountDetailPage = ({ item }) => {
 
                                         {!showNew && (
                                             <>
-                                                <Grid item xs={6} md={6}>
-                                                    {/* value is aagined to  the fields */}
+                                                <Grid item xs={6} md={6}>                                                  
                                                     <label htmlFor="createdDate" >created Date</label>
                                                     <Field name='createdDate' type="text" class="form-input" disabled />
                                                 </Grid>
 
                                                 <Grid item xs={6} md={6}>
-                                                    {/* value is aagined to  the fields */}
                                                     <label htmlFor="modifiedDate" >Modified Date</label>
                                                     <Field name='modifiedDate' type="text" class="form-input" disabled />
                                                 </Grid>

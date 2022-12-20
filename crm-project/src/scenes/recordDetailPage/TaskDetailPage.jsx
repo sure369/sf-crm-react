@@ -42,7 +42,6 @@ const TaskDetailPage = ({ item }) => {
 
     const initialValues = {
         subject: '',
-        taskName: '',
         nameofContact: '',
         realatedTo: '',
         assignedTo: '',
@@ -55,12 +54,14 @@ const TaskDetailPage = ({ item }) => {
         object: '',
         AccountId: '',
         LeadId: '',
-        OpportunityId: ''
+        OpportunityId: '',
+        createdbyId: '',
+        createdDate: '',
+        modifiedDate: '',
     }
 
     const savedValues = {
-        subject: singleTask?.subject ?? "",        
-        taskName: singleTask?.taskName ?? "",
+        subject: singleTask?.subject ?? "",   
         nameofContact: singleTask?.nameofContact ?? "",
         realatedTo:singleTask?.realatedTo ?? "",
         assignedTo:singleTask?.assignedTo ?? "",
@@ -77,6 +78,7 @@ const TaskDetailPage = ({ item }) => {
         OpportunityId: singleTask?.OpportunityId ?? "",
         createdbyId: singleTask?.createdbyId ?? "",
         createdDate: singleTask?.createdDate ?? "",
+        modifiedDate: singleTask?.modifiedDate ?? "",
         _id: singleTask?._id ?? "",
     }
 
@@ -97,10 +99,20 @@ const TaskDetailPage = ({ item }) => {
 
      const formSubmission = async (values, { resetForm }) => {
         console.log('inside form Submission', values);
+        let d = new Date();
+        const formatDate = [d.getDate(), d.getMonth() + 1, d.getFullYear()].join('/') + ' ' + [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
+
+        if (showNew) {
+            values.modifiedDate = formatDate;
+            values.createdDate = formatDate;
+            values.fullName = values.firstName +' '+ values.lastName;
+        }
+        else if (!showNew) {
+            values.modifiedDate = formatDate;
+        }
 
         let formData = new FormData();
         formData.append('subject',values.subject);
-        
         formData.append('nameofContact',values.nameofContact);
         formData.append('realatedTo',values.realatedTo);
         formData.append('assignedTo',values.assignedTo); 
@@ -114,10 +126,12 @@ const TaskDetailPage = ({ item }) => {
         formData.append('AccountId',values.AccountId);        
         formData.append('LeadId',values.LeadId)
         formData.append('OpportunityId',values.OpportunityId)
-      
+        formData.append('createdbyId',values.createdbyId)
+        formData.append('createdDate',values.createdDate)      
+        formData.append('modifiedDate',values.modifiedDate)
 
         await axios.post(UpsertUrl, formData)
-        console.log('form data',formData)
+    
             .then((res) => {
                 console.log('task form Submission  response', res);
                 setShowAlert(true)
@@ -340,7 +354,7 @@ const TaskDetailPage = ({ item }) => {
                                            
                                            {/*  reader.readAsDataURL */}
 
-                                        {values.attachments && <PreviewFile file={values.attachments} />}
+                                        {/* {values.attachments && <PreviewFile file={values.attachments} />} */}
 
                                         <div style={{ color: 'red' }}>
                                             <ErrorMessage name="attachments" />
@@ -351,7 +365,19 @@ const TaskDetailPage = ({ item }) => {
                                         <label htmlFor="description">Description</label>
                                         <Field as="textarea" name="description" class="form-input" />
                                     </Grid>
+                                    {!showNew && (
+                                                <>
+                                                    <Grid item xs={6} md={6}>                                                       
+                                                        <label htmlFor="createdDate" >created Date</label>
+                                                        <Field name='createdDate' type="text" class="form-input" disabled />
+                                                    </Grid>
 
+                                                    <Grid item xs={6} md={6}>                                                        
+                                                        <label htmlFor="modifiedDate" >Modified Date</label>
+                                                        <Field name='modifiedDate' type="text" class="form-input" disabled />
+                                                    </Grid>
+                                                </>
+                                            )}
                                 </Grid>
 
                                 <div className='action-buttons'>

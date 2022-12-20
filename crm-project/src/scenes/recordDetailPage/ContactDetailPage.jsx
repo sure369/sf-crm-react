@@ -71,14 +71,27 @@ const ContactDetailPage = ({ item }) => {
         createdbyId: singleContact?.createdbyId ?? "",
         createdDate: singleContact?.createdDate ?? "",
         modifiedDate: singleContact?.modifiedDate ?? "",
-
         _id: singleContact?._id ?? "",
     }
-
+    const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
+ 
     const validationSchema = Yup.object({
+        firstName: Yup
+            .string()
+            .matches(/^[A-Za-z ]*$/, 'Numeric characters not accepted')
+            .max(15, 'lastName must be less than 15 characters'),
         lastName: Yup
             .string()
-            .required('Required'),
+            .required('Required')
+            .matches(/^[A-Za-z ]*$/, 'Numeric characters not accepted')
+            .min(3, 'lastName must be more than 3 characters')
+            .max(15, 'lastName must be less than 15 characters'),
+        phone: Yup
+            .string()
+            .matches(phoneRegExp, 'Phone number is not valid')
+            .min(10, "Phone number must be 10 characters, its short")
+            .max(10, "Phone number must be 10 characters,its long"),
+
         email: Yup
             .string()
             .email('Invalid email address')
@@ -184,9 +197,11 @@ const ContactDetailPage = ({ item }) => {
                                                 </Field>
                                             </Grid>
                                             <Grid item xs={6} md={4}>
-
                                                 <label htmlFor="firstName" >First Name</label>
                                                 <Field name='firstName' type="text" class="form-input" />
+                                                <div style={{ color: 'red' }}>
+                                                    <ErrorMessage name="firstName" />
+                                                </div>
                                             </Grid>
                                             <Grid item xs={6} md={6}>
                                                 <label htmlFor="lastName" >Last Name<span className="text-danger">*</span> </label>
@@ -268,6 +283,13 @@ const ContactDetailPage = ({ item }) => {
                                             <Grid item xs={6} md={6}>
                                                 <label htmlFor="phone">Phone</label>
                                                 <Field name="phone" type="phone" class="form-input" />
+                                                <div style={{ color: 'red' }}>
+                                                <ErrorMessage name="phone" />
+                                                </div>
+                                            </Grid>
+                                            <Grid item xs={6} md={6}>
+                                                <label htmlFor="dop">Date of Birth</label>
+                                                <Field name="dop" type="date" class="form-input" />
                                             </Grid>
                                             <Grid item xs={6} md={6}>
                                                 <label htmlFor="department">Department</label>
@@ -291,12 +313,7 @@ const ContactDetailPage = ({ item }) => {
                                                     <option value="other">Other</option>
                                                 </Field>
                                             </Grid>
-                                            <Grid Grid item xs={6} md={6}>
-                                                <label htmlFor="files">File</label>
-                                                <input id="file" name="file" type="file" multiple onChange={(event) => {
-                                                    setFieldValue("file", event.currentTarget.files);
-                                                }} className="form-input" />
-                                            </Grid>
+                                         
                                             <Grid Grid item xs={6} md={6}>
                                                 <label htmlFor="fullAddress">fullAddress</label>
                                                 <Field as="textarea" name="fullAddress" class="form-input" />
@@ -308,14 +325,12 @@ const ContactDetailPage = ({ item }) => {
                                             </Grid>
                                             {!showNew && (
                                                 <>
-                                                    <Grid item xs={6} md={6}>
-                                                        {/* value is aagined to  the fields */}
+                                                    <Grid item xs={6} md={6}>                                                       
                                                         <label htmlFor="createdDate" >created Date</label>
                                                         <Field name='createdDate' type="text" class="form-input" disabled />
                                                     </Grid>
 
-                                                    <Grid item xs={6} md={6}>
-                                                        {/* value is aagined to  the fields */}
+                                                    <Grid item xs={6} md={6}>                                                        
                                                         <label htmlFor="modifiedDate" >Modified Date</label>
                                                         <Field name='modifiedDate' type="text" class="form-input" disabled />
                                                     </Grid>

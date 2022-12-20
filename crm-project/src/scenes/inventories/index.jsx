@@ -41,7 +41,12 @@ const Inventories = () => {
       .then(
         (res) => {
           console.log("res Inventory records", res);
-          setRecords(res.data);
+          if(res.data.length>0){
+            setRecords(res.data);
+          }
+          else{  
+          setRecords([]);
+          }
           
         }
       )

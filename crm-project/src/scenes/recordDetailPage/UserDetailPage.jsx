@@ -30,31 +30,33 @@ const UserDetailPage = ({item}) => {
     const initialValues = {
         firstName: '',
         lastName: '',
+        fullName:'',
         username: '',
         email: '',
         phone:'',
-        company: '',
         role: '',
         access: '',
         createdbyId: '',
         createdDate: '',
+        modifiedDate:'',
     }
 
     const savedValues = {
         firstName: singleUser?.firstName ?? "",
         lastName:  singleUser?.lastName ?? "",
+        fullName:singleUser?.fullName ?? "",
         username: singleUser?.username ?? "",
         email:  singleUser?.email ?? "",
         phone:  singleUser?.phone ?? "",
-        company:  singleUser?.company ?? "",
         role:  singleUser?.role ?? "",
         access:  singleUser?.access ?? "",
-        _id:   singleUser?._id ?? "",
         createdbyId:  singleUser?.createdbyId ?? "",
         createdDate: singleUser?.createdDate ?? "",
+        modifiedDate: singleUser?.modifiedDate ?? "",
+        _id:   singleUser?._id ?? "",
     }
 
-
+    const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
 
     const validationSchema = Yup.object({
         lastName: Yup
@@ -64,6 +66,12 @@ const UserDetailPage = ({item}) => {
         .string()
         .email('invalid Format')
         .required('Required'),
+        phone: Yup
+            .string()
+            .matches(phoneRegExp, 'Phone number is not valid')
+            .min(10, "Phone number must be 10 characters, its short")
+            .max(10, "Phone number must be 10 characters,its long"),
+
     username: Yup
         .string()
         .email('invalid Format')
@@ -77,6 +85,22 @@ const UserDetailPage = ({item}) => {
     })
     
     const formSubmission =(values)=>{
+
+        console.log('form submission value', values);
+        let d = new Date();
+        const formatDate = [d.getDate(), d.getMonth() + 1, d.getFullYear()].join('/') + ' ' + [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
+
+        if (showNew) {
+            values.modifiedDate = formatDate;
+            values.createdDate = formatDate;
+            values.fullName = values.firstName +' '+ values.lastName;
+        }
+        else if (!showNew) {
+            values.modifiedDate = formatDate;
+            values.fullName = values.firstName +' '+ values.lastName;
+        }
+        console.log('after change form submission value', values);
+
         axios.post(url,values)
                         .then((res)=>{
                             console.log('upsert record  response',res);
@@ -147,6 +171,15 @@ const UserDetailPage = ({item}) => {
                                         <ErrorMessage name="lastName" />
                                     </div>
                                     </Grid>
+                                    {!showNew && (
+                                            <>
+                                                <Grid item xs={6} md={6}>
+                                                    <label htmlFor="fullName" >Full Name</label>
+                                                    <Field name='fullName' type="text" class="form-input" disabled
+                                                    />
+                                                </Grid>
+                                            </>
+                                            )}
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="email">Email <span className="text-danger">*</span> </label>
                                     <Field name="email" type="text" class="form-input" />
@@ -164,6 +197,9 @@ const UserDetailPage = ({item}) => {
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="phone">phone<span className="text-danger">*</span> </label>
                                     <Field name="phone" type="text" class="form-input" />
+                                    <div style={{ color: 'red' }}>
+                                        <ErrorMessage name="phone" />
+                                    </div>
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="role">role <span className="text-danger">*</span> </label>
@@ -192,7 +228,19 @@ const UserDetailPage = ({item}) => {
                                     </div>
                                 </Grid>
                                
-                              
+                                {!showNew && (
+                                                <>
+                                                    <Grid item xs={6} md={6}>                                                       
+                                                        <label htmlFor="createdDate" >created Date</label>
+                                                        <Field name='createdDate' type="text" class="form-input" disabled />
+                                                    </Grid>
+
+                                                    <Grid item xs={6} md={6}>                                                        
+                                                        <label htmlFor="modifiedDate" >Modified Date</label>
+                                                        <Field name='modifiedDate' type="text" class="form-input" disabled />
+                                                    </Grid>
+                                                </>
+                                            )}
                             </Grid>
                             <div className='action-buttons'>
                                         <DialogActions sx={{ justifyContent: "space-between" }}>

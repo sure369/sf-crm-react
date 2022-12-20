@@ -36,11 +36,13 @@ const initialValues = {
     tower: '',
     country: '',
     city: '',
+    propertyCities:[],
     floor: '',
     status: '',
     totalArea: '',
     createdbyId: '',
     createdDate: '',
+    modifiedDate:'',
 }
 
     const savedValues = {
@@ -51,11 +53,13 @@ const initialValues = {
         tower:  singleInventory?.tower ?? "",
         country:  singleInventory?.country ?? "",
         city:  singleInventory?.city ?? "",
+        propertyCities:singleInventory?.propertyCities??"",
         floor:  singleInventory?.floor ?? "",
         status:  singleInventory?.status ?? "",
         totalArea: singleInventory?.totalArea ?? "",
         createdbyId: singleInventory?.createdbyId ?? "",
         createdDate: singleInventory?.createdDate ?? "",
+        modifiedDate:singleInventory?.modifiedDate ?? "",
         _id:   singleInventory?._id ?? "",
     }
     
@@ -77,10 +81,10 @@ const citiesList = {
     ],
   };
 
-  const getCities = (totalArea) => {
+  const getCities = (country) => {
     return new Promise((resolve, reject) => {
-      console.log("totalArea", totalArea);
-      resolve(citiesList[totalArea]||[]);
+      console.log("selected country", country);
+      resolve(citiesList[country]||[]);
     });
   };
 
@@ -100,8 +104,21 @@ const citiesList = {
 })
 
 const formSubmission =(values)=>{
-      
-    console.log('values',values)
+
+    console.log('form submission value',values);
+    let d = new Date();
+    const formatDate =  [d.getDate(), d.getMonth()+1,d.getFullYear()].join('/')+' '+ [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
+  
+    if(showNew){
+        values.modifiedDate = formatDate;
+        values.createdDate = formatDate;
+    }
+    else if(!showNew){
+        values.modifiedDate = formatDate;
+    }
+    
+    console.log('after change form submission value',values);
+    
     axios.post(url,values)
     .then((res)=>{
         console.log('upsert record  response',res);
@@ -222,7 +239,7 @@ const toastCloseCallback = () => {
                                         console.log(_cities);
                                         setFieldValue("country", value);
                                         setFieldValue("city", "");
-                                        setFieldValue("billingCities", _cities);
+                                        setFieldValue("propertyCities", _cities);
                                         }}
                                     >
                                         <option value="None">--Select--</option>
@@ -242,8 +259,8 @@ const toastCloseCallback = () => {
                                         onChange={handleChange}
                                     >
                                         <option value="None">--Select city--</option>
-                                        {values.billingCities &&
-                                        values.billingCities.map((r) => (
+                                        {values.propertyCities &&
+                                        values.propertyCities.map((r) => (
                                             <option key={r.value} value={r.vlue}>
                                             {r.label}
                                             </option>
@@ -259,6 +276,19 @@ const toastCloseCallback = () => {
                                     <label htmlFor="totalarea">Total Area</label>
                                     <Field name="totalarea" type="text" class="form-input" />
                                 </Grid>
+                                {!showNew && (
+                                            <>
+                                                <Grid item xs={6} md={6}>
+                                                    <label htmlFor="createdDate" >created Date</label>
+                                                    <Field name='createdDate' type="text" class="form-input" disabled />
+                                                </Grid>
+
+                                                <Grid item xs={6} md={6}>
+                                                    <label htmlFor="modifiedDate" >Modified Date</label>
+                                                    <Field name='modifiedDate' type="text" class="form-input" disabled />
+                                                </Grid>
+                                            </>
+                                        )}
                                 </Grid>
                                 <div className='action-buttons'>
                                         <DialogActions sx={{ justifyContent: "space-between" }}>
