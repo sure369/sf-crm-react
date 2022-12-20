@@ -40,11 +40,7 @@ const OpportunityDetailPage = ({item}) => {
 
     const initialValues = {
         Lead: '',
-        leadName: {firstName:"",id:""},
         Inventory:'',
-        inventoryName: {inventoryName:"",id:""},
-        Propertydetails:'',
-        Leaddetails:'',
         opportunityName: '',
         type: '',
         leadSource: '',
@@ -53,16 +49,16 @@ const OpportunityDetailPage = ({item}) => {
         stage: '',
         description: '',
         createdbyId: '',
-        createdDate: '',
+        createdDate:'',
     }
 
     const savedValues = {
          Lead: singleOpportunity?.Lead ?? "",
-         leadName:singleOpportunity?.firstName ?? "",
+       
          Inventory: singleOpportunity?.Inventory ?? "",
-         inventoryName: singleOpportunity?.inventoryName ?? "",
-         Propertydetails:singleOpportunity?.Propertydetails[0].propertyName ??"",
-         Leaddetails:singleOpportunity?.Leaddetails[0].firstName ??"",
+        
+        //  Propertydetails:singleOpportunity?.Inventorydetails[0].propertyName ??"",
+        //  Leaddetails:singleOpportunity?.Leaddetails[0].firstName ??"",
         opportunityName:  singleOpportunity?.opportunityName ?? "",
         type: singleOpportunity?.type ?? "",
         leadSource:  singleOpportunity?.leadSource ?? "",
@@ -81,7 +77,8 @@ const OpportunityDetailPage = ({item}) => {
     })
 
     const formSubmission =(values)=>{
-        console.log('inside fn',values);
+        console.log('form submission value',values);
+
         axios.post(url,values)
              .then((res)=>{
                  console.log('post response',res);
@@ -105,16 +102,7 @@ const OpportunityDetailPage = ({item}) => {
         setShowAlert(false)
     }
 
-    // const FetchRecentLeads =()=>{
-    //     axios.post(fetchRecentLeads)
-    //     .then((res) => {
-    //         console.log('res fetchRecentLeads', res.data)
-    //         setLeadsRecords(res.data)
-    //     })
-    //     .catch((error) => {
-    //         console.log('error fetchRecentLeads', error);
-    //     })
-    // }
+
     const FetchLeadsbyName =(newInputValue) =>{
         console.log('inside FetchLeadsbyName fn');
         console.log('newInputValue',newInputValue)
@@ -129,18 +117,7 @@ const OpportunityDetailPage = ({item}) => {
             console.log('error fetchLeadsbyName', error);
         })
     }
-    // const getRecentInventories =()=>{
-        
-    //     console.log('inside getRecentInventories',fetchRecentInventories);
-    //     axios.post(fetchRecentInventories)
-    //     .then((res) => {
-    //         console.log('res fetchRecentInventories', res.data)
-    //         setInventoriesRecord(res.data)
-    //     })
-    //     .catch((error) => {
-    //         console.log('error fetchRecentInventories', error);
-    //     })
-    // }
+   
     const FetchInventoriesbyName =(newInputValue) =>{
         axios.post(`${fetchInventoriesbyName}?searchKey=${newInputValue}`)
         .then((res) => {
@@ -201,10 +178,7 @@ const OpportunityDetailPage = ({item}) => {
                             name="Inventory"
                             options={inventoriesRecord}
                             value={values.Propertydetails}
-                            // getOptionLabel={(option)=>{
-                            //     console.log('option',option.propertyName);
-                            // }}
-
+                          
                              getOptionLabel={option =>  option.propertyName ||''}
                             //  isOptionEqualToValue = {(option,value)=>
                             //           option.propertyName === value
@@ -213,7 +187,7 @@ const OpportunityDetailPage = ({item}) => {
                          
                             onChange={(e, value) => {
                                 setFieldValue("Inventory",value.id ||'')
-                                setFieldValue("propertyName", value||'')
+                                // setFieldValue("propertyName", value||'')
                             }}
                             onInputChange={(event, newInputValue) => {
                                 console.log('newInputValue',newInputValue);
@@ -297,7 +271,10 @@ const OpportunityDetailPage = ({item}) => {
              </Grid>          
              
             
- 
+             <Grid item xs={6} md={6}>
+                <label htmlFor="closeDate">Close Date</label>
+                <Field name="closeDate" type="date" class="form-input" />
+            </Grid>
              <Grid item xs={6} md={6}>
              <label htmlFor="amount">Amount</label>
                  <Field class="form-input" type='number' name="amount" />
@@ -306,7 +283,17 @@ const OpportunityDetailPage = ({item}) => {
                  <label htmlFor="description">Description</label>
                  <Field  as="textarea"  name="description"class="form-input" />
              </Grid>
-           
+             <Grid item xs={6} md={6}>
+                {/* value is aagined to  the fields */}
+                <label htmlFor="createdDate" >created Date</label>
+                <Field name='createdDate' type="text" class="form-input"  onchange={(e)=>{setFieldValue('createdDate',new Date())}} value={new Date()}/>
+            </Grid>
+
+                                <Grid item xs={6} md={6}>
+                                    {/* value is aagined to  the fields */}
+                                    <label htmlFor="modifiedDate" >Modified Date</label>
+                                    <Field name='modifiedDate' type="text" class="form-input" value={new Date()}  editable={false}/>
+                                </Grid>
          </Grid>
          <div className='action-buttons'>
                                         <DialogActions sx={{ justifyContent: "space-between" }}>

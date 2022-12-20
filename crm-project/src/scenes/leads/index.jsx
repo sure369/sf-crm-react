@@ -104,11 +104,7 @@ const Leads = () => {
 
   const columns = [
     {
-      field: "lastName",headerName: "Last Name",
-      headerAlign: 'center',align: 'center',flex: 1,
-    },
-    {
-      field: "company",headerName: "Company",      
+      field: "fullName",headerName: "Full Name",
       headerAlign: 'center',align: 'center',flex: 1,
     },
     { 
@@ -204,7 +200,7 @@ const Leads = () => {
             getRowId={(row) => row._id}
             pageSize={7}
             rowsPerPageOptions={[7]}
-            onCellClick={handleOnCellClick}
+            // onCellClick={handleOnCellClick}
             components={{ Pagination:CustomPagination,
                Toolbar: GridToolbar }}
         />

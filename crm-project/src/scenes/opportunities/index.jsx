@@ -39,7 +39,16 @@ const Opportunities = () => {
     .then(
       (res) => {
         console.log("res Opportunity records", res);
-        setRecords(res.data);
+        // setRecords(res.data);
+        if(res.data.length>0){
+          console.log('length',res.data.length);
+          setRecords(res.data);
+        }
+        else{
+          console.log('else length',res.data.length);
+          setRecords({})
+        }
+        
       }
     )
     .catch((error)=> {
@@ -112,10 +121,10 @@ const Opportunities = () => {
       headerAlign: 'center',align: 'center',flex: 1,
       renderCell: (params) => {
       
-        if(params.row.Propertydetails.length>0){
+        if(params.row.Inventorydetails.length>0){
          
           return <div className="rowitem">
-            {params.row.Propertydetails[0].propertyName}
+            {params.row.Inventorydetails[0].propertyName}
           </div>;
         }
         else{

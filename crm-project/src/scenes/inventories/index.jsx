@@ -205,7 +205,7 @@ const Inventories = () => {
               getRowId={(row) => row._id}
               pageSize={7}
               rowsPerPageOptions={[7]}
-               onCellClick={handleOnCellClick}
+              //  onCellClick={handleOnCellClick}
               components={{ Pagination:CustomPagination,
                  Toolbar: GridToolbar }}
               
