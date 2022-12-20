@@ -35,9 +35,6 @@ const OpportunityDetailPage = ({item}) => {
         FetchLeadsbyName('');
     },[])
 
-    let d = new Date();
-    const formatDate =  [d.getDate(), d.getMonth()+1,d.getFullYear()].join('/')+' '+[d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
-
     const initialValues = {
         Lead: '',
         Inventory:'',
@@ -49,8 +46,8 @@ const OpportunityDetailPage = ({item}) => {
         stage: '',
         description: '',
         createdbyId: '',
-        createdDate:formatDate,
-        modifiedDate:formatDate,
+        createdDate:'',
+        modifiedDate:'',
     }
 
     const savedValues = {
@@ -69,10 +66,9 @@ const OpportunityDetailPage = ({item}) => {
         description:  singleOpportunity?.description ?? "",
         createdbyId:  singleOpportunity?.createdbyId ?? "",
         createdDate:  singleOpportunity?.createdDate ?? "",
-        modifiedDate: formatDate, 
+        modifiedDate: singleOpportunity?.modifiedDate ?? "",
         _id:   singleOpportunity?._id ?? "",
     }
-
     const validationSchema = Yup.object({
         opportunityName: Yup
             .string()
@@ -86,7 +82,17 @@ const OpportunityDetailPage = ({item}) => {
 
     const formSubmission = (values)=>{
         console.log('form submission value',values);
-
+        let d = new Date();
+        const formatDate =  [d.getDate(), d.getMonth()+1,d.getFullYear()].join('/')+' '+ [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
+        if(showNew){
+            values.modifiedDate = formatDate;
+            values.createdDate = formatDate;
+        }
+        else if(!showNew){
+            values.modifiedDate = formatDate;
+        }
+        console.log('after change form submission value',values);
+        
         axios.post(url,values)
         .then((res)=>{
             console.log('post response',res);
@@ -102,93 +108,12 @@ const OpportunityDetailPage = ({item}) => {
             setShowAlert(true)
             setAlertMessage(error.message)
             setAlertSeverity('error')
-        })
-
-            //     if (showNew) {
-
-            //         let d = new Date();
-            //         const formatDate =  [d.getDate(), d.getMonth()+1,d.getFullYear()].join('/')+' '+[d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
-            //         const formatCurrency = new Intl.NumberFormat('en-US', {style: 'currency',currency: 'USD',})
-                    
-            //         const formData = new FormData();
-            //         formData.append('Lead', values.Lead);
-            //         formData.append('Inventory', values.Inventory);
-            //         formData.append('opportunityName', values.opportunityName);
-            //         formData.append('type', values.type);
-            //         formData.append('leadSource', values.leadSource);
-            //         formData.append('amount', (values.amount));
-            //         formData.append('closeDate', values.closeDate);
-            //         formData.append('stage', values.stage);
-            //         formData.append('description', values.description);
-            //         formData.append('createdbyId', values.createdbyId);
-            //         formData.append('createdDate', formatDate);//new Date()
-            //         formData.append('modifiedDate', formatDate); //new Date()
-            //         // formData.append('_id',values._id)
-            //         console.log('form convert formData ', formData)
-                
-
-            //             axios.post(url,formData)
-            //                 .then((res)=>{
-            //                     console.log('post response',res);
-            //                     setShowAlert(true)
-            //                     setAlertMessage(res.data)
-            //                     setAlertSeverity('success')
-            //                     setTimeout(() => {
-            //                         navigate(-1)
-            //                     }, 2000);
-            //                 })
-            //                 .catch((error)=> {
-            //                     console.log('error',error);
-            //                     setShowAlert(true)
-            //                     setAlertMessage(error.message)
-            //                     setAlertSeverity('error')
-            //                 })
-            //     }
-            //     else if (!showNew) {
-            //             let d = new Date();
-            //             const formatDate =  [d.getDate(), d.getMonth()+1,d.getFullYear()].join('/')+' '+[d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
-            //             const formatCurrency = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD',})
-
-            //         const formData = new FormData();
-            //         formData.append('Lead', values.Lead);
-            //         formData.append('Inventory', values.Inventory);
-            //         formData.append('opportunityName', values.opportunityName);
-            //         formData.append('type', values.type);
-            //         formData.append('leadSource', values.leadSource);
-            //         formData.append('amount', (values.amount));
-            //         formData.append('closeDate', values.closeDate);
-            //         formData.append('stage', values.stage);
-            //         formData.append('description', values.description);
-            //         formData.append('createdbyId', values.createdbyId);
-            //         formData.append('createdDate', values.createdDate);
-            //         formData.append('modifiedDate', formatDate);//new Date()  //.toLocaleString(undefined, {timeZone: 'Asia/Kolkata'}())
-            //         formData.append('_id', values._id)
-                
-            //             axios.post(url,formData)
-            //             .then((res)=>{
-            //                 console.log('post response',res);
-            //                 setShowAlert(true)
-            //                 setAlertMessage(res.data)
-            //                 setAlertSeverity('success')
-                            
-            //                 setTimeout(() => {
-            //                     navigate(-1)
-            //                 }, 2000);
-            //             })
-            //             .catch((error)=> {
-            //                 console.log('error',error);
-            //                 setShowAlert(true)
-            //                 setAlertMessage(error.message)
-            //                 setAlertSeverity('error')
-            //             })
-
-            //     }        
-    }
+        })    
+     }
 
     const toastCloseCallback = () => {
         setShowAlert(false)
     }
-
 
     const FetchLeadsbyName =(newInputValue) =>{
         console.log('inside FetchLeadsbyName fn');

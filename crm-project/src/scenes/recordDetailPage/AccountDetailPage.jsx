@@ -31,9 +31,6 @@ const AccountDetailPage = ({ item }) => {
 
     }, [])
 
-    let d = new Date();
-    const formatDate =  [d.getDate(), d.getMonth()+1,d.getFullYear()].join('/')+' '+ [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
-    
     const initialValues = {
         accountName: '',
         accountNumber: '',
@@ -49,8 +46,8 @@ const AccountDetailPage = ({ item }) => {
         billingCity: '',
         billingCities: [],
         createdbyId: '',
-        createdDate:formatDate,
-        modifiedDate: formatDate,
+        createdDate:'',
+        modifiedDate: '',
     }
 
     const savedValues = {
@@ -69,7 +66,7 @@ const AccountDetailPage = ({ item }) => {
         billingCities: singleAccount?.billingCities ?? "",
         createdbyId: singleAccount?.createdbyId ?? "",
         createdDate: singleAccount?.createdDate ?? "",
-        modifiedDate:formatDate,
+        modifiedDate:singleAccount?.modifiedDate ?? "",
         _id: singleAccount?._id ?? "",
     }
 
@@ -120,8 +117,21 @@ const AccountDetailPage = ({ item }) => {
     })
 
     const formSubmission = (values) => {
-        console.log('form submission value', values)
-
+   
+        console.log('form submission value',values);
+        let d = new Date();
+        const formatDate =  [d.getDate(), d.getMonth()+1,d.getFullYear()].join('/')+' '+ [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
+        // values.modifiedDate = formatDate; 
+        if(showNew){
+            values.modifiedDate = formatDate;
+            values.createdDate = formatDate;
+        }
+        else if(!showNew){
+            values.modifiedDate = formatDate;
+        }
+        
+        console.log('after change form submission value',values);
+        
         axios.post(url, values)
         .then((res) => {
             console.log('upsert record  response', res);

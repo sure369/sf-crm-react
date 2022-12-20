@@ -30,9 +30,6 @@ const LeadDetailPage = ({ item }) => {
         setshowNew(!location.state.record.item)
     }, [])
 
-    let d = new Date();
-    const formatDate =  [d.getDate(), d.getMonth()+1,d.getFullYear()].join('/')+' '+ [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
-    
     const initialValues = {
         salutation: '',
         firstName: '',
@@ -44,8 +41,8 @@ const LeadDetailPage = ({ item }) => {
         leadStatus: '',
         email: '',
         createdbyId: '',
-        createdDate: formatDate,
-        modifiedDate: formatDate,
+        createdDate: '',
+        modifiedDate: '',
 
     }
 
@@ -62,7 +59,7 @@ const LeadDetailPage = ({ item }) => {
         email: singleLead?.email ?? "",
         createdbyId: singleLead?.createdbyId ?? "",
         createdDate: singleLead?.createdDate ?? "",
-        modifiedDate: formatDate,
+        modifiedDate:singleLead?.modifiedDate ?? "",
         _id: singleLead?._id ?? "",
     }
 
@@ -95,8 +92,19 @@ const LeadDetailPage = ({ item }) => {
     })
 
     const formSubmission = (values) => {
-        console.log('form submission values', values)
-
+        console.log('form submission value',values);
+        let d = new Date();
+        const formatDate =  [d.getDate(), d.getMonth()+1,d.getFullYear()].join('/')+' '+ [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
+      
+        if(showNew){
+            values.modifiedDate = formatDate;
+            values.createdDate = formatDate;
+        }
+        else if(!showNew){
+            values.modifiedDate = formatDate;
+        }
+        console.log('after change form submission value',values);
+       
         axios.post(url, values)
         .then((res) => {
             console.log('upsert record  response', res);
