@@ -10,9 +10,6 @@ import "../formik/FormStyles.css"
 
 
 const url ="http://localhost:4000/api/UpsertOpportunity";
-// const fetchRecentLeads= "http://localhost:4000/api/recentLeads";
-
-// const fetchRecentInventories= "http://localhost:4000/api/propertyRecentName";
 const fetchLeadsbyName ="http://localhost:4000/api/LeadsbyName";
 const fetchInventoriesbyName ="http://localhost:4000/api/InventoryName";
 
@@ -38,6 +35,9 @@ const OpportunityDetailPage = ({item}) => {
         FetchLeadsbyName('');
     },[])
 
+    let d = new Date();
+    const formatDate =  [d.getDate(), d.getMonth()+1,d.getFullYear()].join('/')+' '+[d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
+
     const initialValues = {
         Lead: '',
         Inventory:'',
@@ -49,8 +49,8 @@ const OpportunityDetailPage = ({item}) => {
         stage: '',
         description: '',
         createdbyId: '',
-        createdDate:'',
-        modifiedDate:'',
+        createdDate:formatDate,
+        modifiedDate:formatDate,
     }
 
     const savedValues = {
@@ -69,95 +69,120 @@ const OpportunityDetailPage = ({item}) => {
         description:  singleOpportunity?.description ?? "",
         createdbyId:  singleOpportunity?.createdbyId ?? "",
         createdDate:  singleOpportunity?.createdDate ?? "",
-        modifiedDate: singleOpportunity?.modifiedDate ?? "", 
+        modifiedDate: formatDate, 
         _id:   singleOpportunity?._id ?? "",
     }
+
     const validationSchema = Yup.object({
         opportunityName: Yup
             .string()
             .required('Required'),
+        amount:Yup
+            .string()
+            .required('Required')
+            .matches(/^[0-9]+$/, "Must be only digits")
+        
     })
 
-    const formSubmission =(values)=>{
+    const formSubmission = (values)=>{
         console.log('form submission value',values);
 
-        if (showNew) {
+        axios.post(url,values)
+        .then((res)=>{
+            console.log('post response',res);
+            setShowAlert(true)
+            setAlertMessage(res.data)
+            setAlertSeverity('success')
+            setTimeout(() => {
+                navigate(-1)
+            }, 2000);
+        })
+        .catch((error)=> {
+            console.log('error',error);
+            setShowAlert(true)
+            setAlertMessage(error.message)
+            setAlertSeverity('error')
+        })
 
-            let d = new Date();
-            const formatDate =  [d.getDate(), d.getMonth()+1,d.getFullYear()].join('/')+' '+
-                                [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
-            const formData = new FormData();
-            formData.append('Lead', values.Lead);
-            formData.append('Inventory', values.Inventory);
-            formData.append('opportunityName', values.opportunityName);
-            formData.append('type', values.type);
-            formData.append('leadSource', values.leadSource);
-            formData.append('amount', values.amount);
-            formData.append('closeDate', values.closeDate);
-            formData.append('stage', values.stage);
-            formData.append('description', values.description);
-            formData.append('createdbyId', values.createdbyId);
-            formData.append('createdDate', formatDate);//new Date()
-            formData.append('modifiedDate', formatDate); //new Date()
-            // formData.append('_id',values._id)
-            console.log('form convert formData ', formData)
+            //     if (showNew) {
 
-        axios.post(url,formData)
-             .then((res)=>{
-                 console.log('post response',res);
-                 setShowAlert(true)
-                 setAlertMessage(res.data)
-                 setAlertSeverity('success')
+            //         let d = new Date();
+            //         const formatDate =  [d.getDate(), d.getMonth()+1,d.getFullYear()].join('/')+' '+[d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
+            //         const formatCurrency = new Intl.NumberFormat('en-US', {style: 'currency',currency: 'USD',})
+                    
+            //         const formData = new FormData();
+            //         formData.append('Lead', values.Lead);
+            //         formData.append('Inventory', values.Inventory);
+            //         formData.append('opportunityName', values.opportunityName);
+            //         formData.append('type', values.type);
+            //         formData.append('leadSource', values.leadSource);
+            //         formData.append('amount', (values.amount));
+            //         formData.append('closeDate', values.closeDate);
+            //         formData.append('stage', values.stage);
+            //         formData.append('description', values.description);
+            //         formData.append('createdbyId', values.createdbyId);
+            //         formData.append('createdDate', formatDate);//new Date()
+            //         formData.append('modifiedDate', formatDate); //new Date()
+            //         // formData.append('_id',values._id)
+            //         console.log('form convert formData ', formData)
                 
-                 setTimeout(() => {
-                    navigate(-1)
-                 }, 2000);
-             })
-             .catch((error)=> {
-                 console.log('error',error);
-                 setShowAlert(true)
-                setAlertMessage(error.message)
-                setAlertSeverity('error')
-               })
-        }
-        else if (!showNew) {
-            let d = new Date();
-                const formatDate =  [d.getDate(), d.getMonth()+1,d.getFullYear()].join('/')+' '+
-                                    [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
-            const formData = new FormData();
-            formData.append('Lead', values.Lead);
-            formData.append('Inventory', values.Inventory);
-            formData.append('opportunityName', values.opportunityName);
-            formData.append('type', values.type);
-            formData.append('leadSource', values.leadSource);
-            formData.append('amount', values.amount);
-            formData.append('closeDate', values.closeDate);
-            formData.append('stage', values.stage);
-            formData.append('description', values.description);
-            formData.append('createdbyId', values.createdbyId);
-            formData.append('createdDate', values.createdDate);
-            formData.append('modifiedDate', formatDate);//new Date()  //.toLocaleString(undefined, {timeZone: 'Asia/Kolkata'}())
-            formData.append('_id', values._id)
 
-            axios.post(url,formData)
-             .then((res)=>{
-                 console.log('post response',res);
-                 setShowAlert(true)
-                 setAlertMessage(res.data)
-                 setAlertSeverity('success')
+            //             axios.post(url,formData)
+            //                 .then((res)=>{
+            //                     console.log('post response',res);
+            //                     setShowAlert(true)
+            //                     setAlertMessage(res.data)
+            //                     setAlertSeverity('success')
+            //                     setTimeout(() => {
+            //                         navigate(-1)
+            //                     }, 2000);
+            //                 })
+            //                 .catch((error)=> {
+            //                     console.log('error',error);
+            //                     setShowAlert(true)
+            //                     setAlertMessage(error.message)
+            //                     setAlertSeverity('error')
+            //                 })
+            //     }
+            //     else if (!showNew) {
+            //             let d = new Date();
+            //             const formatDate =  [d.getDate(), d.getMonth()+1,d.getFullYear()].join('/')+' '+[d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
+            //             const formatCurrency = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD',})
+
+            //         const formData = new FormData();
+            //         formData.append('Lead', values.Lead);
+            //         formData.append('Inventory', values.Inventory);
+            //         formData.append('opportunityName', values.opportunityName);
+            //         formData.append('type', values.type);
+            //         formData.append('leadSource', values.leadSource);
+            //         formData.append('amount', (values.amount));
+            //         formData.append('closeDate', values.closeDate);
+            //         formData.append('stage', values.stage);
+            //         formData.append('description', values.description);
+            //         formData.append('createdbyId', values.createdbyId);
+            //         formData.append('createdDate', values.createdDate);
+            //         formData.append('modifiedDate', formatDate);//new Date()  //.toLocaleString(undefined, {timeZone: 'Asia/Kolkata'}())
+            //         formData.append('_id', values._id)
                 
-                 setTimeout(() => {
-                    navigate(-1)
-                 }, 2000);
-             })
-             .catch((error)=> {
-                 console.log('error',error);
-                 setShowAlert(true)
-                setAlertMessage(error.message)
-                setAlertSeverity('error')
-               })
+            //             axios.post(url,formData)
+            //             .then((res)=>{
+            //                 console.log('post response',res);
+            //                 setShowAlert(true)
+            //                 setAlertMessage(res.data)
+            //                 setAlertSeverity('success')
+                            
+            //                 setTimeout(() => {
+            //                     navigate(-1)
+            //                 }, 2000);
+            //             })
+            //             .catch((error)=> {
+            //                 console.log('error',error);
+            //                 setShowAlert(true)
+            //                 setAlertMessage(error.message)
+            //                 setAlertSeverity('error')
+            //             })
 
-        }
+            //     }        
     }
 
     const toastCloseCallback = () => {
@@ -339,7 +364,10 @@ const OpportunityDetailPage = ({item}) => {
             </Grid>
              <Grid item xs={6} md={6}>
              <label htmlFor="amount">Amount</label>
-                 <Field class="form-input" type='number' name="amount" />
+                 <Field class="form-input" type='text' name="amount" />
+                 <div style={{ color: 'red'}}>
+                     <ErrorMessage name="amount" />
+                 </div>
              </Grid>           
              <Grid item xs={12} md={12}>
                  <label htmlFor="description">Description</label>

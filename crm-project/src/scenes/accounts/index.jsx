@@ -42,7 +42,12 @@ console.log('inside account index')
     .then(
       (res) => {
         console.log("res Account records", res);
-        setRecords(res.data);
+        if(res.data.length>0){
+          setRecords(res.data);
+        }
+        else{  
+        setRecords([]);
+        }
        }
     )
     .catch((error)=> {
@@ -119,8 +124,15 @@ console.log('inside account index')
       headerAlign: 'center',align: 'center',flex: 1,
     },
     {
-      field: "type", headerName: "Type",
+      field: "annualRevenue", headerName: "annualRevenue",
       headerAlign: 'center',align: 'center',flex: 1,
+      renderCell: (params) => {
+        const formatCurrency = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD',})
+        return (
+          <>
+            {formatCurrency.format(params.row.annualRevenue)}
+          </>
+        )} 
     },
     {
       field: "industry",headerName: "Industry",

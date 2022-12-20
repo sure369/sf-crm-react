@@ -40,19 +40,17 @@ const Opportunities = () => {
       (res) => {
         console.log("res Opportunity records", res);
         // setRecords(res.data);
-        if(res.data.length>0){
-          console.log('length',res.data.length);
-          setRecords(res.data);
-        }
-        else{
-          console.log('else length',res.data.length);
-          setRecords({})
-        }
-        
+  
+          if(res.data.length>0){
+            setRecords(res.data);
+          }
+          else{  
+            setRecords([]);
+          };        
       }
     )
     .catch((error)=> {
-      console.log('error',error);
+      console.log('res Opportunity error',error);
     })
   }
 
@@ -143,8 +141,15 @@ const Opportunities = () => {
       headerAlign: 'center',align: 'center',flex: 1,
     },
     {
-      field: "leadSource",headerName: "Lead Source",
+      field: "amount",headerName: "Opp Amount",
       headerAlign: 'center',align: 'center',flex: 1,
+      renderCell: (params) => {
+        const formatCurrency = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD',})
+        return (
+          <>
+            {formatCurrency.format(params.row.amount)}
+          </>
+        )} 
     },
     {
       field: "stage",headerName: "Stage",

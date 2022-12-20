@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { Grid, Button,DialogActions,Box ,TextField,Autocomplete} from "@mui/material";
+import { Grid, Button, DialogActions, Box, TextField, Autocomplete } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom"
 import axios from 'axios'
 import SimpleSnackbar from "../toast/test";
 import "../formik/FormStyles.css"
 
 const url = "http://localhost:4000/api/UpsertAccount";
-const fetchInventoriesbyName ="http://localhost:4000/api/InventoryName";
+const fetchInventoriesbyName = "http://localhost:4000/api/InventoryName";
 
 const AccountDetailPage = ({ item }) => {
 
@@ -20,7 +20,7 @@ const AccountDetailPage = ({ item }) => {
     const [showAlert, setShowAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState();
     const [alertSeverity, setAlertSeverity] = useState();
-    const [inventoriesRecord,setInventoriesRecord]= useState([]);
+    const [inventoriesRecord, setInventoriesRecord] = useState([]);
 
     useEffect(() => {
         console.log('passed record', location.state.record.item);
@@ -28,35 +28,36 @@ const AccountDetailPage = ({ item }) => {
         console.log('true', !location.state.record.item);
         setshowNew(!location.state.record.item)
         FetchInventoriesbyName('');
-     
-    },[])
 
+    }, [])
+
+    let d = new Date();
+    const formatDate =  [d.getDate(), d.getMonth()+1,d.getFullYear()].join('/')+' '+ [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
+    
     const initialValues = {
         accountName: '',
         accountNumber: '',
-        Inventory:'',
-        inventoryName: {inventoryName:"",id:""},
+        Inventory: '',
+        inventoryName: { inventoryName: "", id: "" },
         annualRevenue: '',
         rating: '',
         type: '',
         phone: '',
         industry: '',
         billingAddress: '',
-        billingCountry:'',
-        billingCity:'',
-        billingCities:[],
-        shippingAddress: '',
-        website:'',
-        description: '',
+        billingCountry: '',
+        billingCity: '',
+        billingCities: [],
         createdbyId: '',
-        createdDate: '',
+        createdDate:formatDate,
+        modifiedDate: formatDate,
     }
 
     const savedValues = {
         accountName: singleAccount?.accountName ?? "",
         accountNumber: singleAccount?.accountNumber ?? "",
-        Inventory:singleAccount?.Inventory ?? "",
-        inventoryName:singleAccount?.inventoryName ?? "",
+        Inventory: singleAccount?.Inventory ?? "",
+        inventoryName: singleAccount?.inventoryName ?? "",
         annualRevenue: singleAccount?.annualRevenue ?? "",
         rating: singleAccount?.rating ?? "",
         type: singleAccount?.type ?? "",
@@ -65,12 +66,10 @@ const AccountDetailPage = ({ item }) => {
         billingAddress: singleAccount?.billingAddress ?? "",
         billingCountry: singleAccount?.billingCountry ?? "",
         billingCity: singleAccount?.billingCity ?? "",
-        billingCities: [],
-        shippingAddress: singleAccount?.shippingAddress ?? "",
-        website: singleAccount?.website ?? "",
-        description: singleAccount?.description ?? "",
+        billingCities: singleAccount?.billingCities ?? "",
         createdbyId: singleAccount?.createdbyId ?? "",
         createdDate: singleAccount?.createdDate ?? "",
+        modifiedDate:formatDate,
         _id: singleAccount?._id ?? "",
     }
 
@@ -99,28 +98,40 @@ const AccountDetailPage = ({ item }) => {
         });
     };
 
+    const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
 
     const validationSchema = Yup.object({
         accountName: Yup
             .string()
-            .required('Required'),
+            .required('Required')
+            .matches(/^[A-Za-z ]*$/, 'Numeric characters not accepted')
+            .max(30, 'lastName must be less than 30 characters'),
         rating: Yup
             .string()
             .required('Required'),
+        phone: Yup
+            .string()
+            .matches(phoneRegExp, 'Phone number is not valid')
+            .min(10, "Phone number must be 10 characters, its short")
+            .max(10, "Phone number must be 10 characters,its long"),
+        annualRevenue:Yup
+            .string()
+            .matches(/^[0-9]+$/, "Must be only digits")
     })
 
-    const formSubmission=(values)=>{
-        console.log('form submit',values)
+    const formSubmission = (values) => {
+        console.log('form submission value', values)
+
         axios.post(url, values)
         .then((res) => {
             console.log('upsert record  response', res);
             setShowAlert(true)
             setAlertMessage(res.data)
             setAlertSeverity('success')
-          
-            setTimeout(()=>{
+
+            setTimeout(() => {
                 navigate(-1);
-            },1000)
+            }, 1000)
         })
         .catch((error) => {
             console.log('upsert record  error', error);
@@ -128,38 +139,40 @@ const AccountDetailPage = ({ item }) => {
             setAlertMessage(error.message)
             setAlertSeverity('error')
         })
+
+        
     }
     const toastCloseCallback = () => {
         setShowAlert(false)
     }
 
-    const FetchInventoriesbyName =(newInputValue) =>{
+    const FetchInventoriesbyName = (newInputValue) => {
         axios.post(`${fetchInventoriesbyName}?searchKey=${newInputValue}`)
-        .then((res) => {
-            console.log('res fetchInventoriesbyName', res.data)
-            if(typeof(res.data)=== "object"){
-                setInventoriesRecord(res.data)
-            }
-        })
-        .catch((error) => {
-            console.log('error fetchInventoriesbyName', error);
-        })
+            .then((res) => {
+                console.log('res fetchInventoriesbyName', res.data)
+                if (typeof (res.data) === "object") {
+                    setInventoriesRecord(res.data)
+                }
+            })
+            .catch((error) => {
+                console.log('error fetchInventoriesbyName', error);
+            })
     }
 
     return (
-    
-     <Grid item xs={12} style={{margin:"20px"}}>          
-            <div style={{textAlign:"center" ,marginBottom:"10px"}}>
+
+        <Grid item xs={12} style={{ margin: "20px" }}>
+            <div style={{ textAlign: "center", marginBottom: "10px" }}>
                 {
                     showNew ? <h3>New Account</h3> : <h3>Account Detail Page </h3>
                 }
             </div>
-           <div>
+            <div>
                 <Formik
                     enableReinitialize={true}
-                    initialValues={showNew?initialValues:savedValues}
+                    initialValues={showNew ? initialValues : savedValues}
                     validationSchema={validationSchema}
-                    onSubmit={ (values) => {formSubmission(values)}}
+                    onSubmit={(values) => { formSubmission(values) }}
                 >
                     {(props) => {
                         const {
@@ -175,7 +188,7 @@ const AccountDetailPage = ({ item }) => {
                         return (
                             <>
                                 {
-                                    showAlert ? <SimpleSnackbar severity={alertSeverity} message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> :  <SimpleSnackbar />
+                                    showAlert ? <SimpleSnackbar severity={alertSeverity} message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> : <SimpleSnackbar />
                                 }
 
                                 <Form>
@@ -189,7 +202,7 @@ const AccountDetailPage = ({ item }) => {
                                         </Grid>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="accountNumber">Account Number </label>
-                                            <Field name="accountNumber" type="text" class="form-input" />
+                                            <Field name="accountNumber" type="number" class="form-input" />
                                         </Grid>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="Inventory">Inventory Name </label>
@@ -221,11 +234,17 @@ const AccountDetailPage = ({ item }) => {
 
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="annualRevenue">Aannual Revenue</label>
-                                            <Field class="form-input" type="nu,ber" name="annualRevenue" />
+                                            <Field class="form-input" type="text" name="annualRevenue" />
+                                            <div style={{ color: 'red' }}>
+                                                <ErrorMessage name="annualRevenue" />
+                                            </div>
                                         </Grid>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="phone">Phone</label>
                                             <Field name="phone" type="phone" class="form-input" />
+                                            <div style={{ color: 'red' }}>
+                                                <ErrorMessage name="phone" />
+                                            </div>
                                         </Grid>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="rating"> Rating<span className="text-danger">*</span></label>
@@ -256,9 +275,7 @@ const AccountDetailPage = ({ item }) => {
                                             <label htmlFor="industry">Industry</label>
                                             <Field name="industry" as="select" class="form-input">
                                                 <option value="">--Select--</option>
-                                                <option value="Agriculture" >Agriculture</option>
                                                 <option value="Banking" >Banking</option>
-                                                <option value="Communications" >Communications</option>
                                                 <option value="Construction" >Construction</option>
                                                 <option value="Consulting" >Consulting</option>
                                                 <option value="Education" >Education</option>
@@ -268,24 +285,17 @@ const AccountDetailPage = ({ item }) => {
                                                 <option value="Hospitality" >Hospitality</option>
                                                 <option value="Insurance" >Insurance</option>
                                                 <option value="Technology" >Technology</option>
-                                                <option value="Transportation" >Transportation</option>
                                                 <option value="Other" >Other</option>
                                             </Field>
                                         </Grid>
-                                        <Grid item xs={6} md={6}>
-                                            <label htmlFor="noofEmployees">Number of Employees</label>
-                                            <Field name="noofEmployees" type="text" class="form-input" />
-                                        </Grid>
+
 
 
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="billingAddress">Billing Address </label>
                                             <Field name="billingAddress" type="text" class="form-input" />
                                         </Grid>
-                                        <Grid item xs={6} md={6}>
-                                            <label htmlFor="shippingAddress">Shipping Address </label>
-                                            <Field name="shippingAddress" type="text" class="form-input" />
-                                        </Grid>
+
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="billingCountry">Billing Country</label>
                                             <Field
@@ -309,6 +319,7 @@ const AccountDetailPage = ({ item }) => {
                                                 <option value="India">India</option>
                                             </Field>
                                         </Grid>
+                                        
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="billingCity">Billing City</label>
                                             <Field
@@ -328,34 +339,42 @@ const AccountDetailPage = ({ item }) => {
                                                     ))}
                                             </Field>
                                         </Grid>
-                                        <Grid item xs={12} md={12}>
-                                            <label htmlFor="description">Description</label>
-                                            <Field as="textarea" name="description" class="form-input" />
-                                        </Grid>
-                                        
-                                    </Grid>
-                                       
-                                        <div className='action-buttons'>
-                                        <DialogActions sx={{ justifyContent: "space-between" }}>
 
-                                       
-                                           {
+                                        {!showNew && (
+                                            <>
+                                                <Grid item xs={6} md={6}>
+                                                    {/* value is aagined to  the fields */}
+                                                    <label htmlFor="createdDate" >created Date</label>
+                                                    <Field name='createdDate' type="text" class="form-input" disabled />
+                                                </Grid>
+
+                                                <Grid item xs={6} md={6}>
+                                                    {/* value is aagined to  the fields */}
+                                                    <label htmlFor="modifiedDate" >Modified Date</label>
+                                                    <Field name='modifiedDate' type="text" class="form-input" disabled />
+                                                </Grid>
+                                            </>
+                                        )}
+                                    </Grid>
+
+                                    <div className='action-buttons'>
+                                        <DialogActions sx={{ justifyContent: "space-between" }}>
+                                            {
                                                 showNew ?
-                                                <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Save</Button>
-                                                    :
-                                                    
-                                                        <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Update</Button>
-                                           }                                      
-                                        <Button type="reset" variant="contained" onClick={handleReset} disabled={!dirty || isSubmitting}  >Cancel</Button>
-                                        </DialogActions>     
-                                       </div>
+                                                    <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Save</Button>
+                                                :
+                                                    <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Update</Button>
+                                            }
+                                            <Button type="reset" variant="contained" onClick={handleReset} disabled={!dirty || isSubmitting}  >Cancel</Button>
+                                        </DialogActions>
+                                    </div>
                                 </Form>
                             </>
                         )
                     }}
                 </Formik>
             </div>
-             </Grid>   
+        </Grid>
     )
 }
 export default AccountDetailPage;

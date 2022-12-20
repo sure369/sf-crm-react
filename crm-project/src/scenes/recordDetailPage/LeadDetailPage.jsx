@@ -30,6 +30,9 @@ const LeadDetailPage = ({ item }) => {
         setshowNew(!location.state.record.item)
     }, [])
 
+    let d = new Date();
+    const formatDate =  [d.getDate(), d.getMonth()+1,d.getFullYear()].join('/')+' '+ [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
+    
     const initialValues = {
         salutation: '',
         firstName: '',
@@ -41,8 +44,8 @@ const LeadDetailPage = ({ item }) => {
         leadStatus: '',
         email: '',
         createdbyId: '',
-        createdDate: '',
-        modifiedDate: '',
+        createdDate: formatDate,
+        modifiedDate: formatDate,
 
     }
 
@@ -59,13 +62,11 @@ const LeadDetailPage = ({ item }) => {
         email: singleLead?.email ?? "",
         createdbyId: singleLead?.createdbyId ?? "",
         createdDate: singleLead?.createdDate ?? "",
-        modifiedDate: singleLead?.modifiedDate ?? "",
+        modifiedDate: formatDate,
         _id: singleLead?._id ?? "",
     }
 
     const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
-
-
 
     const validationSchema = Yup.object({
         firstName: Yup
@@ -96,83 +97,101 @@ const LeadDetailPage = ({ item }) => {
     const formSubmission = (values) => {
         console.log('form submission values', values)
 
-        if (showNew) {
+        axios.post(url, values)
+        .then((res) => {
+            console.log('upsert record  response', res);
+            setShowAlert(true)
+            setAlertMessage(res.data)
+            setAlertSeverity('success')
+            setTimeout(() => {
+                navigate(-1)
+            }, 2000);
 
-            let d = new Date();
-            const formatDate =  [d.getMonth()+1, d.getDate(),d.getFullYear()].join('/')+' '+
-                                [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
-            const formData = new FormData();
-            formData.append('salutation', values.salutation);
-            formData.append('firstName', values.firstName);
-            formData.append('lastName', values.lastName);
-            formData.append('fullName', values.firstName + ' ' + values.lastName);
-            formData.append('phone', values.phone);
-            formData.append('leadSource', values.leadSource);
-            formData.append('industry', values.industry);
-            formData.append('leadStatus', values.leadStatus);
-            formData.append('email', values.email);
-            formData.append('createdbyId', values.createdbyId);
-            formData.append('createdDate',formatDate);// new Date()
-            formData.append('modifiedDate', formatDate); //new Date()
-            // formData.append('_id',values._id)
-            console.log('form convert formData ', formData)
-            axios.post(url, formData)
-                .then((res) => {
-                    console.log('upsert record  response', res);
-                    setShowAlert(true)
-                    setAlertMessage(res.data)
-                    setAlertSeverity('success')
-                    setTimeout(() => {
-                        navigate(-1)
-                    }, 2000);
+        })
+        .catch((error) => {
+            console.log('upsert record error', error);
+            setShowAlert(true)
+            setAlertMessage(error.message)
+            setAlertSeverity('error')
+        })
 
-                })
-                .catch((error) => {
-                    console.log('upsert record error', error);
-                    setShowAlert(true)
-                    setAlertMessage(error.message)
-                    setAlertSeverity('error')
-                })
-        }
-        else if (!showNew) {
-            let d = new Date();
-                const formatDate =  [d.getDate() , d.getMonth()+1,d.getFullYear()].join('/')+' '+
-                                   [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
-            const formData = new FormData();
-            formData.append('salutation', values.salutation);
-            formData.append('firstName', values.firstName);
-            formData.append('lastName', values.lastName);
-            formData.append('fullName', values.firstName + ' ' + values.lastName);
-            formData.append('phone', values.phone);
-            formData.append('leadSource', values.leadSource);
-            formData.append('industry', values.industry);
-            formData.append('leadStatus', values.leadStatus);
-            formData.append('email', values.email);
-            formData.append('createdbyId', values.createdbyId);
-            formData.append('createdDate', values.createdDate);
-            formData.append('modifiedDate',formatDate);//new Date().toLocaleString(undefined, {timeZone: 'Asia/Kolkata'}())
-            formData.append('_id', values._id)
+        // if (showNew) {
 
-            console.log('form convert formData ', formData)
+        //     let d = new Date();
+        //     const formatDate =  [d.getMonth()+1, d.getDate(),d.getFullYear()].join('/')+' '+
+        //                         [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
+        //     const formData = new FormData();
+        //     formData.append('salutation', values.salutation);
+        //     formData.append('firstName', values.firstName);
+        //     formData.append('lastName', values.lastName);
+        //     formData.append('fullName', values.firstName + ' ' + values.lastName);
+        //     formData.append('phone', values.phone);
+        //     formData.append('leadSource', values.leadSource);
+        //     formData.append('industry', values.industry);
+        //     formData.append('leadStatus', values.leadStatus);
+        //     formData.append('email', values.email);
+        //     formData.append('createdbyId', values.createdbyId);
+        //     formData.append('createdDate',formatDate);// new Date()
+        //     formData.append('modifiedDate', formatDate); //new Date()
+        //     // formData.append('_id',values._id)
+        //     console.log('form convert formData ', formData)
+        //     axios.post(url, formData)
+        //         .then((res) => {
+        //             console.log('upsert record  response', res);
+        //             setShowAlert(true)
+        //             setAlertMessage(res.data)
+        //             setAlertSeverity('success')
+        //             setTimeout(() => {
+        //                 navigate(-1)
+        //             }, 2000);
 
-            axios.post(url, formData)
-                .then((res) => {
-                    console.log('upsert record  response', res);
-                    setShowAlert(true)
-                    setAlertMessage(res.data)
-                    setAlertSeverity('success')
-                    setTimeout(() => {
-                        navigate(-1)
-                    }, 2000);
+        //         })
+        //         .catch((error) => {
+        //             console.log('upsert record error', error);
+        //             setShowAlert(true)
+        //             setAlertMessage(error.message)
+        //             setAlertSeverity('error')
+        //         })
+        // }
+        // else if (!showNew) {
+        //     let d = new Date();
+        //         const formatDate =  [d.getDate() , d.getMonth()+1,d.getFullYear()].join('/')+' '+
+        //                            [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
+        //     const formData = new FormData();
+        //     formData.append('salutation', values.salutation);
+        //     formData.append('firstName', values.firstName);
+        //     formData.append('lastName', values.lastName);
+        //     formData.append('fullName', values.firstName + ' ' + values.lastName);
+        //     formData.append('phone', values.phone);
+        //     formData.append('leadSource', values.leadSource);
+        //     formData.append('industry', values.industry);
+        //     formData.append('leadStatus', values.leadStatus);
+        //     formData.append('email', values.email);
+        //     formData.append('createdbyId', values.createdbyId);
+        //     formData.append('createdDate', values.createdDate);
+        //     formData.append('modifiedDate',formatDate);//new Date().toLocaleString(undefined, {timeZone: 'Asia/Kolkata'}())
+        //     formData.append('_id', values._id)
 
-                })
-                .catch((error) => {
-                    console.log('upsert record error', error);
-                    setShowAlert(true)
-                    setAlertMessage(error.message)
-                    setAlertSeverity('error')
-                })
-        }
+        //     console.log('form convert formData ', formData)
+
+        //     axios.post(url, formData)
+        //         .then((res) => {
+        //             console.log('upsert record  response', res);
+        //             setShowAlert(true)
+        //             setAlertMessage(res.data)
+        //             setAlertSeverity('success')
+        //             setTimeout(() => {
+        //                 navigate(-1)
+        //             }, 2000);
+
+        //         })
+        //         .catch((error) => {
+        //             console.log('upsert record error', error);
+        //             setShowAlert(true)
+        //             setAlertMessage(error.message)
+        //             setAlertSeverity('error')
+        //         })
+        // }
 
 
 

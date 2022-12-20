@@ -40,7 +40,12 @@ const Leads = () => {
     .then(
       (res) => {
         console.log("res Lead records", res);
-        setRecords(res.data);
+          if(res.data.length>0){
+            setRecords(res.data);
+          }
+          else{  
+            setRecords([]);
+          }
       }
     )
     .catch((error)=> {
