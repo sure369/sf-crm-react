@@ -57,7 +57,12 @@ const Contacts = () => {
     .then(
       (res) => {
         console.log("res Contact records", res);
-        setRecords(res.data);
+        if(res.data.length>0){
+          setRecords(res.data);
+        }
+        else{  
+        setRecords([]);
+        }
       }
     )
     .catch((error)=> {
