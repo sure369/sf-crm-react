@@ -6,7 +6,7 @@ import CurrencyInput from 'react-currency-input-field';
 import { Grid,Button ,Forminput,DialogActions,Autocomplete,TextField} from "@mui/material";
 import { useParams,useNavigate } from "react-router-dom"
 import axios from 'axios'
-import SimpleSnackbar from "../toast/test";
+import SimpleSnackbar from "../toast/SimpleSnackbar";
 import "../formik/FormStyles.css"
 
 const url ="http://localhost:4000/api/UpsertContact";

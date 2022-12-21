@@ -6,7 +6,7 @@ import { DataGrid, GridToolbar,
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import LeadForm from "../formik/LeadForm";
-import SimpleSnackbar from "../toast/test";
+import SimpleSnackbar from "../toast/SimpleSnackbar";
 import axios from 'axios'
 import {  useNavigate } from "react-router-dom";
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -61,7 +61,7 @@ const Leads = () => {
     setFinalClickInfo(e);    
     console.log('selected record',row);
     const item=row;
-    navigate("/test2",{state:{record:{item}}})
+    navigate("/leadDetailPage",{state:{record:{item}}})
     //  navigate("/leadDetailPage",{state:{record:{item}}})
   };
     

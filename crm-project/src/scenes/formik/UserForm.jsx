@@ -5,7 +5,7 @@ import CurrencyInput from 'react-currency-input-field';
 import { Grid,Button ,FormControl} from "@mui/material";
 import axios from 'axios'
 import { useNavigate } from "react-router-dom";
-import SimpleSnackbar from "../toast/test"
+import SimpleSnackbar from "../toast/SimpleSnackbar"
 
 const url ="http://localhost:4000/api/userInsert";
 

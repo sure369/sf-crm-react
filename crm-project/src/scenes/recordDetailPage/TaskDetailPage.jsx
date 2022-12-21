@@ -7,7 +7,7 @@ import {
     Autocomplete, TextField
 } from "@mui/material";
 import axios from 'axios'
-import SimpleSnackbar from "../toast/test";
+import SimpleSnackbar from "../toast/SimpleSnackbar";
 import "../formik/FormStyles.css"
 import PreviewFile from "../formik/PreviewFile";
 
@@ -107,12 +107,8 @@ const TaskDetailPage = ({ item }) => {
             values.modifiedDate = formatDate;
             values.createdDate = formatDate;
             values.fullName = values.firstName +' '+ values.lastName;
-        }
-        else if (!showNew) {
-            values.modifiedDate = formatDate;
-        }
-
-        let formData = new FormData();
+        
+            let formData = new FormData();
         formData.append('subject',values.subject);
         formData.append('nameofContact',values.nameofContact);
         formData.append('realatedTo',values.realatedTo);
@@ -131,6 +127,7 @@ const TaskDetailPage = ({ item }) => {
         formData.append('createdDate',values.createdDate)      
         formData.append('modifiedDate',values.modifiedDate)
 
+        console.log('modified formData',formData);
         await axios.post(UpsertUrl, formData)
     
             .then((res) => {
@@ -148,7 +145,52 @@ const TaskDetailPage = ({ item }) => {
                 setAlertMessage(error.message)
                 setAlertSeverity('error')
             })
-        // resetForm({ values: '' })
+
+        }
+        else if (!showNew) {
+            values.modifiedDate = formatDate;
+
+            let formData = new FormData();
+            formData.append('subject',values.subject);
+            formData.append('nameofContact',values.nameofContact);
+            formData.append('realatedTo',values.realatedTo);
+            formData.append('assignedTo',values.assignedTo); 
+            formData.append('startDate',values.startDate);        
+            formData.append('startTime',values.startTime);        
+            formData.append('EndDate',values.EndDate);        
+            formData.append('EndTime',values.EndTime)
+            formData.append('description',values.description);        
+            formData.append('attachments',values.attachments);        
+            formData.append('object',values.object);        
+            formData.append('AccountId',values.AccountId);        
+            formData.append('LeadId',values.LeadId)
+            formData.append('OpportunityId',values.OpportunityId)
+            formData.append('createdbyId',values.createdbyId)
+            formData.append('createdDate',values.createdDate)      
+            formData.append('modifiedDate',values.modifiedDate)                  
+            formData.append('_id',values._id)
+    
+            await axios.post(UpsertUrl, formData)
+        
+                .then((res) => {
+                    console.log('task form Submission  response', res);
+                    setShowAlert(true)
+                    setAlertMessage(res.data)
+                    setAlertSeverity('success')
+                    setTimeout(()=>{
+                        navigate(-1);
+                    },1000)
+                })
+                .catch((error) => {
+                    console.log('task form Submission  error', error);
+                    setShowAlert(true)
+                    setAlertMessage(error.message)
+                    setAlertSeverity('error')
+                })
+        }
+
+       
+
     }
 
     const toastCloseCallback = () => {
@@ -226,7 +268,7 @@ const TaskDetailPage = ({ item }) => {
                                             <option value="call"> Call</option>
                                             <option value="email"> Email</option>
                                             <option value="meeting"> Meeting</option>
-                                            <option value="send Quotw"> Send Quote</option>
+                                            <option value="send Quote"> Send Quote</option>
                                         </Field>
 
                                         <div style={{ color: 'red' }}>

@@ -10,7 +10,7 @@ import { Autocomplete } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useRef } from "react";
 import Thumb from "./Thumb";
-import SimpleSnackbar from "../toast/test";
+import SimpleSnackbar from "../toast/SimpleSnackbar";
 import "./FormStyles.css"
 
 const url = "http://localhost:4000/api/contactInsert";

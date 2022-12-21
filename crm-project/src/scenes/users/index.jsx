@@ -9,7 +9,7 @@ import axios from 'axios';
 import {  useNavigate } from "react-router-dom";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import SimpleSnackbar from "../toast/test";
+import SimpleSnackbar from "../toast/SimpleSnackbar";
 import Pagination from '@mui/material/Pagination';
 
 const Users = () => {

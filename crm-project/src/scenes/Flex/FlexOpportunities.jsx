@@ -1,22 +1,9 @@
 import React ,{ useEffect, useState ,useRef } from "react";
 import PropTypes from 'prop-types';
-import Box from '@mui/material/Box';
-import Inventories from '../inventories';
-import Test from './Test';
-import axios from 'axios'
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import { Grid,Button ,DialogActions} from "@mui/material";
-import SimpleSnackbar from "../toast/test";
-import "../formik/FormStyles.css"
-
+import { Box,Grid,Button ,DialogActions} from "@mui/material";
 import {useLocation ,useNavigate} from 'react-router-dom';
-import LeadDetailPage from "../recordDetailPage/LeadDetailPage";
-import NewEventForm from "../formik/NewEvent";
-import TaskCard from "../tasks/TaskCards";
-
-const urlInventory = "http://localhost:4000/api/inventories";
-const url ="http://localhost:4000/api/UpsertInventory";
+import CardOppTask from "../tasks/CardOppTask";
+import OpportunityDetailPage from "../recordDetailPage/OpportunityDetailPage";
 
 function Item(props) {
   const { sx, ...other } = props;
@@ -50,7 +37,7 @@ Item.propTypes = {
   ]),
 };
 
-const FlexLeadEvent = (item) => {
+const FlexOpportunities = (item) => {
 
     const [property, setProperty] = useState([{}])
     const [rowId, setRowId] = useState()
@@ -82,12 +69,12 @@ const FlexLeadEvent = (item) => {
                 sx={{ display: 'flex', p: 1, bgcolor: 'background.paper', borderRadius: 1 }}
             >
 
-                <Item sx={{ width: '65%' }}> <LeadDetailPage props={passedRecord}/> </Item>
-                <Item sx={{ width: '35%' }}> <TaskCard props={passedRecord} /> </Item>
+                <Item sx={{ width: '65%' }}> <OpportunityDetailPage props={passedRecord}/> </Item>
+                <Item sx={{ width: '35%' }}> <CardOppTask props={passedRecord} /> </Item>
 
                 
             </Box>
         </div>
     );
 }
-export default FlexLeadEvent
+export default FlexOpportunities

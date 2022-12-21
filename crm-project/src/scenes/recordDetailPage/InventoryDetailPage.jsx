@@ -5,7 +5,7 @@ import * as Yup from "yup";
 import { Grid,Button ,DialogActions} from "@mui/material";
 import { useParams,useNavigate } from "react-router-dom"
 import axios from 'axios'
-import SimpleSnackbar from "../toast/test";
+import SimpleSnackbar from "../toast/SimpleSnackbar";
 import "../formik/FormStyles.css"
 
 const url ="http://localhost:4000/api/UpsertInventory";

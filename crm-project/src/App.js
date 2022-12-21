@@ -36,12 +36,13 @@ import EventForm from "./scenes/formik/EventForm";
 import ComboBox from "./scenes/formik/lookup";
 import SimpleAccordion from "./scenes/recordDetailPage/TestAccordion";
 import TestRecordDetail from "./scenes/recordDetailPage/TestRecordDetail";
-import FlexShrink from "./scenes/z/Flex";
+
 import NewEventForm from "./scenes/formik/NewEvent";
-import FlexLeadEvent from "./scenes/z/FlexLeadEvent";
+import FlexLeads from "./scenes/Flex/FlexLeads";
+import FlexOpportunities from "./scenes/Flex/FlexOpportunities";
+import FlexAccounts from "./scenes/Flex/FlexAccounts";
 import TaskDetailPage from "./scenes/recordDetailPage/TaskDetailPage";
 import Task from "./scenes/tasks";
-import BasicModal from "./scenes/tasks/Modal";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -61,7 +62,7 @@ function App() {
               <Route path="/contacts" element={<Contacts />} />
               <Route path="/opportunities" element={<Opportunities />} />
               <Route path="/leads" element={<Leads />} />
-              <Route path="/inventories" element={<FlexShrink/>} />
+              <Route path="/inventories" element={<Inventories/>} />
               <Route path="/task" element={<Task />} />
               <Route path="/users" element={<Users />} />
               <Route path="/new-accounts" element={<AccountForm />} />
@@ -77,12 +78,12 @@ function App() {
            
                
               <Route path="/test1" element={<NewEventForm/>} />
-              <Route path="/test2" element={<FlexLeadEvent/>} />
-              <Route path="/test" element={<BasicModal/>} />
-              <Route path="/accountDetailPage" element={<AccountDetailPage/>} />
+
+             
+              <Route path="/accountDetailPage" element={<FlexAccounts/>} />
               <Route path="/contactDetailPage" element={<ContactDetailPage/>} />
-              <Route path="/opportunityDetailPage" element={<OpportunityDetailPage/>}/>
-              <Route path="/leadDetailPage" element={<LeadDetailPage/>} />
+              <Route path="/opportunityDetailPage" element={<FlexOpportunities/>}/>
+              <Route path="/leadDetailPage" element={<FlexLeads/>} />
               <Route path="/inventoryDetailPage" element={<InventoryDetailPage/>}/>
               <Route path="/taskDetailPage" element={<TaskDetailPage/>}/>
               <Route path="/userDetailPage" element={<UserDetailPage/>} />

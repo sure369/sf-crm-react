@@ -7,7 +7,7 @@ import DatePickerField from "./datePick";
 import axios from 'axios'
 // import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from "react-router-dom";
-import SimpleSnackbar from "../toast/test";
+import SimpleSnackbar from "../toast/SimpleSnackbar";
 import "./FormStyles.css"
 
 const url = "http://localhost:4000/api/opportunityInsert";

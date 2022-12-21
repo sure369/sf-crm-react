@@ -6,7 +6,7 @@ import { Grid,Button ,FormControl,Stack ,Alert} from "@mui/material";
 import axios from 'axios'
 // import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState } from "react";
-import SimpleSnackbar from "../toast/test";
+import SimpleSnackbar from "../toast/SimpleSnackbar";
 import { useNavigate } from "react-router-dom";
 import "./FormStyles.css"
 

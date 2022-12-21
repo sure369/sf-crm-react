@@ -7,7 +7,7 @@ import {
     Autocomplete, TextField
 } from "@mui/material";
 import axios from 'axios'
-import SimpleSnackbar from "../toast/test";
+import SimpleSnackbar from "../toast/SimpleSnackbar";
 import "../formik/FormStyles.css"
 
 
@@ -17,7 +17,7 @@ const fetchAccountUrl = "http://localhost:4000/api/accountsname";
 const fetchLeadUrl = "http://localhost:4000/api/LeadsbyName";
 const fetchOpportunityUrl = "http://localhost:4000/api/opportunitiesbyName";
 
-const TaskModalPage = ({ item }) => {
+const ModalAccTask = ({ item }) => {
 
     const [singleTask, setSingleTask] = useState();
     const [showNew, setshowNew] = useState()
@@ -76,15 +76,12 @@ const TaskModalPage = ({ item }) => {
 
      const formSubmission = async (values, { resetForm }) => {
         console.log('inside form Submission', values);
-        let lead = singleTask._id ;
+        let relatedRecId = singleTask._id ;
         let d = new Date();
         const formatDate = [d.getDate(), d.getMonth() + 1, d.getFullYear()].join('/') + ' ' + [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
 
-    
-            values.modifiedDate = formatDate;
-            values.createdDate = formatDate;
-      
-        
+        values.modifiedDate = formatDate;
+        values.createdDate = formatDate;
 
         let formData = new FormData();
         formData.append('subject',values.subject);
@@ -98,8 +95,8 @@ const TaskModalPage = ({ item }) => {
         formData.append('description',values.description);        
         formData.append('attachments',values.attachments);        
         formData.append('object',values.object);        
-        formData.append('AccountId',values.AccountId);        
-        formData.append('LeadId',lead)
+        formData.append('AccountId',relatedRecId);        
+        formData.append('LeadId',values.LeadId)
         formData.append('OpportunityId',values.OpportunityId)
         formData.append('createdbyId',values.createdbyId)
         formData.append('createdDate',values.createdDate)      
@@ -113,7 +110,7 @@ const TaskModalPage = ({ item }) => {
                 setAlertMessage(res.data)
                 setAlertSeverity('success')
                 setTimeout(()=>{
-                    navigate(-1);
+                   window.location.reload();
                 },1000)
             })
             .catch((error) => {
@@ -167,7 +164,7 @@ const TaskModalPage = ({ item }) => {
                                             <option value="call"> Call</option>
                                             <option value="email"> Email</option>
                                             <option value="meeting"> Meeting</option>
-                                            <option value="send Quotw"> Send Quote</option>
+                                            <option value="send Quote"> Send Quote</option>
                                         </Field>
 
                                         <div style={{ color: 'red' }}>
@@ -234,5 +231,5 @@ const TaskModalPage = ({ item }) => {
     )
 
 }
-export default TaskModalPage
+export default ModalAccTask
 

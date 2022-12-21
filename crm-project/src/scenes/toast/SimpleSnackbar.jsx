@@ -3,10 +3,6 @@ import { useState } from "react";
 
 export default function SimpleSnackbar({message,showAlert,onClose,severity}) {
 
-
-  // console.log('message',message);
-  // console.log('showAlert',showAlert);
-  // console.log('onClose',onClose);
     return (
       <Snackbar
       key={Math.random()}

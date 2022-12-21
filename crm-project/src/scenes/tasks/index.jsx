@@ -7,7 +7,7 @@ import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import axios from 'axios';
 import {  useNavigate } from "react-router-dom";
-import SimpleSnackbar from "../toast/test";
+import SimpleSnackbar from "../toast/SimpleSnackbar";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import Pagination from '@mui/material/Pagination';
