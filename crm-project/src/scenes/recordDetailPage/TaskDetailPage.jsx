@@ -40,6 +40,7 @@ const TaskDetailPage = ({ item }) => {
        
     }, [])
 
+    
     const initialValues = {
         subject: '',
         nameofContact: '',
@@ -170,7 +171,7 @@ const TaskDetailPage = ({ item }) => {
     const FetchObjectsbyName = (newInputValue, url) => {
 
         console.log('passed url', url)
-        console.log('newInputValue  value', newInputValue)
+        console.log('new Input  value', newInputValue)
 
 
         axios.post(`${url}?searchKey=${newInputValue}`)

@@ -28,7 +28,13 @@ const LeadDetailPage = ({ item }) => {
         setsingleLead(location.state.record.item);
         console.log('true', !location.state.record.item);
         setshowNew(!location.state.record.item)
+        console.log('lead id', location.state.record.item._id);
+        getTasks(location.state.record.item._id)
     }, [])
+
+
+    
+
 
     const initialValues = {
         salutation: '',
@@ -127,7 +133,18 @@ const LeadDetailPage = ({ item }) => {
         setShowAlert(false)
     }
 
+    const getTasks =(leadsId)=>{
+        console.log('inside get task',leadsId)
+        const urlTask ="http://localhost:4000/api/Task";
+        axios.post(urlTask)
+        .then((res)=>{
+            console.log('response task fetch',res.data);
+        })
+        .catch((error)=>{
+            console.log('error task fetch',error)
+        })
 
+    }
 
     const callEvent = (savedValues) => {
 
