@@ -22,6 +22,7 @@ const LeadDetailPage = ({ item }) => {
     const [showAlert, setShowAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState();
     const [alertSeverity, setAlertSeverity] = useState();
+    const[relatedTask,setRelatedTask] = useState([]);
 
     useEffect(() => {
         console.log('passed record', location.state.record.item);
@@ -135,10 +136,19 @@ const LeadDetailPage = ({ item }) => {
 
     const getTasks =(leadsId)=>{
         console.log('inside get task',leadsId)
-        const urlTask ="http://localhost:4000/api/Task";
-        axios.post(urlTask)
+         const urlTask ="http://localhost:4000/api/getTaskbyLeadId?searchId=";
+       
+
+        axios.post(urlTask+leadsId)
         .then((res)=>{
             console.log('response task fetch',res.data);
+            if(res.data.length>0){
+                setRelatedTask (res.data);
+              }
+              else{  
+                setRelatedTask([]);
+              }
+           
         })
         .catch((error)=>{
             console.log('error task fetch',error)

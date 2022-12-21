@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
-import { Box, IconButton, Typography, useTheme } from "@mui/material";
+import { Box, IconButton, Typography, useTheme , } from "@mui/material";
 import { Link } from "react-router-dom";
 import AppBar from '@mui/material/AppBar';
 import "react-pro-sidebar/dist/css/styles.css";
@@ -29,6 +29,7 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
       }}
       onClick={() => setSelected(title)}
       icon={icon}
+      title={title}
     >
       <Typography>{title}</Typography>
       <Link to={to} />
@@ -55,8 +56,7 @@ const Sidebar = () => {
           padding: "5px 35px 5px 20px !important",
         },
         "& .pro-inner-item:hover": {
-          color: "#868dfb !important",
-          //  color: "#868dfb !important",
+          color: "#868dfb !important",       
         },
         "& .pro-menu-item.active": {
           color: "#6870fa !important",

@@ -25,6 +25,7 @@ const OpportunityDetailPage = ({item}) => {
     const [alertSeverity, setAlertSeverity] = useState();
     const [leadsRecords,setLeadsRecords]= useState([]);
     const [inventoriesRecord,setInventoriesRecord]= useState([]);
+    const[relatedTask,setRelatedTask] = useState([]);
 
     useEffect(()=>{
         console.log('passed record',location.state.record.item);
@@ -33,6 +34,7 @@ const OpportunityDetailPage = ({item}) => {
         setshowNew(!location.state.record.item)  
         FetchInventoriesbyName('');
         FetchLeadsbyName('');
+         getTasks(location.state.record.item._id)
     },[])
 
     const initialValues = {
@@ -114,6 +116,30 @@ const OpportunityDetailPage = ({item}) => {
     const toastCloseCallback = () => {
         setShowAlert(false)
     }
+
+      const getTasks =(leadsId)=>{
+        console.log('inside get task',leadsId)
+         const urlTask ="http://localhost:4000/api/getTaskbyOpportunityId?searchId=";
+       
+
+        axios.post(urlTask+leadsId)
+        .then((res)=>{
+            console.log('response task fetch',res.data);
+            if(res.data.length>0){
+                setRelatedTask (res.data);
+              }
+              else{  
+                setRelatedTask([]);
+              }
+           
+        })
+        .catch((error)=>{
+            console.log('error task fetch',error)
+        })
+
+    }
+
+    
 
     const FetchLeadsbyName =(newInputValue) =>{
         console.log('inside FetchLeadsbyName fn');
