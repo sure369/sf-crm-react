@@ -41,6 +41,7 @@ import NewEventForm from "./scenes/formik/NewEvent";
 import FlexLeadEvent from "./scenes/z/FlexLeadEvent";
 import TaskDetailPage from "./scenes/recordDetailPage/TaskDetailPage";
 import Task from "./scenes/tasks";
+import BasicModal from "./scenes/tasks/Modal";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -73,11 +74,11 @@ function App() {
               <Route path="/form" element={<NewForm />} />
               <Route path="/team" element={<Team />} />
               <Route path="/faq" element={<FAQ />} />
-              
+           
                
               <Route path="/test1" element={<NewEventForm/>} />
               <Route path="/test2" element={<FlexLeadEvent/>} />
-              <Route path="/test" element={<ContactForm/>} />
+              <Route path="/test" element={<BasicModal/>} />
               <Route path="/accountDetailPage" element={<AccountDetailPage/>} />
               <Route path="/contactDetailPage" element={<ContactDetailPage/>} />
               <Route path="/opportunityDetailPage" element={<OpportunityDetailPage/>}/>

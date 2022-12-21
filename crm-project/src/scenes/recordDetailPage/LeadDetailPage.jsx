@@ -155,13 +155,13 @@ const LeadDetailPage = ({ item }) => {
 
     }
 
-    const callEvent = (savedValues) => {
+    // const callEvent = (savedValues) => {
 
-        console.log('button click', savedValues);
-        let item = savedValues
-        navigate('/test1', { state: { record: { item } } })
+    //     console.log('button click', savedValues);
+    //     let item = savedValues
+    //     navigate('/test1', { state: { record: { item } } })
 
-    }
+    // }
 
     return (
         <Grid item xs={12} style={{ margin: "20px" }}>
@@ -170,13 +170,13 @@ const LeadDetailPage = ({ item }) => {
                     showNew ? <h3>New Lead</h3> : <h3>Lead Detail Page </h3>
                 }
             </div>
-            <div style={{ textAlign: "end", marginBottom: "10px" }}>
+            {/* <div style={{ textAlign: "end", marginBottom: "10px" }}>
 
                 {
                     showNew ? null : <button onClick={() => callEvent(savedValues)}>New Event</button>
                 }
 
-            </div>
+            </div> */}
 
             <div>
                 <Formik
