@@ -13,6 +13,7 @@ import "../formik/FormStyles.css"
 import {useLocation ,useNavigate} from 'react-router-dom';
 import LeadDetailPage from "../recordDetailPage/LeadDetailPage";
 import NewEventForm from "../formik/NewEvent";
+import TaskCard from "../tasks/TaskCards";
 
 const urlInventory = "http://localhost:4000/api/inventories";
 const url ="http://localhost:4000/api/UpsertInventory";
@@ -64,16 +65,14 @@ const FlexLeadEvent = (item) => {
 
     const[passedRecord,setPassedRecord] =useState();
     const location = useLocation();
+
     useEffect(() => {
 
         console.log('passed record',location.state.record.item)
         setPassedRecord(location.state.record.item); 
-
+      
        
     }, [])
-
-
-
  
 
    
@@ -83,8 +82,10 @@ const FlexLeadEvent = (item) => {
                 sx={{ display: 'flex', p: 1, bgcolor: 'background.paper', borderRadius: 1 }}
             >
 
-                <Item sx={{ width: '70%' }}><LeadDetailPage props={passedRecord}/> </Item>
-                <Item sx={{ width: '30%' }}> <NewEventForm props={passedRecord} /> </Item>
+                <Item sx={{ width: '65%' }}> <LeadDetailPage props={passedRecord}/> </Item>
+                <Item sx={{ width: '35%' }}> <TaskCard props={passedRecord} /> </Item>
+
+                
             </Box>
         </div>
     );

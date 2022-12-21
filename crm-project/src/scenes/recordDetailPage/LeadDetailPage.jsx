@@ -30,7 +30,7 @@ const LeadDetailPage = ({ item }) => {
         console.log('true', !location.state.record.item);
         setshowNew(!location.state.record.item)
         console.log('lead id', location.state.record.item._id);
-        getTasks(location.state.record.item._id)
+        // getTasks(location.state.record.item._id)
     }, [])
 
 
@@ -147,8 +147,7 @@ const LeadDetailPage = ({ item }) => {
               }
               else{  
                 setRelatedTask([]);
-              }
-           
+              } 
         })
         .catch((error)=>{
             console.log('error task fetch',error)
