@@ -43,6 +43,7 @@ import FlexOpportunities from "./scenes/Flex/FlexOpportunities";
 import FlexAccounts from "./scenes/Flex/FlexAccounts";
 import TaskDetailPage from "./scenes/recordDetailPage/TaskDetailPage";
 import Task from "./scenes/tasks";
+import DataLoadPage from "./scenes/dataLoder/dataLoadPage";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -65,25 +66,26 @@ function App() {
               <Route path="/inventories" element={<Inventories/>} />
               <Route path="/task" element={<Task />} />
               <Route path="/users" element={<Users />} />
-              <Route path="/new-accounts" element={<AccountForm />} />
+              
               <Route path="/new-contacts" element={<ContactForm />} />
-              <Route path="/new-opportunities" element={<OpportunityForm />} />
-              <Route path="/new-leads" element={<LeadForm />} />
               <Route path="/new-users" element={<UserForm/>} />
               <Route path="/new-inventories" element={<InventoryForm/>}/>
               <Route path="/new-event" element={<EventForm/>}/>
               <Route path="/form" element={<NewForm />} />
               <Route path="/team" element={<Team />} />
               <Route path="/faq" element={<FAQ />} />
-           
+              
+              <Route path="/test" element={<DataLoadPage/>} />
                
-              <Route path="/test1" element={<NewEventForm/>} />
+              <Route path="/new-leads" element={<LeadDetailPage />} />
+              <Route path="/new-opportunities" element={<OpportunityDetailPage />} />
+              <Route path="/new-accounts" element={<AccountDetailPage />} />
 
-             
-              <Route path="/accountDetailPage" element={<FlexAccounts/>} />
-              <Route path="/contactDetailPage" element={<ContactDetailPage/>} />
-              <Route path="/opportunityDetailPage" element={<FlexOpportunities/>}/>
               <Route path="/leadDetailPage" element={<FlexLeads/>} />
+              <Route path="/opportunityDetailPage" element={<FlexOpportunities/>}/>
+              <Route path="/accountDetailPage" element={<FlexAccounts/>} />
+              
+              <Route path="/contactDetailPage" element={<ContactDetailPage/>} />
               <Route path="/inventoryDetailPage" element={<InventoryDetailPage/>}/>
               <Route path="/taskDetailPage" element={<TaskDetailPage/>}/>
               <Route path="/userDetailPage" element={<UserDetailPage/>} />

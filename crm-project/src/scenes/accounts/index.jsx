@@ -11,6 +11,7 @@ import SimpleSnackbar from "../toast/SimpleSnackbar";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import Pagination from '@mui/material/Pagination';
+import AccountDetailPage from '../recordDetailPage/AccountDetailPage';
 
 const Accounts = () => {
 
@@ -56,7 +57,8 @@ console.log('inside account index')
   }
   const handleOpen = () => {
     //  navigate('/new-accounts'); 
-     navigate("/accountDetailPage",{state:{record:{}}})
+     navigate("/new-accounts",{state:{record:{}}})
+    // <AccountDetailPage />
   };
 
   const handleOnCellClick = (e,row) => {

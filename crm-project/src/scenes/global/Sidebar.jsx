@@ -187,6 +187,14 @@ const Sidebar = () => {
               setSelected={setSelected}
           
             />
+              <Item
+              title="Data Loader"
+              to="/test"
+              icon={<HelpOutlineOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+          
+            />
            
             {/* <Typography
               variant="h6"

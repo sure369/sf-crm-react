@@ -12,6 +12,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import ModeIcon from '@mui/icons-material/Mode';
 import SimpleSnackbar from "../toast/SimpleSnackbar";
 import ModalOppTask from "./ModalOppTask";
+import ModalAccTask from "./ModalAccTask";
 
 const style = {
     position: 'absolute',
@@ -44,8 +45,12 @@ const CardAccTask = ({ item }) => {
 
     useEffect(() => {
         console.log('inside useEffect', location.state.record.item);
+       if(location.state.record.item){
         setRecordId(location.state.record.item._id)
         getTasks(location.state.record.item._id)
+       }
+       
+       
 
 
     }, [])
@@ -182,7 +187,7 @@ const CardAccTask = ({ item }) => {
             >
                 <Box sx={style}>
 
-                    <ModalOppTask/>
+                    <ModalAccTask/>
 
 
                 </Box>

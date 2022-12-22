@@ -57,7 +57,7 @@ const Opportunities = () => {
   const handleOpen = () => {
     // navigate('/new-opportunities')
     
-    navigate("/opportunityDetailPage", {state:{record: {}}})
+    navigate("/new-opportunities", {state:{record: {}}})
   };
 
   const handleOnCellClick =(e,row) => {

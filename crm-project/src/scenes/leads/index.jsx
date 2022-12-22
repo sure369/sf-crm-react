@@ -54,7 +54,7 @@ const Leads = () => {
   }
   const handleOpen = () => {
     // navigate('/new-leads')  
-    navigate("/leadDetailPage",{state:{record:{}}}) 
+    navigate("/new-leads",{state:{record:{}}}) 
   };
 
   const handleOnCellClick = (e,row) => {
