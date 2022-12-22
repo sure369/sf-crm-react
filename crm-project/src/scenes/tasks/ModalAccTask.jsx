@@ -17,7 +17,7 @@ const fetchAccountUrl = "http://localhost:4000/api/accountsname";
 const fetchLeadUrl = "http://localhost:4000/api/LeadsbyName";
 const fetchOpportunityUrl = "http://localhost:4000/api/opportunitiesbyName";
 
-const ModalAccTask = ({ item }) => {
+const ModalAccTask = ({ item ,handleModal }) => {
 
     const [singleTask, setSingleTask] = useState();
     const [showNew, setshowNew] = useState()
@@ -216,7 +216,7 @@ const ModalAccTask = ({ item }) => {
                                  
                                                 <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Save</Button>
                                                                                       
-                                        <Button type="reset" variant="contained" onClick={handleReset} disabled={!dirty || isSubmitting}  >Cancel</Button>
+                                        <Button type="reset" variant="contained" onClick={(e)=>handleModal(false)} >Cancel</Button>
 
                                     </DialogActions>
                                 </div>

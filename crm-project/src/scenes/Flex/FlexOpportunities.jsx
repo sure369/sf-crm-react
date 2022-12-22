@@ -4,6 +4,7 @@ import { Box,Grid,Button ,DialogActions} from "@mui/material";
 import {useLocation ,useNavigate} from 'react-router-dom';
 import CardOppTask from "../tasks/CardOppTask";
 import OpportunityDetailPage from "../recordDetailPage/OpportunityDetailPage";
+import OpportunityRelatedItems from "../opportunities/RelatedItems";
 
 function Item(props) {
   const { sx, ...other } = props;
@@ -70,7 +71,7 @@ const FlexOpportunities = (item) => {
             >
 
                 <Item sx={{ width: '65%' }}> <OpportunityDetailPage props={passedRecord}/> </Item>
-                <Item sx={{ width: '35%' }}> <CardOppTask props={passedRecord} /> </Item>
+                <Item sx={{ width: '35%' }}> <OpportunityRelatedItems props={passedRecord} /> </Item>
 
                 
             </Box>

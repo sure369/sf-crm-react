@@ -4,6 +4,7 @@ import { Box,Grid,Button ,DialogActions} from "@mui/material";
 import {useLocation ,useNavigate} from 'react-router-dom';
 import CardAccTask from "../tasks/CardAccTask";
 import AccountDetailPage from "../recordDetailPage/AccountDetailPage";
+import AccountRelatedItems from "../accounts/RelatedItems";
 
 function Item(props) {
   const { sx, ...other } = props;
@@ -70,7 +71,7 @@ const FlexAccounts = (item) => {
             >
 
                 <Item sx={{ width: '65%' }}> <AccountDetailPage props={passedRecord}/> </Item>
-                <Item sx={{ width: '35%' }}> <CardAccTask props={passedRecord} /> </Item>
+                <Item sx={{ width: '35%' }}> <AccountRelatedItems props={passedRecord} /> </Item>
 
                 
             </Box>

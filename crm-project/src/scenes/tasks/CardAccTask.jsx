@@ -164,9 +164,9 @@ const CardAccTask = ({ item }) => {
                                                 <IconButton >
                                                     <ModeIcon onClick={(key) => handleCardEdit(item)} />
                                                 </IconButton>
-                                                 <IconButton >
+                                                 {/* <IconButton >
                                                     <DeleteIcon onClick={(key) =>handleCardDelete(item)} />
-                                                </IconButton> 
+                                                </IconButton>  */}
                                                 </Grid>
                                                 </Grid>
                                             </div>

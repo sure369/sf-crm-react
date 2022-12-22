@@ -6,13 +6,13 @@ import {
     Card, CardContent, Box, Button, Typography, Modal
     , IconButton ,Grid ,Accordion ,AccordionSummary,AccordionDetails,Pagination ,Menu, MenuItem
 } from "@mui/material";
+import axios from 'axios'
 import DeleteIcon from '@mui/icons-material/Delete';
 import ModeIcon from '@mui/icons-material/Mode';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import axios from 'axios'
-import TaskModalPage from "../tasks/TaskModal";
 import SimpleSnackbar from "../toast/SimpleSnackbar";
-import MoreVertIcon from '@mui/icons-material/MoreVert';
+import ModalOppTask from "../tasks/ModalOppTask";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+
 
 const style = {
     position: 'absolute',
@@ -24,12 +24,9 @@ const style = {
     bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 24,
-    // p: 4,
-
-
 };
 
-const LeadRelatedItems = ({ item }) => {
+const OpportunityRelatedItems = ({ item }) => {
 
     
 
@@ -46,7 +43,6 @@ const LeadRelatedItems = ({ item }) => {
     const[alertMessage,setAlertMessage]=useState();
     const[alertSeverity,setAlertSeverity]=useState();
 
-
     const [itemsPerPage, setItemsPerPage] = useState(2);
     const [page, setPage] = useState(1);
     const [noOfPages, setNoOfPages] = useState(0);
@@ -56,17 +52,18 @@ const LeadRelatedItems = ({ item }) => {
         setLeadRecordId(location.state.record.item._id)
         getTasks(location.state.record.item._id)
 
+
     }, [])
 
-    const getTasks = (leadsId) => {
-        const urlTask = "http://localhost:4000/api/getTaskbyLeadId?searchId=";
+    const getTasks = (recId) => {
+        const urlTask = "http://localhost:4000/api/getTaskbyOpportunityId?searchId=";
+       
 
-
-        axios.post(urlTask + leadsId)
+        axios.post(urlTask + recId)
             .then((res) => {
-                console.log('response task fetch', res.data);
+                console.log('response task fetch', res);
                 if (res.data.length > 0) {
-                    setRelatedTask(res.data);  
+                    setRelatedTask(res.data);
                     setNoOfPages(Math.ceil(res.data.length / itemsPerPage));
                 }
                 else {
@@ -118,13 +115,16 @@ const LeadRelatedItems = ({ item }) => {
           })
       };
       const toastCloseCallback=()=>{
-        setShowAlert(false) 
+        setShowAlert(false)
+        
       }
 
-    const handleChangePage = (event, value) => {
+      const handleChangePage = (event, value) => {
         setPage(value);
       };
     
+
+
     return (
         <>
          {
@@ -136,7 +136,6 @@ const LeadRelatedItems = ({ item }) => {
                 <h3> Related Items</h3>
 
             </div>
-
             <Accordion>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
@@ -231,7 +230,6 @@ const LeadRelatedItems = ({ item }) => {
           </Typography>
         </AccordionDetails>
       </Accordion>
-            
 
             <Modal
                 open={modalOpen}
@@ -241,7 +239,7 @@ const LeadRelatedItems = ({ item }) => {
             >
                 <Box sx={style}>
 
-                    <TaskModalPage handleModal={handleModalClose} />
+                    <ModalOppTask handleModal={handleModalClose}/>
 
 
                 </Box>
@@ -251,5 +249,5 @@ const LeadRelatedItems = ({ item }) => {
     )
 
 }
-export default LeadRelatedItems
+export default OpportunityRelatedItems
 
