@@ -10,7 +10,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import ModeIcon from '@mui/icons-material/Mode';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import axios from 'axios'
-import TaskModalPage from "../tasks/TaskModal";
+import ModalLeadTask from "../tasks/ModalLeadTask";
 import SimpleSnackbar from "../toast/SimpleSnackbar";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
@@ -241,7 +241,7 @@ const LeadRelatedItems = ({ item }) => {
             >
                 <Box sx={style}>
 
-                    <TaskModalPage handleModal={handleModalClose} />
+                    <ModalLeadTask handleModal={handleModalClose} />
 
 
                 </Box>

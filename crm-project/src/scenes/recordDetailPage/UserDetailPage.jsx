@@ -124,6 +124,10 @@ const UserDetailPage = ({item}) => {
     const toastCloseCallback = () => {
         setShowAlert(false)
     }
+    
+const handleFormClose =()=>{
+    navigate(-1)
+}
 
   return (
     <Grid item xs={12} style={{margin:"20px"}}>          
@@ -253,7 +257,7 @@ const UserDetailPage = ({item}) => {
                                                     
                                                         <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Update</Button>
                                            }                                      
-                                        <Button type="reset" variant="contained" onClick={handleReset} disabled={!dirty || isSubmitting}  >Cancel</Button>
+                                        <Button type="reset" variant="contained" onClick={handleFormClose}   >Cancel</Button>
                                         </DialogActions>     
                                        </div>
                                 </Form>

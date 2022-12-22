@@ -7,7 +7,7 @@ import {
     , IconButton ,Grid 
 } from "@mui/material";
 import axios from 'axios'
-import TaskModalPage from "./TaskModal";
+import TaskModalPage from "./ModalLeadTask";
 import DeleteIcon from '@mui/icons-material/Delete';
 import ModeIcon from '@mui/icons-material/Mode';
 import SimpleSnackbar from "../toast/SimpleSnackbar";

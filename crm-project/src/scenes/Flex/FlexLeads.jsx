@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { Box,Grid,Button ,DialogActions} from "@mui/material";
 import {useLocation ,useNavigate} from 'react-router-dom';
 import LeadDetailPage from "../recordDetailPage/LeadDetailPage";
-import CardTask from "../tasks/TaskCard";
 import LeadRelatedItems from "../leads/RelatedItems";
 
 function Item(props) {

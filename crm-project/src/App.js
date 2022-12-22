@@ -34,8 +34,6 @@ import Inventories from "./scenes/inventories";
 import InventoryDetailPage from "./scenes/recordDetailPage/InventoryDetailPage";
 import EventForm from "./scenes/formik/EventForm";
 import ComboBox from "./scenes/formik/lookup";
-import SimpleAccordion from "./scenes/recordDetailPage/TestAccordion";
-import TestRecordDetail from "./scenes/recordDetailPage/TestRecordDetail";
 
 import NewEventForm from "./scenes/formik/NewEvent";
 import FlexLeads from "./scenes/Flex/FlexLeads";
@@ -74,7 +72,7 @@ function App() {
               <Route path="/form" element={<NewForm />} />
               <Route path="/team" element={<Team />} />
               <Route path="/faq" element={<FAQ />} />
-              
+
               <Route path="/test" element={<DataLoadPage/>} />
                
               <Route path="/new-leads" element={<LeadDetailPage />} />

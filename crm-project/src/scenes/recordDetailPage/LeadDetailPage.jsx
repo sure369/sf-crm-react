@@ -291,9 +291,6 @@ const LeadDetailPage = ({ item }) => {
 
 
                                     </Grid>
-                                    <Divider />
-
-                                    <Divider />
 
                                     <div className='action-buttons'>
                                         <DialogActions sx={{ justifyContent: "space-between" }}>
