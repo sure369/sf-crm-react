@@ -4,6 +4,7 @@ import { Box,Grid,Button ,DialogActions} from "@mui/material";
 import {useLocation ,useNavigate} from 'react-router-dom';
 import LeadDetailPage from "../recordDetailPage/LeadDetailPage";
 import CardTask from "../tasks/TaskCard";
+import LeadRelatedItems from "../leads/RelatedItems";
 
 function Item(props) {
   const { sx, ...other } = props;
@@ -56,7 +57,7 @@ const FlexLeads = (item) => {
                 sx={{ display: 'flex', p: 1, bgcolor: 'background.paper', borderRadius: 1 }}
             >
                 <Item sx={{ width: '65%' }}> <LeadDetailPage props={passedRecord}/> </Item>
-                <Item sx={{ width: '35%' }}> <CardTask props={passedRecord} /> </Item>                
+                <Item sx={{ width: '35%' }}> <LeadRelatedItems props={passedRecord} /> </Item>                
             </Box>
         </div>
     );

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
-import { Box, IconButton, Typography, useTheme , } from "@mui/material";
+import { Box, IconButton, Typography, useTheme , Tooltip } from "@mui/material";
 import { Link } from "react-router-dom";
 import AppBar from '@mui/material/AppBar';
 import "react-pro-sidebar/dist/css/styles.css";
@@ -22,6 +22,7 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   return (
+    <Tooltip title={title}>
     <MenuItem
       active={selected === title}
       style={{
@@ -29,11 +30,15 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
       }}
       onClick={() => setSelected(title)}
       icon={icon}
-      title={title}
+      //  title={title}
+     
     >
+      
       <Typography>{title}</Typography>
       <Link to={to} />
+     
     </MenuItem>
+    </Tooltip>
   );
 };
 

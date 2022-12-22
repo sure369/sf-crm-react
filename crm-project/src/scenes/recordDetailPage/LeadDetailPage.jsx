@@ -129,7 +129,9 @@ const LeadDetailPage = ({ item }) => {
         setShowAlert(false)
     }
 
- 
+    const handleFormClose =()=>{
+        navigate(-1)
+    }
 
     // const callEvent = (savedValues) => {
 
@@ -304,7 +306,7 @@ const LeadDetailPage = ({ item }) => {
 
                                                     <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Update</Button>
                                             }
-                                            <Button type="reset" variant="contained" onClick={handleReset} disabled={!dirty || isSubmitting}  >Cancel</Button>
+                                            <Button type="reset" variant="contained" onClick={handleFormClose}  >Cancel</Button>
                                         </DialogActions>
                                     </div>
                                 </Form>

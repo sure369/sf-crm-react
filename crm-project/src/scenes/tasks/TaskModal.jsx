@@ -17,23 +17,21 @@ const fetchAccountUrl = "http://localhost:4000/api/accountsname";
 const fetchLeadUrl = "http://localhost:4000/api/LeadsbyName";
 const fetchOpportunityUrl = "http://localhost:4000/api/opportunitiesbyName";
 
-const ModalTask = ({ item }) => {
+const ModalTask = ({ item ,handleModal}) => {
 
-    const [singleTask, setSingleTask] = useState();
-    const [showNew, setshowNew] = useState()
-    const [url, setUrl] = useState();
-    const [relatedRecNames, setRelatedRecNames] = useState([]);
+    const [taskParentRecord, setTaskParentRecord] = useState();
+    
     const [showAlert, setShowAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState();
     const [alertSeverity, setAlertSeverity] = useState();
 
     const navigate = useNavigate();
-    const fileRef = useRef();
+  
     const location = useLocation();
 
     useEffect(() => {
-        console.log('passed record', location.state.record.item);
-        setSingleTask(location.state.record.item)
+        console.log('Task parent record', location.state.record.item);
+        setTaskParentRecord(location.state.record.item)
        
     }, [])
 
@@ -76,7 +74,7 @@ const ModalTask = ({ item }) => {
 
      const formSubmission = async (values, { resetForm }) => {
         console.log('inside form Submission', values);
-        let lead = singleTask._id ;
+        let lead = taskParentRecord._id ;
         let d = new Date();
         const formatDate = [d.getDate(), d.getMonth() + 1, d.getFullYear()].join('/') + ' ' + [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
 
@@ -125,6 +123,7 @@ const ModalTask = ({ item }) => {
         setShowAlert(false)
     }
 
+   
 
     return (
         <Grid item xs={12} style={{ margin: "20px" }}>
@@ -147,6 +146,7 @@ const ModalTask = ({ item }) => {
                         handleSubmit,
                         handleReset,
                         setFieldValue,
+                      
                     } = props;
 
                     return (
@@ -214,9 +214,9 @@ const ModalTask = ({ item }) => {
                                 <div className='action-buttons'>
                                     <DialogActions sx={{ justifyContent: "space-between" }}>
                                  
-                                                <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Save</Button>
+                                        <Button type='success' variant="contained" color="secondary"disabled={isSubmitting}>Save</Button>
                                                                                       
-                                        <Button type="reset" variant="contained" onClick={handleReset} disabled={!dirty || isSubmitting}  >Cancel</Button>
+                                        <Button type="reset" variant="contained" onClick={(e)=>handleModal(false)}  >Cancel</Button>
 
                                     </DialogActions>
                                 </div>

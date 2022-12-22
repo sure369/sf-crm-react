@@ -4,13 +4,15 @@ import * as Yup from "yup";
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
     Card, CardContent, Box, Button, Typography, Modal
-    , IconButton ,Grid 
+    , IconButton ,Grid ,Accordion ,AccordionSummary,AccordionDetails,Pagination ,Menu, MenuItem
 } from "@mui/material";
-import axios from 'axios'
-import TaskModalPage from "./TaskModal";
 import DeleteIcon from '@mui/icons-material/Delete';
 import ModeIcon from '@mui/icons-material/Mode';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import axios from 'axios'
+import TaskModalPage from "../tasks/TaskModal";
 import SimpleSnackbar from "../toast/SimpleSnackbar";
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 const style = {
     position: 'absolute',
@@ -27,7 +29,7 @@ const style = {
 
 };
 
-const CardTask = ({ item }) => {
+const LeadRelatedItems = ({ item }) => {
 
     
 
@@ -43,6 +45,13 @@ const CardTask = ({ item }) => {
     const[showAlert,setShowAlert] = useState(false);
     const[alertMessage,setAlertMessage]=useState();
     const[alertSeverity,setAlertSeverity]=useState();
+
+    const[showAllCards,setShowAllCards]=useState(false)
+    const[showNoofCards,setShowNoofCards]=useState(2)
+
+    const [itemsPerPage, setItemsPerPage] = useState(2);
+    const [page, setPage] = useState(1);
+    const [noOfPages, setNoOfPages] = useState(0);
 
     useEffect(() => {
         console.log('inside useEffect', location.state.record.item);
@@ -61,6 +70,8 @@ const CardTask = ({ item }) => {
                 console.log('response task fetch', res.data);
                 if (res.data.length > 0) {
                     setRelatedTask(res.data);
+                    
+    setNoOfPages(Math.ceil(res.data.length / itemsPerPage));
                 }
                 else {
                     setRelatedTask([]);
@@ -115,6 +126,12 @@ const CardTask = ({ item }) => {
         
       }
 
+
+    const handleChangePage = (event, value) => {
+        setPage(value);
+      };
+    
+
     return (
         <>
          {
@@ -123,58 +140,108 @@ const CardTask = ({ item }) => {
       
             <div style={{ textAlign: "center", marginBottom: "10px" }}>
 
-                <h3> Related Details</h3>
+                <h3> Related Items</h3>
 
             </div>
-            <div style={{ textAlign: "end", marginBottom: "10px" }}>
 
-                <Button variant="contained" color="info" onClick={() => handleModalOpen()}>New Task</Button>
-
-
+            <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+        >
+          <Typography variant="h4">Task ({relatedTask.length})</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Typography>
+          <div style={{ textAlign: "end", marginBottom: "5px" }}>
+               <Button variant="contained" color="info" onClick={() => handleModalOpen()} >New Task</Button>
             </div>
+            <Card dense compoent="span" >
            
                 {
 
                     relatedTask.length > 0 ?
                         relatedTask
+                        .slice((page - 1) * itemsPerPage, page * itemsPerPage)
                             .map((item) => {
                                 return (
-
                                     <div >
-                                         <Card dense compoent="span" sx={{ bgcolor: "white" }}>
+                                          {/* <Grid container spacing={10} justifyContent='center'>
+                                            <Grid item xs={12}> */}
+                                            {/* sx={{ bgcolor: "white" }} */}
+                                        
                                        
                                        
                                         <CardContent sx={{ bgcolor: "aliceblue", m: "15px" }}>
                                             <div
                                                 key={item._id}
                                             >
-                                                 <Grid container spacing={2}>
-
                                               
+
+                                              <Grid container spacing={2}>
                                              <Grid item xs={6} md={10}>
                                                     <div>Subject : {item.subject} </div>
                                                     <div>Date&Time :{item.startDate}  {item.startTime}</div>
                                                     <div>Description : {item.description} </div>
                                              </Grid>
                                              <Grid item xs={6} md={2}>
-                                                <IconButton >
+                                             {/* <Menu iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}>
+      <MenuItem primaryText='change name' onTouchTap={handleCardEdit(item)}/>
+      <MenuItem primaryText='delete' onTouchTap={handleCardDelete(item)} />
+    </Menu> */}
+                                                 <IconButton >
                                                     <ModeIcon onClick={(key) => handleCardEdit(item)} />
                                                 </IconButton>
                                                  <IconButton >
                                                     <DeleteIcon onClick={(key) =>handleCardDelete(item)} />
-                                                </IconButton> 
+                                                </IconButton>  
                                                 </Grid>
                                                 </Grid>
                                             </div>
                                         </CardContent>
-                                        </Card>
                                     </div>
-
+                                   
                                 );
                             })
-                        : "No Task assigned for this Lead Record "
+                        : ""
+                }
+          
+                </Card>
+                {
+                    relatedTask.length > 0 && 
+                    <Box  display="flex" alignItems="center" justifyContent="center">
+                        <Pagination
+                          count={noOfPages}
+                          page={page}
+                          onChange={handleChangePage}
+                          defaultPage={1}
+                          color="primary"
+                          size="medium"
+                          showFirstButton
+                          showLastButton
+                        />
+                      </Box>
                 }
 
+          </Typography>
+        </AccordionDetails>
+      </Accordion>
+      <Accordion >
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel2a-content"
+          id="panel2a-header"
+        >
+          <Typography variant="h4">Related Records</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Typography>
+           Need to work 
+          </Typography>
+        </AccordionDetails>
+      </Accordion>
+            
 
             <Modal
                 open={modalOpen}
@@ -184,7 +251,7 @@ const CardTask = ({ item }) => {
             >
                 <Box sx={style}>
 
-                    <TaskModalPage  props ={modalOpen} />
+                    <TaskModalPage handleModal={handleModalClose} />
 
 
                 </Box>
@@ -194,5 +261,5 @@ const CardTask = ({ item }) => {
     )
 
 }
-export default CardTask
+export default LeadRelatedItems
 
