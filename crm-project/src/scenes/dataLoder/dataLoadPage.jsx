@@ -41,7 +41,6 @@ const DataLoadPage = () => {
       
             let formData = new FormData();
         formData.append('file',values.attachments);
-        formData.append('attachments',values.attachments);
 
         console.log('modified formData',formData);
         await axios.post(UpsertUrl, formData)
