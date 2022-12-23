@@ -51,6 +51,11 @@ const LeadRelatedItems = ({ item }) => {
     const [page, setPage] = useState(1);
     const [noOfPages, setNoOfPages] = useState(0);
 
+
+    //menu pass rec
+    const [menuSelectRec,setMenuSelectRec] =useState()
+    const [menuOpen,setMenuOpen] =useState();
+
     useEffect(() => {
         console.log('inside useEffect', location.state.record.item);
         setLeadRecordId(location.state.record.item._id)
@@ -68,6 +73,7 @@ const LeadRelatedItems = ({ item }) => {
                 if (res.data.length > 0) {
                     setRelatedTask(res.data);  
                     setNoOfPages(Math.ceil(res.data.length / itemsPerPage));
+                    setPage(1)
                 }
                 else {
                     setRelatedTask([]);
@@ -90,7 +96,7 @@ const LeadRelatedItems = ({ item }) => {
 
     const handleCardEdit = (row) => {
    
-        console.log('selected record',row);
+        console.log('selected edit record',row);
         const item=row;
          navigate("/taskDetailPage",{state:{record:{item}}})
       };
@@ -98,7 +104,7 @@ const LeadRelatedItems = ({ item }) => {
       const handleCardDelete = ( row) => {
      
         console.log('req delete rec',row);
-        console.log('req delete rec id',row._id);
+        // console.log('req delete rec id',row._id);
      
         axios.post(urlDelete+row._id)
         .then((res)=>{
@@ -108,6 +114,7 @@ const LeadRelatedItems = ({ item }) => {
             setShowAlert(true)
             setAlertMessage(res.data)
             setAlertSeverity('success') 
+            setMenuOpen(false)
         })
         .catch((error)=> {
             console.log('api delete error',error);
@@ -123,6 +130,19 @@ const LeadRelatedItems = ({ item }) => {
 
     const handleChangePage = (event, value) => {
         setPage(value);
+      };
+
+      const [anchorEl, setAnchorEl] = useState(null);
+ 
+      const handleClick = (item,event) => {
+        setMenuSelectRec(item)
+        setAnchorEl(event.currentTarget);
+        setMenuOpen(true)
+
+      };
+      const handleClose = () => {
+        setAnchorEl(null);
+        setMenuOpen(false)
       };
     
     return (
@@ -160,11 +180,6 @@ const LeadRelatedItems = ({ item }) => {
                             .map((item) => {
                                 return (
                                     <div >
-                                          {/* <Grid container spacing={10} justifyContent='center'>
-                                            <Grid item xs={12}> */}
-                                            {/* sx={{ bgcolor: "white" }} */}
-                                        
-                                       
                                        
                                         <CardContent sx={{ bgcolor: "aliceblue", m: "15px" }}>
                                             <div
@@ -180,12 +195,32 @@ const LeadRelatedItems = ({ item }) => {
                                              </Grid>
                                              <Grid item xs={6} md={2}>
                                    
-                                                 <IconButton >
+                                             <IconButton>
+                                                    <MoreVertIcon onClick={(event)=>handleClick(item ,event)} />
+                                                    <Menu
+                                                        anchorEl={anchorEl}
+                                                        open={menuOpen}
+                                                        onClose={handleClose}
+                                                        anchorOrigin={{
+                                                        vertical: 'top',
+                                                        horizontal: 'left',
+                                                        }}
+                                                        transformOrigin={{
+                                                        vertical: 'top',
+                                                        horizontal: 'left',
+                                                        }}
+                                                        >
+        <MenuItem onClick={() => handleCardEdit(menuSelectRec)}>Edit</MenuItem>
+        <MenuItem onClick={() =>handleCardDelete(menuSelectRec)}>Delete</MenuItem>
+      </Menu>
+                                                </IconButton>
+
+                                                 {/* <IconButton >
                                                     <ModeIcon onClick={(key) => handleCardEdit(item)} />
                                                 </IconButton>
                                                  <IconButton >
                                                     <DeleteIcon onClick={(key) =>handleCardDelete(item)} />
-                                                </IconButton>  
+                                                </IconButton>   */}
                                                 </Grid>
                                                 </Grid>
                                             </div>

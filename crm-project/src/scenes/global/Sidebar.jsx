@@ -22,7 +22,7 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   return (
-    <Tooltip title={title}>
+    <Tooltip title={title} placement="top">
     <MenuItem
       active={selected === title}
       style={{

@@ -159,12 +159,7 @@ const OpportunityRelatedItems = ({ item }) => {
                             .map((item) => {
                                 return (
                                     <div >
-                                          {/* <Grid container spacing={10} justifyContent='center'>
-                                            <Grid item xs={12}> */}
-                                            {/* sx={{ bgcolor: "white" }} */}
-                                        
-                                       
-                                       
+
                                         <CardContent sx={{ bgcolor: "aliceblue", m: "15px" }}>
                                             <div
                                                 key={item._id}
