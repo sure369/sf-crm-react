@@ -22,7 +22,7 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   return (
-    <Tooltip title={title} placement="top">
+    // <Tooltip title={title} >
     <MenuItem
       active={selected === title}
       style={{
@@ -30,7 +30,7 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
       }}
       onClick={() => setSelected(title)}
       icon={icon}
-      //  title={title}
+        title={title}
      
     >
       
@@ -38,7 +38,7 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
       <Link to={to} />
      
     </MenuItem>
-    </Tooltip>
+    // </Tooltip>
   );
 };
 
