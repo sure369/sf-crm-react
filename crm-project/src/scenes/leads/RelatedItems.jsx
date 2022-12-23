@@ -52,9 +52,7 @@ const LeadRelatedItems = ({ item }) => {
     const [noOfPages, setNoOfPages] = useState(0);
 
 
-    //menu pass rec
-    const [menuSelectRec,setMenuSelectRec] =useState()
-    const [menuOpen,setMenuOpen] =useState();
+    
 
     useEffect(() => {
         console.log('inside useEffect', location.state.record.item);
@@ -132,19 +130,22 @@ const LeadRelatedItems = ({ item }) => {
         setPage(value);
       };
 
+      // menu dropdown strart //menu pass rec
       const [anchorEl, setAnchorEl] = useState(null);
- 
-      const handleClick = (item,event) => {
+      const [menuSelectRec,setMenuSelectRec] =useState()
+      const [menuOpen,setMenuOpen] =useState();
+
+      const handleMoreMenuClick = (item,event) => {
         setMenuSelectRec(item)
         setAnchorEl(event.currentTarget);
         setMenuOpen(true)
 
       };
-      const handleClose = () => {
+      const handleMoreMenuClose = () => {
         setAnchorEl(null);
         setMenuOpen(false)
       };
-    
+    // menu dropdown end
     return (
         <>
          {
@@ -196,23 +197,23 @@ const LeadRelatedItems = ({ item }) => {
                                              <Grid item xs={6} md={2}>
                                    
                                              <IconButton>
-                                                    <MoreVertIcon onClick={(event)=>handleClick(item ,event)} />
+                                                    <MoreVertIcon onClick={(event)=>handleMoreMenuClick(item ,event)} />
                                                     <Menu
-                                                        anchorEl={anchorEl}
-                                                        open={menuOpen}
-                                                        onClose={handleClose}
-                                                        anchorOrigin={{
-                                                        vertical: 'top',
-                                                        horizontal: 'left',
-                                                        }}
-                                                        transformOrigin={{
-                                                        vertical: 'top',
-                                                        horizontal: 'left',
-                                                        }}
-                                                        >
-        <MenuItem onClick={() => handleCardEdit(menuSelectRec)}>Edit</MenuItem>
-        <MenuItem onClick={() =>handleCardDelete(menuSelectRec)}>Delete</MenuItem>
-      </Menu>
+                                                          anchorEl={anchorEl}
+                                                          open={menuOpen}
+                                                          onClose={handleMoreMenuClose}
+                                                          anchorOrigin={{
+                                                          vertical: 'top',
+                                                          horizontal: 'left',
+                                                          }}
+                                                          transformOrigin={{
+                                                          vertical: 'top',
+                                                          horizontal: 'left',
+                                                          }}
+                                                    >
+                                                      <MenuItem onClick={() => handleCardEdit(menuSelectRec)}>Edit</MenuItem>
+                                                      <MenuItem onClick={() =>handleCardDelete(menuSelectRec)}>Delete</MenuItem>
+                                                    </Menu>
                                                 </IconButton>
 
                                                  {/* <IconButton >

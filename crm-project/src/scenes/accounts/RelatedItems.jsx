@@ -9,10 +9,11 @@ import {
 import axios from 'axios'
 import DeleteIcon from '@mui/icons-material/Delete';
 import ModeIcon from '@mui/icons-material/Mode';
- 
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import SimpleSnackbar from "../toast/SimpleSnackbar";
 import ModalAccTask from "../tasks/ModalAccTask";
+
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 const style = {
     position: 'absolute',
@@ -64,6 +65,7 @@ const AccountRelatedItems = ({ item }) => {
                 if (res.data.length > 0) {
                     setRelatedTask(res.data);
                     setNoOfPages(Math.ceil(res.data.length / itemsPerPage));
+                    setPage(1)
                 }
                 else {
                     setRelatedTask([]);
@@ -121,6 +123,23 @@ const AccountRelatedItems = ({ item }) => {
         setPage(value);
       };
 
+       // menu dropdown strart //menu pass rec
+       const [anchorEl, setAnchorEl] = useState(null);
+       const [menuSelectRec,setMenuSelectRec] =useState()
+       const [menuOpen,setMenuOpen] =useState();
+ 
+       const handleMoreMenuClick = (item,event) => {
+         setMenuSelectRec(item)
+         setAnchorEl(event.currentTarget);
+         setMenuOpen(true)
+ 
+       };
+       const handleMoreMenuClose = () => {
+         setAnchorEl(null);
+         setMenuOpen(false)
+       };
+     // menu dropdown end
+
     return (
         <>
          {
@@ -175,12 +194,32 @@ const AccountRelatedItems = ({ item }) => {
                                              </Grid>
                                              <Grid item xs={6} md={2}>
                                    
-                                                 <IconButton >
+                                             <IconButton>
+                                                    <MoreVertIcon onClick={(event)=>handleMoreMenuClick(item ,event)} />
+                                                    <Menu
+                                                          anchorEl={anchorEl}
+                                                          open={menuOpen}
+                                                          onClose={handleMoreMenuClose}
+                                                          anchorOrigin={{
+                                                          vertical: 'top',
+                                                          horizontal: 'left',
+                                                          }}
+                                                          transformOrigin={{
+                                                          vertical: 'top',
+                                                          horizontal: 'left',
+                                                          }}
+                                                    >
+                                                      <MenuItem onClick={() => handleCardEdit(menuSelectRec)}>Edit</MenuItem>
+                                                      <MenuItem onClick={() =>handleCardDelete(menuSelectRec)}>Delete</MenuItem>
+                                                    </Menu>
+                                                </IconButton>
+
+                                                 {/* <IconButton >
                                                     <ModeIcon onClick={(key) => handleCardEdit(item)} />
                                                 </IconButton>
                                                  <IconButton >
                                                     <DeleteIcon onClick={(key) =>handleCardDelete(item)} />
-                                                </IconButton>  
+                                                </IconButton>   */}
                                                 </Grid>
                                                 </Grid>
                                             </div>
