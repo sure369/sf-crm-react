@@ -42,6 +42,7 @@ import FlexAccounts from "./scenes/Flex/FlexAccounts";
 import TaskDetailPage from "./scenes/recordDetailPage/TaskDetailPage";
 import Task from "./scenes/tasks";
 import DataLoadPage from "./scenes/dataLoder/dataLoadPage";
+ import DropFileInput from "./scenes/fileUpload";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -74,7 +75,8 @@ function App() {
               <Route path="/faq" element={<FAQ />} />
 
               <Route path="/test" element={<DataLoadPage/>} />
-               
+              <Route path ='/test1' element={<DropFileInput/>} />
+
               <Route path="/new-leads" element={<LeadDetailPage />} />
               <Route path="/new-opportunities" element={<OpportunityDetailPage />} />
               <Route path="/new-accounts" element={<AccountDetailPage />} />

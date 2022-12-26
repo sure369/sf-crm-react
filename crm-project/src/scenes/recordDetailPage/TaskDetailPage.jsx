@@ -106,17 +106,16 @@ const TaskDetailPage = ({ item }) => {
         if (showNew) {
             values.modifiedDate = formatDate;
             values.createdDate = formatDate;
-            values.fullName = values.firstName +' '+ values.lastName;
         
             let formData = new FormData();
         formData.append('subject',values.subject);
         formData.append('nameofContact',values.nameofContact);
         formData.append('realatedTo',values.realatedTo);
         formData.append('assignedTo',values.assignedTo); 
-        formData.append('startDate',values.startDate);        
-        formData.append('startTime',values.startTime);        
-        formData.append('EndDate',values.EndDate);        
-        formData.append('EndTime',values.EndTime)
+         formData.append('startDate',values.startDate);        
+         formData.append('startTime',values.startTime);        
+         formData.append('EndDate',values.EndDate);        
+         formData.append('EndTime',values.EndTime)
         formData.append('description',values.description);        
         formData.append('attachments',values.attachments);        
         formData.append('object',values.object);        
@@ -128,7 +127,7 @@ const TaskDetailPage = ({ item }) => {
         formData.append('modifiedDate',values.modifiedDate)
 
         console.log('modified formData',formData);
-        await axios.post(UpsertUrl, formData)
+        await axios.post(UpsertUrl, values)
     
             .then((res) => {
                 console.log('task form Submission  response', res);
@@ -155,10 +154,10 @@ const TaskDetailPage = ({ item }) => {
             formData.append('nameofContact',values.nameofContact);
             formData.append('realatedTo',values.realatedTo);
             formData.append('assignedTo',values.assignedTo); 
-            formData.append('startDate',values.startDate);        
-            formData.append('startTime',values.startTime);        
-            formData.append('EndDate',values.EndDate);        
-            formData.append('EndTime',values.EndTime)
+             formData.append('startDate',values.startDate);        
+             formData.append('startTime',values.startTime);        
+             formData.append('EndDate',values.EndDate);        
+             formData.append('EndTime',values.EndTime)
             formData.append('description',values.description);        
             formData.append('attachments',values.attachments);        
             formData.append('object',values.object);        
@@ -170,7 +169,7 @@ const TaskDetailPage = ({ item }) => {
             formData.append('modifiedDate',values.modifiedDate)                  
             formData.append('_id',values._id)
     
-            await axios.post(UpsertUrl, formData)
+            await axios.post(UpsertUrl, values)
         
                 .then((res) => {
                     console.log('task form Submission  response', res);
@@ -199,7 +198,7 @@ const TaskDetailPage = ({ item }) => {
 
     const callEvent = (e) => {
 
-        let url1 = e == 'Account' ? fetchAccountUrl : e == 'Lead' ? fetchLeadUrl : e == 'Opportunity' ? fetchOpportunityUrl : null
+        let url1 = e === 'Account' ? fetchAccountUrl : e === 'Lead' ? fetchLeadUrl : e === 'Opportunity' ? fetchOpportunityUrl : null
 
         setUrl(url1)
 
@@ -314,11 +313,11 @@ const TaskDetailPage = ({ item }) => {
                                             onChange={(e, value) => {
 
                                                 console.log('inside onchange', values.object);
-                                                if (values.object == 'Account') {
+                                                if (values.object === 'Account') {
                                                     setFieldValue('AccountId', value.id)
-                                                } else if (values.object == 'Opportunity') {
+                                                } else if (values.object === 'Opportunity') {
                                                     setFieldValue('OpportunityId', value.id)
-                                                } else if (values.object == 'Lead') {
+                                                } else if (values.object === 'Lead') {
                                                     setFieldValue('LeadId', value.id)
                                                 }
                                                 //    setFieldValue()

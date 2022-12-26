@@ -102,7 +102,7 @@ const ModalOppTask = ({ item ,handleModal}) => {
         formData.append('createdDate',values.createdDate)      
         formData.append('modifiedDate',values.modifiedDate)
 
-        await axios.post(UpsertUrl, formData)
+        await axios.post(UpsertUrl, values)
     
             .then((res) => {
                 console.log('task form Submission  response', res);
