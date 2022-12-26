@@ -74,8 +74,8 @@ function App() {
               <Route path="/team" element={<Team />} />
               <Route path="/faq" element={<FAQ />} />
 
-              <Route path="/test" element={<DataLoadPage/>} />
-              <Route path ='/test1' element={<DropFileInput/>} />
+              <Route path="/dataLoder" element={<DataLoadPage/>} />
+              <Route path ='/file' element={<DropFileInput/>} />
 
               <Route path="/new-leads" element={<LeadDetailPage />} />
               <Route path="/new-opportunities" element={<OpportunityDetailPage />} />

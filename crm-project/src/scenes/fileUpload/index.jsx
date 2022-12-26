@@ -47,7 +47,7 @@ const DropFileInput = () => {
         let formData = new FormData();
         // formData.append('name',values.name);
         // formData.append('email',values.email);
-        formData.append('photo',values.photo);
+        formData.append('file',values.photo);
 
 
         await axios.post(UpsertUrl, formData)
@@ -76,7 +76,7 @@ const DropFileInput = () => {
     return (
         <Grid item xs={12} style={{ margin: "20px" }}>
             <div style={{ textAlign: "center", marginBottom: "10px" }}>
-                <h3>New Task</h3>                 
+                <h3>File Uploader</h3>                 
             </div>
 
             <Formik

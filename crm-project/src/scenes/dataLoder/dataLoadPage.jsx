@@ -62,7 +62,10 @@ const DataLoadPage = () => {
     
     return (
         <Grid item xs={12} style={{ margin: "20px" }}>
-           
+            <div style={{ textAlign: "center", marginBottom: "10px" }}>
+                <h3>Data Loader</h3>                 
+            </div>
+
 
             <Formik
                 initialValues={initialValues}

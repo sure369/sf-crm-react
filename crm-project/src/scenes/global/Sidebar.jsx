@@ -17,6 +17,8 @@ import ContactPageIcon from '@mui/icons-material/ContactPage';
 import DiamondIcon from '@mui/icons-material/Diamond';
 import mainLogo  from '../assets/user image.png';
 import AssignmentIcon from '@mui/icons-material/Assignment';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
+import NewspaperIcon from '@mui/icons-material/Newspaper';
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -194,8 +196,16 @@ const Sidebar = () => {
             />
               <Item
               title="Data Loader"
-              to="/test"
-              icon={<HelpOutlineOutlinedIcon />}
+              to="/dataLoder"
+              icon={<NewspaperIcon/>}
+              selected={selected}
+              setSelected={setSelected}
+          
+            />
+            <Item
+              title="File Upload"
+              to="/file"
+              icon={<UploadFileIcon />}
               selected={selected}
               setSelected={setSelected}
           
