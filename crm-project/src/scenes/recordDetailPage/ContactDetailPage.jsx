@@ -331,11 +331,11 @@ const ContactDetailPage = ({ item }) => {
 
                                             <Grid Grid item xs={6} md={12}>
                                                 <label htmlFor="testFiled1">testFiled1</label>
-                                                <Field as="text" name="testFiled1" class="form-input" />
+                                                <Field type="text" name="testFiled1" class="form-input" />
                                             </Grid>
                                             <Grid Grid item xs={6} md={12}>
                                                 <label htmlFor="testFiled2">testFiled2</label>
-                                                <Field as="text" name="testFiled1" class="form-input" />
+                                                <Field type="text" name="testFiled1" class="form-input" />
                                             </Grid>
 
                                             {!showNew && (
