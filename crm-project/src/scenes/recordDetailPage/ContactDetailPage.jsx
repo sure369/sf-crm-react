@@ -68,12 +68,14 @@ const ContactDetailPage = ({ item }) => {
          department: singleContact?.department ?? "",
         leadSource: singleContact?.leadSource ?? "",
         email: singleContact?.email ?? "",
-                fullAddress: singleContact?.fullAddress ?? "",
+        fullAddress: singleContact?.fullAddress ?? "",
         description: singleContact?.description ?? "",
         createdbyId: singleContact?.createdbyId ?? "",
         createdDate: singleContact?.createdDate ?? "",
         modifiedDate: singleContact?.modifiedDate ?? "",
         _id: singleContact?._id ?? "",
+        testField1:singleContact?.testField1 ?? "",
+        testField2:singleContact?.testField2 ?? "",
     }
     const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
  
@@ -190,6 +192,14 @@ const ContactDetailPage = ({ item }) => {
                                     }
                                     <Form>
                                         <Grid container spacing={2}>
+                                        <Grid Grid item xs={6} md={12}>
+                                                <label htmlFor="testFiled1">testFiled1</label>
+                                                <Field type="text" name="testFiled1" class="form-input" />
+                                            </Grid>
+                                            <Grid Grid item xs={6} md={12}>
+                                                <label htmlFor="testFiled2">testFiled2</label>
+                                                <Field type="text" name="testFiled2" class="form-input" />
+                                            </Grid>
                                             <Grid item xs={6} md={2}>
                                                 <label htmlFor="salutation">Salutation  </label>
                                                 <Field name="salutation" as="select" class="form-input">
@@ -329,14 +339,7 @@ const ContactDetailPage = ({ item }) => {
                                                 <Field as="textarea" name="description" class="form-input" />
                                             </Grid>
 
-                                            <Grid Grid item xs={6} md={12}>
-                                                <label htmlFor="testFiled1">testFiled1</label>
-                                                <Field type="text" name="testFiled1" class="form-input" />
-                                            </Grid>
-                                            <Grid Grid item xs={6} md={12}>
-                                                <label htmlFor="testFiled2">testFiled2</label>
-                                                <Field type="text" name="testFiled1" class="form-input" />
-                                            </Grid>
+                                         
 
                                             {!showNew && (
                                                 <>
