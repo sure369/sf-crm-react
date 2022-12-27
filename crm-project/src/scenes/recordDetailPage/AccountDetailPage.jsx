@@ -22,6 +22,9 @@ const AccountDetailPage = ({ item }) => {
     const [alertSeverity, setAlertSeverity] = useState();
     const [inventoriesRecord, setInventoriesRecord] = useState([]);
     const[relatedTask,setRelatedTask] = useState([]);
+
+    const[convertDate,setConvertDate] = useState('')
+       
    
     useEffect(() => {
         console.log('passed record', location.state.record.item);
@@ -32,6 +35,9 @@ const AccountDetailPage = ({ item }) => {
       
     }, [])
 
+
+    
+   
     const initialValues = {
         accountName: '',
         accountNumber: '',
@@ -66,8 +72,8 @@ const AccountDetailPage = ({ item }) => {
         billingCity: singleAccount?.billingCity ?? "",
         billingCities: singleAccount?.billingCities ?? "",
         createdbyId: singleAccount?.createdbyId ?? "",
-        createdDate: singleAccount?.createdDate ?? "",
-        modifiedDate:singleAccount?.modifiedDate ?? "",
+        createdDate:  new Date(singleAccount?.createdDate).toLocaleString(),
+        modifiedDate: new Date(singleAccount?.modifiedDate).toLocaleString(),
         _id: singleAccount?._id ?? "",
     }
 
@@ -120,15 +126,21 @@ const AccountDetailPage = ({ item }) => {
     const formSubmission = (values) => {
    
         console.log('form submission value',values);
-        let d = new Date();
-        const formatDate =  [d.getDate(), d.getMonth()+1,d.getFullYear()].join('/')+' '+ [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
-        // values.modifiedDate = formatDate; 
+
+
+        let dateSeconds = new Date().getTime();
+        let createDateSec = new Date(values.createdDate).getTime()
+
+        // let d = new Date();
+        // const formatDate =  [d.getDate(), d.getMonth()+1,d.getFullYear()].join('/')+' '+ [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
+        
         if(showNew){
-            values.modifiedDate = formatDate;
-            values.createdDate = formatDate;
+            values.modifiedDate = dateSeconds;
+            values.createdDate = dateSeconds;
         }
         else if(!showNew){
-            values.modifiedDate = formatDate;
+            values.modifiedDate = dateSeconds;
+            values.createdDate = createDateSec;
         }
         
         console.log('after change form submission value',values);

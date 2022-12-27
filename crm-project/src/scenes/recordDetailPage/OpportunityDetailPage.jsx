@@ -63,13 +63,15 @@ const OpportunityDetailPage = ({item}) => {
         type: singleOpportunity?.type ?? "",
         leadSource:  singleOpportunity?.leadSource ?? "",
         amount:  singleOpportunity?.amount ?? "",
-        closeDate:  singleOpportunity?.closeDate ?? "",
+        closeDate:new Date(singleOpportunity?.closeDate).getUTCFullYear()
+                    + '-' +  ('0'+ (new Date(singleOpportunity?.closeDate).getUTCMonth() + 1)).slice(-2) 
+                    + '-' + ('0'+ ( new Date(singleOpportunity?.closeDate).getUTCDate())).slice(-2) ||'',
         stage:  singleOpportunity?.stage ?? "",
         description:  singleOpportunity?.description ?? "",
         createdbyId:  singleOpportunity?.createdbyId ?? "",
-        createdDate:  singleOpportunity?.createdDate ?? "",
-        modifiedDate: singleOpportunity?.modifiedDate ?? "",
-        _id:   singleOpportunity?._id ?? "",
+        createdDate:   new Date(singleOpportunity?.createdDate).toLocaleString(),
+        modifiedDate:  new Date(singleOpportunity?.modifiedDate).toLocaleString(),
+        _id:   singleOpportunity?._id ?? "",   
     }
     const validationSchema = Yup.object({
         opportunityName: Yup
@@ -84,14 +86,33 @@ const OpportunityDetailPage = ({item}) => {
 
     const formSubmission = (values)=>{
         console.log('form submission value',values);
-        let d = new Date();
-        const formatDate =  [d.getDate(), d.getMonth()+1,d.getFullYear()].join('/')+' '+ [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
+
+        let dateSeconds = new Date().getTime();        
+        let createDateSec = new Date(values.createdDate).getTime()
+        let closeDateSec =new Date(values.closeDate).getTime()
+       
+        //console.log(' convrt close date',closeDateSec)
+        //   var d1 = new Date(values.closeDate).toISOString().split('T')[0];
+        // let d = new Date();
+        // const formatDate =  [d.getDate(), d.getMonth()+1,d.getFullYear()].join('/')+' '+ [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
+        
         if(showNew){
-            values.modifiedDate = formatDate;
-            values.createdDate = formatDate;
+            values.modifiedDate = dateSeconds;
+            values.createdDate = dateSeconds;
+            if( values.closeDate){
+
+                values.closeDate =closeDateSec;
+            }
+
         }
         else if(!showNew){
-            values.modifiedDate = formatDate;
+            values.modifiedDate = dateSeconds;
+            values.createdDate =createDateSec
+            if( values.closeDate){
+
+                values.closeDate =closeDateSec;
+            }
+           
         }
         console.log('after change form submission value',values);
         
@@ -111,7 +132,7 @@ const OpportunityDetailPage = ({item}) => {
             setAlertMessage(error.message)
             setAlertSeverity('error')
         })    
-     }
+    }
 
     const toastCloseCallback = () => {
         setShowAlert(false)

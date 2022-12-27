@@ -51,8 +51,6 @@ const ContactDetailPage = ({ item }) => {
         createdbyId: '',
         createdDate: '',
         modifiedDate: '',
-        testFiled1:'',
-        testFiled2:'',
     }
 
     const savedValues = {
@@ -64,18 +62,20 @@ const ContactDetailPage = ({ item }) => {
         lastName: singleContact?.lastName ?? "",
         fullName:singleContact?.fullName ?? "",
         phone: singleContact?.phone ?? "",
-        dob:singleContact?.dop??"",
+        // dob:singleContact?.dob??"",
+        dob:new Date(singleContact?.dob).getUTCFullYear()
+        + '-' +  ('0'+ (new Date(singleContact?.dob).getUTCMonth() + 1)).slice(-2) 
+        + '-' + ('0'+ ( new Date(singleContact?.dob).getUTCDate())).slice(-2) ||'',
+
          department: singleContact?.department ?? "",
         leadSource: singleContact?.leadSource ?? "",
         email: singleContact?.email ?? "",
         fullAddress: singleContact?.fullAddress ?? "",
         description: singleContact?.description ?? "",
         createdbyId: singleContact?.createdbyId ?? "",
-        createdDate: singleContact?.createdDate ?? "",
-        modifiedDate: singleContact?.modifiedDate ?? "",
+        createdDate:   new Date(singleContact?.createdDate).toLocaleString(),
+        modifiedDate:  new Date(singleContact?.modifiedDate).toLocaleString(),
         _id: singleContact?._id ?? "",
-        testFiled1:singleContact?.testFiled1 ?? "",
-        testFiled2:singleContact?.testFiled2 ?? "",
     }
     const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
  
@@ -105,17 +105,33 @@ const ContactDetailPage = ({ item }) => {
     const formSubmission = (values) => {
 
         console.log('form submission value', values);
-        let d = new Date();
-        const formatDate = [d.getDate(), d.getMonth() + 1, d.getFullYear()].join('/') + ' ' + [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
+      
+        // let d = new Date();
+        // const formatDate = [d.getDate(), d.getMonth() + 1, d.getFullYear()].join('/') + ' ' + [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
+
+            let dateSeconds = new Date().getTime();
+            let createDateSec = new Date(values.createdDate).getTime()
+            let dobSec = new Date(values.dob).getTime()
+        console.log('date Seconds', dateSeconds);
 
         if (showNew) {
-            values.modifiedDate = formatDate;
-            values.createdDate = formatDate;
+            values.modifiedDate = dateSeconds;
+            values.createdDate = dateSeconds;
             values.fullName = values.firstName +' '+ values.lastName;
+        
+            if( values.dob){
+
+                values.dob =dobSec;
+            }
         }
         else if (!showNew) {
-            values.modifiedDate = formatDate;
+            values.modifiedDate = dateSeconds;
+            values.createdDate =createDateSec
             values.fullName = values.firstName +' '+ values.lastName;
+            if( values.dob){
+
+                values.dob =dobSec;
+            }
         }
         console.log('after change form submission value', values);
 
@@ -192,14 +208,7 @@ const ContactDetailPage = ({ item }) => {
                                     }
                                     <Form>
                                         <Grid container spacing={2}>
-                                        <Grid Grid item xs={6} md={6}>
-                                                <label htmlFor="testFiled1">test Filed1</label>
-                                                <Field type="text" name="testFiled1" class="form-input" />
-                                            </Grid>
-                                            <Grid Grid item xs={6} md={6}>
-                                                <label htmlFor="testFiled2">test Filed2</label>
-                                                <Field type="text" name="testFiled2" class="form-input" />
-                                            </Grid>
+                                      
 
                                             <Grid item xs={6} md={2}>
                                                 <label htmlFor="salutation">Salutation  </label>
@@ -304,8 +313,8 @@ const ContactDetailPage = ({ item }) => {
                                                 </div>
                                             </Grid>
                                             <Grid item xs={6} md={6}>
-                                                <label htmlFor="dop">Date of Birth</label>
-                                                <Field name="dop" type="date" class="form-input" />
+                                                <label htmlFor="dob">Date of Birth</label>
+                                                <Field name="dob" type="date" class="form-input" />
                                             </Grid>
                                             <Grid item xs={6} md={6}>
                                                 <label htmlFor="department">Department</label>

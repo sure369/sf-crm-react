@@ -49,8 +49,8 @@ const TaskDetailPage = ({ item }) => {
         nameofContact: '',
         realatedTo: '',
         assignedTo: '',
-        startDate: '',
-        startTime: '',
+        StartDate: '',
+        StartTime: '',
         EndDate: '',
         EndTime: '',
         description: '',
@@ -69,8 +69,8 @@ const TaskDetailPage = ({ item }) => {
         nameofContact: singleTask?.nameofContact ?? "",
         realatedTo:singleTask?.realatedTo ?? "",
         assignedTo:singleTask?.assignedTo ?? "",
-        startDate: singleTask?.startDate ?? "",
-        startTime: singleTask?.startTime ?? "",
+        StartDate: singleTask?.StartDate ?? "",
+        StartTime: singleTask?.StartTime ?? "",
         EndDate: singleTask?.EndDate ?? "",
         EndTime: singleTask?.EndTime ?? "",
         description: singleTask?.description ?? "",
@@ -81,8 +81,8 @@ const TaskDetailPage = ({ item }) => {
         LeadId: singleTask?.LeadId ?? "",
         OpportunityId: singleTask?.OpportunityId ?? "",
         createdbyId: singleTask?.createdbyId ?? "",
-        createdDate: singleTask?.createdDate ?? "",
-        modifiedDate: singleTask?.modifiedDate ?? "",
+        createdDate:   new Date(singleTask?.createdDate).toLocaleString(),
+        modifiedDate:  new Date(singleTask?.modifiedDate).toLocaleString(),
         _id: singleTask?._id ?? "",
     }
 
@@ -103,20 +103,38 @@ const TaskDetailPage = ({ item }) => {
 
      const formSubmission = async (values, { resetForm }) => {
         console.log('inside form Submission', values);
-        let d = new Date();
-        const formatDate = [d.getDate(), d.getMonth() + 1, d.getFullYear()].join('/') + ' ' + [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
+        // let d = new Date();
+        // const formatDate = [d.getDate(), d.getMonth() + 1, d.getFullYear()].join('/') + ' ' + [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
+        
+        let dateSeconds = new Date().getTime();
+        let createDateSec = new Date(values.createdDate).getTime()        
+        let StartDateSec =new Date(values.StartDate).getTime()
+        let EndDateSec =new Date(values.EndDate).getTime()
 
         if (showNew) {
-            values.modifiedDate = formatDate;
-            values.createdDate = formatDate;
-        
+            values.modifiedDate = dateSeconds;
+            values.createdDate = dateSeconds;
+            if(values.StartDate && values.EndDate){
+                console.log('1st if');
+                values.StartDate =StartDateSec
+                values.EndDate =EndDateSec
+            }
+            else if(values.StartDate){
+                console.log('2nd if');
+                values.StartDate =StartDateSec
+            }
+            else if(values.EndDate){
+                console.log('3rd if');
+                values.EndDate =EndDateSec
+            }
+            
             let formData = new FormData();
         formData.append('subject',values.subject);
         formData.append('nameofContact',values.nameofContact);
         formData.append('realatedTo',values.realatedTo);
         formData.append('assignedTo',values.assignedTo); 
-         formData.append('startDate',values.startDate);        
-         formData.append('startTime',values.startTime);        
+         formData.append('StartDate',values.StartDate);        
+         formData.append('StartTime',values.StartTime);        
          formData.append('EndDate',values.EndDate);        
          formData.append('EndTime',values.EndTime)
         formData.append('description',values.description);        
@@ -150,15 +168,27 @@ const TaskDetailPage = ({ item }) => {
 
         }
         else if (!showNew) {
-            values.modifiedDate = formatDate;
+            values.modifiedDate = dateSeconds;
+            values.createdDate =createDateSec
+
+            if(values.StartDate && values.EndDate){
+                values.StartDate =StartDateSec
+                values.EndDate =EndDateSec
+            }
+            else if(values.StartDate){
+                values.StartDate =StartDateSec
+            }
+            else if(values.EndDate){
+                values.EndDate =EndDateSec
+            }
 
             let formData = new FormData();
             formData.append('subject',values.subject);
             formData.append('nameofContact',values.nameofContact);
             formData.append('realatedTo',values.realatedTo);
             formData.append('assignedTo',values.assignedTo); 
-             formData.append('startDate',values.startDate);        
-             formData.append('startTime',values.startTime);        
+             formData.append('StartDate',values.StartDate);        
+             formData.append('StartTime',values.StartTime);        
              formData.append('EndDate',values.EndDate);        
              formData.append('EndTime',values.EndTime)
             formData.append('description',values.description);        
@@ -351,31 +381,12 @@ const TaskDetailPage = ({ item }) => {
                                         <Field name="assignedTo" type="text" class="form-input" />
                                     </Grid>
                                     <Grid item xs={6} md={6}>
-                                        <label htmlFor="startDate">startDate   </label>
-                                        <Field name="startDate" type="date" class="form-input"
-                                        
-                                            onChange={(event) => {
-                                                console.log('inside date change', event.target.value);
-                                                var dateFormatConvert = new Date(event.target.value);
-                                                var dateSeconds = dateFormatConvert.getTime()
-                                                console.log('dateSeconds', dateSeconds);
-
-                                                var secondsFormat = new Date(dateSeconds).toUTCString()
-                                                console.log('seconds format', secondsFormat)
-
-                                                console.log('string convert', new Date(secondsFormat).toISOString())
-
-
-
-                                                setFieldValue("startDate", event.target.value);
-
-                                            }}
-
-                                        />
+                                        <label htmlFor="StartDate">Start Date   </label>
+                                        <Field name="StartDate" type="date" class="form-input" />
                                     </Grid>
                                     <Grid item xs={6} md={6}>
-                                        <label htmlFor="startTime">startTime   </label>
-                                        <Field name="startTime" type="time" class="form-input" />
+                                        <label htmlFor="StartTime">startTime   </label>
+                                        <Field name="StartTime" type="time" class="form-input" />
                                     </Grid>
                                     <Grid item xs={6} md={6}>
                                         <label htmlFor="EndDate">EndDate   </label>
@@ -389,7 +400,7 @@ const TaskDetailPage = ({ item }) => {
 
                                         <label htmlFor="attachments">attachments</label>
                                         
-                                        <Field name="attacgments" type="file"
+                                        <Field name="attachments" type="file"
                                         className="form-input"
                                         onChange={(event)=>{
 

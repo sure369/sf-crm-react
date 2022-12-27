@@ -63,10 +63,10 @@ const TaskRelatedItems = ({ item }) => {
     axios.post(urll)
     .then((res)=>{
         console.log('files response',res)
-        // setResFiles(res.data[0].files)
+        setResFiles(res.data[1].files)
 
        
-        setResFiles( Buffer.from(res.data, "binary").toString("base64"))
+        // setResFiles( Buffer.from(res.data, "binary").toString("base64"))
 
         // const imageBlob = res.blob();
         // const imageObjURL =URL.createObjectURL(imageBlob)
@@ -125,10 +125,13 @@ const TaskRelatedItems = ({ item }) => {
         </AccordionSummary>
         <AccordionDetails>
           <Typography>
+
+          <img  src={resFiles} /> 
+          <img src={`/uploads/${resFiles}`} />
          
          {/* < img src={`data:;base64,${resFiles}`} /> */}
          {/* <img src={`data:image/jpeg;charset=utf-8;base64,${resFiles}`} /> */}
-          <img src={`http://localhost:3000/${resFiles}`} alt="img"/>
+          {/* <img src={`http://localhost:3000/${resFiles}`} alt="img"/> */}
 
           
          {/* <PreviewFile file={`http://localhost:3000/${resFiles}`} />} */}

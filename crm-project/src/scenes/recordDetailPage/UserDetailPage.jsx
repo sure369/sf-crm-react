@@ -87,16 +87,18 @@ const UserDetailPage = ({item}) => {
     const formSubmission =(values)=>{
 
         console.log('form submission value', values);
-        let d = new Date();
-        const formatDate = [d.getDate(), d.getMonth() + 1, d.getFullYear()].join('/') + ' ' + [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
+        let dateSeconds = new Date().getTime();        
+        let createDateSec = new Date(values.createdDate).getTime()
+      
 
         if (showNew) {
-            values.modifiedDate = formatDate;
-            values.createdDate = formatDate;
+            values.modifiedDate = dateSeconds;
+            values.createdDate = dateSeconds;
             values.fullName = values.firstName +' '+ values.lastName;
         }
         else if (!showNew) {
-            values.modifiedDate = formatDate;
+            values.modifiedDate = dateSeconds;
+            values.createdDate = createDateSec;
             values.fullName = values.firstName +' '+ values.lastName;
         }
         console.log('after change form submission value', values);

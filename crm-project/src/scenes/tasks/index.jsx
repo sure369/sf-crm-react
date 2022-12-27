@@ -42,7 +42,8 @@ const Task = () => {
     .then(
       (res) => {
         console.log("res task records", res);
-        if(res.data.length>0){
+     
+        if(typeof (res.data) == 'Object'){
           setRecords(res.data);
         }
         else{  
@@ -114,10 +115,6 @@ const Task = () => {
       field: "subject",headerName: "Subject",
       headerAlign: 'center',align: 'center',flex: 1,
     },
-    {
-        field: "taskName",headerName: "Task Name",
-        headerAlign: 'center',align: 'center',flex: 1,
-      },
     { 
       field: "realatedTo", headerName: "Realated To",
       headerAlign: 'center', align: 'center',flex: 1,
