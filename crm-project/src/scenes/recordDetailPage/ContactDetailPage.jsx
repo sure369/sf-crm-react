@@ -51,8 +51,8 @@ const ContactDetailPage = ({ item }) => {
         createdbyId: '',
         createdDate: '',
         modifiedDate: '',
-        testField1:'',
-        testField2:'',
+        testFiled1:'',
+        testFiled2:'',
     }
 
     const savedValues = {
@@ -74,8 +74,8 @@ const ContactDetailPage = ({ item }) => {
         createdDate: singleContact?.createdDate ?? "",
         modifiedDate: singleContact?.modifiedDate ?? "",
         _id: singleContact?._id ?? "",
-        testField1:singleContact?.testField1 ?? "",
-        testField2:singleContact?.testField2 ?? "",
+        testFiled1:singleContact?.testFiled1 ?? "",
+        testFiled2:singleContact?.testFiled2 ?? "",
     }
     const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
  
@@ -192,14 +192,15 @@ const ContactDetailPage = ({ item }) => {
                                     }
                                     <Form>
                                         <Grid container spacing={2}>
-                                        <Grid Grid item xs={6} md={12}>
-                                                <label htmlFor="testFiled1">testFiled1</label>
+                                        <Grid Grid item xs={6} md={6}>
+                                                <label htmlFor="testFiled1">test Filed1</label>
                                                 <Field type="text" name="testFiled1" class="form-input" />
                                             </Grid>
-                                            <Grid Grid item xs={6} md={12}>
-                                                <label htmlFor="testFiled2">testFiled2</label>
+                                            <Grid Grid item xs={6} md={6}>
+                                                <label htmlFor="testFiled2">test Filed2</label>
                                                 <Field type="text" name="testFiled2" class="form-input" />
                                             </Grid>
+
                                             <Grid item xs={6} md={2}>
                                                 <label htmlFor="salutation">Salutation  </label>
                                                 <Field name="salutation" as="select" class="form-input">
