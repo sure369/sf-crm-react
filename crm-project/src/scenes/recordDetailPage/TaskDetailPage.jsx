@@ -32,6 +32,9 @@ const TaskDetailPage = ({ item }) => {
     const fileRef = useRef();
     const location = useLocation();
 
+
+    const[file,setFile] =useState()
+
     useEffect(() => {
         console.log('passed record', location.state.record.item);
         setSingleTask(location.state.record.item)
@@ -389,15 +392,28 @@ const TaskDetailPage = ({ item }) => {
                                         <Field name="attacgments" type="file"
                                         className="form-input"
                                         onChange={(event)=>{
+
+                                            // var reader = new FileReader();
+                                            // var url = reader.readAsDataURL(event.currentTarget.files[0]);
+                                            // console.log('url ',url);
+                                            console.log('ee',event.currentTarget.files[0]);
                                             setFieldValue("attachments", (event.currentTarget.files[0]));
+                                            setFile(URL.createObjectURL(event.currentTarget.files[0]));
+
+
                                         }} 
                                         />
+                                      {
+                                        file && <img src={file} />
+                                      }
+                                     
                                         {/* <input id="attachments" name="attachments" type="file"
                                             ref={fileRef}
                                             onChange={(event) => {
+                                              
                                                 setFieldValue("attachments", (event.target.files[0]));
-                                            }} className="form-input" /> */}
-                                           
+                                            }} className="form-input" />
+                                            */}
                                            {/*  reader.readAsDataURL */}
 
                                         {/* {values.attachments && <PreviewFile file={values.attachments} />} */}

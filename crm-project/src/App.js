@@ -39,6 +39,7 @@ import NewEventForm from "./scenes/formik/NewEvent";
 import FlexLeads from "./scenes/Flex/FlexLeads";
 import FlexOpportunities from "./scenes/Flex/FlexOpportunities";
 import FlexAccounts from "./scenes/Flex/FlexAccounts";
+import FlexTasks from "./scenes/Flex/FlexTasks";
 import TaskDetailPage from "./scenes/recordDetailPage/TaskDetailPage";
 import Task from "./scenes/tasks";
 import DataLoadPage from "./scenes/dataLoder/dataLoadPage";
@@ -84,10 +85,11 @@ function App() {
               <Route path="/leadDetailPage" element={<FlexLeads/>} />
               <Route path="/opportunityDetailPage" element={<FlexOpportunities/>}/>
               <Route path="/accountDetailPage" element={<FlexAccounts/>} />
+              <Route path="/taskDetailPage" element={<FlexTasks/>}/>
               
               <Route path="/contactDetailPage" element={<ContactDetailPage/>} />
               <Route path="/inventoryDetailPage" element={<InventoryDetailPage/>}/>
-              <Route path="/taskDetailPage" element={<TaskDetailPage/>}/>
+           
               <Route path="/userDetailPage" element={<UserDetailPage/>} />
               <Route path="/test-date" element={<MaterialUIPickers/>} />
             </Routes>

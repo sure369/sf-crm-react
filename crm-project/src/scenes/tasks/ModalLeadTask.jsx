@@ -10,32 +10,28 @@ import axios from 'axios'
 import SimpleSnackbar from "../toast/SimpleSnackbar";
 import "../formik/FormStyles.css"
 
-
-
 const UpsertUrl = "http://localhost:4000/api/UpsertTask";
 const fetchAccountUrl = "http://localhost:4000/api/accountsname";
 const fetchLeadUrl = "http://localhost:4000/api/LeadsbyName";
 const fetchOpportunityUrl = "http://localhost:4000/api/opportunitiesbyName";
 
-const ModalTask = ({ item ,handleModal}) => {
+const ModalTask = ({ item, handleModal }) => {
 
     const [taskParentRecord, setTaskParentRecord] = useState();
-    
+
     const [showAlert, setShowAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState();
     const [alertSeverity, setAlertSeverity] = useState();
 
     const navigate = useNavigate();
-  
     const location = useLocation();
 
     useEffect(() => {
         console.log('Task parent record', location.state.record.item);
         setTaskParentRecord(location.state.record.item)
-       
+
     }, [])
 
-    
     const initialValues = {
         subject: '',
         nameofContact: '',
@@ -56,60 +52,60 @@ const ModalTask = ({ item ,handleModal}) => {
         modifiedDate: '',
     }
 
-
-   
     const validationSchema = Yup.object({
         subject: Yup
             .string()
             .required('Required'),
         attachments: Yup
-           .mixed()
-           .nullable()
-           .notRequired()
+            .mixed()
+            .nullable()
+            .notRequired()
         //    .test('FILE_SIZE',"Too big !",(value)=>value <1024*1024)
         //   .test('FILE_TYPE',"Invalid!",(value)=> value && ['image/jpg','image/jpeg','image/gif','image/png'].includes(value.type))
-          ,
+        ,
 
     })
 
-     const formSubmission = async (values, { resetForm }) => {
+    const formSubmission = async (values, { resetForm }) => {
         console.log('inside form Submission', values);
-        let lead = taskParentRecord._id ;
+        let lead = taskParentRecord._id;
         let d = new Date();
         const formatDate = [d.getDate(), d.getMonth() + 1, d.getFullYear()].join('/') + ' ' + [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
 
         values.modifiedDate = formatDate;
         values.createdDate = formatDate;
+        values.LeadId = lead;
+        values.object = 'Lead'
 
         let formData = new FormData();
-        formData.append('subject',values.subject);
-        formData.append('nameofContact',values.nameofContact);
-        formData.append('realatedTo',values.realatedTo);
-        formData.append('assignedTo',values.assignedTo); 
-        formData.append('startDate',values.startDate);        
-        formData.append('startTime',values.startTime);        
-        formData.append('EndDate',values.EndDate);        
-        formData.append('EndTime',values.EndTime)
-        formData.append('description',values.description);        
-        formData.append('attachments',values.attachments);        
-        formData.append('object',values.object);        
-        formData.append('AccountId',values.AccountId);        
-        formData.append('LeadId',lead)
-        formData.append('OpportunityId',values.OpportunityId)
-        formData.append('createdbyId',values.createdbyId)
-        formData.append('createdDate',values.createdDate)      
-        formData.append('modifiedDate',values.modifiedDate)
+        formData.append('subject', values.subject);
+        formData.append('nameofContact', values.nameofContact);
+        formData.append('realatedTo', values.realatedTo);
+        formData.append('assignedTo', values.assignedTo);
+        formData.append('startDate', values.startDate);
+        formData.append('startTime', values.startTime);
+        formData.append('EndDate', values.EndDate);
+        formData.append('EndTime', values.EndTime)
+        formData.append('description', values.description);
+        formData.append('attachments', values.attachments);
+        formData.append('object', values.object);
+        formData.append('AccountId', values.AccountId);
+        formData.append('LeadId', lead)
+        formData.append('OpportunityId', values.OpportunityId)
+        formData.append('createdbyId', values.createdbyId)
+        formData.append('createdDate', values.createdDate)
+        formData.append('modifiedDate', values.modifiedDate)
 
         await axios.post(UpsertUrl, values)
-    
+
             .then((res) => {
                 console.log('task form Submission  response', res);
                 setShowAlert(true)
                 setAlertMessage(res.data)
                 setAlertSeverity('success')
-                setTimeout(()=>{
-                   window.location.reload();
-                },1000)
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000)
             })
             .catch((error) => {
                 console.log('task form Submission  error', error);
@@ -123,12 +119,10 @@ const ModalTask = ({ item ,handleModal}) => {
         setShowAlert(false)
     }
 
-   
-
     return (
         <Grid item xs={12} style={{ margin: "20px" }}>
             <div style={{ textAlign: "center", marginBottom: "10px" }}>
-                <h3>New Task</h3>                 
+                <h3>New Task</h3>
             </div>
 
             <Formik
@@ -146,7 +140,7 @@ const ModalTask = ({ item ,handleModal}) => {
                         handleSubmit,
                         handleReset,
                         setFieldValue,
-                      
+
                     } = props;
 
                     return (
@@ -177,7 +171,7 @@ const ModalTask = ({ item ,handleModal}) => {
                                     </Grid>
                                     <Grid item xs={6} md={4}>
                                         <label htmlFor="startDate">startDate   </label>
-                                        <Field name="startDate" type="date" class="form-input"/>
+                                        <Field name="startDate" type="date" class="form-input" />
                                     </Grid>
                                     <Grid item xs={6} md={4}>
                                         <label htmlFor="startTime">startTime   </label>
@@ -194,12 +188,12 @@ const ModalTask = ({ item ,handleModal}) => {
                                     <Grid item xs={12} md={12}>
 
                                         <label htmlFor="attachments">attachments</label>
-                                        
+
                                         <Field name="attacgments" type="file"
-                                        className="form-input"
-                                        onChange={(event)=>{
-                                            setFieldValue("attachments", (event.currentTarget.files[0]));
-                                        }} 
+                                            className="form-input"
+                                            onChange={(event) => {
+                                                setFieldValue("attachments", (event.currentTarget.files[0]));
+                                            }}
                                         />
                                         <div style={{ color: 'red' }}>
                                             <ErrorMessage name="attachments" />
@@ -213,10 +207,10 @@ const ModalTask = ({ item ,handleModal}) => {
 
                                 <div className='action-buttons'>
                                     <DialogActions sx={{ justifyContent: "space-between" }}>
-                                 
-                                        <Button type='success' variant="contained" color="secondary"disabled={isSubmitting}>Save</Button>
-                                                                                      
-                                        <Button type="reset" variant="contained" onClick={(e)=>handleModal(false)}  >Cancel</Button>
+
+                                        <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Save</Button>
+
+                                        <Button type="reset" variant="contained" onClick={(e) => handleModal(false)}  >Cancel</Button>
 
                                     </DialogActions>
                                 </div>
@@ -225,11 +219,8 @@ const ModalTask = ({ item ,handleModal}) => {
                     )
                 }}
             </Formik>
-
-
         </Grid>
     )
-
 }
 export default ModalTask
 
