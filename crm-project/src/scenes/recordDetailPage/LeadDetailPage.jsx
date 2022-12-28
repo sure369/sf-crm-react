@@ -105,6 +105,7 @@ const LeadDetailPage = ({ item }) => {
             values.modifiedDate = dateSeconds;
             values.createdDate = dateSeconds;
             values.fullName = values.firstName +' '+ values.lastName;
+          
         }
         else if(!showNew){
             values.modifiedDate = dateSeconds;

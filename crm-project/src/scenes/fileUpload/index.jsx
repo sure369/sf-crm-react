@@ -9,10 +9,13 @@ import {
 import axios from 'axios'
 import SimpleSnackbar from "../toast/SimpleSnackbar";
 import "../formik/FormStyles.css"
+import download from 'downloadjs';
 
 
 
-const UpsertUrl = "http://localhost:4000/api/uploadfile";
+const UpsertUrl = "http://localhost:4000/api/uploadfile"; 
+const urlFiles ="http://localhost:4000/api/files"
+const urlDownloadFiles ="http://localhost:4000/api/download"
 
 
 const DropFileInput = () => {
@@ -23,14 +26,39 @@ const DropFileInput = () => {
     const [alertMessage, setAlertMessage] = useState();
     const [alertSeverity, setAlertSeverity] = useState();
 
- 
+    const [filesList,setFileList] =useState([])
 
     useEffect(() => {
+
+        getFilesList();
 
        
     }, [])
 
+    const getFilesList =async ()=>{
+        // const {data} =await axios.get(urlFiles)
+        // setFileList(data);
+        await axios.post(urlFiles) 
     
+            .then((res) => {
+                console.log('get file list', res);
+                setFileList(res.data);
+            })
+            .catch((error) => {
+                console.log('get file list error', error);
+            })
+    }
+
+    const downloadFile = async (id,path,mimetype)=>{
+        const result = await axios.get(`urlDownloadFiles${id}`,{
+            responseType:'blob'
+        })
+        const split = path.split('/')
+        const filename =split[split.length -1];
+        return download(result.data,filename,mimetype);
+    }
+
+
     const initialValues = {
        name:'',
        email:'',
@@ -50,12 +78,14 @@ const DropFileInput = () => {
         formData.append('file',values.photo);
 
 
-        await axios.post(UpsertUrl, formData)
+        await axios.post(UpsertUrl, formData ,{
+            headers:{'Content-Type':'multipart/form-data'}
+        }) 
     
             .then((res) => {
                 console.log('file Submission  response', res);
                 setShowAlert(true)
-                setAlertMessage(res.data)
+                setAlertMessage(res.data.insertedId)
                 setAlertSeverity('success')
             
             })
@@ -74,6 +104,7 @@ const DropFileInput = () => {
    
 
     return (
+        <>
         <Grid item xs={12} style={{ margin: "20px" }}>
             <div style={{ textAlign: "center", marginBottom: "10px" }}>
                 <h3>File Uploader</h3>                 
@@ -146,6 +177,34 @@ const DropFileInput = () => {
 
 
         </Grid>
+
+        {filesList.length > 0 ? (
+            filesList.map(
+              ({ _id, title, description, file_path, file_mimetype }) => (
+                <tr key={_id}>
+                  <td className="file-title">{title}</td>
+                  <td className="file-description">{description}</td>
+                  <td>
+                    <a
+                      href="#/"
+                      onClick={() =>
+                        downloadFile(_id, file_path, file_mimetype)
+                      }
+                    >
+                      Download
+                    </a>
+                  </td>
+                </tr>
+              )
+            )
+          ) : (
+            <tr>
+              <td colSpan={3} style={{ fontWeight: '300' }}>
+                No files found. Please add some.
+              </td>
+            </tr>
+          )}
+        </>
     )
 
 }

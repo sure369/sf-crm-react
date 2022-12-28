@@ -126,8 +126,8 @@ const TaskRelatedItems = ({ item }) => {
         <AccordionDetails>
           <Typography>
 
-          <img  src={resFiles} /> 
-          <img src={`/uploads/${resFiles}`} />
+          {/* <img  src={resFiles} /> 
+          <img src={`/uploads/${resFiles}`} /> */}
          
          {/* < img src={`data:;base64,${resFiles}`} /> */}
          {/* <img src={`data:image/jpeg;charset=utf-8;base64,${resFiles}`} /> */}

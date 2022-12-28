@@ -43,7 +43,7 @@ const Task = () => {
       (res) => {
         console.log("res task records", res);
      
-        if(typeof (res.data) == 'Object'){
+        if(res.data.length>0){
           setRecords(res.data);
         }
         else{  
