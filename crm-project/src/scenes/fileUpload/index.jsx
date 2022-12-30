@@ -10,12 +10,14 @@ import axios from 'axios'
 import SimpleSnackbar from "../toast/SimpleSnackbar";
 import "../formik/FormStyles.css"
 import download from 'downloadjs';
+import { saveAs } from 'file-saver'
 
 
 
 const UpsertUrl = "http://localhost:4000/api/uploadfile"; 
 const urlFiles ="http://localhost:4000/api/files"
-const urlDownloadFiles ="http://localhost:4000/api/download"
+const urlDownloadFiles ="http://localhost:4000/api/download?searchId="
+
 
 
 const DropFileInput = () => {
@@ -42,7 +44,14 @@ const DropFileInput = () => {
     
             .then((res) => {
                 console.log('get file list', res);
-                setFileList(res.data);
+                if(typeof(res.data) !=='string'){
+                   console.log('type of',typeof (res.data))
+                    setFileList(res.data);
+                }
+                else{
+                    
+                setFileList([]);
+                }
             })
             .catch((error) => {
                 console.log('get file list error', error);
@@ -50,9 +59,11 @@ const DropFileInput = () => {
     }
 
     const downloadFile = async (id,path,mimetype)=>{
-        const result = await axios.get(`urlDownloadFiles${id}`,{
+        const result = await axios.post(urlDownloadFiles+id,{
             responseType:'blob'
         })
+        console.log('path',path)
+
         const split = path.split('/')
         const filename =split[split.length -1];
         return download(result.data,filename,mimetype);
@@ -111,9 +122,7 @@ const DropFileInput = () => {
             </div>
 
             <Formik
-                enableReinitialize={true}
                 initialValues={initialValues}
-              
                 onSubmit={(values, { resetForm }) => formSubmission(values, { resetForm })}
             >
                 {(props) => {
@@ -136,16 +145,6 @@ const DropFileInput = () => {
 
                             <Form>
                                 <Grid container spacing={2}>
-                                  
-                                  {/* <Grid item xs={12} md={12}>
-                                    <label htmlFor="name">Name</label>
-                                    <Field name='name' type="text" class="form-input" />
-                                  </Grid>
-                                  <Grid item xs={12} md={12}>
-                                    <label htmlFor="email">Email</label>
-                                    <Field name='email' type="email" class="form-input" />
-                                  </Grid> */}
-                                  
                                     <Grid item xs={12} md={12}>
 
                                         <label htmlFor="file">file</label>
@@ -162,11 +161,7 @@ const DropFileInput = () => {
 
                                 <div className='action-buttons'>
                                     <DialogActions sx={{ justifyContent: "space-between" }}>
-                                 
                                         <Button type='success' variant="contained" color="secondary"disabled={isSubmitting}>Save</Button>
-                                                                                      
-                  
-
                                     </DialogActions>
                                 </div>
                             </Form>
@@ -174,26 +169,33 @@ const DropFileInput = () => {
                     )
                 }}
             </Formik>
-
-
         </Grid>
 
         {filesList.length > 0 ? (
             filesList.map(
-              ({ _id, title, description, file_path, file_mimetype }) => (
-                <tr key={_id}>
-                  <td className="file-title">{title}</td>
-                  <td className="file-description">{description}</td>
+              (item) => (
+                <tr key={item._id}>
+                  
                   <td>
                     <a
                       href="#/"
                       onClick={() =>
-                        downloadFile(_id, file_path, file_mimetype)
+                        {
+
+                            console.log('item',item)
+                            console.log('item files', item.filedata.originalname)
+                             downloadFile(item._id, item.filedata.path, item.filedata.mimetype)
+                            saveAs(item.filedata._id, 'image.jpg')
+                        }
                       }
                     >
                       Download
                     </a>
                   </td>
+                      <td>
+                        <img src={`http://localhost:4000/${item.filedata.path}`} />
+                      </td>
+
                 </tr>
               )
             )
