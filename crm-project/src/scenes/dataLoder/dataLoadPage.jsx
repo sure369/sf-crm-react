@@ -9,67 +9,75 @@ import axios from 'axios'
 import "../formik/FormStyles.css"
 
 
-
-
-const UpsertUrl = "http://localhost:4000/api/dataloaderlead";
-
-
+const UpsertLeadUrl = "http://localhost:4000/api/dataloaderlead";
+const UpsertAccountUrl="http://localhost:4000/api/dataloaderAccount";
+const UpsertOppUrl="http://localhost:4000/api/dataloaderOpportunity";
 
 const DataLoadPage = () => {
-
-      
-
-  
-
-
-
     useEffect(() => {
        
     }, [])
 
-    
     const initialValues = {
         file:null,
-        attachments:null
-    }
+        attachments:null,
+        object:''
+    }   
+    const SUPPORTED_FORMATS=['text/csv'];
+    const FILE_SIZE =1024 * 1024
+    const validationSchema = Yup.object({
+        object: Yup
+            .string()
+            .required('Required'),
+        
+        file:Yup.mixed()
+        .required('Required')
+                .test(
+                    "fileSize",
+                    "File is too large",
+                    value => !value || (value && value.size <= FILE_SIZE)
+                )
+                .test(
+                    "fileFormat",
+                    "Unsupported Format",
+                    value => !value || (value => value && SUPPORTED_FORMATS.includes(value.type))
+                )
+                        
+       
 
-   
+    })
     
 
      const formSubmission = async (values, { resetForm }) => {
         console.log('inside form Submission', values);
       
-            let formData = new FormData();
+        let formData = new FormData();
         formData.append('file',values.attachments);
+        formData.append('object',values.object);
+        
+        let url = (values.object==='Account')? UpsertAccountUrl : (values.object==='Lead')?UpsertLeadUrl : (values.object==='Opportunity')?UpsertOppUrl:''; 
 
+        console.log('url',url);
         console.log('modified formData',formData);
-        await axios.post(UpsertUrl, formData)
+        // await axios.post(url, formData)
     
-            .then((res) => {
-                console.log('task form Submission  response', res);
-              
-             
-            })
-            .catch((error) => {
-                console.log('task form Submission  error', error);
-               
-            })
-
-         }
+        //     .then((res) => {
+        //         console.log('task form Submission  response', res);             
+        //     })
+        //     .catch((error) => {
+        //         console.log('task form Submission  error', error);
+        //     })
+      }
       
-       
-
-    
     return (
         <Grid item xs={12} style={{ margin: "20px" }}>
             <div style={{ textAlign: "center", marginBottom: "10px" }}>
                 <h3>Data Loader</h3>                 
             </div>
 
-
             <Formik
                 initialValues={initialValues}
-               
+               validationSchema={validationSchema}
                 onSubmit={(values, { resetForm }) => formSubmission(values, { resetForm })}
             >
                 {(props) => {
@@ -90,6 +98,18 @@ const DataLoadPage = () => {
                             <Form>
                                 <Grid container spacing={2}>
                                     
+                                    <Grid item xs={12} md={12}>
+                                        <label htmlFor="object">Select Object</label>
+                                        <Field name="object" as="select" class="form-input">
+                                                <option value=""></option>
+                                                <option value="Account">Account</option>
+                                                <option value="Lead">Lead</option>
+                                                <option value="Opportunity">Opportunity</option>
+                                        </Field>
+                                        <div style={{ color: 'red' }}>
+                                                <ErrorMessage name="object" />
+                                            </div>
+                                    </Grid>
                                        
                                     <Grid item xs={12} md={12}>
 
@@ -99,9 +119,14 @@ const DataLoadPage = () => {
                                         className="form-input"
                                         onChange={(event)=>{
                                             // console.log(event.target.files[0]);
+                                            console.log('file ',(event.target.files[0]));
+                                            console.log('type ',event.target.files[0].type);
                                             setFieldValue("attachments", (event.target.files[0]));
                                         }} 
                                         />
+                                         <div style={{ color: 'red' }}>
+                                                <ErrorMessage name="file" />
+                                            </div>
                                      
                                     </Grid>
                                     

@@ -16,7 +16,7 @@ import { saveAs } from 'file-saver'
 
 const UpsertUrl = "http://localhost:4000/api/uploadfile"; 
 const urlFiles ="http://localhost:4000/api/files"
-const urlDownloadFiles ="http://localhost:4000/api/download?searchId="
+const urlDownloadFiles =  "http://localhost:4000/api/download?searchKey="
 
 
 
@@ -59,14 +59,26 @@ const DropFileInput = () => {
     }
 
     const downloadFile = async (id,path,mimetype)=>{
-        const result = await axios.post(urlDownloadFiles+id,{
-            responseType:'blob'
-        })
-        console.log('path',path)
+        console.log('inside downloadFile');
+        await axios.post(urlDownloadFiles+id)
+        .then((res)=>{
+            console.log('res',res);
+            console.log('path',path);
 
         const split = path.split('/')
-        const filename =split[split.length -1];
-        return download(result.data,filename,mimetype);
+        console.log('split',split)
+        const filepathname =split[split.length -1];
+        console.log('filename',filepathname);
+        return download(res.data[0],filepathname,mimetype);
+        })
+        .catch((error)=>{
+            console.log('error',error);
+        })
+        // const result = await axios.post(urlDownloadFiles+id,{
+        //     responseType:'blob'
+        // })
+        // console.log('result',result)
+
     }
 
 
@@ -183,9 +195,9 @@ const DropFileInput = () => {
                         {
 
                             console.log('item',item)
-                            console.log('item files', item.filedata.originalname)
-                             downloadFile(item._id, item.filedata.path, item.filedata.mimetype)
-                            saveAs(item.filedata._id, 'image.jpg')
+                            // saveAs(item.filePath, `file.${item.fileType}`)
+                             downloadFile(item._id, item.filePath, item.fileType)
+                            
                         }
                       }
                     >
