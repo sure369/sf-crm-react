@@ -30,18 +30,18 @@ const DataLoadPage = () => {
             .string()
             .required('Required'),
         
-        file:Yup.mixed()
-        .required('Required')
-                .test(
-                    "fileSize",
-                    "File is too large",
-                    value => !value || (value && value.size <= FILE_SIZE)
-                )
-                .test(
-                    "fileFormat",
-                    "Unsupported Format",
-                    value => !value || (value => value && SUPPORTED_FORMATS.includes(value.type))
-                )
+        // file:Yup.mixed()
+        // .required('Required')
+        //         .test(
+        //             "fileSize",
+        //             "File is too large",
+        //             value => !value || (value && value.size <= FILE_SIZE)
+        //         )
+        //         .test(
+        //             "fileFormat",
+        //             "Unsupported Format",
+        //             value => !value || (value => value && SUPPORTED_FORMATS.includes(value.type))
+        //         )
                         
        
 

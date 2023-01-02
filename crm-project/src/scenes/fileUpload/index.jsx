@@ -11,7 +11,7 @@ import SimpleSnackbar from "../toast/SimpleSnackbar";
 import "../formik/FormStyles.css"
 import download from 'downloadjs';
 import { saveAs } from 'file-saver'
-
+import Iframe from 'react-iframe'
 
 
 const UpsertUrl = "http://localhost:4000/api/uploadfile"; 
@@ -195,8 +195,23 @@ const DropFileInput = () => {
                         {
 
                             console.log('item',item)
+                            // <iframe src="https://www.example.com/show?data..." width="540" height="450"></iframe>;
+
+                        
+                                    // <Iframe
+                                    // url=${item.files}
+                                    //     width="640px"
+                                    //     height="320px"
+                                    //     id=""
+                                    //     className=""
+                                    //     display="block"
+                                    //     position="relative"
+                                    // />
+                            
+                            
+
                             // saveAs(item.filePath, `file.${item.fileType}`)
-                             downloadFile(item._id, item.filePath, item.fileType)
+                            //  downloadFile(item._id, item.filePath, item.fileType)
                             
                         }
                       }
