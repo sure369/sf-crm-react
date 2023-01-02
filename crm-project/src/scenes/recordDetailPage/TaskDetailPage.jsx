@@ -176,8 +176,16 @@ const TaskDetailPage = ({ item }) => {
                 formData.append('LeadId', values.LeadId)
             }
 
-            console.log('modified formData', formData);
+          
+            
             await axios.post(UpsertUrl, values)
+            // await axios({
+            //     method: 'post',
+            //     url: UpsertUrl,
+            //     data: formData,
+            //     headers: { 'Content-Type': 'multipart/form-data' }
+            //   })
+           
 
                 .then((res) => {
                     console.log('task form Submission  response', res);
@@ -347,13 +355,9 @@ const TaskDetailPage = ({ item }) => {
                                             <ErrorMessage name="subject" />
                                         </div>
                                     </Grid>
-                                    {/* <Grid item xs={6} md={6}>
-                                        <label htmlFor="taskName">Task Name </label>
-                                        <Field name="taskName" type="text" class="form-input">
-                                    </Field>
-                                    </Grid> */}
+                                 
                                     
-                                    {/* <Grid item xs={6} md={6}>
+                                    <Grid item xs={6} md={6}>
                                         <label htmlFor="object">object  </label>
                                         <Field name="object" as="select" class="form-input"
                                             onChange={(e) => {
@@ -368,7 +372,7 @@ const TaskDetailPage = ({ item }) => {
                                             <option value="Account">Account</option>
                                         </Field>
                                     </Grid>
-                                    <Grid item xs={6} md={6}>
+                                    {/* <Grid item xs={6} md={6}>
                                         <label htmlFor="realatedTo"> Realated To  </label>
                                         <Autocomplete
                                             name="realatedTo"

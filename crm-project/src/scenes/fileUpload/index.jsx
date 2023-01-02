@@ -12,7 +12,7 @@ import "../formik/FormStyles.css"
 import download from 'downloadjs';
 import { saveAs } from 'file-saver'
 import Iframe from 'react-iframe'
-
+import ReactPlayer from 'react-player'
 
 const UpsertUrl = "http://localhost:4000/api/uploadfile"; 
 const urlFiles ="http://localhost:4000/api/files"
@@ -124,6 +124,27 @@ const DropFileInput = () => {
         setShowAlert(false)
     }
 
+    const redirect =(item) =>{
+        console.log('inside reirect',item);
+        
+    //  <ReactPlayer url='https://www.youtube.com/watch?v=ysz5S6PUM-U' />
+
+            //  <iframe src= 'https://www.youtube.com/watch?v=tATzWMBoRbI&t=42s' width="540" height="450"></iframe>
+
+
+                                     <Iframe
+                                                    url ='https://www.youtube.com/'
+                                                    width="640px"
+                                                    height="320px"
+                                                    id={item._id}
+                                                    className=""
+                                                    display="block"
+                                                    position="relative"
+                                                /> 
+
+                                              
+                                     
+    }
    
 
     return (
@@ -183,53 +204,30 @@ const DropFileInput = () => {
             </Formik>
         </Grid>
 
+
+     
+
         {filesList.length > 0 ? (
             filesList.map(
               (item) => (
                 <tr key={item._id}>
                   
-                  <td>
-                    <a
-                      href="#/"
+                  <td >
+                       <a href="#"
+                    
                       onClick={() =>
                         {
-
-                            console.log('item',item.files)
-                           
-
-                        return(
-                             <>
-                             {/* <iframe src= 'http://localhost:3000/' width="540" height="450"></iframe>; */}
-
-                              <Iframe
-                                            url ='http://localhost:3000'
-                                            width="640px"
-                                            height="320px"
-                                            id={item._id}
-                                            className=""
-                                            display="block"
-                                            position="relative"
-                                        />
-                                        </>
-                        )
-                            
-                            
-  
-                                    
-                            
-                            
-
-                            // saveAs(item.filePath, `file.${item.fileType}`)
+                        //    redirect(item);
+                            saveAs(item.filePath, `${item.fileName}.${item.fileType}`)
                             //  downloadFile(item._id, item.filePath, item.fileType)
-                            
                         }
                       }
                     >
                       Download
-                    </a>
+                      </a>
                   </td>
                       <td>
-                        <img src={`http://localhost:4000/${item.filedata.path}`} />
+                        <img src={`http://localhost:4000/${item.filePath}`} />
                       </td>
 
                 </tr>
