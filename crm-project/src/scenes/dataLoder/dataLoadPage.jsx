@@ -59,14 +59,14 @@ const DataLoadPage = () => {
 
         console.log('url',url);
         console.log('modified formData',formData);
-        // await axios.post(url, formData)
+        await axios.post(url, formData)
     
-        //     .then((res) => {
-        //         console.log('task form Submission  response', res);             
-        //     })
-        //     .catch((error) => {
-        //         console.log('task form Submission  error', error);
-        //     })
+            .then((res) => {
+                console.log('task form Submission  response', res);             
+            })
+            .catch((error) => {
+                console.log('task form Submission  error', error);
+            })
       }
       
     return (

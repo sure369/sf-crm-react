@@ -194,19 +194,28 @@ const DropFileInput = () => {
                       onClick={() =>
                         {
 
-                            console.log('item',item)
-                            // <iframe src="https://www.example.com/show?data..." width="540" height="450"></iframe>;
+                            console.log('item',item.files)
+                           
 
-                        
-                                    // <Iframe
-                                    // url=${item.files}
-                                    //     width="640px"
-                                    //     height="320px"
-                                    //     id=""
-                                    //     className=""
-                                    //     display="block"
-                                    //     position="relative"
-                                    // />
+                        return(
+                             <>
+                             {/* <iframe src= 'http://localhost:3000/' width="540" height="450"></iframe>; */}
+
+                              <Iframe
+                                            url ='http://localhost:3000'
+                                            width="640px"
+                                            height="320px"
+                                            id={item._id}
+                                            className=""
+                                            display="block"
+                                            position="relative"
+                                        />
+                                        </>
+                        )
+                            
+                            
+  
+                                    
                             
                             
 
