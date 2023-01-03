@@ -37,16 +37,14 @@ const ModalAccTask = ({ item, handleModal }) => {
         nameofContact: '',
         realatedTo: '',
         assignedTo: '',
-        startDate: '',
-        startTime: '',
+        StartDate: '',
+        StartTime: '',
         EndDate: '',
         EndTime: '',
         description: '',
         attachments: null,
         object: '',
         AccountId: '',
-        LeadId: '',
-        OpportunityId: '',
         createdbyId: '',
         createdDate: '',
         modifiedDate: '',
@@ -69,32 +67,23 @@ const ModalAccTask = ({ item, handleModal }) => {
     const formSubmission = async (values, { resetForm }) => {
         console.log('inside form Submission', values);
         let account = taskParentRecord._id;
-        let d = new Date();
-        const formatDate = [d.getDate(), d.getMonth() + 1, d.getFullYear()].join('/') + ' ' + [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
-
-        values.modifiedDate = formatDate;
-        values.createdDate = formatDate;
+        let dateSeconds = new Date().getTime();
+        let StartDateSec = new Date(values.StartDate).getTime()
+        let EndDateSec = new Date(values.EndDate).getTime()
+        
+        values.modifiedDate = dateSeconds;
+        values.createdDate = dateSeconds;
         values.AccountId = account;
         values.object = 'Account'
 
-        let formData = new FormData();
-        formData.append('subject', values.subject);
-        formData.append('nameofContact', values.nameofContact);
-        formData.append('realatedTo', values.realatedTo);
-        formData.append('assignedTo', values.assignedTo);
-        formData.append('startDate', values.startDate);
-        formData.append('startTime', values.startTime);
-        formData.append('EndDate', values.EndDate);
-        formData.append('EndTime', values.EndTime)
-        formData.append('description', values.description);
-        formData.append('attachments', values.attachments);
-        formData.append('object', values.object);
-        formData.append('AccountId', account);
-        formData.append('LeadId', values.LeadId)
-        formData.append('OpportunityId', values.OpportunityId)
-        formData.append('createdbyId', values.createdbyId)
-        formData.append('createdDate', values.createdDate)
-        formData.append('modifiedDate', values.modifiedDate)
+        if (values.StartDate && values.EndDate) {
+            values.StartDate = StartDateSec
+            values.EndDate = EndDateSec
+        }else if (values.StartDate) {
+            values.StartDate = StartDateSec
+        }else if (values.EndDate) {
+            values.EndDate = EndDateSec
+        }
 
         await axios.post(UpsertUrl, values)
 
@@ -169,12 +158,12 @@ const ModalAccTask = ({ item, handleModal }) => {
                                         <Field name="assignedTo" type="text" class="form-input" />
                                     </Grid>
                                     <Grid item xs={6} md={4}>
-                                        <label htmlFor="startDate">startDate   </label>
-                                        <Field name="startDate" type="date" class="form-input" />
+                                        <label htmlFor="StartDate">startDate   </label>
+                                        <Field name="StartDate" type="date" class="form-input" />
                                     </Grid>
                                     <Grid item xs={6} md={4}>
-                                        <label htmlFor="startTime">startTime   </label>
-                                        <Field name="startTime" type="time" class="form-input" />
+                                        <label htmlFor="StartTime">startTime   </label>
+                                        <Field name="StartTime" type="time" class="form-input" />
                                     </Grid>
                                     <Grid item xs={6} md={4}>
                                         <label htmlFor="EndDate">EndDate   </label>

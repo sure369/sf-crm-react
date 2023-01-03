@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react';
-import { Box, Button,useTheme ,IconButton} from "@mui/material";
+import { Box, Button,useTheme ,IconButton,Modal} from "@mui/material";
 import { DataGrid, GridToolbar,
   gridPageCountSelector,gridPageSelector,
   useGridApiContext,useGridSelector} from "@mui/x-data-grid";
@@ -12,6 +12,18 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import Pagination from '@mui/material/Pagination';
 import AccountDetailPage from '../recordDetailPage/AccountDetailPage';
+import ModalDeletePage from '../recordDetailPage/DeleteModalPage';
+
+const ModalStyle = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 600,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+};
 
 const Accounts = () => {
 
@@ -29,6 +41,9 @@ const Accounts = () => {
   const[showAlert,setShowAlert] = useState(false);
   const[alertMessage,setAlertMessage]=useState();
   const[alertSeverity,setAlertSeverity]=useState();
+
+  //modal
+  const[modalOpen,setModalOpen]=useState(false)
 
   useEffect(()=>{
 console.log('inside account index')
@@ -68,28 +83,38 @@ console.log('inside account index')
     navigate("/accountDetailPage",{state:{record:{item}}})
   };
  
-  const onHandleDelete = (e, row) => {
+  const handleDeleteModalOpen =(e,row)=>{
+    console.log('inside modal',row)
+    setModalOpen(true);
+    onHandleDelete(row);
+  }
+
+  const handleDeleteModalClose =()=>{
+    setModalOpen(false);
+  }
+
+  const onHandleDelete = ( row) => {
     // e.stopPropagation();
     console.log('req delete rec',row);
     console.log('req delete rec id',row._id);
  
-    axios.post(urlDelete+row._id)
-    .then((res)=>{
-        console.log('api delete response',res);
-        fetchRecords();
-        //delete show toast
-        setShowAlert(true)
-        setAlertMessage(res.data)
-        setAlertSeverity('success')
-    })
-    .catch((error)=> {
-        console.log('api delete error',error);
-         //delete show toast
+    // axios.post(urlDelete+row._id)
+    // .then((res)=>{
+    //     console.log('api delete response',res);
+    //     fetchRecords();
+    //     //delete show toast
+    //     setShowAlert(true)
+    //     setAlertMessage(res.data)
+    //     setAlertSeverity('success')
+    // })
+    // .catch((error)=> {
+    //     console.log('api delete error',error);
+    //      //delete show toast
 
-         setShowAlert(true)
-         setAlertMessage(error.message)
-         setAlertSeverity('error')
-      })
+    //      setShowAlert(true)
+    //      setAlertMessage(error.message)
+    //      setAlertSeverity('error')
+    //   })
   };
 
   const toastCloseCallback=()=>{
@@ -150,7 +175,7 @@ console.log('inside account index')
               <EditIcon onClick={(e) => handleOnCellClick(e, params.row)} />
             </IconButton>
             <IconButton style={{ padding: '20px' }}>
-              <DeleteIcon onClick={(e) => onHandleDelete(e, params.row)} />
+              <DeleteIcon onClick={(e) => handleDeleteModalOpen(e, params.row)} />
             </IconButton>
           </>
         )} 
@@ -225,6 +250,20 @@ console.log('inside account index')
       {/* </div> */}
     </Box> 
     </Box>
+
+{/* Modal component */}
+
+<Modal
+        open={modalOpen}
+        onClose={handleDeleteModalClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={ModalStyle}>
+          <ModalDeletePage handleModal={handleDeleteModalClose} />
+        </Box>
+      </Modal>
+
     </>
     )
   }

@@ -11,9 +11,6 @@ import SimpleSnackbar from "../toast/SimpleSnackbar";
 import "../formik/FormStyles.css"
 
 const UpsertUrl = "http://localhost:4000/api/UpsertTask";
-const fetchAccountUrl = "http://localhost:4000/api/accountsname";
-const fetchLeadUrl = "http://localhost:4000/api/LeadsbyName";
-const fetchOpportunityUrl = "http://localhost:4000/api/opportunitiesbyName";
 
 const ModalOppTask = ({ item, handleModal }) => {
 
@@ -37,15 +34,13 @@ const ModalOppTask = ({ item, handleModal }) => {
         nameofContact: '',
         realatedTo: '',
         assignedTo: '',
-        startDate: '',
-        startTime: '',
+        StartDate: '',
+        StartTime: '',
         EndDate: '',
         EndTime: '',
         description: '',
         attachments: null,
         object: '',
-        AccountId: '',
-        LeadId: '',
         OpportunityId: '',
         createdbyId: '',
         createdDate: '',
@@ -70,33 +65,25 @@ const ModalOppTask = ({ item, handleModal }) => {
         console.log('inside form Submission', values);
 
         let Opportunity = taskParentRecord._id;
-        let d = new Date();
-        const formatDate = [d.getDate(), d.getMonth() + 1, d.getFullYear()].join('/') + ' ' + [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
+        let dateSeconds = new Date().getTime();
+        let StartDateSec = new Date(values.StartDate).getTime()
+        let EndDateSec = new Date(values.EndDate).getTime()
 
-        values.modifiedDate = formatDate;
-        values.createdDate = formatDate;
+        values.modifiedDate = dateSeconds;
+        values.createdDate = dateSeconds;
         values.OpportunityId = Opportunity;
         values.object = 'Opportunity'
 
-        let formData = new FormData();
-        formData.append('subject', values.subject);
-        formData.append('nameofContact', values.nameofContact);
-        formData.append('realatedTo', values.realatedTo);
-        formData.append('assignedTo', values.assignedTo);
-        formData.append('startDate', values.startDate);
-        formData.append('startTime', values.startTime);
-        formData.append('EndDate', values.EndDate);
-        formData.append('EndTime', values.EndTime)
-        formData.append('description', values.description);
-        formData.append('attachments', values.attachments);
-        formData.append('object', values.object);
-        formData.append('AccountId', values.AccountId);
-        formData.append('LeadId', values.LeadId)
-        formData.append('OpportunityId', setTaskParentRecord._id)
-        formData.append('createdbyId', values.createdbyId)
-        formData.append('createdDate', values.createdDate)
-        formData.append('modifiedDate', values.modifiedDate)
-
+        if (values.StartDate && values.EndDate) {
+            values.StartDate = StartDateSec
+            values.EndDate = EndDateSec
+        }else if (values.StartDate) {
+            values.StartDate = StartDateSec
+        }else if (values.EndDate) {
+            values.EndDate = EndDateSec
+        }
+        console.log('valuse after chg',values);
+   
         await axios.post(UpsertUrl, values)
 
             .then((res) => {
@@ -166,15 +153,15 @@ const ModalOppTask = ({ item, handleModal }) => {
                                         </div>
                                     </Grid>
                                     <Grid item xs={6} md={4}>
-                                        <label htmlFor="assignedTo">assignedTo  </label>
+                                        <label htmlFor="assignedTo">AssignedTo  </label>
                                         <Field name="assignedTo" type="text" class="form-input" />
                                     </Grid>
                                     <Grid item xs={6} md={4}>
-                                        <label htmlFor="startDate">startDate   </label>
+                                        <label htmlFor="startDate">StartDate   </label>
                                         <Field name="startDate" type="date" class="form-input" />
                                     </Grid>
                                     <Grid item xs={6} md={4}>
-                                        <label htmlFor="startTime">startTime   </label>
+                                        <label htmlFor="startTime">StartTime   </label>
                                         <Field name="startTime" type="time" class="form-input" />
                                     </Grid>
                                     <Grid item xs={6} md={4}>
@@ -187,7 +174,7 @@ const ModalOppTask = ({ item, handleModal }) => {
                                     </Grid>
                                     <Grid item xs={12} md={12}>
 
-                                        <label htmlFor="attachments">attachments</label>
+                                        <label htmlFor="attachments">Attachments</label>
 
                                         <Field name="attacgments" type="file"
                                             className="form-input"

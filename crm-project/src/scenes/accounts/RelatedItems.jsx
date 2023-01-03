@@ -167,6 +167,13 @@ const AccountRelatedItems = ({ item }) => {
                   relatedTask
                     .slice((page - 1) * itemsPerPage, page * itemsPerPage)
                     .map((item) => {
+
+                      let   starDateConvert = new Date(item.StartDate).getUTCFullYear()
+                      + '-' +  ('0'+ (new Date(item.StartDate).getUTCMonth() + 1)).slice(-2) 
+                      + '-' + ('0'+ ( new Date(item.StartDate).getUTCDate())).slice(-2)  ||''
+                    
+
+
                       return (
                         <div >
                           <CardContent sx={{ bgcolor: "aliceblue", m: "15px" }}>
@@ -176,7 +183,7 @@ const AccountRelatedItems = ({ item }) => {
                               <Grid container spacing={2}>
                                 <Grid item xs={6} md={10}>
                                   <div>Subject : {item.subject} </div>
-                                  <div>Date&Time :{item.startDate}  {item.startTime}</div>
+                                  <div>Date&Time :{starDateConvert}</div>
                                   <div>Description : {item.description} </div>
                                 </Grid>
                                 <Grid item xs={6} md={2}>

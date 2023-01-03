@@ -18,7 +18,7 @@ const fetchAccountUrl = "http://localhost:4000/api/accountsname";
 const fetchLeadUrl = "http://localhost:4000/api/LeadsbyName";
 const fetchOpportunityUrl = "http://localhost:4000/api/opportunitiesbyName";
 
-const TaskDetailPage = ({ item }) => {
+const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
 
     const [singleTask, setSingleTask] = useState();
     const [showNew, setshowNew] = useState()
@@ -34,6 +34,8 @@ const TaskDetailPage = ({ item }) => {
 
 
     const [file, setFile] = useState()
+
+    const[showModal1,setShowModal1]=useState(showModel)
 
     useEffect(() => {
         console.log('passed record', location.state.record.item);
@@ -93,21 +95,28 @@ const TaskDetailPage = ({ item }) => {
         nameofContact: singleTask?.nameofContact ?? "",
         realatedTo: singleTask?.realatedTo ?? "",
         assignedTo: singleTask?.assignedTo ?? "",
-        StartDate: singleTask?.StartDate ?? "",
+       
         StartTime: singleTask?.StartTime ?? "",
-        EndDate: singleTask?.EndDate ?? "",
+       
         EndTime: singleTask?.EndTime ?? "",
         description: singleTask?.description ?? "",
         attachments: singleTask?.attachments ?? "",
         object: singleTask?.object ?? "",
-        // leads: singleTask?.leads ?? "",
-        // AccountId: singleTask?.AccountId ?? "",
+        leads: singleTask?.leads ?? "",
+        AccountId: singleTask?.AccountId ?? "",
         LeadId: singleTask?.LeadId ?? "",
-        // OpportunityId: singleTask?.OpportunityId ?? "",
+        OpportunityId: singleTask?.OpportunityId ?? "",
         createdbyId: singleTask?.createdbyId ?? "",
         createdDate: new Date(singleTask?.createdDate).toLocaleString(),
         modifiedDate: new Date(singleTask?.modifiedDate).toLocaleString(),
         _id: singleTask?._id ?? "",
+
+        StartDate:new Date(singleTask?.StartDate).getUTCFullYear()
+        + '-' +  ('0'+ (new Date(singleTask?.StartDate).getUTCMonth() + 1)).slice(-2) 
+        + '-' + ('0'+ ( new Date(singleTask?.StartDate).getUTCDate())).slice(-2) ||'',
+        EndDate:  new Date(singleTask?.EndDate).getUTCFullYear()
+        + '-' +  ('0'+ (new Date(singleTask?.EndDate).getUTCMonth() + 1)).slice(-2) 
+        + '-' + ('0'+ ( new Date(singleTask?.EndDate).getUTCDate())).slice(-2) ||'',
 
 
     }
@@ -140,52 +149,32 @@ const TaskDetailPage = ({ item }) => {
             console.log('dateSeconds',dateSeconds)
             values.modifiedDate = dateSeconds;
             values.createdDate = dateSeconds;
+
             if (values.StartDate && values.EndDate) {
                 values.StartDate = StartDateSec
                 values.EndDate = EndDateSec
-            }
-            else if (values.StartDate) {
+            }else if (values.StartDate) {
                 values.StartDate = StartDateSec
-            }
-            else if (values.EndDate) {
+            }else if (values.EndDate) {
                 values.EndDate = EndDateSec
             }
-
-            let formData = new FormData();
-            formData.append('subject', values.subject);
-            formData.append('nameofContact', values.nameofContact);
-            formData.append('realatedTo', values.realatedTo);
-            formData.append('assignedTo', values.assignedTo);
-            formData.append('StartDate', values.StartDate);
-            formData.append('StartTime', values.StartTime);
-            formData.append('EndDate', values.EndDate);
-            formData.append('EndTime', values.EndTime)
-            formData.append('description', values.description);
-            formData.append('attachments', values.attachments);
-            formData.append('object', values.object);
-            formData.append('createdbyId', values.createdbyId)
-            formData.append('createdDate', values.createdDate)
-            formData.append('modifiedDate', values.modifiedDate)
-            if (values.AccountId != '') {
-                formData.append('AccountId', values.AccountId);
+            if (values.AccountId != '') {               
+                delete values.OpportunityId; 
+                delete values.LeadId; 
+            }else if (values.OpportunityId != '') {                
+                 delete values.AccountId; 
+                 delete values.LeadId;    
+            }else if (values.LeadId != '') {
+                delete values.OpportunityId; 
+                delete values.AccountId; 
+            }else{
+                delete values.OpportunityId; 
+                delete values.AccountId; 
+                delete values.LeadId; 
             }
-            else if (values.OpportunityId != '') {
-                formData.append('OpportunityId', values.OpportunityId)
-            }
-            else if (values.LeadId != '') {
-                formData.append('LeadId', values.LeadId)
-            }
-
           
-            
-            await axios.post(UpsertUrl, values)
-            // await axios({
-            //     method: 'post',
-            //     url: UpsertUrl,
-            //     data: formData,
-            //     headers: { 'Content-Type': 'multipart/form-data' }
-            //   })
-           
+            console.log("test" ,values);
+            await axios.post(UpsertUrl, values)           
 
                 .then((res) => {
                     console.log('task form Submission  response', res);
@@ -218,31 +207,19 @@ const TaskDetailPage = ({ item }) => {
             else if (values.EndDate) {
                 values.EndDate = EndDateSec
             }
-
-            let formData = new FormData();
-            formData.append('subject', values.subject);
-            formData.append('nameofContact', values.nameofContact);
-            formData.append('realatedTo', values.realatedTo);
-            formData.append('assignedTo', values.assignedTo);
-            formData.append('StartDate', values.StartDate);
-            formData.append('StartTime', values.StartTime);
-            formData.append('EndDate', values.EndDate);
-            formData.append('EndTime', values.EndTime)
-            formData.append('description', values.description);
-            formData.append('attachments', values.attachments);
-            formData.append('object', values.object);
-            formData.append('createdbyId', values.createdbyId)
-            formData.append('createdDate', values.createdDate)
-            formData.append('modifiedDate', values.modifiedDate)
-            formData.append('_id', values._id)
-            if (values.object === 'Account') {
-                formData.append('AccountId', values.AccountId);
-            }
-            else if (values.object === 'Opportunity') {
-                formData.append('OpportunityId', values.OpportunityId)
-            }
-            else if (values.object === 'Lead') {
-                formData.append('LeadId', values.LeadId)
+            if (values.AccountId != '') {               
+                delete values.OpportunityId; 
+                delete values.LeadId; 
+            }else if (values.OpportunityId != '') {                
+                 delete values.AccountId; 
+                 delete values.LeadId;    
+            }else if (values.LeadId != '') {
+                delete values.OpportunityId; 
+                delete values.AccountId; 
+            }else{
+                delete values.OpportunityId; 
+                delete values.AccountId; 
+                delete values.LeadId; 
             }
 
             await axios.post(UpsertUrl, values)
@@ -372,7 +349,7 @@ const TaskDetailPage = ({ item }) => {
                                             <option value="Account">Account</option>
                                         </Field>
                                     </Grid>
-                                    {/* <Grid item xs={6} md={6}>
+                                    <Grid item xs={6} md={6}>
                                         <label htmlFor="realatedTo"> Realated To  </label>
                                         <Autocomplete
                                             name="realatedTo"
@@ -394,7 +371,6 @@ const TaskDetailPage = ({ item }) => {
                                                 } else if (values.object === 'Lead') {
                                                     setFieldValue('LeadId', value.id)
                                                 }
-                                                //    setFieldValue()
                                                 setFieldValue("realatedTo", value || '')
 
                                             }}
@@ -405,17 +381,12 @@ const TaskDetailPage = ({ item }) => {
 
                                                 FetchObjectsbyName(newInputValue, url)
                                                 // FetchAccountsbyName(newInputValue);
-
                                             }}
                                             renderInput={params => (
                                                 <Field component={TextField} {...params} name="realatedTo" />
                                             )}
-
                                         />
-
-
-
-                                    </Grid> */}
+                                    </Grid>
 
                                     <Grid item xs={6} md={6}>
                                         <label htmlFor="assignedTo">assignedTo  </label>

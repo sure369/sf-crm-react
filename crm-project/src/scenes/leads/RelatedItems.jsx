@@ -11,6 +11,7 @@ import axios from 'axios'
 import ModalLeadTask from "../tasks/ModalLeadTask";
 import SimpleSnackbar from "../toast/SimpleSnackbar";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import TaskDetailPage from "../recordDetailPage/TaskDetailPage";
 
 const style = {
   position: 'absolute',
@@ -41,6 +42,8 @@ const LeadRelatedItems = ({ item }) => {
   const [itemsPerPage, setItemsPerPage] = useState(2);
   const [page, setPage] = useState(1);
   const [noOfPages, setNoOfPages] = useState(0);
+
+  // const[starDateConvert,setStarDateConvert] =useState(null);
 
   useEffect(() => {
     console.log('inside useEffect', location.state.record.item);
@@ -166,7 +169,14 @@ const LeadRelatedItems = ({ item }) => {
                 relatedTask.length > 0 ?
                   relatedTask
                     .slice((page - 1) * itemsPerPage, page * itemsPerPage)
-                    .map((item) => {
+                    .map((item) => {  
+
+                        let   starDateConvert = new Date(item.StartDate).getUTCFullYear()
+                        + '-' +  ('0'+ (new Date(item.StartDate).getUTCMonth() + 1)).slice(-2) 
+                        + '-' + ('0'+ ( new Date(item.StartDate).getUTCDate())).slice(-2)  ||''
+                      
+
+
                       return (
                         <div >
 
@@ -177,7 +187,7 @@ const LeadRelatedItems = ({ item }) => {
                               <Grid container spacing={2}>
                                 <Grid item xs={6} md={10}>
                                   <div>Subject : {item.subject} </div>
-                                  <div>Date&Time :{item.startDate}  {item.startTime}</div>
+                                  <div>Date : {starDateConvert}</div>
                                   <div>Description : {item.description} </div>
                                 </Grid>
                                 <Grid item xs={6} md={2}>
@@ -263,6 +273,7 @@ const LeadRelatedItems = ({ item }) => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
+          {/* <TaskDetailPage handleModal={handleModalClose} showModel={true}/> */}
           <ModalLeadTask handleModal={handleModalClose} />
         </Box>
       </Modal>
