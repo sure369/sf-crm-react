@@ -41,7 +41,7 @@ const AccountDetailPage = ({ item }) => {
     const initialValues = {
         accountName: '',
         accountNumber: '',
-        Inventory: '',
+        InventoryId: '',
         inventoryName: { inventoryName: "", id: "" },
         annualRevenue: '',
         rating: '',
@@ -60,7 +60,7 @@ const AccountDetailPage = ({ item }) => {
     const savedValues = {
         accountName: singleAccount?.accountName ?? "",
         accountNumber: singleAccount?.accountNumber ?? "",
-        Inventory: singleAccount?.Inventory ?? "",
+        InventoryId: singleAccount?.InventoryId ?? "",
         inventoryName: singleAccount?.inventoryName ?? "",
         annualRevenue: singleAccount?.annualRevenue ?? "",
         rating: singleAccount?.rating ?? "",
@@ -231,18 +231,18 @@ const AccountDetailPage = ({ item }) => {
                                             <Field name="accountNumber" type="number" class="form-input" />
                                         </Grid>
                                         <Grid item xs={6} md={6}>
-                                            <label htmlFor="Inventory">Inventory Name </label>
+                                            <label htmlFor="InventoryId">Inventory Name </label>
                                             <Autocomplete
-                                                name="Inventory"
+                                                name="InventoryId"
                                                 options={inventoriesRecord}
-                                                value={values.Inventory}
+                                                value={values.InventoryId}
                                                 getOptionLabel={option => option.propertyName || ''}
                                                 isOptionEqualToValue={(option, value) =>
                                                     option.id === value
 
                                                 }
                                                 onChange={(e, value) => {
-                                                    setFieldValue("Inventory", value.id || '')
+                                                    setFieldValue("InventoryId", value.id || '')
                                                     setFieldValue("propertyName", value || '')
                                                 }}
                                                 onInputChange={(event, newInputValue) => {
@@ -252,7 +252,7 @@ const AccountDetailPage = ({ item }) => {
                                                     }
                                                 }}
                                                 renderInput={params => (
-                                                    <Field component={TextField} {...params} name="Inventory" />
+                                                    <Field component={TextField} {...params} name="InventoryId" />
                                                 )}
                                             />
 

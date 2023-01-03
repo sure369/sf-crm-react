@@ -34,7 +34,7 @@ const ContactDetailPage = ({ item }) => {
 
 
     const initialValues = {
-        Account: "",
+        AccountId: "",
         accountName: { accountName: "", id: "" },
         salutation: '',
         firstName: '',
@@ -53,7 +53,7 @@ const ContactDetailPage = ({ item }) => {
     }
 
     const savedValues = {
-        Account: singleContact?.Account ?? "",
+        AccountId: singleContact?.AccountId ?? "",
         accountName: singleContact?.accountName ?? "",
         // accountName:singleContact?.Accountdetails[0].accountName??"",
         salutation: singleContact?.salutation ?? "",
@@ -244,11 +244,11 @@ const ContactDetailPage = ({ item }) => {
                                             </>
                                             )}
                                             <Grid item xs={6} md={6}>
-                                                <label htmlFor="Account">Account Name </label>
+                                                <label htmlFor="AccountId">Account Name </label>
                                                 <Autocomplete
-                                                    name="Account"
+                                                    name="AccountId"
                                                     options={accNames}
-                                                    value={values.Account}
+                                                    value={values.AccountId}
                                                     // {accNames.filter((item) => {
                                                     //     return item.countryId === values.countryId;
                                                     //   })[0] || ""}
@@ -260,7 +260,7 @@ const ContactDetailPage = ({ item }) => {
                                                     }
                                                     onChange={(e, value) => {
 
-                                                        setFieldValue("Account", value.id || '')
+                                                        setFieldValue("AccountId", value.id || '')
                                                         setFieldValue("accountName", value || '')
 
                                                     }}
@@ -279,7 +279,7 @@ const ContactDetailPage = ({ item }) => {
 
                                                     }}
                                                     renderInput={params => (
-                                                        <Field component={TextField} {...params} name="Account" />
+                                                        <Field component={TextField} {...params} name="AccountId" />
                                                     )}
                                                 // name="Account"
                                                 // options={accNames}

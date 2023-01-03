@@ -38,8 +38,8 @@ const OpportunityDetailPage = ({item}) => {
     },[])
 
     const initialValues = {
-        Lead: '',
-        Inventory:'',
+        LeadId: '',
+        InventoryId:'',
         opportunityName: '',
         type: '',
         leadSource: '',
@@ -53,9 +53,9 @@ const OpportunityDetailPage = ({item}) => {
     }
 
     const savedValues = {
-         Lead: singleOpportunity?.Lead ?? "",
+        LeadId: singleOpportunity?.LeadId ?? "",
        
-         Inventory: singleOpportunity?.Inventory ?? "",
+        InventoryId: singleOpportunity?.InventoryId ?? "",
         
         //  Propertydetails:singleOpportunity?.Inventorydetails[0].propertyName ??"",
         //  Leaddetails:singleOpportunity?.Leaddetails[0].firstName ??"",
@@ -212,9 +212,9 @@ const OpportunityDetailPage = ({item}) => {
              </Grid>
             
              <Grid item xs={6} md={6}>
-             <label htmlFor="Inventory">Inventory Name </label>
+             <label htmlFor="InventoryId">Inventory Name </label>
                 <Autocomplete
-                            name="Inventory"
+                            name="InventoryId"
                             options={inventoriesRecord}
                             value={values.Propertydetails}
                           
@@ -225,7 +225,7 @@ const OpportunityDetailPage = ({item}) => {
 
                          
                             onChange={(e, value) => {
-                                setFieldValue("Inventory",value.id ||'')
+                                setFieldValue("InventoryId",value.id ||'')
                                 // setFieldValue("propertyName", value||'')
                             }}
                             onInputChange={(event, newInputValue) => {
@@ -235,22 +235,22 @@ const OpportunityDetailPage = ({item}) => {
                                 }
                             }}
                             renderInput={params => (
-                            <Field component={TextField} {...params} name="Inventory" />
+                            <Field component={TextField} {...params} name="InventoryId" />
                             )}
                 />  
 
              </Grid>
 
              <Grid item xs={6} md={6}>
-             <label htmlFor="Lead">Lead Name </label>
+             <label htmlFor="LeadId">Lead Name </label>
                 <Autocomplete
-                            name="Lead"
+                            name="LeadId"
                             options={leadsRecords}
-                            value={values.Leaddetails}
+                            value={values.LeadId}
                             getOptionLabel={option => option.leadName ||''}
                            
                             onChange={(e, value) => {
-                                setFieldValue("Lead",value.id)
+                                setFieldValue("LeadId",value.id)
                                 setFieldValue("leadName",value)
                             }}
                             
@@ -261,7 +261,7 @@ const OpportunityDetailPage = ({item}) => {
                                 }
                             }}
                             renderInput={params => (
-                            <Field component={TextField} {...params} name="Lead" />
+                            <Field component={TextField} {...params} name="LeadId" />
                             )}
                 />  
 
