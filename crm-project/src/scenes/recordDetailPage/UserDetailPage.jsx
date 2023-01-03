@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import {useLocation} from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import CurrencyInput from 'react-currency-input-field';
 import { Grid,Button ,Forminput,DialogActions} from "@mui/material";
 import { useParams,useNavigate } from "react-router-dom"
 import axios from 'axios'

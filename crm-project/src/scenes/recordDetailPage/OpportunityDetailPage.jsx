@@ -394,7 +394,6 @@ export default OpportunityDetailPage;
 // import {useLocation} from 'react-router-dom';
 // import { Formik, Form, Field, ErrorMessage } from "formik";
 // import * as Yup from "yup";
-// import CurrencyInput from 'react-currency-input-field';
 // import { Grid,Button ,Forminput} from "@mui/material";
 // import { useParams,useNavigate } from "react-router-dom"
 // import 'bootstrap/dist/css/bootstrap.min.css';
@@ -542,7 +541,7 @@ export default OpportunityDetailPage;
 
 //             <Grid item xs={6} md={6}>
 //             <label htmlFor="amount">Amount</label>
-//                 <CurrencyInput class="form-input" intlConfig={{ locale: 'en-US', currency: 'USD'  }} />
+//                
 //             </Grid>           
 //             <Grid item xs={12} md={12}>
 //                 <label htmlFor="description">Description</label>

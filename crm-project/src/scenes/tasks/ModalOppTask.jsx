@@ -157,12 +157,12 @@ const ModalOppTask = ({ item, handleModal }) => {
                                         <Field name="assignedTo" type="text" class="form-input" />
                                     </Grid>
                                     <Grid item xs={6} md={4}>
-                                        <label htmlFor="startDate">StartDate   </label>
-                                        <Field name="startDate" type="date" class="form-input" />
+                                        <label htmlFor="StartDate">StartDate   </label>
+                                        <Field name="StartDate" type="date" class="form-input" />
                                     </Grid>
                                     <Grid item xs={6} md={4}>
-                                        <label htmlFor="startTime">StartTime   </label>
-                                        <Field name="startTime" type="time" class="form-input" />
+                                        <label htmlFor="StartTime">StartTime   </label>
+                                        <Field name="StartTime" type="time" class="form-input" />
                                     </Grid>
                                     <Grid item xs={6} md={4}>
                                         <label htmlFor="EndDate">EndDate   </label>

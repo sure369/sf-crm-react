@@ -44,10 +44,13 @@ const Accounts = () => {
 
   //modal
   const[modalOpen,setModalOpen]=useState(false)
+  const[confirmDelete,setConfirmDelete]= useState(false)
+  const[deleteRow,setDeleteRow]= useState()
 
   useEffect(()=>{
 console.log('inside account index')
     fetchRecords();
+    console.log('confirmDelete',confirmDelete)
    
     }, []
   );
@@ -86,11 +89,19 @@ console.log('inside account index')
   const handleDeleteModalOpen =(e,row)=>{
     console.log('inside modal',row)
     setModalOpen(true);
-    onHandleDelete(row);
+    setDeleteRow(row)
+    // onHandleDelete(row);
   }
 
   const handleDeleteModalClose =()=>{
     setModalOpen(false);
+
+  }
+
+  const handleConfirmDelete =(row)=>{
+    console.log('call handle confirm delete fn',row);
+    setConfirmDelete(true)
+  
   }
 
   const onHandleDelete = ( row) => {
@@ -98,23 +109,23 @@ console.log('inside account index')
     console.log('req delete rec',row);
     console.log('req delete rec id',row._id);
  
-    // axios.post(urlDelete+row._id)
-    // .then((res)=>{
-    //     console.log('api delete response',res);
-    //     fetchRecords();
-    //     //delete show toast
-    //     setShowAlert(true)
-    //     setAlertMessage(res.data)
-    //     setAlertSeverity('success')
-    // })
-    // .catch((error)=> {
-    //     console.log('api delete error',error);
-    //      //delete show toast
+    axios.post(urlDelete+row._id)
+    .then((res)=>{
+        console.log('api delete response',res);
+        fetchRecords();
+        //delete show toast
+        setShowAlert(true)
+        setAlertMessage(res.data)
+        setAlertSeverity('success')
+    })
+    .catch((error)=> {
+        console.log('api delete error',error);
+         //delete show toast
 
-    //      setShowAlert(true)
-    //      setAlertMessage(error.message)
-    //      setAlertSeverity('error')
-    //   })
+         setShowAlert(true)
+         setAlertMessage(error.message)
+         setAlertSeverity('error')
+      })
   };
 
   const toastCloseCallback=()=>{
@@ -259,9 +270,11 @@ console.log('inside account index')
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={ModalStyle}>
-          <ModalDeletePage handleModal={handleDeleteModalClose} />
-        </Box>
+        {/* <Box sx={ModalStyle}> */}
+          
+        <ModalDeletePage handleModal={handleDeleteModalClose}  handleDeleteConfirm={handleConfirmDelete} row={deleteRow}  />
+          {/* <ModalDeletePage/> */}
+        {/* </Box> */}
       </Modal>
 
     </>

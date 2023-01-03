@@ -1,7 +1,6 @@
 import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import CurrencyInput from 'react-currency-input-field';
 import { Grid,Button ,FormControl,Stack ,Alert} from "@mui/material";
 import axios from 'axios'
 // import 'bootstrap/dist/css/bootstrap.min.css';
@@ -173,8 +172,8 @@ const AccountForm = () => {
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="annualRevenue">Aannual Revenue</label>
-                                    <CurrencyInput class="form-input" intlConfig={{ locale: 'en-US', currency: 'USD' }} />
-                                    {/* <Field name="annualRevenue" type="number" class="form-input"/> */}
+                                   
+                                    <Field name="annualRevenue" type="number" class="form-input"/>
                                  </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="phone">Phone</label>
@@ -332,7 +331,6 @@ export default AccountForm
 // import React from "react";
 // import { Formik, Form, Field, ErrorMessage } from "formik";
 // import * as Yup from "yup";
-// import CurrencyInput from 'react-currency-input-field';
 // import { Grid,Button ,FormControl} from "@mui/material";
 // import DependentPicklist from "./dependentPicklist";
 
@@ -456,7 +454,7 @@ export default AccountForm
 //                                 </Grid>
 //                                 <Grid item xs={6} md={6}>
 //                                     <label htmlFor="annualRevenue">Aannual Revenue</label>
-//                                     <CurrencyInput class="form-input" intlConfig={{ locale: 'en-US', currency: 'USD' }} />
+//                                   
 //                                     {/* <Field name="annualRevenue" type="number" class="form-input"/> */}
 //                                 </Grid>
 //                                 <Grid item xs={6} md={6}>

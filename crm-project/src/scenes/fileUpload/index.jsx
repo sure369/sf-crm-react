@@ -12,7 +12,6 @@ import "../formik/FormStyles.css"
 import download from 'downloadjs';
 import { saveAs } from 'file-saver'
 import Iframe from 'react-iframe'
-import ReactPlayer from 'react-player'
 
 const UpsertUrl = "http://localhost:4000/api/uploadfile"; 
 const urlFiles ="http://localhost:4000/api/files"
