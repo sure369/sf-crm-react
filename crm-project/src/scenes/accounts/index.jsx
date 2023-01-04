@@ -61,7 +61,7 @@ console.log('inside account index')
     .then(
       (res) => {
         console.log("res Account records", res);
-        if(res.data.length>0){
+        if(res.data.length>0  && (typeof(res.data) !=='string') ){
           setRecords(res.data);
         }
         else{  

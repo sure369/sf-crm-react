@@ -57,7 +57,7 @@ const Contacts = () => {
     .then(
       (res) => {
         console.log("res Contact records", res);
-        if(res.data.length>0){
+        if(res.data.length>0  && (typeof(res.data) !=='string')){
           setRecords(res.data);
         }
         else{  

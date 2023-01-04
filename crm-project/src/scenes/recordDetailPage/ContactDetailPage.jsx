@@ -118,18 +118,24 @@ const ContactDetailPage = ({ item }) => {
             values.createdDate = dateSeconds;
             values.fullName = values.firstName +' '+ values.lastName;
         
+           
             if( values.dob){
-
                 values.dob =dobSec;
+            } 
+            if (values.AccountId === '' ) {   
+                delete values.AccountId; 
             }
+
         }
         else if (!showNew) {
             values.modifiedDate = dateSeconds;
             values.createdDate =createDateSec
             values.fullName = values.firstName +' '+ values.lastName;
             if( values.dob){
-
                 values.dob =dobSec;
+            }
+            if (values.AccountId === '' ) {   
+                delete values.AccountId; 
             }
         }
         console.log('after change form submission value', values);

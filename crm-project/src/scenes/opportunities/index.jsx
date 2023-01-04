@@ -41,7 +41,7 @@ const Opportunities = () => {
         console.log("res Opportunity records", res);
         // setRecords(res.data);
   
-          if(res.data.length>0){
+          if(res.data.length>0  && (typeof(res.data) !=='string')){
             setRecords(res.data);
           }
           else{  

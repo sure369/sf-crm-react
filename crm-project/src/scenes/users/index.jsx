@@ -40,7 +40,7 @@ const Users = () => {
     .then(
       (res) => {
         console.log("res users records", res);
-        if(res.data.length>0){
+        if(res.data.length>0  && (typeof(res.data) !=='string')){
           setRecords(res.data);
         }
         else{  
