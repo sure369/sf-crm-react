@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Button, useTheme, IconButton,Grid } from "@mui/material";
+import { Box, Button, useTheme, IconButton } from "@mui/material";
 import { DataGrid, GridToolbar,
   gridPageCountSelector,gridPageSelector,
   useGridApiContext,useGridSelector} from "@mui/x-data-grid";
@@ -7,7 +7,7 @@ import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
-import SimpleSnackbar from "../toast/test";
+import SimpleSnackbar from "../toast/SimpleSnackbar";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import Pagination from '@mui/material/Pagination';
@@ -39,7 +39,13 @@ const Inventories = () => {
       .then(
         (res) => {
           console.log("res Inventory records", res);
-          setRecords(res.data);
+          if(res.data.length>0){
+            setRecords(res.data);
+          }
+          else{  
+          setRecords([]);
+          }
+          
         }
       )
       .catch((error) => {
@@ -53,9 +59,11 @@ const Inventories = () => {
   };
 
   const handleOnCellClick = (e, row) => {
-    setFinalClickInfo(e);
-    console.log('selected record', row);
+    // setFinalClickInfo(e);
+    console.log('selected record', e);
     const item = row;
+    console.log('item',item);
+    // <Test data={}/>
     navigate("/inventoryDetailPage", { state: { record: { item } } })
   };
 
@@ -69,6 +77,7 @@ const Inventories = () => {
       .then((res) => {
         console.log('api delete response', res);
         fetchRecords();
+        //delete show toast
         setShowAlert(true)
         setAlertMessage(res.data)
         setAlertSeverity('success')
@@ -147,7 +156,6 @@ const Inventories = () => {
           showAlert ? <SimpleSnackbar severity={alertSeverity} message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> : <SimpleSnackbar message={showAlert} />
         }
 
-
         <Box m="20px">
           <Header
             title="Inventories"
@@ -165,7 +173,6 @@ const Inventories = () => {
               },
               "& .name-column--cell": {
                 color: colors.greenAccent[300],
-            
               },
               "& .MuiDataGrid-columnHeaders": {
                 backgroundColor: colors.blueAccent[700],
@@ -184,7 +191,6 @@ const Inventories = () => {
               "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
                 color: `${colors.grey[100]} !important`,
               },
-              
             }}
           >
 
@@ -192,7 +198,6 @@ const Inventories = () => {
             <Button 
                variant="contained" color="info" 
                onClick={handleOpen} 
-               sx={{fontSize:10}}
             >
                   New 
           </Button>
@@ -201,12 +206,12 @@ const Inventories = () => {
               rows={records}
               columns={columns}
               getRowId={(row) => row._id}
-              pageSize={5}
-              rowsPerPageOptions={[5]}
-              onCellClick={handleOnCellClick}
+              pageSize={7}
+              rowsPerPageOptions={[7]}
+              //  onCellClick={handleOnCellClick}
               components={{ Pagination:CustomPagination,
                  Toolbar: GridToolbar }}
-              sx={{fontSize:10}}
+              
             />
           </Box>
         </Box>

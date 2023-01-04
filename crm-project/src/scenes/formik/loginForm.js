@@ -2,8 +2,6 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import "bootstrap/dist/css/bootstrap.css";
-import CurrencyInput from 'react-currency-input-field';
 import { borderColor } from "@mui/system";
 
 const initialValues={
@@ -80,8 +78,8 @@ const LoginForm = () => {
             
 
                 <label htmlFor="annualRevenue">Aannual Revenue</label>
-                <CurrencyInput class="form-control" intlConfig={{ locale: 'en-US', currency: 'USD'  }} />
-                {/* <Field name="annualRevenue" type="number" class="form-control"/> */}
+               
+                <Field name="annualRevenue" type="number" class="form-control"/>
             </div>
             <div class="col-md-6">
                 <label htmlFor="phone">Phone</label>

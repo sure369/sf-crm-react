@@ -1,23 +1,30 @@
 import { useState } from "react";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
-import { Box, IconButton, Typography, useTheme } from "@mui/material";
+import { Box, IconButton, Typography, useTheme , Tooltip } from "@mui/material";
 import { Link } from "react-router-dom";
+import AppBar from '@mui/material/AppBar';
 import "react-pro-sidebar/dist/css/styles.css";
 import { tokens } from "../../theme";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
+import InventoryIcon from '@mui/icons-material/Inventory';
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import AssistantPhotoIcon from '@mui/icons-material/AssistantPhoto';
 import ContactPageIcon from '@mui/icons-material/ContactPage';
 import DiamondIcon from '@mui/icons-material/Diamond';
+import mainLogo  from '../assets/user image.png';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
+import NewspaperIcon from '@mui/icons-material/Newspaper';
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   return (
+    // <Tooltip title={title} >
     <MenuItem
       active={selected === title}
       style={{
@@ -25,10 +32,15 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
       }}
       onClick={() => setSelected(title)}
       icon={icon}
+        title={title}
+     
     >
+      
       <Typography>{title}</Typography>
       <Link to={to} />
+     
     </MenuItem>
+    // </Tooltip>
   );
 };
 
@@ -51,13 +63,14 @@ const Sidebar = () => {
           padding: "5px 35px 5px 20px !important",
         },
         "& .pro-inner-item:hover": {
-          color: "#868dfb !important",
+          color: "#868dfb !important",       
         },
         "& .pro-menu-item.active": {
           color: "#6870fa !important",
         },
       }}
     >
+
       <ProSidebar collapsed={isCollapsed}>
         <Menu iconShape="square">
           {/* LOGO AND MENU ICON */}
@@ -89,11 +102,13 @@ const Sidebar = () => {
           {!isCollapsed && (
             <Box mb="25px">
               <Box display="flex" justifyContent="center" alignItems="center">
+           
                 <img
                   alt="profile-user"
                   width="100px"
                   height="100px"
-                  src={`../../assets/user image.png`}
+                  src={mainLogo}
+                  // src={`../../assets/user image.png`}
                   style={{ cursor: "pointer", borderRadius: "50%" }}
                 />
               </Box>
@@ -122,58 +137,81 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
 
-            <Typography
+            {/* <Typography
               variant="h6"
               color={colors.grey[300]}
               sx={{ m: "15px 0 5px 20px" }}
             >
               Data
-            </Typography>
-            <Item
-              title="Account"
-              to="/accounts"
-              icon={<PeopleOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
+            </Typography> */}
              <Item
-              title="Contact"
-              to="/contacts"
-              icon={<ContactPageIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-             <Item
-              title="Opportunity"
-              to="/opportunities"
-              icon={<DiamondIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-             <Item
-              title="Lead"
+              title="Leads"
               to="/leads"
               icon={<AssistantPhotoIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
-              title="Manage Team"
-              to="/team"
+              title="Opportunities"
+              to="/opportunities"
+              icon={<DiamondIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Inventories"
+              to="/inventories"
+              icon={<InventoryIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Accounts"
+              to="/accounts"
               icon={<PeopleOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
-
-            <Item
-              title="Invoices Balances"
-              to="/invoices"
-              icon={<ReceiptOutlinedIcon />}
+             <Item
+              title="Contacts"
+              to="/contacts"
+              icon={<ContactPageIcon />}
               selected={selected}
               setSelected={setSelected}
             />
-
-            <Typography
+            <Item
+              title="Users"
+              to="/users"
+              icon={<PersonOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Task"
+              to="/task"
+              icon={<AssignmentIcon />}
+              selected={selected}
+              setSelected={setSelected}
+          
+            />
+              <Item
+              title="Data Loader"
+              to="/dataLoder"
+              icon={<NewspaperIcon/>}
+              selected={selected}
+              setSelected={setSelected}
+          
+            />
+            <Item
+              title="File Upload"
+              to="/file"
+              icon={<UploadFileIcon />}
+              selected={selected}
+              setSelected={setSelected}
+          
+            />
+           
+            {/* <Typography
               variant="h6"
               color={colors.grey[300]}
               sx={{ m: "15px 0 5px 20px" }}
@@ -181,8 +219,15 @@ const Sidebar = () => {
               Pages
             </Typography>
             <Item
-              title="Profile Form"
-              to="/form"
+              title="Users"
+              to="/users"
+              icon={<PersonOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            /> 
+            <Item
+              title="User Form"
+              to="/new-users"
               icon={<PersonOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
@@ -193,11 +238,11 @@ const Sidebar = () => {
               icon={<HelpOutlineOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
-            />
+            /> */}
           </Box>
         </Menu>
       </ProSidebar>
-    </Box>
+     </Box>
   );
 };
 

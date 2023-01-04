@@ -92,8 +92,8 @@ function DependentPicklist() {
                     </option>
                   ))}
               </Field>
-{/* 
-              <button
+
+              {/* <button
                 type="button"
                 className="outline"
                 onClick={handleReset}

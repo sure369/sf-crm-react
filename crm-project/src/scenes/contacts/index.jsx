@@ -1,82 +1,208 @@
-import React,{useState} from 'react';
-import { Box,Button } from "@mui/material";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import React,{useState,useEffect} from 'react';
+import { Box,Button,IconButton ,Typography ,Modal } from "@mui/material";
+import { DataGrid, GridToolbar,
+  gridPageCountSelector,gridPageSelector,
+  useGridApiContext,useGridSelector} from "@mui/x-data-grid";
 import { tokens } from "../../theme";
-import { mockDataContacts } from "../../data/mockData";
 import Header from "../../components/Header";
 import { useTheme } from "@mui/material";
-import ContactForm from "../formik/ContactForm";
-import "bootstrap/dist/css/bootstrap.css";
+import axios from 'axios';
+import SimpleSnackbar from "../toast/SimpleSnackbar";
+import {  useNavigate } from "react-router-dom";
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import Pagination from '@mui/material/Pagination';
+
+const modalStyle = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
 
 const Contacts = () => {
+  
+  const urlContact ="http://localhost:4000/api/contacts";
+  const urlDelete ="http://localhost:4000/api/deleteContact?code=";
+
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const navigate = useNavigate();
+  const[records,setRecords] = useState([]);
+  const [finalClickInfo, setFinalClickInfo] = useState(null);
 
+  //toast 
+  const[showAlert,setShowAlert] = useState(false);
+  const[alertMessage,setAlertMessage]=useState();
+  const[alertSeverity,setAlertSeverity]=useState();
+
+  //modal
+  const [open, setOpen] = React.useState(true);
+  const handleModalOpen = () => setOpen(true);
+  const handleModalClose = () => setOpen(false);
+
+  useEffect(()=>{
+    console.log('contact index')
+    fetchRecords();
   
-  const [open, setOpen] = useState(false);
-  
-  const handleClose = () => {
-    setOpen(false);
-  };
-    
-  const handleOpen = () => {
-    setOpen(true);
-    console.log('test');     
-  };
+  }, []);
 
-
-  const columns = [
-    { field: "id", headerName: "ID", flex: 0.5 },
-    { field: "registrarId", headerName: "Registrar ID" },
-    {
-      field: "name",
-      headerName: "Name",
-      flex: 1,
-      cellClassName: "name-column--cell",
-    },
-    {
-      field: "age",
-      headerName: "Age",
-      type: "number",
-      headerAlign: "left",
-      align: "left",
-    },
-    {
-      field: "phone",
-      headerName: "Phone Number",
-      flex: 1,
-    },
-    {
-      field: "email",
-      headerName: "Email",
-      flex: 1,
-    },
-    {
-      field: "address",
-      headerName: "Address",
-      flex: 1,
-    },
-    {
-      field: "city",
-      headerName: "City",
-      flex: 1,
-    },
-    {
-      field: "zipCode",
-      headerName: "Zip Code",
-      flex: 1,
-    },
-  ];
-
-  
-  if(open)
-  {
-    return(
-            <ContactForm/>
+  const fetchRecords=()=>{
+    axios.post(urlContact)
+    .then(
+      (res) => {
+        console.log("res Contact records", res);
+        if(res.data.length>0){
+          setRecords(res.data);
+        }
+        else{  
+        setRecords([]);
+        }
+      }
     )
+    .catch((error)=> {
+      console.log('error',error);
+    })
   }
 
+  const handleOpen = () => {
+    // navigate('/new-contacts');
+    navigate("/contactDetailPage",{state:{record:{}}})
+  };
+
+  const handleOnCellClick = (e,row) => {
+    setFinalClickInfo(e);
+    console.log('selected record',row);
+    const item=row;
+    navigate("/contactDetailPage",{state:{record:{item}}})
+  };
+ 
+ 
+  const onHandleDelete = (e, row) => {
+      
+      // <Modal
+      //   open={true}
+      //   onClose={handleModalClose}
+      //   aria-labelledby="modal-modal-title"
+      //   aria-describedby="modal-modal-description"
+      // >
+      //   <Box sx={modalStyle}>
+      //     <Typography id="modal-modal-title" variant="h6" component="h2">
+      //       Text in a modal
+      //     </Typography>
+      //     <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+      //       Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+      //       </Typography>
+      //   </Box>
+
+      // </Modal>
+
+
+
+    e.stopPropagation();
+    console.log('req delete rec',row);
+    console.log('req delete rec id',row._id);
+    
+    axios.post(urlDelete+row._id)
+    .then((res)=>{
+        console.log('api delete response',res);
+        fetchRecords();
+        //delete show toast
+        setShowAlert(true)
+        setAlertMessage(res.data)
+        setAlertSeverity('success')
+    })
+    .catch((error)=> {
+        console.log('api delete error',error);
+         //delete show toast
+         setShowAlert(true)
+         setAlertMessage(error.message)
+         setAlertSeverity('error')
+      })
+  };
+
+  const toastCloseCallback=()=>{
+    setShowAlert(false)
+  }
+
+  function CustomPagination() {
+    const apiRef = useGridApiContext();
+    const page = useGridSelector(apiRef, gridPageSelector);
+    const pageCount = useGridSelector(apiRef, gridPageCountSelector);
+  
+    return (
+      <Pagination
+        color="primary"
+        count={pageCount}
+        page={page + 1}
+        onChange={(event, value) => apiRef.current.setPage(value - 1)}
+      />
+    );
+  }
+
+  const columns = [
+    {
+      field: "lastName",headerName: "Last Name",
+       headerAlign: 'center',align: 'center',flex: 1,
+    },
+    { 
+      field: "accountName",headerName: "Account Name",
+      headerAlign: 'center',align: 'center',flex: 1,
+      renderCell: (params) => {
+      if(params.row.Accountdetails.length>0){
+        return <div className="rowitem">
+          {params.row.Accountdetails[0].accountName}
+        </div>;
+      }
+      else{
+        return <div className="rowitem">
+          {null}
+          </div>
+      }
+        
+      },
+    }, 
+    {
+      field: "phone",headerName: "Phone",
+      headerAlign: 'center',align: 'center',flex: 1,
+    },
+    {
+      field: "leadSource",headerName: "Lead Source",
+      headerAlign: 'center',align: 'center',flex: 1,
+    },
+    {
+      field: "email",headerName: "Email",
+      headerAlign: 'center',align: 'center',flex: 1,
+    },
+    { 
+      field: 'actions', headerName: 'Actions', width:400, 
+      headerAlign: 'center',align: 'center',flex: 1,
+      renderCell: (params) => {
+      return (
+        <>
+        <IconButton style={{ padding: '20px' }}>
+          <EditIcon onClick={(e) => handleOnCellClick(e, params.row)} />
+        </IconButton>
+        <IconButton style={{ padding: '20px' }}>
+          <DeleteIcon onClick={(e) => onHandleDelete(e, params.row)} />
+        </IconButton>
+      </>  
+      );
+    } }
+  ];
+  
+
   return (
+    <>
+    {
+      showAlert? <SimpleSnackbar severity={alertSeverity}  message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> :<SimpleSnackbar message={showAlert}/>
+     } 
+
     <Box m="20px">
       <Header
         title="Contacts"
@@ -103,8 +229,9 @@ const Contacts = () => {
             backgroundColor: colors.primary[400],
           },
           "& .MuiDataGrid-footerContainer": {
-            borderTop: "none",
+            // borderTop: "none",
             backgroundColor: colors.blueAccent[700],
+            borderBottom: "none",
           },
           "& .MuiCheckbox-root": {
             color: `${colors.greenAccent[200]} !important`,
@@ -114,16 +241,30 @@ const Contacts = () => {
           },
         }}
       >
-         <Button class="btn btn-primary " onClick={handleOpen} >New </Button>
+         <div  className='btn-test'>
+            <Button 
+               variant="contained" color="info" 
+               onClick={handleOpen} 
+            >
+                  New 
+          </Button>
+        </div>
 
         <DataGrid
-          rows={mockDataContacts}
+          rows={records}
           columns={columns}
-          components={{ Toolbar: GridToolbar }}
+          getRowId={(row) => row._id}
+          pageSize={7}
+          rowsPerPageOptions={[7]}
+          // onCellClick={handleOnCellClick}
+          components={{ Toolbar: GridToolbar ,
+                        Pagination:CustomPagination,
+                        }}
         />
       </Box>
     </Box>
+    </>
   );
-};
+}
 
 export default Contacts;

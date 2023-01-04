@@ -7,11 +7,8 @@
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
-   
   }
-.font-style{
-  font-size: small;
-}
+
   .action-buttons{
     display: flex;
     align-items: center;

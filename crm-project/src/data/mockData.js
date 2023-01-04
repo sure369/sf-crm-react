@@ -2,41 +2,41 @@ import { tokens } from "../theme";
 
 
 export const mockAccountData = [
-  {
-    id: "acc001",
-    name: "Laxhabitat",
-    city: "Dubai",
-    type: "Customer-Direct",
-    industry: "Real Estate",
-  },
-  {
-    id: "acc002",
-    name: "hch",
-    city: "UK",
-    type: "Customer-Channel",
-    industry: "Insurance",
-  },
-  {
-    id: "acc003",
-    name: "dubai south",
-    city: "Dubai",
-    type: "Customer-Direct",
-    industry: "Real Estate",
-  },
-  {
-    id: "acc004",
-    name: "Dafza",
-    city: "Dubai",
-    type: "Customer-Direct",
-    industry: "Goverment",
-  },
-  {
-    id: "acc005",
-    name: "Birla group",
-    city: "Dubai",
-    type: "prospect",
-    industry: "Manufacturing",
-  },
+  // {
+  //   id: "acc001",
+  //   name: "Laxhabitat",
+  //   city: "Dubai",
+  //   type: "Customer-Direct",
+  //   industry: "Real Estate",
+  // },
+  // {
+  //   id: "acc002",
+  //   name: "hch",
+  //   city: "UK",
+  //   type: "Customer-Channel",
+  //   industry: "Insurance",
+  // },
+  // {
+  //   id: "acc003",
+  //   name: "dubai south",
+  //   city: "Dubai",
+  //   type: "Customer-Direct",
+  //   industry: "Real Estate",
+  // },
+  // {
+  //   id: "acc004",
+  //   name: "Dafza",
+  //   city: "Dubai",
+  //   type: "Customer-Direct",
+  //   industry: "Goverment",
+  // },
+  // {
+  //   id: "acc005",
+  //   name: "Birla group",
+  //   city: "Dubai",
+  //   type: "prospect",
+  //   industry: "Manufacturing",
+  // },
 ];
 
 

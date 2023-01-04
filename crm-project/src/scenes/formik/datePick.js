@@ -1,7 +1,5 @@
 import React from "react";
 import { Formik, useField, useFormikContext } from "formik";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -43,7 +41,6 @@ export default DatePickerField
 // import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 // import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 // import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
-// import DatePicker  from 'react-datepicker';
 // import { Grid,Button ,FormControl} from "@mui/material";
 
 // export default function MaterialUIPickers() {

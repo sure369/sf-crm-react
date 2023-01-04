@@ -5,7 +5,7 @@ import * as Yup from "yup";
 import { Grid,Button ,DialogActions} from "@mui/material";
 import { useParams,useNavigate } from "react-router-dom"
 import axios from 'axios'
-import SimpleSnackbar from "../toast/test";
+import SimpleSnackbar from "../toast/SimpleSnackbar";
 import "../formik/FormStyles.css"
 
 const url ="http://localhost:4000/api/UpsertInventory";
@@ -22,7 +22,6 @@ const InventoryDetailPage = ({item}) => {
   
     
     useEffect(()=>{
-        console.log('item',item)
         console.log('passed record',location.state.record.item);
         setsingleInventory(location.state.record.item); 
         setshowNew(!location.state.record.item)      
@@ -37,11 +36,13 @@ const initialValues = {
     tower: '',
     country: '',
     city: '',
+    propertyCities:[],
     floor: '',
     status: '',
     totalArea: '',
     createdbyId: '',
     createdDate: '',
+    modifiedDate:'',
 }
 
     const savedValues = {
@@ -52,11 +53,13 @@ const initialValues = {
         tower:  singleInventory?.tower ?? "",
         country:  singleInventory?.country ?? "",
         city:  singleInventory?.city ?? "",
+        propertyCities:singleInventory?.propertyCities??"",
         floor:  singleInventory?.floor ?? "",
         status:  singleInventory?.status ?? "",
         totalArea: singleInventory?.totalArea ?? "",
         createdbyId: singleInventory?.createdbyId ?? "",
-        createdDate: singleInventory?.createdDate ?? "",
+        createdDate:   new Date(singleInventory?.createdDate).toLocaleString(),
+        modifiedDate:  new Date(singleInventory?.modifiedDate).toLocaleString(),
         _id:   singleInventory?._id ?? "",
     }
     
@@ -78,10 +81,10 @@ const citiesList = {
     ],
   };
 
-  const getCities = (totalArea) => {
+  const getCities = (country) => {
     return new Promise((resolve, reject) => {
-      console.log("totalArea", totalArea);
-      resolve(citiesList[totalArea]||[]);
+      console.log("selected country", country);
+      resolve(citiesList[country]||[]);
     });
   };
 
@@ -101,7 +104,23 @@ const citiesList = {
 })
 
 const formSubmission =(values)=>{
-      
+
+    console.log('form submission value',values);
+   
+    let dateSeconds = new Date().getTime();
+    let createDateSec = new Date(values.createdDate).getTime()
+
+    if(showNew){
+        values.modifiedDate = dateSeconds;
+        values.createdDate = dateSeconds;
+    }
+    else if(!showNew){
+        values.modifiedDate = dateSeconds;
+        values.createdDate = createDateSec;
+    }
+    
+    console.log('after change form submission value',values);
+    
     axios.post(url,values)
     .then((res)=>{
         console.log('upsert record  response',res);
@@ -124,17 +143,19 @@ const formSubmission =(values)=>{
 const toastCloseCallback = () => {
     setShowAlert(false)
 }
+
+const handleFormClose =()=>{
+    navigate(-1)
+}
+
   return (
-    <Grid item xs={12} style={{margin:"20px" ,fontSize:'small'}} >          
+    <Grid item xs={12} style={{margin:"20px"}}>          
             <div style={{textAlign:"center" ,marginBottom:"10px"}}>
                 {
                     showNew ? <h3>New Inventory</h3> : <h3>Inventory Detail Page </h3>
                 }
             </div>
-
            <div>
-          
-
                 <Formik
                     enableReinitialize={true} 
                     initialValues={showNew?initialValues:savedValues}
@@ -160,10 +181,10 @@ const toastCloseCallback = () => {
                             <SimpleSnackbar message={showAlert} />
                     }
 
-                    <Form className='font-style'>
-                            <Grid container spacing={2} >
+                    <Form>
+                            <Grid container spacing={2}>
                                  <Grid item xs={6} md={6}>
-                                    <label  htmlFor="projectName">Project Name <span className="text-danger">*</span> </label>
+                                    <label htmlFor="projectName">Project Name <span className="text-danger">*</span> </label>
                                     <Field name="projectName" type="text" class="form-input" /> 
                                     <div style={{ color: 'red' }}>
                                         <ErrorMessage name="projectName" />
@@ -198,8 +219,7 @@ const toastCloseCallback = () => {
                                     <label htmlFor="status">Status <span className="text-danger">*</span> </label>
                                     <Field name="status" as="select" class="form-input">
                                         <option value="">--Select--</option>
-                                        <option value="ON HOLD ">ON HOLD</option>
-                                        <option value="available ">Available </option>
+                                        <option value="avilable ">Available </option>
                                         <option value="sold"> Sold</option>
                                         <option value="booked">Booked</option>
                                         <option value="processed">Processed</option>
@@ -226,7 +246,7 @@ const toastCloseCallback = () => {
                                         console.log(_cities);
                                         setFieldValue("country", value);
                                         setFieldValue("city", "");
-                                        setFieldValue("billingCities", _cities);
+                                        setFieldValue("propertyCities", _cities);
                                         }}
                                     >
                                         <option value="None">--Select--</option>
@@ -246,8 +266,8 @@ const toastCloseCallback = () => {
                                         onChange={handleChange}
                                     >
                                         <option value="None">--Select city--</option>
-                                        {values.billingCities &&
-                                        values.billingCities.map((r) => (
+                                        {values.propertyCities &&
+                                        values.propertyCities.map((r) => (
                                             <option key={r.value} value={r.vlue}>
                                             {r.label}
                                             </option>
@@ -263,19 +283,32 @@ const toastCloseCallback = () => {
                                     <label htmlFor="totalarea">Total Area</label>
                                     <Field name="totalarea" type="text" class="form-input" />
                                 </Grid>
+                                {!showNew && (
+                                            <>
+                                                <Grid item xs={6} md={6}>
+                                                    <label htmlFor="createdDate" >created Date</label>
+                                                    <Field name='createdDate' type="text" class="form-input" disabled />
+                                                </Grid>
+
+                                                <Grid item xs={6} md={6}>
+                                                    <label htmlFor="modifiedDate" >Modified Date</label>
+                                                    <Field name='modifiedDate' type="text" class="form-input" disabled />
+                                                </Grid>
+                                            </>
+                                        )}
                                 </Grid>
-                                <div className='action-buttons '>
+                                <div className='action-buttons'>
                                         <DialogActions sx={{ justifyContent: "space-between" }}>
 
                                        
                                            {
                                                 showNew ?
-                                                <Button  type='success' variant="contained" color="secondary" disabled={isSubmitting}>Save</Button>
+                                                <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Save</Button>
                                                     :
                                                     
-                                                        <Button   type='success' variant="contained" color="secondary" disabled={isSubmitting}>Update</Button>
+                                                        <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Update</Button>
                                            }                                      
-                                        <Button  type="reset" variant="contained" onClick={handleReset} disabled={!dirty || isSubmitting}  >Cancel</Button>
+                                        <Button type="reset" variant="contained" onClick={handleFormClose}   >Cancel</Button>
                                         </DialogActions>     
                                        </div>
                         
@@ -284,7 +317,6 @@ const toastCloseCallback = () => {
                         )
                     }}
                 </Formik>
-             
             </div>
         </Grid>   
     )

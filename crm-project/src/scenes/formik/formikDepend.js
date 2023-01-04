@@ -1,7 +1,6 @@
 import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import CurrencyInput from 'react-currency-input-field';
 import { Grid,Button ,FormControl} from "@mui/material";
 import axios from 'axios'
 
@@ -123,8 +122,8 @@ const FormikDepend = () => {
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="annualRevenue">Aannual Revenue</label>
-                                    <CurrencyInput class="form-control" intlConfig={{ locale: 'en-US', currency: 'USD' }} />
-                                    {/* <Field name="annualRevenue" type="number" class="form-control"/> */}
+                                 
+                                    <Field name="annualRevenue" type="number" class="form-control"/>
                                  </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="phone">Phone</label>

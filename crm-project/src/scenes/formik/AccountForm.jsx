@@ -1,9 +1,15 @@
 import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import CurrencyInput from 'react-currency-input-field';
-import { Grid,Button ,FormControl} from "@mui/material";
+import { Grid,Button ,FormControl,Stack ,Alert} from "@mui/material";
 import axios from 'axios'
+// import 'bootstrap/dist/css/bootstrap.min.css';
+import { useState } from "react";
+import SimpleSnackbar from "../toast/SimpleSnackbar";
+import { useNavigate } from "react-router-dom";
+import "./FormStyles.css"
+
+const url ="http://localhost:4000/api/accountInsert";
 
 const initialValues = {
     accountName: '',
@@ -13,19 +19,14 @@ const initialValues = {
     type: '',
     phone: '',
     industry: '',
-    noofEmployees: '',
-    fax: '',
     billingAddress: '',
-    billingCountry:'None',
-    billingCity:'None',
+    billingCountry:'',
+    billingCity:'',
     billingCities:[],
     shippingAddress: '',
-    website: '',
     description: '',
-    accountOwnerId: '',
     createdbyId: '',
     createdDate: '',
-
 }
 
 const citiesList = {
@@ -46,7 +47,7 @@ const citiesList = {
     ],
   };
 
-  const getie = (billingCountry) => {
+  const getCities = (billingCountry) => {
     return new Promise((resolve, reject) => {
       console.log("billingCountry", billingCountry);
       resolve(citiesList[billingCountry]||[]);
@@ -67,7 +68,24 @@ const onSubmit = (values, { resetForm }) => {
     resetForm({ values: '' })
 }
 
+
+
 const AccountForm = () => {
+
+    const[showAlert,setShowAlert] = useState(false);
+    const[alertMessage,setAlertMessage]=useState();
+    const[alertSeverity,setAlertSeverity]=useState();
+    const[alertNotes,setAlertNotes]=useState({
+                                        isShow:false,
+                                        message:'',
+                                        severity:''
+                                    })
+    const navigate =useNavigate();
+
+    const toastCloseCallback=()=>{
+        setShowAlert(false)
+    }
+
     return (
         <div className="container mb-10">
             <div className="col-lg-12 text-center mb-3">
@@ -79,20 +97,44 @@ const AccountForm = () => {
                 <Formik
                     initialValues={initialValues}
                     validationSchema={validationSchema}
-                    onSubmit={async (values) => {
+                    onSubmit={async (values,{resetForm }) => {
                         await new Promise((resolve) => setTimeout(resolve, 500));
                         console.log("values", values);
 
-                        axios.postForm("http://localhost:4000/api/accountInsert")
+                        axios.post(url,values)
                         .then((res)=>{
-                            console.log('post response',res);
+                            
+                            console.log('post response',res.data);
+                            // setAlertNotes({
+                            //     isShow:true,
+                            //     message:res.data,
+                            //     severity:'success',
+                            //     mode:toastCloseCallback()
+                            // })
+                            setShowAlert(true)
+                            setAlertMessage(res.data)
+                            setAlertSeverity('success')
+
+                            setTimeout(() => {
+                                navigate(-1);
+                            }, 2000);
+                          
+                           
+                            resetForm({ values: '' })
                         })
                         .catch((error)=> {
                             console.log('error',error);
+                            setShowAlert(true)
+                            setAlertMessage(error.message)
+                            setAlertSeverity('error')
+                            // setAlertNotes({
+                            //     isShow:true,
+                            //     message:error.message,
+                            //     severity:'error',
+                            //     mode:toastCloseCallback()
+                            // })
+                         
                           })
-                        
-
-
                       }}
                 >
                    {(props) => {
@@ -107,33 +149,45 @@ const AccountForm = () => {
                             } = props;
 
             return (
-                <form onSubmit={handleSubmit}>
+                <>
+        {/* {
+             showAlert? <SimpleSnackbar obj={alertNotes} /> :<SimpleSnackbar obj={alertNotes} />
+        }  */}
+             
+       {
+        showAlert? <SimpleSnackbar severity={alertSeverity}  message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> :<SimpleSnackbar message={showAlert}/>
+       } 
+                <Form>
                             <Grid container spacing={2}>
                                  <Grid item xs={6} md={6}>
                                     <label htmlFor="accountName">Name  <span className="text-danger">*</span></label>
-                                    <Field name="accountName" type="text" class="form-control" />
+                                    <Field name="accountName" type="text" class="form-input" />
                                     <div style={{ color: 'red' }}>
                                         <ErrorMessage name="accountName" />
                                     </div>
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="accountNumber">Account Number </label>
-                                    <Field name="accountNumber" type="text" class="form-control" />
+                                    <Field name="accountNumber" type="text" class="form-input" />
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="annualRevenue">Aannual Revenue</label>
-                                    <CurrencyInput class="form-control" intlConfig={{ locale: 'en-US', currency: 'USD' }} />
-                                    {/* <Field name="annualRevenue" type="number" class="form-control"/> */}
+                                   
+                                    <Field name="annualRevenue" type="number" class="form-input"/>
                                  </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="phone">Phone</label>
-                                    <Field name="phone" type="phone" class="form-control" />
+                                    <Field name="phone" type="phone" class="form-input" />
+                                </Grid>
+                                <Grid item xs={6} md={6}>
+                                    <label htmlFor="date">date</label>
+                                    <Field name="date" type="date" class="form-input" />
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="rating"> Rating
                                         <span className="text-danger">*</span>
                                     </label>
-                                    <Field name="rating" as="select" class="form-select">
+                                    <Field name="rating" as="select" class="form-input">
                                         <option value="">--Select--</option>
                                         <option value="Hot">Hot</option>
                                         <option value="Warm">Warm</option>
@@ -145,7 +199,7 @@ const AccountForm = () => {
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="type">Type</label>
-                                    <Field name="type" as="select" class="form-select">
+                                    <Field name="type" as="select" class="form-input">
                                         <option value="">--Select--</option>
                                         <option value="Prospect">Prospect</option>
                                         <option value="Customer - Direct">Customer - Direct</option>
@@ -158,7 +212,7 @@ const AccountForm = () => {
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="industry">Industry</label>
-                                    <Field name="industry" as="select" class="form-select">
+                                    <Field name="industry" as="select" class="form-input">
                                         <option value="">--Select--</option>
                                         <option value="Agriculture" >Agriculture</option>
                                         <option value="Banking" >Banking</option>
@@ -178,29 +232,29 @@ const AccountForm = () => {
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="noofEmployees">Number of Employees</label>
-                                    <Field name="noofEmployees" type="text" class="form-control" />
+                                    <Field name="noofEmployees" type="text" class="form-input" />
                                 </Grid>
                                
                              
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="billingAddress">Billing Address </label>
-                                    <Field name="billingAddress" type="text" class="form-control" />
+                                    <Field name="billingAddress" type="text" class="form-input" />
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="shippingAddress">Shipping Address </label>
-                                    <Field name="shippingAddress" type="text" class="form-control" />
+                                    <Field name="shippingAddress" type="text" class="form-input" />
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                 <label htmlFor="billingCountry">Billing Country</label>
                                     <Field
-                                        className="form-control"
+                                        className="form-input"
                                         id="billingCountry"
                                         name="billingCountry"
                                         as="select"
                                         value={values.billingCountry}
                                         onChange={async (event) => {
                                         const value = event.target.value;
-                                        const _billingCities = await getie(value);
+                                        const _billingCities = await getCities(value);
                                         console.log(_billingCities);
                                         setFieldValue("billingCountry", value);
                                         setFieldValue("billingCity", "");
@@ -216,7 +270,7 @@ const AccountForm = () => {
                                 <Grid item xs={6} md={6}>
                                 <label htmlFor="billingCity">Billing City</label>
                                     <Field
-                                        className="form-control"
+                                        className="form-input"
                                         value={values.billingCity}
                                         id="billingCity"
                                         name="billingCity"
@@ -234,41 +288,49 @@ const AccountForm = () => {
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="lookup">Lookup</label>
-                                    <Field name="lookup" type="text" class="form-control" />
+                                    <Field name="lookup" type="text" class="form-input" />
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="website">Website</label>
-                                    <Field name="website" type="text" class="form-control" />
+                                    <Field name="website" type="text" class="form-input" />
                                 </Grid>
                                 <Grid item xs={6} md={6}>
                                     <label htmlFor="fax">Fax</label>
-                                    <Field name="fax" type="text" class="form-control" />
+                                    <Field name="fax" type="text" class="form-input" />
                                 </Grid>
                                 <Grid item xs={12} md={12}>
                                     <label htmlFor="comments">Comments</label>
-                                    <Field as="textarea" name="comments" class="form-control" />
+                                    <Field as="textarea" name="comments" class="form-input" />
                                 </Grid> 
                                 <Grid item xs={12} md={12}>
-                                    <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Submit</Button>
-                                    <Button type="reset" variant="contained" onClick={handleReset}  disabled={!dirty || isSubmitting} >Clear</Button>
+                                    <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Save</Button>
+                                    <Button type="reset" variant="contained" onClick={handleReset}  disabled={!dirty || isSubmitting} >Cancel</Button>
                                 </Grid>
                             </Grid>
-                            </form>
+                            </Form>
+                        </>
             )
              }}
                 </Formik>
             </div>
         </div>
     );
+
+    // return 
+    // (
+    //     showAlert&&
+    //     <Stack sx={{ width: '100%' }} spacing={2}>
+    //     <Alert severity="success">{showAlert}</Alert>
+    // </Stack>
+    // )
+
   }
 export default AccountForm
-
 
 
 // import React from "react";
 // import { Formik, Form, Field, ErrorMessage } from "formik";
 // import * as Yup from "yup";
-// import CurrencyInput from 'react-currency-input-field';
 // import { Grid,Button ,FormControl} from "@mui/material";
 // import DependentPicklist from "./dependentPicklist";
 
@@ -352,7 +414,7 @@ export default AccountForm
 
 //                             <Grid item xs={6} md={6}>
 //                                     <label htmlFor="billingCountry">Billing Country </label>
-//                                     <DependentPicklist  name="billingCountry" className="form-control"/>
+//                                     <DependentPicklist  name="billingCountry" className="form-input"/>
 
 //                                      {/* <Field name="billingCountry" as="select" class="form-select">
 //                                         <option value="">--Select--</option>
@@ -380,7 +442,7 @@ export default AccountForm
 
 //                                 <Grid item xs={6} md={6}>
 //                                     <label htmlFor="accountName">Name  <span className="text-danger">*</span></label>
-//                                     <Field name="accountName" type="text" class="form-control" />
+//                                     <Field name="accountName" type="text" class="form-input" />
 //                                     <div style={{ color: 'red' }}>
 //                                         <ErrorMessage name="accountName" />
 //                                     </div>
@@ -388,16 +450,16 @@ export default AccountForm
 
 //                                 <Grid item xs={6} md={6}>
 //                                     <label htmlFor="accountNumber">Account Number </label>
-//                                     <Field name="accountNumber" type="text" class="form-control" />
+//                                     <Field name="accountNumber" type="text" class="form-input" />
 //                                 </Grid>
 //                                 <Grid item xs={6} md={6}>
 //                                     <label htmlFor="annualRevenue">Aannual Revenue</label>
-//                                     <CurrencyInput class="form-control" intlConfig={{ locale: 'en-US', currency: 'USD' }} />
-//                                     {/* <Field name="annualRevenue" type="number" class="form-control"/> */}
+//                                   
+//                                     {/* <Field name="annualRevenue" type="number" class="form-input"/> */}
 //                                 </Grid>
 //                                 <Grid item xs={6} md={6}>
 //                                     <label htmlFor="phone">Phone</label>
-//                                     <Field name="phone" type="phone" class="form-control" />
+//                                     <Field name="phone" type="phone" class="form-input" />
 //                                 </Grid>
 //                                 <Grid item xs={6} md={6}>
 //                                     <label htmlFor="rating"> Rating
@@ -448,29 +510,29 @@ export default AccountForm
 //                                 </Grid>
 //                                 <Grid item xs={6} md={6}>
 //                                     <label htmlFor="noofEmployees">Number of Employees</label>
-//                                     <Field name="noofEmployees" type="text" class="form-control" />
+//                                     <Field name="noofEmployees" type="text" class="form-input" />
 //                                 </Grid>
                                
                              
 //                                 <Grid item xs={6} md={6}>
 //                                     <label htmlFor="billingAddress">Billing Address </label>
-//                                     <Field name="billingAddress" type="text" class="form-control" />
+//                                     <Field name="billingAddress" type="text" class="form-input" />
 //                                 </Grid>
 //                                 <Grid item xs={6} md={6}>
 //                                     <label htmlFor="shippingAddress">Shipping Address </label>
-//                                     <Field name="shippingAddress" type="text" class="form-control" />
+//                                     <Field name="shippingAddress" type="text" class="form-input" />
 //                                 </Grid>
 //                                 <Grid item xs={6} md={6}>
 //                                     <label htmlFor="website">Website</label>
-//                                     <Field name="website" type="text" class="form-control" />
+//                                     <Field name="website" type="text" class="form-input" />
 //                                 </Grid>
 //                                 <Grid item xs={6} md={6}>
 //                                     <label htmlFor="fax">Fax</label>
-//                                     <Field name="fax" type="text" class="form-control" />
+//                                     <Field name="fax" type="text" class="form-input" />
 //                                 </Grid>
 //                                 <Grid item xs={12} md={12}>
 //                                     <label htmlFor="comments">Comments</label>
-//                                     <Field as="textarea" name="comments" class="form-control" />
+//                                     <Field as="textarea" name="comments" class="form-input" />
 //                                 </Grid>
 //                                 <Grid item xs={12} md={12}>
 //                                     <Button type='success' variant="contained" color="secondary">Submit</Button>

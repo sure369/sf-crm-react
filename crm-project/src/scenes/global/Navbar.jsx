@@ -1,28 +1,21 @@
 import React, { useState } from 'react';
 import './Navbar.css';
-
 import {Link} from 'react-router-dom'
 import MenuIcon from '@mui/icons-material/Menu';
-import FacebookIcon from '@mui/icons-material/Facebook';
-import YouTubeIcon from '@mui/icons-material/YouTube';
-import InstagramIcon from '@mui/icons-material/Instagram';
 
 function Navbar() {
    
     const [showMediaIcons,setShowMediaIcons] =useState(false);
-
-  
-
-      
   return (
     <>
         <nav className='main-nav'>
+            {/* 1st logo part */}
             <div className='logo'>
                 <h2>
-                       Clouddesk
-                   
+                   Clouddesk
                 </h2>
             </div>
+            {/* 2nd menu part */}
             <div
                 className={showMediaIcons ? " mobile-menu-link" : "menu-link"} 
             >
@@ -46,7 +39,6 @@ function Navbar() {
                     <Link to='/contacts' className='contacts'>
                         <li> Contacts </li>
                     </Link>
-                   
                     <Link to='/users' className='users'>
                         <li> Users </li>
                     </Link>
@@ -54,28 +46,13 @@ function Navbar() {
             </div>
             {/* 3rd social media links */}
             <div className='social-media'>
-                {/* <ul className='social-media-desktop'>
-                    <li>
-                        <a href='https://www.youtube.com/' target="_youtube"> 
-                            <YouTubeIcon className='youtube'/>
-                        </a>
-                    </li>
-                    <li>
-                        <a href='https://www.facebook.com/' target="-facebook"> 
-                             <FacebookIcon className='facebook'/>
-                        </a>
-                    </li>
-                    <li>
-                        <a href='https://www.instagram.com/' target="-insta">
-                            <InstagramIcon className='instagram'/>
-                            </a>
-                    </li>
-                </ul> */}
+                
                     {/* hamburget menu start */}
                     <div className='hamburger-menu'>
-                       
-                            <MenuIcon onClick={()=>setShowMediaIcons(!showMediaIcons)}/>
-
+                        <a href='#'onClick={()=>setShowMediaIcons(!showMediaIcons)} >
+                            <MenuIcon/>
+                        </a>
+                        
                     </div>
             </div>
             </nav>
