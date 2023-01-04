@@ -242,9 +242,10 @@ const DropFileInput = () => {
                       onClick={(e) =>
                         {
                           
-                          
+                            <iframe src=
+                            "http://localhost:4000/2022-12-30T09-11-59.094Z-datcrmcsv.csv"></iframe>
 
-                            saveAs (item.filePath, 'test.pdf')
+                            // saveAs (item.filePath, 'test.pdf')
 
                         //    redirect(item);
                             // saveAs(item.filePath, `${item.fileName}.${item.fileType}`)
