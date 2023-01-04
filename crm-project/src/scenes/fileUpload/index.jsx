@@ -13,7 +13,6 @@ import download from 'downloadjs';
 import { saveAs } from 'file-saver'
 import Iframe from 'react-iframe'
 import fileDownload from "js-file-download";
-import { FileDownload } from "@mui/icons-material";
 
 
 const UpsertUrl = "http://localhost:4000/api/uploadfile"; 
@@ -245,7 +244,7 @@ const DropFileInput = () => {
                           
                           
 
-                         FileDownload(item.files, `${item.fileName}.${item.fileType}`)
+                            saveAs (item.filePath, 'test.pdf')
 
                         //    redirect(item);
                             // saveAs(item.filePath, `${item.fileName}.${item.fileType}`)
