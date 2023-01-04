@@ -245,7 +245,7 @@ const DropFileInput = () => {
                           
                           
 
-                         FileDownload(item, `${item.fileName}.${item.fileType}`)
+                         FileDownload(item.files, `${item.fileName}.${item.fileType}`)
 
                         //    redirect(item);
                             // saveAs(item.filePath, `${item.fileName}.${item.fileType}`)
