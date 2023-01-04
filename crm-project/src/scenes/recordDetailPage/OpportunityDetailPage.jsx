@@ -100,10 +100,21 @@ const OpportunityDetailPage = ({item}) => {
             values.modifiedDate = dateSeconds;
             values.createdDate = dateSeconds;
             if( values.closeDate){
-
                 values.closeDate =closeDateSec;
             }
-
+            if (values.LeadId === '' && values.InventoryId==='') {   
+                console.log('both empty') 
+                delete values.LeadId; 
+                delete values.InventoryId;
+            }
+            else if(values.LeadId === ''){
+                console.log('LeadId empty') 
+                delete values.LeadId; 
+            }
+            else if(values.InventoryId === ''){
+                console.log('InventoryId empty') 
+                delete values.InventoryId; 
+            }
         }
         else if(!showNew){
             values.modifiedDate = dateSeconds;
@@ -111,6 +122,20 @@ const OpportunityDetailPage = ({item}) => {
             if( values.closeDate){
 
                 values.closeDate =closeDateSec;
+            }
+            if (values.LeadId === '' && values.InventoryId === '') {    
+                
+                console.log('both empty !showNew') 
+                delete values.LeadId; 
+                delete values.InventoryId;
+            }
+            else if(values.LeadId === ''){
+                console.log('LeadId empty !showNew') 
+                delete values.LeadId; 
+            }
+            else if(values.InventoryId === ''){
+                console.log('InventoryId empty !showNew') 
+                delete values.InventoryId; 
             }
            
         }
@@ -226,7 +251,7 @@ const OpportunityDetailPage = ({item}) => {
                          
                             onChange={(e, value) => {
                                 setFieldValue("InventoryId",value.id ||'')
-                                // setFieldValue("propertyName", value||'')
+                                setFieldValue("propertyName", value||'')
                             }}
                             onInputChange={(event, newInputValue) => {
                                 console.log('newInputValue',newInputValue);

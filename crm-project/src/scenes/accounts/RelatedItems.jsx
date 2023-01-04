@@ -30,7 +30,8 @@ const AccountRelatedItems = ({ item }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [relatedTask, setRelatedTask] = useState([]);
-  const [modalOpen, setModalOpen] = useState(false);
+  const [relatedInventory, setRelatedInventory] = useState([]);
+  const [taskModalOpen, setTaskModalOpen] = useState(false);
 
   const [recordId, setRecordId] = useState()
 
@@ -38,28 +39,33 @@ const AccountRelatedItems = ({ item }) => {
   const [alertMessage, setAlertMessage] = useState();
   const [alertSeverity, setAlertSeverity] = useState();
 
-  const [itemsPerPage, setItemsPerPage] = useState(2);
-  const [page, setPage] = useState(1);
-  const [noOfPages, setNoOfPages] = useState(0);
+  const [taskItemsPerPage, setTaskItemsPerPage] = useState(2);
+  const [taskPerPage, setTaskPerPage] = useState(1);
+  const [taskNoOfPages, setTaskNoOfPages] = useState(0);
+
+  const [invontoryItemsPerPage, setInvontoryItemsPerPage] = useState(2);
+  const [invontoryPerPage, setInvontoryPerPage] = useState(1);
+  const [invontoryNoOfPages, setInvontoryNoOfPages] = useState(0);
 
   useEffect(() => {
     console.log('inside useEffect', location.state.record.item);
     setRecordId(location.state.record.item._id)
     getTasks(location.state.record.item._id)
-
+    getInventories(location.state.record.item.InventoryId)
   }, [])
+
 
   const getTasks = (recId) => {
     const urlTask = "http://localhost:4000/api/getTaskbyAccountId?searchId=";
-    console.log('record Id', recId);
+    console.log('inside getTasks record Id', recId);
 
     axios.post(urlTask + recId)
       .then((res) => {
         console.log('response task fetch', res);
         if (res.data.length > 0) {
           setRelatedTask(res.data);
-          setNoOfPages(Math.ceil(res.data.length / itemsPerPage));
-          setPage(1)
+          setTaskNoOfPages(Math.ceil(res.data.length / taskItemsPerPage));
+          setTaskPerPage(1)
         }
         else {
           setRelatedTask([]);
@@ -68,26 +74,50 @@ const AccountRelatedItems = ({ item }) => {
       .catch((error) => {
         console.log('error task fetch', error)
       })
+  }
+
+  const getInventories = (InventoryId) => {
+    const urlInventory = "http://localhost:4000/api/getAccountbyInventory?searchId=";
+    console.log('inside getInventories record Id', InventoryId);
+
+    axios.post(urlInventory + InventoryId)
+      .then((res) => {
+        console.log('response Inventory fetch', res);
+        if (res.data.length > 0) {
+          setRelatedInventory(res.data);
+          setInvontoryNoOfPages(Math.ceil(res.data.length / invontoryItemsPerPage));
+          setInvontoryPerPage(1)
+        }
+        else {
+          setRelatedInventory([]);
+        }
+      })
+      .catch((error) => {
+        console.log('error task fetch', error)
+      })
+  }
+
+  const handleInventoryModalOpen =()=>{
 
   }
 
-  const handleModalOpen = () => {
+  const handletaskModalOpen = () => {
 
-    setModalOpen(true);
+    setTaskModalOpen(true);
   }
-  const handleModalClose = () => {
+  const handleTaskModalClose = () => {
 
-    setModalOpen(false);
+    setTaskModalOpen(false);
   }
 
-  const handleCardEdit = (row) => {
+  const handleTaskCardEdit = (row) => {
 
     console.log('selected record', row);
     const item = row;
     navigate("/taskDetailPage", { state: { record: { item } } })
   };
 
-  const handleCardDelete = (row) => {
+  const handleTaskCardDelete = (row) => {
 
     console.log('req delete rec', row);
     console.log('req delete rec id', row._id);
@@ -115,7 +145,7 @@ const AccountRelatedItems = ({ item }) => {
   }
 
   const handleChangePage = (event, value) => {
-    setPage(value);
+    setTaskPerPage(value);
   };
 
   // menu dropdown strart //menu pass rec
@@ -152,12 +182,12 @@ const AccountRelatedItems = ({ item }) => {
           aria-controls="panel1a-content"
           id="panel1a-header"
         >
-          <Typography variant="h4">Task ({relatedTask.length})</Typography>
+          <Typography variant="h4">Related Task ({relatedTask.length})</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <Typography>
             <div style={{ textAlign: "end", marginBottom: "5px" }}>
-              <Button variant="contained" color="info" onClick={() => handleModalOpen()} >New Task</Button>
+              <Button variant="contained" color="info" onClick={() => handletaskModalOpen()} >New Task</Button>
             </div>
             <Card dense compoent="span" >
 
@@ -165,7 +195,7 @@ const AccountRelatedItems = ({ item }) => {
 
                 relatedTask.length > 0 ?
                   relatedTask
-                    .slice((page - 1) * itemsPerPage, page * itemsPerPage)
+                    .slice((taskPerPage - 1) * taskItemsPerPage, taskPerPage * taskItemsPerPage)
                     .map((item) => {
 
                       let   starDateConvert = new Date(item.StartDate).getUTCFullYear()
@@ -203,17 +233,11 @@ const AccountRelatedItems = ({ item }) => {
                                         horizontal: 'left',
                                       }}
                                     >
-                                      <MenuItem onClick={() => handleCardEdit(menuSelectRec)}>Edit</MenuItem>
-                                      <MenuItem onClick={() => handleCardDelete(menuSelectRec)}>Delete</MenuItem>
+                                      <MenuItem onClick={() => handleTaskCardEdit(menuSelectRec)}>Edit</MenuItem>
+                                      <MenuItem onClick={() => handleTaskCardDelete(menuSelectRec)}>Delete</MenuItem>
                                     </Menu>
                                   </IconButton>
 
-                                  {/* <IconButton >
-                                                    <ModeIcon onClick={(key) => handleCardEdit(item)} />
-                                                </IconButton>
-                                                 <IconButton >
-                                                    <DeleteIcon onClick={(key) =>handleCardDelete(item)} />
-                                                </IconButton>   */}
                                 </Grid>
                               </Grid>
                             </div>
@@ -230,8 +254,8 @@ const AccountRelatedItems = ({ item }) => {
               relatedTask.length > 0 &&
               <Box display="flex" alignItems="center" justifyContent="center">
                 <Pagination
-                  count={noOfPages}
-                  page={page}
+                  count={taskNoOfPages}
+                  page={taskPerPage}
                   onChange={handleChangePage}
                   defaultPage={1}
                   color="primary"
@@ -251,24 +275,105 @@ const AccountRelatedItems = ({ item }) => {
           aria-controls="panel2a-content"
           id="panel2a-header"
         >
-          <Typography variant="h4">Related Records</Typography>
+          <Typography variant="h4">Related Inventory</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <Typography>
-            Need to work
+         
+          <div style={{ textAlign: "end", marginBottom: "5px" }}>
+              <Button variant="contained" color="info" onClick={() => handleInventoryModalOpen()} >New Inventory</Button>
+            </div>
+            <Card dense compoent="span" >
+
+              {
+
+                relatedTask.length > 0 ?
+                  relatedTask
+                    .slice((taskPerPage - 1) * taskItemsPerPage, taskPerPage * taskItemsPerPage)
+                    .map((item) => {
+
+                      let   starDateConvert = new Date(item.StartDate).getUTCFullYear()
+                      + '-' +  ('0'+ (new Date(item.StartDate).getUTCMonth() + 1)).slice(-2) 
+                      + '-' + ('0'+ ( new Date(item.StartDate).getUTCDate())).slice(-2)  ||''
+                    
+
+
+                      return (
+                        <div >
+                          <CardContent sx={{ bgcolor: "aliceblue", m: "15px" }}>
+                            <div
+                              key={item._id}
+                            >
+                              <Grid container spacing={2}>
+                                <Grid item xs={6} md={10}>
+                                  <div>Subject : {item.subject} </div>
+                                  <div>Date&Time :{starDateConvert}</div>
+                                  <div>Description : {item.description} </div>
+                                </Grid>
+                                <Grid item xs={6} md={2}>
+
+                                  <IconButton>
+                                    <MoreVertIcon onClick={(event) => handleMoreMenuClick(item, event)} />
+                                    <Menu
+                                      anchorEl={anchorEl}
+                                      open={menuOpen}
+                                      onClose={handleMoreMenuClose}
+                                      anchorOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'left',
+                                      }}
+                                      transformOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'left',
+                                      }}
+                                    >
+                                      <MenuItem onClick={() => handleTaskCardEdit(menuSelectRec)}>Edit</MenuItem>
+                                      <MenuItem onClick={() => handleTaskCardDelete(menuSelectRec)}>Delete</MenuItem>
+                                    </Menu>
+                                  </IconButton>
+
+                                </Grid>
+                              </Grid>
+                            </div>
+                          </CardContent>
+                        </div>
+
+                      );
+                    })
+                  : ""
+              }
+
+            </Card>
+            {
+              relatedTask.length > 0 &&
+              <Box display="flex" alignItems="center" justifyContent="center">
+                <Pagination
+                  count={taskNoOfPages}
+                  page={taskPerPage}
+                  onChange={handleChangePage}
+                  defaultPage={1}
+                  color="primary"
+                  size="medium"
+                  showFirstButton
+                  showLastButton
+                />
+              </Box>
+            }
+
+
           </Typography>
         </AccordionDetails>
       </Accordion>
 
 
       <Modal
-        open={modalOpen}
-        onClose={handleModalClose}
+        open={taskModalOpen}
+        onClose={handleTaskModalClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <ModalAccTask handleModal={handleModalClose} />
+          <ModalAccTask handleModal={handleTaskModalClose} />
         </Box>
       </Modal>
 
