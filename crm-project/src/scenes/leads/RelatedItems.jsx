@@ -227,7 +227,8 @@ const LeadRelatedItems = ({ item }) => {
     };
     const handleOppMoreMenuClose = () => {
       setOppAnchorEl(null);
-      setOppMenuOpen(false)
+      setOppMenuOpen(false)      
+    setMenuSelectRec()
     };
     // menu dropdown end
   return (
@@ -378,7 +379,7 @@ const LeadRelatedItems = ({ item }) => {
                                     <Menu
                                       anchorEl={oppanchorEl}
                                       open={oppMenuOpen}
-                                      onClose={handleMoreMenuClose}
+                                      onClose={handleOppMoreMenuClose}
                                       anchorOrigin={{
                                         vertical: 'top',
                                         horizontal: 'left',
