@@ -157,6 +157,10 @@ const DropFileInput = () => {
     }
    
 
+    <iframe src="https://www.youtube.com/embed/s4BibernJxU"></iframe>
+
+
+
     return (
         <>
         <Grid item xs={12} style={{ margin: "20px" }}>
@@ -222,7 +226,7 @@ const DropFileInput = () => {
                                 {
                                     showIframe && 
                                     // <iframe src="http://localhost:4000/2022-12-30T09-11-59.094Z-datcrmcsv.csv"></iframe>
-                                    <iframe src="https://www.youtube.com/embed/s4BibernJxU"></iframe>
+                                     <iframe src="https://www.youtube.com/embed/s4BibernJxU"></iframe>
                                 }
                                 
         </Grid>
@@ -238,13 +242,19 @@ const DropFileInput = () => {
                   <td >
                        <a href="#"
                     
-                      onClick={(e) =>
+                      onClick={(item) =>
                         {
-                          
-                            // <iframe src=
-                            // "http://localhost:4000/uploads/2022-12-30T09-11-59.094Z-datcrmcsv.csv"></iframe>
 
-                            saveAs (item.filePath, 'test.pdf')
+                            console.log('item',item)
+
+                            // <>
+                            // <iframe src='https://www.youtube.com/embed/s4BibernJxU' />
+
+                            // </>
+                    
+                          
+                            
+                            // saveAs (item.filePath, 'test.pdf')
 
                         //    redirect(item);
                             // saveAs(item.filePath, `${item.fileName}.${item.fileType}`)

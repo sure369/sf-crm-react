@@ -11,7 +11,7 @@ import axios from 'axios'
 import ModalLeadTask from "../tasks/ModalLeadTask";
 import SimpleSnackbar from "../toast/SimpleSnackbar";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import TaskDetailPage from "../recordDetailPage/TaskDetailPage";
+import ModalLeadOpportunity from "../opportunities/ModalLeadOpp";
 
 const style = {
   position: 'absolute',
@@ -35,19 +35,18 @@ const LeadRelatedItems = ({ item }) => {
   const [relatedTask, setRelatedTask] = useState([]);
   const [relatedOpportunity, setRelatedOpportunity] = useState([]);
 
-  const [taskModalOpen, setTaskModalOpen] = useState(false);
-  const [opportunityModalOpen,setOpportunityModalOpen] =useState(false)
-
   const [leadRecordId, setLeadRecordId] = useState()
 
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState();
   const [alertSeverity, setAlertSeverity] = useState();
 
+  const [taskModalOpen, setTaskModalOpen] = useState(false);
   const [taskItemsPerPage, setTaskItemsPerPage] = useState(2);
   const [taskPerPage, setTaskPerPage] = useState(1);
   const [taskNoOfPages, setTaskNoOfPages] = useState(0);
 
+  const [opportunityModalOpen, setOpportunityModalOpen] = useState(false);
   const [opportunityItemsPerPage, setOpportunityItemsPerPage] = useState(2);
   const [opportunityPerPage, setOpportunityPerPage] = useState(1);
   const [opportunityNoOfPages, setOpportunityNoOfPages] = useState(0);
@@ -424,7 +423,7 @@ const LeadRelatedItems = ({ item }) => {
         </AccordionDetails>
       </Accordion>
 
-
+    {/* modal for task */}
       <Modal
         open={taskModalOpen}
         onClose={handleTaskModalClose}
@@ -434,6 +433,18 @@ const LeadRelatedItems = ({ item }) => {
         <Box sx={style}>
           {/* <TaskDetailPage handleModal={handleTaskModalClose} showModel={true}/> */}
           <ModalLeadTask handleModal={handleTaskModalClose} />
+        </Box>
+      </Modal>
+ {/* modal for Opportunity */}
+      <Modal
+        open={opportunityModalOpen}
+        onClose={handleOpportunityModalClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          {/* <TaskDetailPage handleModal={handleTaskModalClose} showModel={true}/> */}
+          <ModalLeadOpportunity handleModal={handleOpportunityModalClose} />
         </Box>
       </Modal>
 
