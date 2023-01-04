@@ -12,6 +12,9 @@ import "../formik/FormStyles.css"
 import download from 'downloadjs';
 import { saveAs } from 'file-saver'
 import Iframe from 'react-iframe'
+import fileDownload from "js-file-download";
+import { FileDownload } from "@mui/icons-material";
+
 
 const UpsertUrl = "http://localhost:4000/api/uploadfile"; 
 const urlFiles ="http://localhost:4000/api/files"
@@ -28,6 +31,11 @@ const DropFileInput = () => {
     const [alertSeverity, setAlertSeverity] = useState();
 
     const [filesList,setFileList] =useState([])
+
+
+    //iframe 
+    const[showIframe,setShowIframe] =useState(false)
+    const[filepath,setFilePath]=useState()
 
     useEffect(() => {
 
@@ -144,6 +152,10 @@ const DropFileInput = () => {
                                               
                                      
     }
+
+    const iframeFn =()=>{
+        setShowIframe(!showIframe)
+    }
    
 
     return (
@@ -174,6 +186,7 @@ const DropFileInput = () => {
                             {
                                 showAlert ? <SimpleSnackbar severity={alertSeverity} message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> : <SimpleSnackbar />
                             }
+                               
 
                             <Form>
                                 <Grid container spacing={2}>
@@ -201,6 +214,19 @@ const DropFileInput = () => {
                     )
                 }}
             </Formik>
+
+
+            <button onClick={iframeFn}>
+                                    iframe test
+                                </button>
+
+                                {
+                                    showIframe && 
+                                    <iframe src=
+"http://localhost:4000/2022-12-30T09-11-59.094Z-datcrmcsv.csv"></iframe>
+                                    // <iframe src="https://www.youtube.com/embed/s4BibernJxU"></iframe>
+                                }
+                                
         </Grid>
 
 
@@ -214,10 +240,15 @@ const DropFileInput = () => {
                   <td >
                        <a href="#"
                     
-                      onClick={() =>
+                      onClick={(e) =>
                         {
+                          
+                          
+
+                         FileDownload(item, `${item.fileName}.${item.fileType}`)
+
                         //    redirect(item);
-                            saveAs(item.filePath, `${item.fileName}.${item.fileType}`)
+                            // saveAs(item.filePath, `${item.fileName}.${item.fileType}`)
                             //  downloadFile(item._id, item.filePath, item.fileType)
                         }
                       }
