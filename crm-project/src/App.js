@@ -43,7 +43,10 @@ import FlexTasks from "./scenes/Flex/FlexTasks";
 import TaskDetailPage from "./scenes/recordDetailPage/TaskDetailPage";
 import Task from "./scenes/tasks";
 import DataLoadPage from "./scenes/dataLoder/dataLoadPage";
- import DropFileInput from "./scenes/fileUpload";
+import DropFileInput from "./scenes/fileUpload";
+import JnOppInventoryDetailPage from "./scenes/recordDetailPage/JnOppInventoryDetailPage";
+import OppInventoryJunction from "./scenes/OppInventory";
+
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -66,6 +69,7 @@ function App() {
               <Route path="/inventories" element={<Inventories/>} />
               <Route path="/task" element={<Task />} />
               <Route path="/users" element={<Users />} />
+              <Route path="/oppInventory" element={<OppInventoryJunction />} />
               
               <Route path="/new-contacts" element={<ContactForm />} />
               <Route path="/new-users" element={<UserForm/>} />
@@ -81,6 +85,8 @@ function App() {
               <Route path="/new-leads" element={<LeadDetailPage />} />
               <Route path="/new-opportunities" element={<OpportunityDetailPage />} />
               <Route path="/new-accounts" element={<AccountDetailPage />} />
+              <Route path ='/new-oppInventory' element={<JnOppInventoryDetailPage/>} />
+
 
               <Route path="/leadDetailPage" element={<FlexLeads/>} />
               <Route path="/opportunityDetailPage" element={<FlexOpportunities/>}/>
@@ -89,8 +95,9 @@ function App() {
               
               <Route path="/contactDetailPage" element={<ContactDetailPage/>} />
               <Route path="/inventoryDetailPage" element={<InventoryDetailPage/>}/>
-           
-              <Route path="/userDetailPage" element={<UserDetailPage/>} />
+             
+             
+             <Route path="/userDetailPage" element={<UserDetailPage/>} />
               <Route path="/test-date" element={<MaterialUIPickers/>} />
             </Routes>
           </main>

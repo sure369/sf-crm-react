@@ -19,6 +19,7 @@ import mainLogo  from '../assets/user image.png';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import NewspaperIcon from '@mui/icons-material/Newspaper';
+import AltRouteIcon from '@mui/icons-material/AltRoute';
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -206,6 +207,14 @@ const Sidebar = () => {
               title="File Upload"
               to="/file"
               icon={<UploadFileIcon />}
+              selected={selected}
+              setSelected={setSelected}
+          
+            />
+             <Item
+              title="Junction Object"
+              to="/oppInventory"
+              icon={<AltRouteIcon />}
               selected={selected}
               setSelected={setSelected}
           
