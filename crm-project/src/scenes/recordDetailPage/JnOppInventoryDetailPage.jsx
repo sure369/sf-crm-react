@@ -16,7 +16,7 @@ const fetchOpportunitybyName = "http://localhost:4000/api/opportunitiesbyName";
 
 const JnOppInventoryDetailPage = ({ item }) => {
 
-    const [singleOpportunity, setSinglOpportunity] = useState();
+    const [oppInventory, setOppInventory] = useState();
     const location = useLocation();
     const navigate = useNavigate();
     const [showNew, setshowNew] = useState(true)
@@ -28,10 +28,10 @@ const JnOppInventoryDetailPage = ({ item }) => {
     const [relatedTask, setRelatedTask] = useState([]);
 
     useEffect(() => {
-        // console.log('passed record', location.state.record.item);
-        // console.log('inside opportunity');
-        // setSinglOpportunity(location.state.record.item);
-        // setshowNew(!location.state.record.item)
+         console.log('passed record', location.state.record.item);
+     
+         setOppInventory(location.state.record.item);
+        setshowNew(!location.state.record.item)
         console.log('inside use effect');
         FetchInventoriesbyName('');
         FetchOpportunitybyName('');
@@ -46,12 +46,12 @@ const JnOppInventoryDetailPage = ({ item }) => {
     }
 
     const savedValues = {
-        OpportunityId: singleOpportunity?.OpportunityId ?? "",
-        InventoryId: singleOpportunity?.InventoryId ?? "",
-        createdbyId: singleOpportunity?.createdbyId ?? "",
-        createdDate: new Date(singleOpportunity?.createdDate).toLocaleString(),
-        modifiedDate: new Date(singleOpportunity?.modifiedDate).toLocaleString(),
-        _id: singleOpportunity?._id ?? "",
+        OpportunityId: oppInventory?.OpportunityId ?? "",
+        InventoryId: oppInventory?.InventoryId ?? "",
+        createdbyId: oppInventory?.createdbyId ?? "",
+        createdDate: new Date(oppInventory?.createdDate).toLocaleString(),
+        modifiedDate: new Date(oppInventory?.modifiedDate).toLocaleString(),
+        _id: oppInventory?._id ?? "",
     }
     const validationSchema = Yup.object({
         OpportunityId: Yup

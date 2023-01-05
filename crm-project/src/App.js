@@ -96,6 +96,9 @@ function App() {
               <Route path="/contactDetailPage" element={<ContactDetailPage/>} />
               <Route path="/inventoryDetailPage" element={<InventoryDetailPage/>}/>
              
+              <Route path ='/opportunityInventoryDetailPage' element={<JnOppInventoryDetailPage/>} />
+
+
              
              <Route path="/userDetailPage" element={<UserDetailPage/>} />
               <Route path="/test-date" element={<MaterialUIPickers/>} />

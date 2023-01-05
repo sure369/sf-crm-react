@@ -64,7 +64,7 @@ const OppInventoryJunction = () => {
     setFinalClickInfo(e);
     console.log('selected record',row);
     const item=row;
-    // navigate("/opportunityDetailPage",{state:{record:{item}}})
+    navigate("/opportunityInventoryDetailPage",{state:{record:{item}}})
   };
   
   const onHandleDelete = (e, row) => {

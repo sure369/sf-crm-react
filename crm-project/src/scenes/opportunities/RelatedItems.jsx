@@ -42,16 +42,12 @@ const OpportunityRelatedItems = ({ item }) => {
   const [alertMessage, setAlertMessage] = useState();
   const [alertSeverity, setAlertSeverity] = useState();
 
-  const [itemsPerPage, setItemsPerPage] = useState(2);
-  const [page, setPage] = useState(1);
-  const [noOfPages, setNoOfPages] = useState(0);
-  
   const [taskModalOpen, setTaskModalOpen] = useState(false);
   const [taskItemsPerPage, setTaskItemsPerPage] = useState(2);
   const [taskPerPage, setTaskPerPage] = useState(1);
   const [taskNoOfPages, setTaskNoOfPages] = useState(0);
 
-  const [inventoryModalOpen, setInventoryModalOpen] = useState(false);
+
   const [inventoryItemsPerPage, setInventorytemsPerPage] = useState(2);
   const [inventoryPerPage, setInventoryPerPage] = useState(1);
   const [inventoryNoOfPages, setInventoryNoOfPages] = useState(0);
@@ -72,8 +68,8 @@ const OpportunityRelatedItems = ({ item }) => {
         console.log('response getTasksbyOppId fetch', res);
         if (res.data.length > 0) {
           setRelatedTask(res.data);
-          setNoOfPages(Math.ceil(res.data.length / itemsPerPage));
-          setPage(1)
+          setTaskNoOfPages(Math.ceil(res.data.length / taskItemsPerPage));
+          setTaskPerPage(1)
         }
         else {
           setRelatedTask([]);
@@ -88,9 +84,13 @@ const OpportunityRelatedItems = ({ item }) => {
   const getInventorybyOppId =(leadsId) =>{
 
     const urlOpp = "http://localhost:4000/api/getInventoriesbyOppid?searchId=";
+    
+    console.log('inside get Inventory by opp id');
+    console.log('url',urlOpp);
+    
     axios.post(urlOpp + leadsId)
       .then((res) => {
-        console.log('response getInventorybyOppId fetch', res.data);
+        console.log('response getInventorybyOppId ', res.data);
         if (res.data.length > 0) {
           setRelatedInventory(res.data);
           setInventoryNoOfPages(Math.ceil(res.data.length / inventoryItemsPerPage));
@@ -115,12 +115,7 @@ const OpportunityRelatedItems = ({ item }) => {
     setTaskModalOpen(false);
   }
 
-  const handleInventoryModalOpen =() =>{
-    setInventoryModalOpen(true)
-  }
-  const handleInventoryModalClose = () => {
-    setInventoryModalOpen(false);
-  }
+
 
 
   const handleTaskCardEdit = (row) => {
@@ -161,8 +156,9 @@ const OpportunityRelatedItems = ({ item }) => {
 
     console.log('Inventory selected edit record', row);
 
-    const item = row;
-  //  navigate("/opportunityDetailPage", { state: { record: { item } } })
+    const item = row
+
+  navigate("/inventoryDetailPage", { state: { record: { item } } })
   };
 
   const handleInventoryCardDelete =(row) =>{
@@ -193,9 +189,13 @@ const OpportunityRelatedItems = ({ item }) => {
 
   }
 
-  const handleChangePage = (event, value) => {
-    setPage(value);
+  const handleChangeTaskPage = (event, value) => {
+    setTaskPerPage(value);
   };
+  const handleChangeInventoryPage = (event, value) => {
+    setInventoryPerPage(value);
+  };
+
 
   // Task menu dropdown strart 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -227,7 +227,7 @@ const OpportunityRelatedItems = ({ item }) => {
     setInventoryMenuOpen(true)
 
   };
-  const handleOppMoreMenuClose = () => {
+  const handleInventoryMoreMenuClose = () => {
     setInventoryAnchorEl(null);
     setInventoryMenuOpen(false)      
     setInventoryMenuSelectRec()
@@ -264,7 +264,7 @@ const OpportunityRelatedItems = ({ item }) => {
 
                 relatedTask.length > 0 ?
                   relatedTask
-                    .slice((page - 1) * itemsPerPage, page * itemsPerPage)
+                    .slice((taskPerPage - 1) * taskItemsPerPage, taskPerPage * taskItemsPerPage)
                     .map((item) => {
                       
                       let   starDateConvert = new Date(item.StartDate).getUTCFullYear()
@@ -321,9 +321,9 @@ const OpportunityRelatedItems = ({ item }) => {
               relatedTask.length > 0 &&
               <Box display="flex" alignItems="center" justifyContent="center">
                 <Pagination
-                  count={noOfPages}
-                  page={page}
-                  onChange={handleChangePage}
+                  count={taskNoOfPages}
+                  page={taskPerPage}
+                  onChange={handleChangeTaskPage}
                   defaultPage={1}
                   color="primary"
                   size="medium"
@@ -342,11 +342,80 @@ const OpportunityRelatedItems = ({ item }) => {
           aria-controls="panel2a-content"
           id="panel2a-header"
         >
-          <Typography variant="h4">Related Records</Typography>
+          <Typography variant="h4">Inventory({relatedInventory.length}) </Typography>
         </AccordionSummary>
         <AccordionDetails>
           <Typography>
-            Need to work
+            <Card dense compoent="span" >
+
+              {
+
+                relatedInventory.length > 0 ?
+                relatedInventory
+                    .slice((inventoryPerPage - 1) * inventoryItemsPerPage, inventoryPerPage * inventoryItemsPerPage)
+                    .map((item) => {  
+
+                      return (
+                        <div >
+
+                          <CardContent sx={{ bgcolor: "aliceblue", m: "15px" }}>
+                            <div
+                              key={item._id}
+                            >
+                              <Grid container spacing={2}>
+                                <Grid item xs={6} md={10}>
+                                  <div>Inventory Name : {item.propertyName} </div>
+                                  <div>Status : {item.status}</div>
+                                  <div>Type : {item.type} </div>
+                                </Grid>
+                                <Grid item xs={6} md={2}>
+
+                                  <IconButton>
+                                    <MoreVertIcon onClick={(event) => handleOppMoreMenuClick(item, event)} />
+                                    <Menu
+                                      anchorEl={inventoryAnchorEl}
+                                      open={inventoryMenuOpen}
+                                      onClose={handleInventoryMoreMenuClose}
+                                      anchorOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'left',
+                                      }}
+                                      transformOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'left',
+                                      }}
+                                    >
+                                      <MenuItem onClick={() => handleInventoryCardEdit(inventoryMenuSelectRec)}>Edit</MenuItem>
+                                      <MenuItem onClick={() => handleInventoryCardDelete(inventoryMenuSelectRec)}>Delete</MenuItem>
+                                    </Menu>
+                                  </IconButton>
+                                </Grid>
+                              </Grid>
+                            </div>
+                          </CardContent>
+                        </div>
+
+                      );
+                    })
+                  : ""
+              }
+
+            </Card>
+            {
+              relatedInventory.length > 0 &&
+              <Box display="flex" alignItems="center" justifyContent="center">
+                <Pagination
+                  count={inventoryNoOfPages}
+                  page={inventoryPerPage}
+                  onChange={handleChangeInventoryPage}
+                  defaultPage={1}
+                  color="primary"
+                  size="medium"
+                  showFirstButton
+                  showLastButton
+                />
+              </Box>
+            }
           </Typography>
         </AccordionDetails>
       </Accordion>
