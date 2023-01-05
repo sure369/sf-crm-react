@@ -166,7 +166,7 @@ const JnOppInventoryDetailPage = ({ item }) => {
                                 <Form>
                                     <Grid container spacing={2}>
                                         <Grid item xs={6} md={6}>
-                                            <label htmlFor="InventoryId">Inventory Name </label>
+                                            <label htmlFor="InventoryId">Inventory Name<span className="text-danger">*</span></label>
                                             <Autocomplete
                                                 name="InventoryId"
                                                 options={inventoriesRecord}
@@ -199,7 +199,7 @@ const JnOppInventoryDetailPage = ({ item }) => {
                                         </Grid>
 
                                         <Grid item xs={6} md={6}>
-                                            <label htmlFor="OpportunityId">Opportunity Name </label>
+                                            <label htmlFor="OpportunityId">Opportunity Name  <span className="text-danger">*</span></label>
                                             <Autocomplete
                                                 name="OpportunityId"
                                                 options={opportunityRecords}

@@ -46,7 +46,7 @@ import DataLoadPage from "./scenes/dataLoder/dataLoadPage";
 import DropFileInput from "./scenes/fileUpload";
 import JnOppInventoryDetailPage from "./scenes/recordDetailPage/JnOppInventoryDetailPage";
 import OppInventoryJunction from "./scenes/OppInventory";
-
+import FlexInventories from "./scenes/Flex/FlexInventory";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -92,9 +92,10 @@ function App() {
               <Route path="/opportunityDetailPage" element={<FlexOpportunities/>}/>
               <Route path="/accountDetailPage" element={<FlexAccounts/>} />
               <Route path="/taskDetailPage" element={<FlexTasks/>}/>
+              <Route path="/inventoryDetailPage" element={<FlexInventories/>}/>
               
               <Route path="/contactDetailPage" element={<ContactDetailPage/>} />
-              <Route path="/inventoryDetailPage" element={<InventoryDetailPage/>}/>
+
              
               <Route path ='/opportunityInventoryDetailPage' element={<JnOppInventoryDetailPage/>} />
 
