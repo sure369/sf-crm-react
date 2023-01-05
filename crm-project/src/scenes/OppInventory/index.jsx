@@ -14,8 +14,8 @@ import Pagination from '@mui/material/Pagination';
 
 const OppInventoryJunction = () => {
   
-  const urlOpportunity ="http://localhost:4000/api/OppInventory";
-  const urlDelete ="http://localhost:4000/api/deleteOpportunity?code=";
+  const urlOpportunityInventory ="http://localhost:4000/api//api/opportuintyinventory";
+  const urlDelete ="http://localhost:4000/api/deleteOpportunityInventory?code=";
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -35,7 +35,7 @@ const OppInventoryJunction = () => {
   );
 
   const fetchRecords=()=>{
-    axios.post(urlOpportunity)
+    axios.post(urlOpportunityInventory)
     .then(
       (res) => {
         console.log("res Opportunity records", res);

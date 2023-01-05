@@ -81,7 +81,7 @@ const JnOppInventoryDetailPage = ({ item }) => {
 
         axios.post(url, values)
             .then((res) => {
-                console.log('post response', res);
+                console.log('junction obj res', res);
                 setShowAlert(true)
                 setAlertMessage(res.data)
                 setAlertSeverity('success')
