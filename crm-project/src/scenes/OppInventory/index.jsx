@@ -14,7 +14,7 @@ import Pagination from '@mui/material/Pagination';
 
 const OppInventoryJunction = () => {
   
-  const urlOpportunityInventory ="http://localhost:4000/api//api/opportuintyinventory";
+  const urlOpportunityInventory ="http://localhost:4000/api/opportuintyinventory";
   const urlDelete ="http://localhost:4000/api/deleteOpportunityInventory?code=";
 
   const theme = useTheme();
@@ -110,10 +110,24 @@ const OppInventoryJunction = () => {
   }
 
   const columns = [
-    {
-      field: "opportunityName",headerName: "Opportunity Name",
-      headerAlign: 'center',align: 'center',flex: 1,
-    },
+    { 
+        field: "opportunityName",headerName: "Opportunity Name",
+        headerAlign: 'center',align: 'center',flex: 1,
+        renderCell: (params) => {
+        
+          if(params.row.Opportunitydetails.length>0){
+           
+            return <div className="rowitem">
+              {params.row.Opportunitydetails[0].opportunityName}
+            </div>;
+          }
+          else{
+            return <div className="rowitem">
+              {null}
+              </div>
+          }
+        },
+      }, 
     { 
       field: "propertyName",headerName: "Inventory Name",
       headerAlign: 'center',align: 'center',flex: 1,
@@ -130,31 +144,9 @@ const OppInventoryJunction = () => {
             {null}
             </div>
         }
-
-        // return <div className="rowitem">
-        //   {params.row.Propertydetails[0].propertyName}
-        // </div>;
       },
     }, 
-    {
-      field: "type",headerName: "Type", 
-      headerAlign: 'center',align: 'center',flex: 1,
-    },
-    {
-      field: "amount",headerName: "Opp Amount",
-      headerAlign: 'center',align: 'center',flex: 1,
-      renderCell: (params) => {
-        const formatCurrency = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD',})
-        return (
-          <>
-            {formatCurrency.format(params.row.amount)}
-          </>
-        )} 
-    },
-    {
-      field: "stage",headerName: "Stage",
-      headerAlign: 'center',align: 'center',flex: 1,
-    },
+   
     { 
       field: 'actions', headerName: 'Actions',
       headerAlign: 'center',align: 'center',flex: 1, width: 400,

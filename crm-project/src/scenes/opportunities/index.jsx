@@ -38,7 +38,7 @@ const Opportunities = () => {
     axios.post(urlOpportunity)
     .then(
       (res) => {
-        console.log("res Opportunity records", res);
+        console.log("res Opportunity records test", res);
         // setRecords(res.data);
   
           if(res.data.length>0  && (typeof(res.data) !=='string')){

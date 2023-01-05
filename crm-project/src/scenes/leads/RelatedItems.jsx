@@ -56,11 +56,13 @@ const LeadRelatedItems = ({ item }) => {
   useEffect(() => {
     console.log('inside useEffect', location.state.record.item);
     setLeadRecordId(location.state.record.item._id)
-    getTasks(location.state.record.item._id)
-    getOpportunity(location.state.record.item._id)
+    getTasksbyLeadId(location.state.record.item._id)
+    getOpportunitybyLeadId(location.state.record.item._id)
   }, [])
 
-  const getTasks = (leadsId) => {
+  const getTasksbyLeadId = (leadsId) => {
+    
+    console.log('lead id',leadsId);
     const urlTask = "http://localhost:4000/api/getTaskbyLeadId?searchId=";
     axios.post(urlTask + leadsId)
       .then((res) => {
@@ -79,10 +81,9 @@ const LeadRelatedItems = ({ item }) => {
       })
   }
 
-  const getOpportunity =(leadsId) =>{
+  const getOpportunitybyLeadId =(leadsId) =>{
 
     const urlOpp = "http://localhost:4000/api/getLeadsbyOppid?searchId=";
-    
     axios.post(urlOpp + leadsId)
       .then((res) => {
         console.log('response opportunity fetch', res.data);
@@ -98,7 +99,6 @@ const LeadRelatedItems = ({ item }) => {
       .catch((error) => {
         console.log('error opportunity fetch', error)
       })
-
   }
 
   const handleTaskModalOpen = () => {
@@ -134,7 +134,7 @@ const LeadRelatedItems = ({ item }) => {
       .then((res) => {
         console.log('api delete response', res);
         console.log('inside delete response leadRecordId', leadRecordId)
-        getTasks(leadRecordId)
+        getTasksbyLeadId(leadRecordId)
         setShowAlert(true)
         setAlertMessage(res.data)
         setAlertSeverity('success')
@@ -167,7 +167,7 @@ const LeadRelatedItems = ({ item }) => {
     .then((res) => {
       console.log('api delete response', res);
       console.log('inside delete response leadRecordId', leadRecordId)
-      getTasks(leadRecordId)
+      getOpportunitybyLeadId(leadRecordId)
       setShowAlert(true)
       setAlertMessage(res.data)
       setAlertSeverity('success')

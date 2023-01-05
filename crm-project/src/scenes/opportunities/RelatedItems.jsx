@@ -18,7 +18,6 @@ const style = {
   left: '50%',
   transform: 'translate(-50%, -50%)',
   width: 600,
-  // width: 400,
   bgcolor: 'background.paper',
   border: '2px solid #000',
   boxShadow: 24,
@@ -26,14 +25,18 @@ const style = {
 
 const OpportunityRelatedItems = ({ item }) => {
 
-  const urlDelete = "http://localhost:4000/api/deleteTask?code=";
+  
+  const taskDeleteURL = "http://localhost:4000/api/deleteTask?code=";
+  const inventoryDeleteURL = "http://localhost:4000/api/deleteInventory?code=";
+
+
 
   const navigate = useNavigate();
   const location = useLocation();
   const [relatedTask, setRelatedTask] = useState([]);
-  const [modalOpen, setModalOpen] = useState(false);
+  const [relatedInventory, setRelatedInventory] = useState([]);
 
-  const [leadRecordId, setLeadRecordId] = useState()
+  const [opportunityRecordId, setOpportunityRecordId] = useState()
 
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState();
@@ -42,20 +45,31 @@ const OpportunityRelatedItems = ({ item }) => {
   const [itemsPerPage, setItemsPerPage] = useState(2);
   const [page, setPage] = useState(1);
   const [noOfPages, setNoOfPages] = useState(0);
+  
+  const [taskModalOpen, setTaskModalOpen] = useState(false);
+  const [taskItemsPerPage, setTaskItemsPerPage] = useState(2);
+  const [taskPerPage, setTaskPerPage] = useState(1);
+  const [taskNoOfPages, setTaskNoOfPages] = useState(0);
+
+  const [inventoryModalOpen, setInventoryModalOpen] = useState(false);
+  const [inventoryItemsPerPage, setInventorytemsPerPage] = useState(2);
+  const [inventoryPerPage, setInventoryPerPage] = useState(1);
+  const [inventoryNoOfPages, setInventoryNoOfPages] = useState(0);
+
 
   useEffect(() => {
     console.log('inside useEffect', location.state.record.item);
-    setLeadRecordId(location.state.record.item._id)
-    getTasks(location.state.record.item._id)
-
+    setOpportunityRecordId(location.state.record.item._id)
+    getTasksbyOppId(location.state.record.item._id)
+    getInventorybyOppId(location.state.record.item._id)
 
   }, [])
 
-  const getTasks = (recId) => {
+  const getTasksbyOppId = (recId) => {
     const urlTask = "http://localhost:4000/api/getTaskbyOpportunityId?searchId=";
     axios.post(urlTask + recId)
       .then((res) => {
-        console.log('response task fetch', res);
+        console.log('response getTasksbyOppId fetch', res);
         if (res.data.length > 0) {
           setRelatedTask(res.data);
           setNoOfPages(Math.ceil(res.data.length / itemsPerPage));
@@ -66,41 +80,73 @@ const OpportunityRelatedItems = ({ item }) => {
         }
       })
       .catch((error) => {
-        console.log('error task fetch', error)
+        console.log('error getTasksbyOppId fetch', error)
       })
 
   }
 
-  const handleModalOpen = () => {
+  const getInventorybyOppId =(leadsId) =>{
 
-    setModalOpen(true);
+    const urlOpp = "http://localhost:4000/api/getInventoriesbyOppid?searchId=";
+    axios.post(urlOpp + leadsId)
+      .then((res) => {
+        console.log('response getInventorybyOppId fetch', res.data);
+        if (res.data.length > 0) {
+          setRelatedInventory(res.data);
+          setInventoryNoOfPages(Math.ceil(res.data.length / inventoryItemsPerPage));
+          setInventoryPerPage(1)
+        }
+        else {
+          setRelatedInventory([]);
+        }
+      })
+      .catch((error) => {
+        console.log('error getInventorybyOppId fetch', error)
+      })
   }
-  const handleModalClose = () => {
 
-    setModalOpen(false);
+
+  const handleTaskModalOpen = () => {
+
+    setTaskModalOpen(true);
+  }
+  const handleTaskModalClose = () => {
+
+    setTaskModalOpen(false);
   }
 
-  const handleCardEdit = (row) => {
+  const handleInventoryModalOpen =() =>{
+    setInventoryModalOpen(true)
+  }
+  const handleInventoryModalClose = () => {
+    setInventoryModalOpen(false);
+  }
+
+
+  const handleTaskCardEdit = (row) => {
 
     console.log('selected record', row);
     const item = row;
-    navigate("/taskDetailPage", { state: { record: { item } } })
+    // navigate("/taskDetailPage", { state: { record: { item } } })
   };
 
-  const handleCardDelete = (row) => {
+  const handleTaskCardDelete = (row) => {
 
     console.log('req delete rec', row);
     console.log('req delete rec id', row._id);
 
-    axios.post(urlDelete + row._id)
+    axios.post(taskDeleteURL + row._id)
       .then((res) => {
         console.log('api delete response', res);
-        console.log('inside delete response leadRecordId', leadRecordId)
-        getTasks(leadRecordId)
+        console.log('inside delete response opportunityRecordId', opportunityRecordId)
+        getTasksbyOppId(opportunityRecordId)
         setShowAlert(true)
         setAlertMessage(res.data)
         setAlertSeverity('success')
         setMenuOpen(false)
+        setTimeout(
+          window.location.reload()
+        )
       })
       .catch((error) => {
         console.log('api delete error', error);
@@ -110,6 +156,38 @@ const OpportunityRelatedItems = ({ item }) => {
 
       })
   };
+
+  const handleInventoryCardEdit = (row) => {
+
+    console.log('Inventory selected edit record', row);
+
+    const item = row;
+  //  navigate("/opportunityDetailPage", { state: { record: { item } } })
+  };
+
+  const handleInventoryCardDelete =(row) =>{
+
+    console.log('req opp delete rec',row)
+    axios.post(inventoryDeleteURL + row._id)
+    .then((res) => {
+      console.log('api delete response', res);
+      console.log('inside delete response opportunityRecordId', opportunityRecordId)
+      getInventorybyOppId(opportunityRecordId)
+      setShowAlert(true)
+      setAlertMessage(res.data)
+      setAlertSeverity('success')
+      setMenuOpen(false)
+    })
+    .catch((error) => {
+      console.log('api delete error', error);
+      setShowAlert(true)
+      setAlertMessage(error.message)
+      setAlertSeverity('error')
+
+    })
+
+  }
+
   const toastCloseCallback = () => {
     setShowAlert(false)
 
@@ -119,20 +197,40 @@ const OpportunityRelatedItems = ({ item }) => {
     setPage(value);
   };
 
-  // menu dropdown strart
+  // Task menu dropdown strart 
   const [anchorEl, setAnchorEl] = useState(null);
   const [menuSelectRec, setMenuSelectRec] = useState()
   const [menuOpen, setMenuOpen] = useState();
 
-  const handleMoreMenuClick = (item, event) => {
+  const handleTaskMoreMenuClick = (item, event) => {
     setMenuSelectRec(item)
     setAnchorEl(event.currentTarget);
     setMenuOpen(true)
 
   };
-  const handleMoreMenuClose = () => {
+  const handleTaskMoreMenuClose = () => {
     setAnchorEl(null);
     setMenuOpen(false)
+  };
+  // menu dropdown end
+
+  // Inventory menu dropdown strart //menu pass rec
+  const [inventoryAnchorEl, setInventoryAnchorEl] = useState(null);
+  const [inventoryMenuSelectRec, setInventoryMenuSelectRec] = useState()
+  const [inventoryMenuOpen, setInventoryMenuOpen] = useState();
+
+  const handleOppMoreMenuClick = (item, event) => {
+    console.log('handle OPP MoreMenu Click  item',item)
+    
+    setInventoryMenuSelectRec(item)
+    setInventoryAnchorEl(event.currentTarget);
+    setInventoryMenuOpen(true)
+
+  };
+  const handleOppMoreMenuClose = () => {
+    setInventoryAnchorEl(null);
+    setInventoryMenuOpen(false)      
+    setInventoryMenuSelectRec()
   };
   // menu dropdown end
 
@@ -158,7 +256,7 @@ const OpportunityRelatedItems = ({ item }) => {
         <AccordionDetails>
           <Typography>
             <div style={{ textAlign: "end", marginBottom: "5px" }}>
-              <Button variant="contained" color="info" onClick={() => handleModalOpen()} >New Task</Button>
+              <Button variant="contained" color="info" onClick={() => handleTaskModalOpen()} >New Task</Button>
             </div>
             <Card dense compoent="span" >
 
@@ -189,11 +287,11 @@ const OpportunityRelatedItems = ({ item }) => {
                                 <Grid item xs={6} md={2}>
 
                                   <IconButton>
-                                    <MoreVertIcon onClick={(event) => handleMoreMenuClick(item, event)} />
+                                    <MoreVertIcon onClick={(event) => handleTaskMoreMenuClick(item, event)} />
                                     <Menu
                                       anchorEl={anchorEl}
                                       open={menuOpen}
-                                      onClose={handleMoreMenuClose}
+                                      onClose={handleTaskMoreMenuClose}
                                       anchorOrigin={{
                                         vertical: 'top',
                                         horizontal: 'left',
@@ -203,8 +301,8 @@ const OpportunityRelatedItems = ({ item }) => {
                                         horizontal: 'left',
                                       }}
                                     >
-                                      <MenuItem onClick={() => handleCardEdit(menuSelectRec)}>Edit</MenuItem>
-                                      <MenuItem onClick={() => handleCardDelete(menuSelectRec)}>Delete</MenuItem>
+                                      <MenuItem onClick={() => handleTaskCardEdit(menuSelectRec)}>Edit</MenuItem>
+                                      <MenuItem onClick={() => handleTaskCardDelete(menuSelectRec)}>Delete</MenuItem>
                                     </Menu>
                                   </IconButton>
                                 </Grid>
@@ -254,13 +352,13 @@ const OpportunityRelatedItems = ({ item }) => {
       </Accordion>
 
       <Modal
-        open={modalOpen}
-        onClose={handleModalClose}
+        open={taskModalOpen}
+        onClose={handleTaskModalClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <ModalOppTask handleModal={handleModalClose} />
+          <ModalOppTask handleModal={handleTaskModalClose} />
         </Box>
       </Modal>
     </>
