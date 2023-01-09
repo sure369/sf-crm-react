@@ -73,7 +73,7 @@ function App() {
               
               <Route path="/new-contacts" element={<ContactForm />} />
               <Route path="/new-users" element={<UserForm/>} />
-              <Route path="/new-inventories" element={<InventoryForm/>}/>
+              {/* <Route path="/new-inventories" element={<InventoryForm/>}/> */}
               <Route path="/new-event" element={<EventForm/>}/>
               <Route path="/form" element={<NewForm />} />
               <Route path="/team" element={<Team />} />
@@ -82,6 +82,7 @@ function App() {
               <Route path="/dataLoder" element={<DataLoadPage/>} />
               <Route path ='/file' element={<DropFileInput/>} />
 
+              <Route path="/new-inventories" element={<InventoryDetailPage/>} />
               <Route path="/new-leads" element={<LeadDetailPage />} />
               <Route path="/new-opportunities" element={<OpportunityDetailPage />} />
               <Route path="/new-accounts" element={<AccountDetailPage />} />

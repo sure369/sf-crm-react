@@ -11,6 +11,13 @@ import SimpleSnackbar from "../toast/SimpleSnackbar";
 import ModalOppTask from "../tasks/ModalOppTask";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import ModalOppInventory from "../OppInventory/ModalOppInventory";
+import { DataGrid, GridToolbar,
+  gridPageCountSelector,gridPageSelector,
+  useGridApiContext,useGridSelector} from "@mui/x-data-grid";
+
 
 const style = {
   position: 'absolute',
@@ -48,6 +55,7 @@ const OpportunityRelatedItems = ({ item }) => {
   const [taskNoOfPages, setTaskNoOfPages] = useState(0);
 
 
+  const[jnOppInvenModalOpen,setJnOppInvenModalOpen] =useState(false)
   const [inventoryItemsPerPage, setInventorytemsPerPage] = useState(2);
   const [inventoryPerPage, setInventoryPerPage] = useState(1);
   const [inventoryNoOfPages, setInventoryNoOfPages] = useState(0);
@@ -86,7 +94,6 @@ const OpportunityRelatedItems = ({ item }) => {
     const urlOpp = "http://localhost:4000/api/getInventoriesbyOppid?searchId=";
     
     console.log('inside get Inventory by opp id');
-    console.log('url',urlOpp);
     
     axios.post(urlOpp + leadsId)
       .then((res) => {
@@ -115,14 +122,20 @@ const OpportunityRelatedItems = ({ item }) => {
     setTaskModalOpen(false);
   }
 
+  const handleJunctionOppInvModalClose = () => {
+    setJnOppInvenModalOpen(false);
+  }
 
 
+  const handleJnInventoryModalOpen =()=>{
+    setJnOppInvenModalOpen(true)
+  }
 
   const handleTaskCardEdit = (row) => {
 
     console.log('selected record', row);
     const item = row;
-    // navigate("/taskDetailPage", { state: { record: { item } } })
+   navigate("/taskDetailPage", { state: { record: { item } } })
   };
 
   const handleTaskCardDelete = (row) => {
@@ -150,6 +163,41 @@ const OpportunityRelatedItems = ({ item }) => {
         setAlertSeverity('error')
 
       })
+  };
+
+  const handleOnCellClick = (e, row) => {
+    // setFinalClickInfo(e);
+    const item = row;
+    console.log('item',item);
+    navigate("/inventoryDetailPage", { state: { record: { item } } })
+  };
+
+
+  const onHandleDelete = (e, row) => {
+    e.stopPropagation();
+    console.log('req delete rec', row);
+    console.log('req delete rec id', row._id);
+
+    axios.post(inventoryDeleteURL + row._id)
+    .then((res) => {
+      console.log('api delete response', res);
+      console.log('inside delete response opportunityRecordId', opportunityRecordId)
+      getInventorybyOppId(opportunityRecordId)
+      setShowAlert(true)
+      setAlertMessage(res.data)
+      setAlertSeverity('success')
+      setMenuOpen(false)
+    })
+    .catch((error) => {
+      console.log('api delete error', error);
+      setShowAlert(true)
+      setAlertMessage(error.message)
+      setAlertSeverity('error')
+
+    })
+
+
+   
   };
 
   const handleInventoryCardEdit = (row) => {
@@ -186,7 +234,6 @@ const OpportunityRelatedItems = ({ item }) => {
 
   const toastCloseCallback = () => {
     setShowAlert(false)
-
   }
 
   const handleChangeTaskPage = (event, value) => {
@@ -196,6 +243,7 @@ const OpportunityRelatedItems = ({ item }) => {
     setInventoryPerPage(value);
   };
 
+  
 
   // Task menu dropdown strart 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -233,6 +281,56 @@ const OpportunityRelatedItems = ({ item }) => {
     setInventoryMenuSelectRec()
   };
   // menu dropdown end
+
+
+  // DATA GRID TABLE PAGINATION
+function CustomPagination() {
+  const apiRef = useGridApiContext();
+  const page = useGridSelector(apiRef, gridPageSelector);
+  const pageCount = useGridSelector(apiRef, gridPageCountSelector);
+
+  return (
+    <Pagination
+      color="primary"
+      count={pageCount}
+      page={page + 1}
+      onChange={(event, value) => apiRef.current.setPage(value - 1)}
+    />
+  );
+}
+
+const columns = [
+  {
+    field: "projectName", headerName: "Project Name",
+    headerAlign: 'center', align: 'center', flex: 1,
+  },
+  {
+    field: "propertyName", headerName: "Property Name",
+    headerAlign: 'center', align: 'center', flex: 1,
+  },
+  {
+    field: "status", headerName: "Status",
+    headerAlign: 'center', align: 'center', flex: 1,
+  },
+  {
+    field: 'actions', headerName: 'Actions',
+    headerAlign: 'center', align: 'center', flex: 1, width: 400,
+    renderCell: (params) => {
+      return (
+        <>
+          <IconButton style={{ padding: '20px' }}>
+            <EditIcon onClick={(e) => handleOnCellClick(e, params.row)} />
+          </IconButton>
+          <IconButton style={{ padding: '20px' }}>
+            <DeleteIcon onClick={(e) => onHandleDelete(e, params.row)} />
+          </IconButton>
+        </>
+      );
+    }
+  }
+ 
+];
+
 
   return (
     <>
@@ -346,6 +444,9 @@ const OpportunityRelatedItems = ({ item }) => {
         </AccordionSummary>
         <AccordionDetails>
           <Typography>
+          <div style={{ textAlign: "end", marginBottom: "5px" }}>
+              <Button variant="contained" color="info" onClick={() => handleJnInventoryModalOpen()} >Add Inventory</Button>
+            </div>
             <Card dense compoent="span" >
 
               {
@@ -420,6 +521,39 @@ const OpportunityRelatedItems = ({ item }) => {
         </AccordionDetails>
       </Accordion>
 
+      {/* inventory table */}
+      <Accordion >
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel3a-content"
+          id="panel3a-header"
+        >
+          <Typography variant="h4">Inventory Table({relatedInventory.length}) </Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+       
+        <div style={{ textAlign: "end", marginBottom: "5px" }}>
+              <Button variant="contained" color="info" onClick={() => handleJnInventoryModalOpen()} >Add Inventory</Button>
+            </div>
+        <Box sx={{ height: 320, width: '100%' }}>
+
+
+        <DataGrid
+              rows={relatedInventory}
+              columns={columns}
+              getRowId={(row) => row._id}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              //  onCellClick={handleOnCellClick}
+              components={{ Pagination:CustomPagination}}
+              
+            />
+    </Box>
+
+        </AccordionDetails>
+      </Accordion>
+
+
       <Modal
         open={taskModalOpen}
         onClose={handleTaskModalClose}
@@ -430,9 +564,22 @@ const OpportunityRelatedItems = ({ item }) => {
           <ModalOppTask handleModal={handleTaskModalClose} />
         </Box>
       </Modal>
+
+    {/* Junction Opp -Inventory */}
+
+      <Modal
+        open={jnOppInvenModalOpen}
+        onClose={handleJunctionOppInvModalClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <ModalOppInventory  handleModal={handleJunctionOppInvModalClose} />
+        </Box>
+      </Modal>
+
     </>
   )
 
 }
 export default OpportunityRelatedItems
-
