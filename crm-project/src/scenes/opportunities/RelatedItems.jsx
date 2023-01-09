@@ -302,7 +302,7 @@ function CustomPagination() {
 const columns = [
   {
     field: "projectName", headerName: "Project Name",
-    headerAlign: 'center', align: 'center', flex: 1,
+    headerAlign: 'center', align: 'center', flex: 1, 
   },
   {
     field: "propertyName", headerName: "Property Name",
@@ -535,19 +535,21 @@ const columns = [
         <div style={{ textAlign: "end", marginBottom: "5px" }}>
               <Button variant="contained" color="info" onClick={() => handleJnInventoryModalOpen()} >Add Inventory</Button>
             </div>
-        <Box sx={{ height: 320, width: '100%' }}>
+        <Box sx={{ height: 315, width: '100%' }}>
 
-
-        <DataGrid
-              rows={relatedInventory}
-              columns={columns}
-              getRowId={(row) => row._id}
-              pageSize={5}
-              rowsPerPageOptions={[5]}
-              //  onCellClick={handleOnCellClick}
-              components={{ Pagination:CustomPagination}}
-              
-            />
+          <DataGrid
+                      rows={relatedInventory}
+                      columns={columns}
+                      getRowId={(row) => row._id}
+                      pageSize={4}
+                      rowsPerPageOptions={[4]}
+                      //  onCellClick={handleOnCellClick}
+                      components={{ Pagination:CustomPagination}}
+                     
+                      disableColumnMenu
+                      autoHeight={true}
+                    />
+ 
     </Box>
 
         </AccordionDetails>

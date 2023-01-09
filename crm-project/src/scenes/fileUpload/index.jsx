@@ -156,6 +156,10 @@ const DropFileInput = () => {
         setShowIframe(!showIframe)
     }
    
+    const callChild=()=>{
+        console.log('call child');
+    }
+
 
     <iframe src="https://www.youtube.com/embed/s4BibernJxU"></iframe>
 
@@ -228,6 +232,10 @@ const DropFileInput = () => {
                                     // <iframe src="http://localhost:4000/2022-12-30T09-11-59.094Z-datcrmcsv.csv"></iframe>
                                      <iframe src="https://www.youtube.com/embed/s4BibernJxU"></iframe>
                                 }
+
+                                <button onclick={callChild}>
+                                    click
+                                </button>
                                 
         </Grid>
 
@@ -246,6 +254,19 @@ const DropFileInput = () => {
                         {
 
                             console.log('item',item)
+
+                            // fetch(`/api/preview-file/${this.props.fileId}`)
+                            // .then(response => response.arrayBuffer())
+                            // .then(buffer => {
+                            //   // Convert the file buffer to a data URL
+                            //   const fileReader = new FileReader();
+                            //   fileReader.onloadend = () => {
+                            //     this.setState({ fileData: fileReader.result });
+                            //   };
+                            //   fileReader.readAsDataURL(new Blob([buffer]));
+                            // });
+
+
 
                             // <>
                             // <iframe src='https://www.youtube.com/embed/s4BibernJxU' />
