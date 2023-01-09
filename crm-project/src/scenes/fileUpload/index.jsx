@@ -156,11 +156,10 @@ const DropFileInput = () => {
         setShowIframe(!showIframe)
     }
    
-    const callChild=()=>{
-        console.log('call child');
+    const handleClick =()=>{
+        console.log('test');
     }
-
-
+   
     <iframe src="https://www.youtube.com/embed/s4BibernJxU"></iframe>
 
 
@@ -222,7 +221,9 @@ const DropFileInput = () => {
                 }}
             </Formik>
 
-
+            <button onclick={handleClick}>
+                                    btn
+                                </button>
             <button onClick={iframeFn}>
                                     iframe test
                                 </button>
@@ -233,9 +234,7 @@ const DropFileInput = () => {
                                      <iframe src="https://www.youtube.com/embed/s4BibernJxU"></iframe>
                                 }
 
-                                <button onclick={callChild}>
-                                    click
-                                </button>
+                               
                                 
         </Grid>
 

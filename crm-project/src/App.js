@@ -48,6 +48,9 @@ import JnOppInventoryDetailPage from "./scenes/recordDetailPage/JnOppInventoryDe
 import OppInventoryJunction from "./scenes/OppInventory";
 import FlexInventories from "./scenes/Flex/FlexInventory";
 
+
+import Preview from "./scenes/fileUpload/Preview";
+
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
@@ -81,6 +84,7 @@ function App() {
 
               <Route path="/dataLoder" element={<DataLoadPage/>} />
               <Route path ='/file' element={<DropFileInput/>} />
+              <Route path ='/test' element={<Preview/>} />
 
               <Route path="/new-inventories" element={<InventoryDetailPage/>} />
               <Route path="/new-leads" element={<LeadDetailPage />} />
