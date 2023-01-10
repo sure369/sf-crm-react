@@ -70,7 +70,6 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
 
     const initialValues = {
         subject: '',
-        nameofContact: '',
         realatedTo: '',
         assignedTo: '',
         StartDate: '',
@@ -92,12 +91,9 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
 
     const savedValues = {
         subject: singleTask?.subject ?? "",
-        nameofContact: singleTask?.nameofContact ?? "",
         realatedTo: singleTask?.realatedTo ?? "",
         assignedTo: singleTask?.assignedTo ?? "",
-       
-        StartTime: singleTask?.StartTime ?? "",
-       
+        StartTime: singleTask?.StartTime ?? "",       
         EndTime: singleTask?.EndTime ?? "",
         description: singleTask?.description ?? "",
         attachments: singleTask?.attachments ?? "",
@@ -118,6 +114,9 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
         + '-' +  ('0'+ (new Date(singleTask?.EndDate).getUTCMonth() + 1)).slice(-2) 
         + '-' + ('0'+ ( new Date(singleTask?.EndDate).getUTCDate())).slice(-2) ||'',
 
+        accountDetails:singleTask?.accountDetails ??"",
+        leadDetails:singleTask?.leadDetails ??"",
+        opportunityDetails:singleTask?.opportunityDetails ??"",
 
     }
 
@@ -354,7 +353,7 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
                                         <Autocomplete
                                             name="realatedTo"
                                             options={relatedRecNames}
-                                            value={values.realatedTo}
+                                            value={values.accountDetails ||values.opportunityDetails ||values.leadDetails  }
 
                                             getOptionLabel={option => option.leadName || option.accountName || option.opportunityName || ''}
 
@@ -363,24 +362,57 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
                                             }
                                             onChange={(e, value) => {
 
-                                                console.log('inside onchange', values.object);
-                                                if (values.object === 'Account') {
-                                                    setFieldValue('AccountId', value.id)
-                                                } else if (values.object === 'Opportunity') {
-                                                    setFieldValue('OpportunityId', value.id)
-                                                } else if (values.object === 'Lead') {
-                                                    setFieldValue('LeadId', value.id)
-                                                }
-                                                setFieldValue("realatedTo", value || '')
+                                                console.log('inside onchange values', value);
+                                                if(!value){                                
+                                                    console.log('!value',value);
+                                                    if (values.object === 'Account') {
+                                                        setFieldValue('AccountId', '')
+                                                        setFieldValue('accountDetails','')
+                                                    } else if (values.object === 'Opportunity') {
+                                                        setFieldValue('OpportunityId', '')
+                                                        setFieldValue('opportunityDetails','')
+                                                    } else if (values.object === 'Lead') {
+                                                        setFieldValue('LeadId', '')
+                                                        setFieldValue('leadDetails','')
+                                                    }
+                                                    setFieldValue("realatedTo", value || '')
+
+                                                  }else{
+                                                    console.log('value',value);
+                                                    if (values.object === 'Account') {
+                                                        setFieldValue('AccountId', value.id)
+                                                        setFieldValue('accountDetails',value)
+                                                    } else if (values.object === 'Opportunity') {
+                                                        setFieldValue('OpportunityId', value.id)
+                                                        setFieldValue('opportunityDetails',value)
+                                                    } else if (values.object === 'Lead') {
+                                                        setFieldValue('LeadId', value.id)
+                                                        setFieldValue('leadDetails',value)
+                                                    }
+                                                    setFieldValue("realatedTo", value || '')
+                                                  }
+
+
+                                                // if (values.object === 'Account') {
+                                                //     setFieldValue('AccountId', value.id)
+                                                //     setFieldValue('accountDetails',value)
+                                                // } else if (values.object === 'Opportunity') {
+                                                //     setFieldValue('OpportunityId', value.id)
+                                                //     setFieldValue('opportunityDetails',value)
+                                                // } else if (values.object === 'Lead') {
+                                                //     setFieldValue('LeadId', value.id)
+                                                //     setFieldValue('leadDetails',value)
+                                                // }
+                                                // setFieldValue("realatedTo", value || '')
 
                                             }}
 
                                             onInputChange={(event, newInputValue) => {
                                                 console.log('inside on Input Change', values.object);
                                                 console.log('newInputValue', newInputValue);
-
-                                                FetchObjectsbyName(newInputValue, url)
-                                                // FetchAccountsbyName(newInputValue);
+                                                if (newInputValue.length >= 3) {
+                                                    FetchObjectsbyName(newInputValue, url)
+                                                }
                                             }}
                                             renderInput={params => (
                                                 <Field component={TextField} {...params} name="realatedTo" />

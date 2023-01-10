@@ -54,11 +54,7 @@ const OpportunityDetailPage = ({item}) => {
 
     const savedValues = {
         LeadId: singleOpportunity?.LeadId ?? "",
-       
         InventoryId: singleOpportunity?.InventoryId ?? "",
-        
-        //  Propertydetails:singleOpportunity?.Inventorydetails[0].propertyName ??"",
-        //  Leaddetails:singleOpportunity?.Leaddetails[0].firstName ??"",
         opportunityName:  singleOpportunity?.opportunityName ?? "",
         type: singleOpportunity?.type ?? "",
         leadSource:  singleOpportunity?.leadSource ?? "",
@@ -71,7 +67,9 @@ const OpportunityDetailPage = ({item}) => {
         createdbyId:  singleOpportunity?.createdbyId ?? "",
         createdDate:   new Date(singleOpportunity?.createdDate).toLocaleString(),
         modifiedDate:  new Date(singleOpportunity?.modifiedDate).toLocaleString(),
-        _id:   singleOpportunity?._id ?? "",   
+        _id:   singleOpportunity?._id ?? "",  
+        inventoryDetails: singleOpportunity?.inventoryDetails ??"",
+        leadDetails: singleOpportunity?.leadDetails ??"",
     }
     const validationSchema = Yup.object({
         opportunityName: Yup
@@ -241,7 +239,7 @@ const OpportunityDetailPage = ({item}) => {
                 <Autocomplete
                             name="InventoryId"
                             options={inventoriesRecord}
-                            value={values.Propertydetails}
+                            value={values.inventoryDetails}
                           
                              getOptionLabel={option =>  option.propertyName ||''}
                             //  isOptionEqualToValue = {(option,value)=>
@@ -250,8 +248,15 @@ const OpportunityDetailPage = ({item}) => {
 
                          
                             onChange={(e, value) => {
-                                setFieldValue("InventoryId",value.id ||'')
-                                setFieldValue("propertyName", value||'')
+                                if(!value){                                
+                                    console.log('!value',value);
+                                    setFieldValue("InventoryId",'')
+                                    setFieldValue("inventoryDetails",'')
+                                  }else{
+                                    console.log('value',value);
+                                    setFieldValue("InventoryId",value.id)
+                                    setFieldValue("inventoryDetails",value)
+                                  }
                             }}
                             onInputChange={(event, newInputValue) => {
                                 console.log('newInputValue',newInputValue);
@@ -271,12 +276,21 @@ const OpportunityDetailPage = ({item}) => {
                 <Autocomplete
                             name="LeadId"
                             options={leadsRecords}
-                            value={values.LeadId}
+                            value={values.leadDetails}
                             getOptionLabel={option => option.leadName ||''}
                            
                             onChange={(e, value) => {
+                                console.log('lead onchange',value);
+                              if(!value){                                
+                                console.log('!value',value);
+                                setFieldValue("LeadId",'')
+                                setFieldValue("leadDetails",'')
+                              }else{
+                                console.log('value',value);
                                 setFieldValue("LeadId",value.id)
-                                setFieldValue("leadName",value)
+                                setFieldValue("leadDetails",value)
+                              }
+                                
                             }}
                             
                             onInputChange={(event, newInputValue) => {

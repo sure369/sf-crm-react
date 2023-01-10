@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { Grid, Button, Forminput, DialogActions } from "@mui/material";
+import { Grid, Button, TextField,Forminput,Autocomplete, DialogActions } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom"
 import axios from 'axios'
 import SimpleSnackbar from "../toast/SimpleSnackbar";
@@ -12,6 +12,7 @@ import EventForm from '../formik/EventForm';
 import NewEventForm from '../formik/NewEvent';
 
 const url = "http://localhost:4000/api/UpsertLead";
+const fetchUsersbyName="http://localhost:4000/api/usersbyName"
 
 const LeadDetailPage = ({ item }) => {
 
@@ -23,12 +24,21 @@ const LeadDetailPage = ({ item }) => {
     const [alertMessage, setAlertMessage] = useState();
     const [alertSeverity, setAlertSeverity] = useState();
 
+    const[usersRecord,setUsersRecord]= useState([])
+    //user name security
+    const[showField,setShowFiled]= useState(false)
     useEffect(() => {
         console.log('passed record', location.state.record.item);
         setsingleLead(location.state.record.item);
         console.log('true', !location.state.record.item);
         setshowNew(!location.state.record.item)
+        FetchUsersbyName('')
       
+        if( location.state.record.item){
+            if(location.state.record.item.createdbyId ==="63a1b17bcaad7e97b1b5a537"){
+                setShowFiled(true)
+            }
+        }
         // getTasks(location.state.record.item._id)
     }, [])
 
@@ -45,9 +55,7 @@ const LeadDetailPage = ({ item }) => {
         createdbyId: '',
         createdDate: '',
         modifiedDate: '',
-
     }
-
 
     const savedValues = {
         salutation: singleLead?.salutation ?? "",
@@ -63,6 +71,7 @@ const LeadDetailPage = ({ item }) => {
         createdDate:   new Date(singleLead?.createdDate).toLocaleString(),
         modifiedDate:  new Date(singleLead?.modifiedDate).toLocaleString(),
         _id: singleLead?._id ?? "",
+        userDetails:singleLead?.userDetails ?? "", 
     }
 
     const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
@@ -92,6 +101,21 @@ const LeadDetailPage = ({ item }) => {
             .email('Invalid email address')
             .required('Required'),
     })
+
+    const FetchUsersbyName=(inputValue)=>{
+        console.log('inside FetchLeadsbyName fn');
+        console.log('newInputValue',inputValue)
+        axios.post(`${fetchUsersbyName}?searchKey=${inputValue}`)
+        .then((res) => {
+            console.log('res fetchLeadsbyName', res.data)
+            if(typeof(res.data)=== "object"){
+                setUsersRecord(res.data)
+            }
+        })
+        .catch((error) => {
+            console.log('error fetchLeadsbyName', error);
+        })
+    }
 
     const formSubmission = (values) => {
         console.log('form submission value',values);
@@ -189,6 +213,40 @@ const LeadDetailPage = ({ item }) => {
 
                                 <Form>
                                     <Grid container spacing={2}>
+                                    <Grid item xs={6} md={6}>
+                                            <label htmlFor="createdbyId">User Name </label>
+                                            <Autocomplete
+                                                name="createdbyId"
+                                                options={usersRecord}
+                                                //  defaultValue={values.userDetails.userName}
+                                                value={values.userDetails}
+                                                getOptionLabel={option => option.userName || ''}
+                                                // isOptionEqualToValue={(option, value) => option.userName === value.userName}
+                                                onChange={(e, value) => {
+                                                    console.log('inside onchange values', value);
+                                                    if(!value){                                
+                                                        console.log('!value',value);
+                                                        setFieldValue("createdbyId",'')
+                                                        setFieldValue("userDetails",'')
+                                                      }else{
+                                                        console.log('value',value);
+                                                        setFieldValue("createdbyId",value.id)
+                                                        setFieldValue("userDetails",value)
+                                                      }
+                                                }}
+
+                                                onInputChange={(event, newInputValue) => {
+                                                    console.log('newInputValue', newInputValue);
+                                                    if (newInputValue.length >= 3) {
+                                                        FetchUsersbyName(newInputValue);
+                                                    }
+                                                }}
+                                                renderInput={params => (
+                                                    <Field component={TextField} {...params} name="createdbyId" />
+                                                )}
+                                            />
+
+                                        </Grid>
                                         <Grid item xs={6} md={2}>
                                             <label htmlFor="salutation">Salutation  </label>
                                             <Field name="salutation" as="select" class="form-input">
@@ -224,13 +282,18 @@ const LeadDetailPage = ({ item }) => {
                                                 </Grid>
                                             </>
                                         )}
-                                        <Grid item xs={6} md={6}>
+
+                                        {
+                                            showField &&
+                                            <Grid item xs={6} md={6}>
                                             <label htmlFor="phone">Phone</label>
                                             <Field name="phone" type="phone" class="form-input" />
                                             <div style={{ color: 'red' }}>
                                                 <ErrorMessage name="phone" />
                                             </div>
-                                        </Grid>
+                                            </Grid>
+                                        }
+                                       
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="email">Email <span className="text-danger">*</span></label>
                                             <Field name="email" type="text" class="form-input" />
@@ -282,6 +345,8 @@ const LeadDetailPage = ({ item }) => {
                                                 <ErrorMessage name="leadStatus" />
                                             </div>
                                         </Grid>
+
+                                      
 
                                         {!showNew && (
                                             <>

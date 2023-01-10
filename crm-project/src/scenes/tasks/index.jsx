@@ -118,6 +118,28 @@ const Task = () => {
     { 
       field: "realatedTo", headerName: "Realated To",
       headerAlign: 'center', align: 'center',flex: 1,
+      renderCell: (params) => {
+        console.log('params',params.row)
+        if (params.row.object === 'Account') {
+          return <div className="rowitem">
+            {params.row.accountDetails.accountName}
+          </div>
+        }
+        else if(params.row.object === 'Lead') {
+          return <div className="rowitem">
+            {params.row.leadDetails.leadName}
+          </div>
+        }else if(params.row.object === 'Opportunity') {
+          return <div className="rowitem">
+            {params.row.opportunityDetails.opportunityName}
+          </div>
+        }else{
+          <div className="rowitem">
+          {null}
+           </div>
+        }
+      },
+
     }, 
     {
       field: "object",headerName: "Object",

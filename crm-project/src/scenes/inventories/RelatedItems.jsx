@@ -6,9 +6,10 @@ import {
 } from "@mui/material";
 import axios from 'axios'
 import SimpleSnackbar from "../toast/SimpleSnackbar";
-import ModalOppTask from "../tasks/ModalOppTask";
+
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import ModalInventoryOpportunity from "../opportunities/ModalInventoryOpp";
 
 const style = {
     position: 'absolute',
@@ -203,12 +204,12 @@ const InventoryRelatedItems = ({ item }) => {
           aria-controls="panel1a-content"
           id="panel1a-header"
         >
-          <Typography variant="h4">Add Opportunity ({realtedOpportunity.length})</Typography>
+          <Typography variant="h4">Opportunity ({realtedOpportunity.length})</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <Typography>
             <div style={{ textAlign: "end", marginBottom: "5px" }}>
-              <Button variant="contained" color="info" onClick={() => handleOpportunityModalOpen()} >New Task</Button>
+              <Button variant="contained" color="info" onClick={() => handleOpportunityModalOpen()} >Add Opportunity</Button>
             </div>
             <Card dense compoent="span" >
 
@@ -219,9 +220,9 @@ const InventoryRelatedItems = ({ item }) => {
                     .slice((opportunityPerPage - 1) * opportunityItemsPerPage, opportunityPerPage * opportunityItemsPerPage)
                     .map((item) => {
                       
-                      let   starDateConvert = new Date(item.StartDate).getUTCFullYear()
-                      + '-' +  ('0'+ (new Date(item.StartDate).getUTCMonth() + 1)).slice(-2) 
-                      + '-' + ('0'+ ( new Date(item.StartDate).getUTCDate())).slice(-2)  ||''
+                      let   starDateConvert = new Date(item.closeDate).getUTCFullYear()
+                      + '-' +  ('0'+ (new Date(item.closeDate).getUTCMonth() + 1)).slice(-2) 
+                      + '-' + ('0'+ ( new Date(item.closeDate).getUTCDate())).slice(-2)  ||''
 
                       return (
                         <div >
@@ -232,9 +233,9 @@ const InventoryRelatedItems = ({ item }) => {
                             >
                               <Grid container spacing={2}>
                                 <Grid item xs={6} md={10}>
-                                  <div>Subject : {item.subject} </div>
-                                  <div>Date&Time :{starDateConvert} </div>
-                                  <div>Description : {item.description} </div>
+                                  <div>Name : {item.opportunityName} </div>
+                                  <div>Stage :{item.stage} </div>
+                                  <div>Close Date : {starDateConvert} </div>
                                 </Grid>
                                 <Grid item xs={6} md={2}>
 
@@ -291,13 +292,13 @@ const InventoryRelatedItems = ({ item }) => {
     
 
       <Modal
-        open={opportunityModalOpen}
+        open={realtedOpportunityModalOpen}
         onClose={handleOpportunityModalClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <ModalOppTask handleModal={handleOpportunityModalClose} />
+          <ModalInventoryOpportunity handleModal={handleOpportunityModalClose} />
         </Box>
       </Modal>
 

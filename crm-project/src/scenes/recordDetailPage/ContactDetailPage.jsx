@@ -35,7 +35,6 @@ const ContactDetailPage = ({ item }) => {
 
     const initialValues = {
         AccountId: "",
-        accountName: { accountName: "", id: "" },
         salutation: '',
         firstName: '',
         lastName: '',
@@ -54,14 +53,11 @@ const ContactDetailPage = ({ item }) => {
 
     const savedValues = {
         AccountId: singleContact?.AccountId ?? "",
-        accountName: singleContact?.accountName ?? "",
-        // accountName:singleContact?.Accountdetails[0].accountName??"",
         salutation: singleContact?.salutation ?? "",
         firstName: singleContact?.firstName ?? "",
         lastName: singleContact?.lastName ?? "",
         fullName:singleContact?.fullName ?? "",
         phone: singleContact?.phone ?? "",
-        // dob:singleContact?.dob??"",
         dob:new Date(singleContact?.dob).getUTCFullYear()
         + '-' +  ('0'+ (new Date(singleContact?.dob).getUTCMonth() + 1)).slice(-2) 
         + '-' + ('0'+ ( new Date(singleContact?.dob).getUTCDate())).slice(-2) ||'',
@@ -75,6 +71,7 @@ const ContactDetailPage = ({ item }) => {
         createdDate:   new Date(singleContact?.createdDate).toLocaleString(),
         modifiedDate:  new Date(singleContact?.modifiedDate).toLocaleString(),
         _id: singleContact?._id ?? "",
+        accountDetails: singleContact?.accountDetails ??"",
     }
     const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
  
@@ -104,14 +101,10 @@ const ContactDetailPage = ({ item }) => {
     const formSubmission = (values) => {
 
         console.log('form submission value', values);
-      
-        // let d = new Date();
-        // const formatDate = [d.getDate(), d.getMonth() + 1, d.getFullYear()].join('/') + ' ' + [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
 
             let dateSeconds = new Date().getTime();
             let createDateSec = new Date(values.createdDate).getTime()
             let dobSec = new Date(values.dob).getTime()
-        console.log('date Seconds', dateSeconds);
 
         if (showNew) {
             values.modifiedDate = dateSeconds;
@@ -254,59 +247,29 @@ const ContactDetailPage = ({ item }) => {
                                                 <Autocomplete
                                                     name="AccountId"
                                                     options={accNames}
-                                                    value={values.AccountId}
-                                                    // {accNames.filter((item) => {
-                                                    //     return item.countryId === values.countryId;
-                                                    //   })[0] || ""}
-
+                                                    value={values.accountDetails}
                                                     getOptionLabel={option => option.accountName || ''}
-
-                                                    isOptionEqualToValue={(option, value) =>
-                                                        option.id === value
-                                                    }
                                                     onChange={(e, value) => {
-
-                                                        setFieldValue("AccountId", value.id || '')
-                                                        setFieldValue("accountName", value || '')
-
+                                                        if(!value){                                
+                                                            console.log('!value',value);
+                                                            setFieldValue("AccountId",'')
+                                                            setFieldValue("accountDetails",'')
+                                                        }else{
+                                                            console.log('value',value);
+                                                            setFieldValue("AccountId",value.id)
+                                                            setFieldValue("accountDetails",value)
+                                                        }
                                                     }}
-                                                    // onClick={()=>{
-                                                    //     console.log('inside onclick')
-                                                    //     FetchAccountsbyName('');
-                                                    // }}
-                                                    // onBlur={()=>{  
-                                                    //     console.log('inside onBlur')
-                                                    //     FetchAccountsbyName('');
-                                                    // }}
                                                     onInputChange={(event, newInputValue) => {
                                                         console.log('newInputValue', newInputValue);
 
-                                                        FetchAccountsbyName(newInputValue);
-
+                                                        if (newInputValue.length >= 3) {
+                                                            FetchAccountsbyName(newInputValue);
+                                                        }                                                    
                                                     }}
                                                     renderInput={params => (
                                                         <Field component={TextField} {...params} name="AccountId" />
                                                     )}
-                                                // name="Account"
-                                                // options={accNames}
-                                                // getOptionLabel={option => option.accountName ||''}
-                                                // isOptionEqualToValue={(option, value) =>
-                                                //     option.id === value
-                                                // }
-                                                // onChange={(e, value) => {
-                                                //     setFieldValue("accountName",value)
-                                                //     setFieldValue("Account",value.id)
-                                                // }}
-                                                // value={values.Account}
-                                                // onInputChange={(event, newInputValue) => {
-                                                //     console.log('newInputValue',newInputValue);
-                                                //     if(newInputValue.length>=3){
-                                                //         FetchAccountsbyName(newInputValue);
-                                                //     }
-                                                // }}
-                                                // renderInput={(params) => 
-                                                //     <Field component={TextField} {...params} name="Account" />
-                                                // }
                                                 />
 
                                             </Grid>

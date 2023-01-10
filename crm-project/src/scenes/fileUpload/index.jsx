@@ -277,7 +277,7 @@ const DropFileInput = () => {
                             // saveAs (item.filePath, 'test.pdf')
 
                         //    redirect(item);
-                            // saveAs(item.filePath, `${item.fileName}.${item.fileType}`)
+                             saveAs(item.filePath, `${item.fileName}.${item.fileType}`)
                             //  downloadFile(item._id, item.filePath, item.fileType)
                         }
                       }
@@ -286,7 +286,10 @@ const DropFileInput = () => {
                       </a>
                   </td>
                       <td>
-                        <img src={`http://localhost:4000/${item.filePath}`} />
+
+                      <iframe src={`https://view.officeapps.live.com/op/embed.aspx?src=http://localhost:4000/${item.filedata.filename}`} width='100%' height='1000%' frameborder='0'>This is an embedded <a target='_blank' href='http://office.com'>Microsoft Office</a> document, powered by <a target='_blank' href='http://office.com/webapps'>Office Online</a>.</iframe>
+
+                        {/* <img src={`http://localhost:4000/${item.filePath}`} /> */}
                       </td>
 
                 </tr>

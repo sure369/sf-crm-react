@@ -42,7 +42,6 @@ const AccountDetailPage = ({ item }) => {
         accountName: '',
         accountNumber: '',
         InventoryId: '',
-        inventoryName: { inventoryName: "", id: "" },
         annualRevenue: '',
         rating: '',
         type: '',
@@ -75,6 +74,7 @@ const AccountDetailPage = ({ item }) => {
         createdDate:  new Date(singleAccount?.createdDate).toLocaleString(),
         modifiedDate: new Date(singleAccount?.modifiedDate).toLocaleString(),
         _id: singleAccount?._id ?? "",
+        inventoryDetails:singleAccount?.inventoryDetails ?? "", 
     }
 
     const citiesList = {
@@ -137,10 +137,16 @@ const AccountDetailPage = ({ item }) => {
         if(showNew){
             values.modifiedDate = dateSeconds;
             values.createdDate = dateSeconds;
+            if(values.InventoryId===''){
+                delete values.InventoryId;
+            }
         }
         else if(!showNew){
             values.modifiedDate = dateSeconds;
             values.createdDate = createDateSec;
+            if(values.InventoryId===''){
+                delete values.InventoryId;
+            }
         }
         
         console.log('after change form submission value',values);
@@ -235,15 +241,22 @@ const AccountDetailPage = ({ item }) => {
                                             <Autocomplete
                                                 name="InventoryId"
                                                 options={inventoriesRecord}
-                                                value={values.InventoryId}
+                                                value={values.inventoryDetails}
                                                 getOptionLabel={option => option.propertyName || ''}
-                                                isOptionEqualToValue={(option, value) =>
-                                                    option.id === value
-
-                                                }
+                                                // isOptionEqualToValue={(option, value) =>
+                                                //     option.id === value
+                                                // }
                                                 onChange={(e, value) => {
-                                                    setFieldValue("InventoryId", value.id || '')
-                                                    setFieldValue("propertyName", value || '')
+
+                                                    if(!value){                                
+                                                        console.log('!value',value);
+                                                        setFieldValue("InventoryId",'')
+                                                        setFieldValue("inventoryDetails",'')
+                                                      }else{
+                                                        console.log('value',value);
+                                                        setFieldValue("InventoryId",value.id)
+                                                        setFieldValue("inventoryDetails",value)
+                                                      }
                                                 }}
                                                 onInputChange={(event, newInputValue) => {
                                                     console.log('newInputValue', newInputValue);

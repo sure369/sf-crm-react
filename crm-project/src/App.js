@@ -92,8 +92,8 @@ function App() {
               <Route path="/new-accounts" element={<AccountDetailPage />} />
               <Route path ='/new-oppInventory' element={<JnOppInventoryDetailPage/>} />
 
-
-              <Route path="/leadDetailPage" element={<FlexLeads/>} />
+              <Route path="/leadDetailPage" element={<FlexLeads/>}  />
+              {/* <Route path="/leadDetailPage/:Id" element={<LeadDetailPage/>} /> */}
               <Route path="/opportunityDetailPage" element={<FlexOpportunities/>}/>
               <Route path="/accountDetailPage" element={<FlexAccounts/>} />
               <Route path="/taskDetailPage" element={<FlexTasks/>}/>

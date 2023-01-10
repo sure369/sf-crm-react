@@ -1,7 +1,7 @@
 import React ,{ useEffect, useState ,useRef } from "react";
 import PropTypes from 'prop-types';
 import { Box,Grid,Button ,DialogActions} from "@mui/material";
-import {useLocation ,useNavigate} from 'react-router-dom';
+import {useLocation ,useNavigate,useParams} from 'react-router-dom';
 import LeadDetailPage from "../recordDetailPage/LeadDetailPage";
 import LeadRelatedItems from "../leads/RelatedItems";
 
@@ -41,10 +41,12 @@ const FlexLeads = (item) => {
 
     const[passedRecord,setPassedRecord] =useState();
     const location = useLocation();
+    const params = useParams()
 
     useEffect(() => {
 
         console.log('passed record',location.state.record.item)
+         console.log('params',params)
         setPassedRecord(location.state.record.item);        
     }, [])
  

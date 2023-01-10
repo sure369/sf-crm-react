@@ -154,16 +154,20 @@ const Contacts = () => {
       field: "accountName",headerName: "Account Name",
       headerAlign: 'center',align: 'center',flex: 1,
       renderCell: (params) => {
-      if(params.row.Accountdetails.length>0){
         return <div className="rowitem">
-          {params.row.Accountdetails[0].accountName}
-        </div>;
-      }
-      else{
-        return <div className="rowitem">
-          {null}
-          </div>
-      }
+        {params.row.accountDetails.accountName}
+      </div>
+
+      // if(params.row.accountDetails.length>0){
+      //   console.log('if');
+       
+      // }
+      // else{
+      //   console.log('else')
+      //   return <div className="rowitem">
+      //     {null}
+      //     </div>
+      // }
         
       },
     }, 
