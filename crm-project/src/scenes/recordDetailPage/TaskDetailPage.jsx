@@ -42,6 +42,10 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
         setSingleTask(location.state.record.item)
         console.log('true', !location.state.record.item);
         setshowNew(!location.state.record.item)
+        if(location.state.record.item){
+
+            callEvent(location.state.record.item.object)
+        }
         //    console.log('AccountId',location.state.record.item.AccountId)
 
         //    console.log('OpportunityId',location.state.record.item.OpportunityId)
@@ -375,7 +379,7 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
                                                         setFieldValue('LeadId', '')
                                                         setFieldValue('leadDetails','')
                                                     }
-                                                    setFieldValue("realatedTo", value || '')
+                                                    // setFieldValue("realatedTo", value || '')
 
                                                   }else{
                                                     console.log('value',value);
@@ -389,7 +393,7 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
                                                         setFieldValue('LeadId', value.id)
                                                         setFieldValue('leadDetails',value)
                                                     }
-                                                    setFieldValue("realatedTo", value || '')
+                                                    // setFieldValue("realatedTo", value || '')
                                                   }
 
 
@@ -408,8 +412,6 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
                                             }}
 
                                             onInputChange={(event, newInputValue) => {
-                                                console.log('inside on Input Change', values.object);
-                                                console.log('newInputValue', newInputValue);
                                                 if (newInputValue.length >= 3) {
                                                     FetchObjectsbyName(newInputValue, url)
                                                 }
