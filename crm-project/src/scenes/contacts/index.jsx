@@ -12,6 +12,7 @@ import {  useNavigate } from "react-router-dom";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import Pagination from '@mui/material/Pagination';
+import  EmailModalPage from '../recordDetailPage/EmailModalPage';
 
 const modalStyle = {
   position: 'absolute',
@@ -46,6 +47,11 @@ const Contacts = () => {
   const handleModalOpen = () => setOpen(true);
   const handleModalClose = () => setOpen(false);
 
+  const [showEmail,setShowEmail]= useState(false)
+  const [selectedRecordIds,setSelectedRecordIds]=useState()
+  const [selectedRecordDatas,setSelectedRecordDatas]=useState()
+  const [emailModalOpen,setEmailModalOpen] =useState(false)
+  
   useEffect(()=>{
     console.log('contact index')
     fetchRecords();
@@ -130,6 +136,7 @@ const Contacts = () => {
     setShowAlert(false)
   }
 
+
   function CustomPagination() {
     const apiRef = useGridApiContext();
     const page = useGridSelector(apiRef, gridPageSelector);
@@ -144,6 +151,17 @@ const Contacts = () => {
       />
     );
   }
+
+   const handlesendEmail =()=>{
+    console.log('inside email')
+    console.log('selectedRecordIds',selectedRecordIds);
+    setEmailModalOpen(true)
+  }
+
+  const setEmailModalClose =()=>{
+    setEmailModalOpen(false)
+}
+
 
   const columns = [
     {
@@ -252,11 +270,32 @@ const Contacts = () => {
             >
                   New 
           </Button>
+
+          <div>
+                    {
+                        showEmail ? <Button variant="contained" color="secondary" onClick={handlesendEmail}>Send Email</Button> :''
+                    }
+                    
+                </div>
+
         </div>
 
         <DataGrid
           rows={records}
           columns={columns}
+          checkboxSelection
+          onSelectionModelChange={(ids)=>{
+            var size = Object.keys(ids).length;
+           size>0 ? setShowEmail(true)  : setShowEmail(false)
+           console.log('id',ids);
+           setSelectedRecordIds(ids)
+            const selectedIDs = new Set(ids);
+            const selectedRowRecords = records.filter((row) =>
+              selectedIDs.has(row._id.toString())
+            );
+            setSelectedRecordDatas(selectedRowRecords)
+            console.log('selectedRowRecords',selectedRowRecords)
+          }}
           getRowId={(row) => row._id}
           pageSize={7}
           rowsPerPageOptions={[7]}
@@ -267,8 +306,31 @@ const Contacts = () => {
         />
       </Box>
     </Box>
+
+    <Modal
+        open={emailModalOpen}
+        onClose={setEmailModalClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={ModalBoxstyle}>
+          <EmailModalPage data={selectedRecordDatas}  handleModal={setEmailModalClose} />
+        </Box>
+      </Modal>
+
     </>
   );
 }
 
 export default Contacts;
+
+const ModalBoxstyle = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 600,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+};

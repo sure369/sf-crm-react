@@ -11,9 +11,9 @@ import SimpleSnackbar from "../toast/SimpleSnackbar";
 import "../formik/FormStyles.css"
 
 
-const urlSendEmail="http://localhost:4000/api/email"
+const urlSendEmail = "http://localhost:4000/api/bulkemail"
 
-const EmailModalPage = ({ item, handleModal }) => {
+const EmailModalPage = ({ data, handleModal }) => {
 
     const [parentRecord, setParentRecord] = useState();
 
@@ -25,22 +25,25 @@ const EmailModalPage = ({ item, handleModal }) => {
     const location = useLocation();
 
     useEffect(() => {
-        console.log('passed record', location.state.record.item);
-        setParentRecord(location.state.record.item)
+        console.log('email modal page');
+        console.log('data', data);
+
+        setParentRecord(data)
 
     }, [])
 
     const initialValues = {
         subject: '',
-        htmlBody:'',
-        emailRec:parentRecord
+        htmlBody: '',
+        recordsData: '',
+        attachments: ''
     }
 
     const validationSchema = Yup.object({
         subject: Yup
             .string()
             .required('Required'),
-            htmlBody: Yup
+        htmlBody: Yup
             .string()
             .required('Required')
         ,
@@ -49,25 +52,33 @@ const EmailModalPage = ({ item, handleModal }) => {
 
     const formSubmission = async (values, { resetForm }) => {
         console.log('inside form Submission', values);
-       
-        values.emailRec=parentRecord
+
+        values.recordsData = parentRecord;
+        const formData = new FormData();
+        formData.append('subject', values.subject)
+        formData.append('htmlBody', values.htmlBody)
+        formData.append('recordId', values.recordId)
+        formData.append('attachments', values.attachments)
         console.log('after chnge', values);
-     
-      
-            axios.post(urlSendEmail,values)
-            .then((res)=>{
-                console.log('email send res',res)
+
+
+        axios.post(urlSendEmail, values)
+            .then((res) => {
+                console.log('email send res', res)
                 setShowAlert(true)
-                        setAlertMessage(res.data)
-                         setAlertSeverity('success')
-            })  
-        .catch((error)=>{
-            console.log('email send error',error);
-            setShowAlert(true)
-                     setAlertMessage(error.message)
-                     setAlertSeverity('error')
-        })      
-     
+                setAlertMessage(res.data)
+                setAlertSeverity('success')
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000)
+            })
+            .catch((error) => {
+                console.log('email send error', error);
+                setShowAlert(true)
+                setAlertMessage(error.message)
+                setAlertSeverity('error')
+            })
+
         // await axios.post(UpsertUrl, values)
 
         //     .then((res) => {
@@ -104,7 +115,7 @@ const EmailModalPage = ({ item, handleModal }) => {
             >
                 {(props) => {
                     const {
-                        isSubmitting,                      
+                        isSubmitting,
                     } = props;
 
                     return (
@@ -129,7 +140,12 @@ const EmailModalPage = ({ item, handleModal }) => {
                                             <ErrorMessage name="subject" />
                                         </div>
                                     </Grid>
-                                   
+                                    <Grid item xs={12} md={12}>
+                                        <label htmlFor="attachments">Attachments</label>
+                                        <Field name="attachments" type="file" class="form-input" />
+
+                                    </Grid>
+
                                 </Grid>
 
                                 <div className='action-buttons'>
