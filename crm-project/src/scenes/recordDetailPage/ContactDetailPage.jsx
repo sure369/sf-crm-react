@@ -175,8 +175,9 @@ const ContactDetailPage = ({ item }) => {
     }
     const handlesendEmail =()=>{
         console.log('handlesendEmail',singleContact.email);
+        console.log('urlSendEmail',urlSendEmail);
         if(singleContact.email !=''){
-            axios.post(urlSendEmail,singleContact.email)
+            axios.post(urlSendEmail,singleContact)
             .then((res)=>{
                 console.log('email send res',res)
             })  
