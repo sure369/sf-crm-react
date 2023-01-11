@@ -57,9 +57,15 @@ const EmailModalPage = ({ item, handleModal }) => {
             axios.post(urlSendEmail,values)
             .then((res)=>{
                 console.log('email send res',res)
+                setShowAlert(true)
+                        setAlertMessage(res.data)
+                         setAlertSeverity('success')
             })  
         .catch((error)=>{
             console.log('email send error',error);
+            setShowAlert(true)
+                     setAlertMessage(error.message)
+                     setAlertSeverity('error')
         })      
      
         // await axios.post(UpsertUrl, values)
