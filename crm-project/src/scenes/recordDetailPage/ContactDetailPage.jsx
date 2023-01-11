@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { Grid, Button, Forminput, DialogActions, Autocomplete, TextField } from "@mui/material";
+import { Grid, Button, DialogActions, 
+    Modal,Box, Autocomplete, TextField } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom"
 import axios from 'axios'
 import SimpleSnackbar from "../toast/SimpleSnackbar";
 import "../formik/FormStyles.css"
+import EmailModalPage from './EmailModalPage';
 
 const url = "http://localhost:4000/api/UpsertContact";
 const fetchAccountsbyName = "http://localhost:4000/api/accountsname";
@@ -22,6 +24,8 @@ const ContactDetailPage = ({ item }) => {
     const [showAlert, setShowAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState();
     const [alertSeverity, setAlertSeverity] = useState();
+
+    const[emailModalOpen,setEmailModalOpen]=useState(false)
 
     useEffect(() => {
         console.log('passed record', location.state.record.item);
@@ -174,19 +178,26 @@ const ContactDetailPage = ({ item }) => {
         navigate(-1)
     }
     const handlesendEmail =()=>{
-        console.log('handlesendEmail',singleContact.email);
-        console.log('urlSendEmail',urlSendEmail);
-        if(singleContact.email !=''){
-            axios.post(urlSendEmail,singleContact)
-            .then((res)=>{
-                console.log('email send res',res)
-            })  
-        .catch((error)=>{
-            console.log('email send error',error);
-        })      }
+        setEmailModalOpen(true)
+        // console.log('handlesendEmail',singleContact.email);
+        // console.log('urlSendEmail',urlSendEmail);
+        // if(singleContact.email !=''){
+        //     axios.post(urlSendEmail,singleContact)
+        //     .then((res)=>{
+        //         console.log('email send res',res)
+        //     })  
+        // .catch((error)=>{
+        //     console.log('email send error',error);
+        // })      }
      
        
     }
+    const setEmailModalClose =()=>{
+        setEmailModalOpen(false)
+    }
+
+   
+
 
     return (
         <div className="App" >
@@ -375,8 +386,31 @@ const ContactDetailPage = ({ item }) => {
                     </Formik>
                 </div>
             </Grid>
+
+        <Modal
+        open={emailModalOpen}
+        onClose={setEmailModalClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <EmailModalPage   handleModal={setEmailModalClose} />
+        </Box>
+      </Modal>
+
         </div>
     )
 
 }
 export default ContactDetailPage;
+
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 600,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+  };
