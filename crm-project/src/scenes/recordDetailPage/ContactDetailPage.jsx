@@ -10,6 +10,7 @@ import "../formik/FormStyles.css"
 
 const url = "http://localhost:4000/api/UpsertContact";
 const fetchAccountsbyName = "http://localhost:4000/api/accountsname";
+const urlSendEmail="http://localhost:4000/api/email"
 
 const ContactDetailPage = ({ item }) => {
 
@@ -172,6 +173,19 @@ const ContactDetailPage = ({ item }) => {
     const handleFormClose =()=>{
         navigate(-1)
     }
+    const handlesendEmail =()=>{
+        console.log('handlesendEmail',singleContact.email);
+        if(singleContact.email !=''){
+            axios.post(urlSendEmail,singleContact.email)
+            .then((res)=>{
+                console.log('email send res',res)
+            })  
+        .catch((error)=>{
+            console.log('email send error',error);
+        })      }
+     
+       
+    }
 
     return (
         <div className="App" >
@@ -180,6 +194,12 @@ const ContactDetailPage = ({ item }) => {
                     {
                         showNew ? <h3>New Contact </h3> : <h3>Contact Detail Page </h3>
                     }
+                </div>
+                <div>
+                    {
+                        !showNew ? <Button variant="contained" color="secondary" onClick={handlesendEmail}>Send Email</Button> :''
+                    }
+                    
                 </div>
                 <div>
                     <Formik
