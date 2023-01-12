@@ -394,7 +394,7 @@ const ContactDetailPage = ({ item }) => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <EmailModalPage  data={singleContact}  handleModal={setEmailModalClose} />
+          <EmailModalPage  data={singleContact}  handleModal={setEmailModalClose} bulkMail={false} />
         </Box>
       </Modal>
 

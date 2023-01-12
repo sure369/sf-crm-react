@@ -54,19 +54,19 @@ const Contacts = () => {
   
   useEffect(()=>{
     console.log('contact index')
+    console.log('typeof',typeof(records));
     fetchRecords();
   
   }, []);
 
   const fetchRecords=()=>{
-    console.log(typeof(records));
     axios.post(urlContact)
     .then(
       (res) => {
         console.log("res Contact records", res);
         if(res.data.length>0  && (typeof(res.data) !=='string')){
           setRecords(res.data);
-          console.log(typeof(records));
+          
         }
         else{  
         setRecords([]);
@@ -317,7 +317,7 @@ const Contacts = () => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={ModalBoxstyle}>
-          <EmailModalPage data={selectedRecordDatas}  handleModal={setEmailModalClose} />
+          <EmailModalPage data={selectedRecordDatas}  handleModal={setEmailModalClose}  bulkMail={true} />
         </Box>
       </Modal>
 

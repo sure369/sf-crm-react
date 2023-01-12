@@ -11,9 +11,9 @@ import SimpleSnackbar from "../toast/SimpleSnackbar";
 import "../formik/FormStyles.css"
 
 
-const urlSendEmail = "http://localhost:4000/api/bulkemail"
+const urlSendEmailbulk = "http://localhost:4000/api/bulkemail"
 
-const EmailModalPage = ({ data, handleModal }) => {
+const EmailModalPage = ({ data, handleModal ,bulkMail }) => {
 
     const [parentRecord, setParentRecord] = useState([]);
 
@@ -21,13 +21,14 @@ const EmailModalPage = ({ data, handleModal }) => {
     const [alertMessage, setAlertMessage] = useState();
     const [alertSeverity, setAlertSeverity] = useState();
 
+
     const navigate = useNavigate();
     const location = useLocation();
 
     useEffect(() => {
-        console.log('email modal page');
+
         console.log('data', data);
-        console.log(typeof(parentRecord))
+        console.log('bulkMail',bulkMail);
         setParentRecord(data)
 
     }, [])
@@ -52,18 +53,26 @@ const EmailModalPage = ({ data, handleModal }) => {
 
     const formSubmission = async (values, { resetForm }) => {
         console.log('inside form Submission', values);
+   
         values.recordsData = parentRecord;
+        let arr =[];
+        arr.push((values.recordsData));
+        console.log('arr',arr);
+
+
+
+       
 
         let formData = new FormData();
         formData.append('subject',values.subject);
         formData.append('htmlBody',values.htmlBody);
-         formData.append('recordsData',JSON.stringify(values.recordsData)); 
+        formData.append('recordsData',JSON.stringify(arr)); 
         formData.append('file',values.attachments);
         // , { headers: {
         //     'Content-Type': 'multipart/form-data'
         //   } })
 
-        axios.post(urlSendEmail, formData )
+        axios.post(urlSendEmailbulk, formData )
             .then((res) => {
                 console.log('email send res', res)
                 setShowAlert(true)
