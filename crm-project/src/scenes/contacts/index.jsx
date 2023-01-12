@@ -59,12 +59,14 @@ const Contacts = () => {
   }, []);
 
   const fetchRecords=()=>{
+    console.log(typeof(records));
     axios.post(urlContact)
     .then(
       (res) => {
         console.log("res Contact records", res);
         if(res.data.length>0  && (typeof(res.data) !=='string')){
           setRecords(res.data);
+          console.log(typeof(records));
         }
         else{  
         setRecords([]);
@@ -288,6 +290,7 @@ const Contacts = () => {
             var size = Object.keys(ids).length;
            size>0 ? setShowEmail(true)  : setShowEmail(false)
            console.log('id',ids);
+           console.log(typeof(records));
            setSelectedRecordIds(ids)
             const selectedIDs = new Set(ids);
             const selectedRowRecords = records.filter((row) =>

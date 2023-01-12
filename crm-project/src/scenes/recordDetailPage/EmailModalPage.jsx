@@ -27,7 +27,7 @@ const EmailModalPage = ({ data, handleModal }) => {
     useEffect(() => {
         console.log('email modal page');
         console.log('data', data);
-
+        console.log(typeof(parentRecord))
         setParentRecord(data)
 
     }, [])
@@ -53,15 +53,16 @@ const EmailModalPage = ({ data, handleModal }) => {
     const formSubmission = async (values, { resetForm }) => {
         console.log('inside form Submission', values);
         values.recordsData = parentRecord;
-      
+
         let formData = new FormData();
         formData.append('subject',values.subject);
         formData.append('htmlBody',values.htmlBody);
-        formData.append('recordsData',JSON.stringify(values.recordsData));
+         formData.append('recordsData',JSON.stringify(values.recordsData)); 
         formData.append('file',values.attachments);
         // , { headers: {
         //     'Content-Type': 'multipart/form-data'
         //   } })
+
         axios.post(urlSendEmail, formData )
             .then((res) => {
                 console.log('email send res', res)
