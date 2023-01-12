@@ -57,12 +57,12 @@ const EmailModalPage = ({ data, handleModal }) => {
         let formData = new FormData();
         formData.append('subject',values.subject);
         formData.append('htmlBody',values.htmlBody);
-        formData.append('recordsData',values.recordsData);
+        formData.append('recordsData',JSON.stringify(values.recordsData));
         formData.append('file',values.attachments);
         // , { headers: {
         //     'Content-Type': 'multipart/form-data'
         //   } })
-        axios.post(urlSendEmail, formData  )
+        axios.post(urlSendEmail, formData )
             .then((res) => {
                 console.log('email send res', res)
                 setShowAlert(true)
