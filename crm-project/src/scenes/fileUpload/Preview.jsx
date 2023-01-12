@@ -52,7 +52,7 @@ const fetchRecords = () => {
   axios.post(urlimage)
     .then(
       (res) => {
-        console.log("fetch res ", res);
+        console.log("fetch res data", res);
         setImg(res.data)
         
       }
@@ -64,8 +64,9 @@ const fetchRecords = () => {
 
   return (
     <div>
-        <iframe src={`https://view.officeapps.live.com/op/embed.aspx?src=${img}`} width='100%' height='1000%' frameborder='0'>This is an embedded <a target='_blank' href='http://office.com'>Microsoft Office</a> document, powered by <a target='_blank' href='http://office.com/webapps'>Office Online</a>.</iframe>
- <iframe src='https://view.officeapps.live.com/op/embed.aspx?src=http%3A%2F%2Fieee802%2Eorg%3A80%2Fsecmail%2FdocIZSEwEqHFr%2Edoc' width='100%' height='1000%' frameborder='0'>This is an embedded <a target='_blank' href='http://office.com'>Microsoft Office</a> document, powered by <a target='_blank' href='http://office.com/webapps'>Office Online</a>.</iframe>
+      {/* <iframe src='https://view.officeapps.live.com/op/embed.aspx?src=http://writing.engr.psu.edu/workbooks/formal_report_template.doc' width='80%' height='800px' frameborder='0'></iframe> */}
+      <iframe src={`https://view.officeapps.live.com/op/embed.aspx?src=${img}&embedded=true`} width='100%' height='800px' frameborder='0'></iframe>
+ <iframe src='https://view.officeapps.live.com/op/embed.aspx?src=http%3A%2F%2Fieee802%2Eorg%3A80%2Fsecmail%2FdocIZSEwEqHFr%2Edoc' width='80%' height='800px' frameborder='0'>This is an embedded <a target='_blank' href='http://office.com'>Microsoft Office</a> document, powered by <a target='_blank' href='http://office.com/webapps'>Office Online</a>.</iframe>
 {/* uploads\\2022-12-30T09-11-59.094Z-datcrmcsv.csv */}
         {/* <iframe src='https://view.officeapps.live.com/op/embed.aspx?src=http://remote.url.tld/path/to/document.doc' width='1366px' height='623px' frameborder='0'>This is an embedded <a target='_blank' href='http://office.com'>Microsoft Office</a> document, powered by <a target='_blank' href='http://office.com/webapps'>Office Online</a>.</iframe> */}
 

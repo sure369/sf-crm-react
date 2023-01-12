@@ -47,7 +47,7 @@ import DropFileInput from "./scenes/fileUpload";
 import JnOppInventoryDetailPage from "./scenes/recordDetailPage/JnOppInventoryDetailPage";
 import OppInventoryJunction from "./scenes/OppInventory";
 import FlexInventories from "./scenes/Flex/FlexInventory";
-
+import TextEditor from "./scenes/RichTextField/TextEditor";
 
 import Preview from "./scenes/fileUpload/Preview";
 
@@ -85,6 +85,7 @@ function App() {
               <Route path="/dataLoder" element={<DataLoadPage/>} />
               <Route path ='/file' element={<DropFileInput/>} />
               <Route path ='/test' element={<Preview/>} />
+              <Route path ='/test1' element={<TextEditor/>} />
 
               <Route path="/new-inventories" element={<InventoryDetailPage/>} />
               <Route path="/new-leads" element={<LeadDetailPage />} />
@@ -107,7 +108,8 @@ function App() {
 
              
              <Route path="/userDetailPage" element={<UserDetailPage/>} />
-              <Route path="/test-date" element={<MaterialUIPickers/>} />
+            <Route path="/test-date" element={<MaterialUIPickers/>} />
+            
             </Routes>
           </main>
         </div>

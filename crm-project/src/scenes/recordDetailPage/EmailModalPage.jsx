@@ -54,23 +54,28 @@ const EmailModalPage = ({ data, handleModal }) => {
         console.log('inside form Submission', values);
 
         values.recordsData = parentRecord;
-        const formData = new FormData();
-        formData.append('subject', values.subject)
-        formData.append('htmlBody', values.htmlBody)
-        formData.append('recordId', values.recordId)
-        formData.append('attachments', values.attachments)
-        console.log('after chnge', values);
+      
+        // let formData = new FormData();
+        // formData.append('subject', values.subject)
+        // formData.append('htmlBody', values.htmlBody)
+        // formData.append('recordsData', values.recordsData)
+        // formData.append('attachments', values.attachments)
+         console.log('after chnge', values);
+
+        const config = {     
+            headers: { 'content-type': 'multipart/form-data' }
+        }
 
 
-        axios.post(urlSendEmail, values)
+        axios.post(urlSendEmail, values )
             .then((res) => {
                 console.log('email send res', res)
                 setShowAlert(true)
                 setAlertMessage(res.data)
                 setAlertSeverity('success')
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1000)
+                // setTimeout(() => {
+                //     window.location.reload();
+                // }, 1000)
             })
             .catch((error) => {
                 console.log('email send error', error);
@@ -79,23 +84,6 @@ const EmailModalPage = ({ data, handleModal }) => {
                 setAlertSeverity('error')
             })
 
-        // await axios.post(UpsertUrl, values)
-
-        //     .then((res) => {
-        //         console.log('task form Submission  response', res);
-        //         setShowAlert(true)
-        //         setAlertMessage(res.data)
-        //         setAlertSeverity('success')
-        //         setTimeout(() => {
-        //             window.location.reload();
-        //         }, 1000)
-        //     })
-        //     .catch((error) => {
-        //         console.log('task form Submission  error', error);
-        //         setShowAlert(true)
-        //         setAlertMessage(error.message)
-        //         setAlertSeverity('error')
-        //     })
     }
 
     const toastCloseCallback = () => {
@@ -115,7 +103,7 @@ const EmailModalPage = ({ data, handleModal }) => {
             >
                 {(props) => {
                     const {
-                        isSubmitting,
+                        isSubmitting,setFieldValue
                     } = props;
 
                     return (
@@ -141,8 +129,13 @@ const EmailModalPage = ({ data, handleModal }) => {
                                         </div>
                                     </Grid>
                                     <Grid item xs={12} md={12}>
-                                        <label htmlFor="attachments">Attachments</label>
-                                        <Field name="attachments" type="file" class="form-input" />
+                                        <label htmlFor="attachments">Attachments</label>          
+                                                <input id="attachments" name="attachments" type="file" 
+                                                
+                                                onChange={(event) => {
+                                                    console.log('event',event.target.files[0]);
+                                                setFieldValue("attachments", event.target.files[0]);
+                                                }} className="form-input" />
 
                                     </Grid>
 
