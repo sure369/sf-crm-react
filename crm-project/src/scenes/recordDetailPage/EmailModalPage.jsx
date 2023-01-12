@@ -57,11 +57,7 @@ const EmailModalPage = ({ data, handleModal ,bulkMail }) => {
         values.recordsData = parentRecord;
         let arr =[];
         arr.push((values.recordsData));
-        console.log('arr',arr);
-
-
-
-       
+        console.log('arr',arr);       
 
         let formData = new FormData();
         formData.append('subject',values.subject);
