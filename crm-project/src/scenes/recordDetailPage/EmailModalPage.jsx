@@ -15,7 +15,7 @@ const urlSendEmail = "http://localhost:4000/api/bulkemail"
 
 const EmailModalPage = ({ data, handleModal }) => {
 
-    const [parentRecord, setParentRecord] = useState();
+    const [parentRecord, setParentRecord] = useState([]);
 
     const [showAlert, setShowAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState();
@@ -52,7 +52,6 @@ const EmailModalPage = ({ data, handleModal }) => {
 
     const formSubmission = async (values, { resetForm }) => {
         console.log('inside form Submission', values);
-
         values.recordsData = parentRecord;
       
         let formData = new FormData();
