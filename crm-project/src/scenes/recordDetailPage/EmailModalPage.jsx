@@ -56,18 +56,14 @@ const EmailModalPage = ({ data, handleModal }) => {
         values.recordsData = parentRecord;
       
         let formData = new FormData();
-        formData.append('subject', values.subject)
-        formData.append('htmlBody', values.htmlBody)
-        formData.append('recordsData', values.recordsData)
-        formData.append('attachments', values.attachments)
-         console.log('after chnge', values);
-
-        const config = {     
-            headers: { 'content-type': 'multipart/form-data' }
-        }
-
-
-        axios.post(urlSendEmail, formData )
+        formData.append('subject',values.subject);
+        formData.append('htmlBody',values.htmlBody);
+        formData.append('recordsData',values.recordsData);
+        formData.append('file',values.attachments);
+        // , { headers: {
+        //     'Content-Type': 'multipart/form-data'
+        //   } })
+        axios.post(urlSendEmail, formData  )
             .then((res) => {
                 console.log('email send res', res)
                 setShowAlert(true)
