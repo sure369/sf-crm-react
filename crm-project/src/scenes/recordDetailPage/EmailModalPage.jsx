@@ -55,14 +55,18 @@ const EmailModalPage = ({ data, handleModal ,bulkMail }) => {
         console.log('inside form Submission', values);
    
         values.recordsData = parentRecord;
+        console.log('len',values.recordsData.length >0);
+        
         let arr =[];
         arr.push((values.recordsData));
-        console.log('arr',arr);       
+        console.log('arr',arr);   
+        let RecordConvert = (values.recordsData.length>0 ?(values.recordsData) : (arr) )
+        console.log('RecordConvert',RecordConvert)    
 
         let formData = new FormData();
         formData.append('subject',values.subject);
         formData.append('htmlBody',values.htmlBody);
-        formData.append('recordsData',JSON.stringify(arr)); 
+        formData.append('recordsData',JSON.stringify(RecordConvert)); 
         formData.append('file',values.attachments);
         // , { headers: {
         //     'Content-Type': 'multipart/form-data'

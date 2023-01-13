@@ -209,12 +209,19 @@ const Contacts = () => {
       renderCell: (params) => {
       return (
         <>
-        <IconButton style={{ padding: '20px' }}>
+        {
+          !showEmail ? 
+          <>
+           <IconButton style={{ padding: '20px' }}>
           <EditIcon onClick={(e) => handleOnCellClick(e, params.row)} />
         </IconButton>
         <IconButton style={{ padding: '20px' }}>
           <DeleteIcon onClick={(e) => onHandleDelete(e, params.row)} />
-        </IconButton>
+        </IconButton> 
+        </>
+        :''
+        }
+        
       </>  
       );
     } }
