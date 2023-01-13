@@ -13,6 +13,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import Pagination from '@mui/material/Pagination';
 import  EmailModalPage from '../recordDetailPage/EmailModalPage';
+import WhatAppModalPage from '../recordDetailPage/WhatsAppModalPage';
 
 const modalStyle = {
   position: 'absolute',
@@ -51,6 +52,8 @@ const Contacts = () => {
   const [selectedRecordIds,setSelectedRecordIds]=useState()
   const [selectedRecordDatas,setSelectedRecordDatas]=useState()
   const [emailModalOpen,setEmailModalOpen] =useState(false)
+
+  const[whatsAppModalOpen,setWhatsAppModalOpen]= useState(false)
   
   useEffect(()=>{
     console.log('contact index')
@@ -164,6 +167,18 @@ const Contacts = () => {
     setEmailModalOpen(false)
 }
 
+
+  const handlesendWhatsapp =()=>{
+    console.log('inside whats app')
+    console.log('selectedRecordIds',selectedRecordIds);
+    setWhatsAppModalOpen(true)
+  }
+
+  const setWhatAppModalClose =()=>{
+    setWhatsAppModalOpen(false)
+}
+
+ 
 
   const columns = [
     {
@@ -282,7 +297,10 @@ const Contacts = () => {
 
           <div>
                     {
-                        showEmail ? <Button variant="contained" color="secondary" onClick={handlesendEmail}>Send Email</Button> :''
+                        showEmail ? <Button variant="contained" color="secondary" onClick={handlesendEmail}>Send Email</Button> :''                        
+                    }
+                    {
+                        showEmail ? <Button variant="contained" color="secondary" onClick={handlesendWhatsapp}>What's App</Button> :''
                     }
                     
                 </div>
@@ -325,6 +343,17 @@ const Contacts = () => {
       >
         <Box sx={ModalBoxstyle}>
           <EmailModalPage data={selectedRecordDatas}  handleModal={setEmailModalClose}  bulkMail={true} />
+        </Box>
+      </Modal>
+
+      <Modal
+        open={whatsAppModalOpen}
+        onClose={setWhatAppModalClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={ModalBoxstyle}>
+          <WhatAppModalPage data={selectedRecordDatas}  handleModal={setWhatAppModalClose}  bulkMail={true} />
         </Box>
       </Modal>
 

@@ -11,9 +11,9 @@ import SimpleSnackbar from "../toast/SimpleSnackbar";
 import "../formik/FormStyles.css"
 
 
-const urlSendEmailbulk = "http://localhost:4000/api/bulkemail"
+const urlSendWhatsAppbulk = "http://localhost:4000/api/bulkewhatsapp"
 
-const EmailModalPage = ({ data, handleModal ,bulkMail }) => {
+const WhatAppModalPage = ({ data, handleModal ,bulkMail }) => {
 
     const [parentRecord, setParentRecord] = useState([]);
 
@@ -27,15 +27,13 @@ const EmailModalPage = ({ data, handleModal ,bulkMail }) => {
 
     useEffect(() => {
 
-        console.log('data', data);
-        console.log('bulkMail',bulkMail);
+        console.log('whats app data', data);
         setParentRecord(data)
 
     }, [])
 
     const initialValues = {
         subject: '',
-        htmlBody: '',
         recordsData: '',
         attachments: ''
     }
@@ -44,10 +42,6 @@ const EmailModalPage = ({ data, handleModal ,bulkMail }) => {
         subject: Yup
             .string()
             .required('Required'),
-        htmlBody: Yup
-            .string()
-            .required('Required')
-        ,
 
     })
 
@@ -65,14 +59,13 @@ const EmailModalPage = ({ data, handleModal ,bulkMail }) => {
 
         let formData = new FormData();
         formData.append('subject',values.subject);
-        formData.append('htmlBody',values.htmlBody);
         formData.append('recordsData',JSON.stringify(RecordConvert)); 
         formData.append('file',values.attachments);
         // , { headers: {
         //     'Content-Type': 'multipart/form-data'
         //   } })
 
-        axios.post(urlSendEmailbulk, formData )
+        axios.post(urlSendWhatsAppbulk, formData )
             .then((res) => {
                 console.log('email send res', res)
                 setShowAlert(true)
@@ -98,7 +91,7 @@ const EmailModalPage = ({ data, handleModal ,bulkMail }) => {
     return (
         <Grid item xs={12} style={{ margin: "20px" }}>
             <div style={{ textAlign: "center", marginBottom: "10px" }}>
-                <h3>New Email</h3>
+                <h3>New Whats App</h3>
             </div>
 
             <Formik
@@ -121,18 +114,12 @@ const EmailModalPage = ({ data, handleModal ,bulkMail }) => {
                                 <Grid container spacing={2}>
                                     <Grid item xs={12} md={12}>
                                         <label htmlFor="subject">Subject  <span className="text-danger">*</span></label>
-                                        <Field name="subject" type="text" class="form-input" />
+                                        <Field name="subject" as="textarea" class="form-input" />
                                         <div style={{ color: 'red' }}>
                                             <ErrorMessage name="subject" />
                                         </div>
                                     </Grid>
-                                    <Grid item xs={12} md={12}>
-                                        <label htmlFor="htmlBody">Email Body <span className="text-danger">*</span> </label>
-                                        <Field name="htmlBody" as="textarea" class="form-input" />
-                                        <div style={{ color: 'red' }}>
-                                            <ErrorMessage name="htmlBody" />
-                                        </div>
-                                    </Grid>
+                                  
                                     <Grid item xs={12} md={12}>
                                         <label htmlFor="attachments">Attachments</label>          
                                                 <input id="attachments" name="attachments" type="file" 
@@ -164,5 +151,5 @@ const EmailModalPage = ({ data, handleModal ,bulkMail }) => {
     )
 
 }
-export default EmailModalPage
+export default WhatAppModalPage
 
