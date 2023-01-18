@@ -2,31 +2,26 @@ import React, { useEffect, useState, useRef } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useLocation, useNavigate } from 'react-router-dom';
-import {
-    Grid, Button, FormControl, Stack, Alert, DialogActions,
-    Autocomplete, TextField
-} from "@mui/material";
+import {Grid, Button, DialogActions} from "@mui/material";
 import axios from 'axios'
-import SimpleSnackbar from "../toast/SimpleSnackbar";
 import "../formik/FormStyles.css"
-
+import Notification from '../toast/Notification';
+import ConfirmDialog from '../toast/ConfirmDialog';
 
 const urlSendWhatsAppbulk = "http://localhost:4000/api/bulkewhatsapp"
 
-const WhatAppModalPage = ({ data, handleModal ,bulkMail }) => {
+const WhatAppModalPage = ({ data, handleModal, bulkMail }) => {
 
     const [parentRecord, setParentRecord] = useState([]);
-
-    const [showAlert, setShowAlert] = useState(false);
-    const [alertMessage, setAlertMessage] = useState();
-    const [alertSeverity, setAlertSeverity] = useState();
-
-
     const navigate = useNavigate();
     const location = useLocation();
 
-    useEffect(() => {
+    // notification
+    const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
+    //dialog
+    const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subTitle: '' })
 
+    useEffect(() => {
         console.log('whats app data', data);
         setParentRecord(data)
 
@@ -42,114 +37,106 @@ const WhatAppModalPage = ({ data, handleModal ,bulkMail }) => {
         subject: Yup
             .string()
             .required('Required'),
-
     })
 
     const formSubmission = async (values, { resetForm }) => {
         console.log('inside form Submission', values);
-   
+
         values.recordsData = parentRecord;
-        console.log('len',values.recordsData.length >0);
-        
-        let arr =[];
+        console.log('len', values.recordsData.length > 0);
+
+        let arr = [];
         arr.push((values.recordsData));
-        console.log('arr',arr);   
-        let RecordConvert = (values.recordsData.length>0 ?(values.recordsData) : (arr) )
-        console.log('RecordConvert',RecordConvert)    
+        console.log('arr', arr);
+        let RecordConvert = (values.recordsData.length > 0 ? (values.recordsData) : (arr))
+        console.log('RecordConvert', RecordConvert)
 
         let formData = new FormData();
-        formData.append('subject',values.subject);
-        formData.append('recordsData',JSON.stringify(RecordConvert)); 
-        formData.append('file',values.attachments);
-        // , { headers: {
-        //     'Content-Type': 'multipart/form-data'
-        //   } })
+        formData.append('subject', values.subject);
+        formData.append('recordsData', JSON.stringify(RecordConvert));
+        formData.append('file', values.attachments);
 
-        axios.post(urlSendWhatsAppbulk, formData )
+        axios.post(urlSendWhatsAppbulk, formData)
             .then((res) => {
                 console.log('email send res', res)
-                setShowAlert(true)
-                setAlertMessage(res.data)
-                setAlertSeverity('success')
-                // setTimeout(() => {
-                //     window.location.reload();
-                // }, 1000)
+                setNotify({
+                    isOpen: true,
+                    message: res.data,
+                    type: 'success'
+                })
+                setTimeout(() => {
+                    handleModal(false)
+                }, 2000)
             })
             .catch((error) => {
                 console.log('email send error', error);
-                setShowAlert(true)
-                setAlertMessage(error.message)
-                setAlertSeverity('error')
+                setNotify({
+                    isOpen: true,
+                    message: error.message,
+                    type: 'error'
+                })
             })
-
-    }
-
-    const toastCloseCallback = () => {
-        setShowAlert(false)
-    }
+        }
 
     return (
-        <Grid item xs={12} style={{ margin: "20px" }}>
-            <div style={{ textAlign: "center", marginBottom: "10px" }}>
-                <h3>New Whats App</h3>
-            </div>
+        <>
+            <Grid item xs={12} style={{ margin: "20px" }}>
+                <div style={{ textAlign: "center", marginBottom: "10px" }}>
+                    <h3>New Whats App</h3>
+                </div>
 
-            <Formik
-                initialValues={initialValues}
-                validationSchema={validationSchema}
-                onSubmit={(values, { resetForm }) => formSubmission(values, { resetForm })}
-            >
-                {(props) => {
-                    const {
-                        isSubmitting,setFieldValue
-                    } = props;
+                <Formik
+                    initialValues={initialValues}
+                    validationSchema={validationSchema}
+                    onSubmit={(values, { resetForm }) => formSubmission(values, { resetForm })}
+                >
+                    {(props) => {
+                        const {
+                            isSubmitting, setFieldValue
+                        } = props;
 
-                    return (
-                        <>
-                            {
-                                showAlert ? <SimpleSnackbar severity={alertSeverity} message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> : <SimpleSnackbar />
-                            }
+                        return (
+                            <>
+                                <Form>
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={12} md={12}>
+                                            <label htmlFor="subject">Subject  <span className="text-danger">*</span></label>
+                                            <Field name="subject" as="textarea" class="form-input" />
+                                            <div style={{ color: 'red' }}>
+                                                <ErrorMessage name="subject" />
+                                            </div>
+                                        </Grid>
 
-                            <Form>
-                                <Grid container spacing={2}>
-                                    <Grid item xs={12} md={12}>
-                                        <label htmlFor="subject">Subject  <span className="text-danger">*</span></label>
-                                        <Field name="subject" as="textarea" class="form-input" />
-                                        <div style={{ color: 'red' }}>
-                                            <ErrorMessage name="subject" />
-                                        </div>
-                                    </Grid>
-                                  
-                                    <Grid item xs={12} md={12}>
-                                        <label htmlFor="attachments">Attachments</label>          
-                                                <input id="attachments" name="attachments" type="file" 
-                                                
+                                        <Grid item xs={12} md={12}>
+                                            <label htmlFor="attachments">Attachments</label>
+                                            <input id="attachments" name="attachments" type="file"
+
                                                 onChange={(event) => {
-                                                    console.log('event',event.target.files[0]);
-                                                setFieldValue("attachments", event.target.files[0]);
+                                                    console.log('event', event.target.files[0]);
+                                                    setFieldValue("attachments", event.target.files[0]);
                                                 }} className="form-input" />
 
+                                        </Grid>
                                     </Grid>
+                                    <div className='action-buttons'>
+                                        <DialogActions sx={{ justifyContent: "space-between" }}>
 
-                                </Grid>
+                                            <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Save</Button>
 
-                                <div className='action-buttons'>
-                                    <DialogActions sx={{ justifyContent: "space-between" }}>
+                                            <Button type="reset" variant="contained" onClick={(e) => handleModal(false)} >Cancel</Button>
 
-                                        <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Save</Button>
-
-                                        <Button type="reset" variant="contained" onClick={(e) => handleModal(false)} >Cancel</Button>
-
-                                    </DialogActions>
-                                </div>
-                            </Form>
-                        </>
-                    )
-                }}
-            </Formik>
-        </Grid>
+                                        </DialogActions>
+                                    </div>
+                                </Form>
+                            </>
+                        )
+                    }}
+                </Formik>
+            </Grid>
+            <Notification notify={notify} setNotify={setNotify} />
+            <ConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog} />
+        </>
     )
-
 }
 export default WhatAppModalPage
 

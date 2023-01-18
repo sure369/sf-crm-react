@@ -9,6 +9,7 @@ import axios from 'axios'
 import SimpleSnackbar from "../toast/SimpleSnackbar";
 import "../formik/FormStyles.css"
 import EmailModalPage from './EmailModalPage';
+import Notification from '../toast/Notification';
 
 const url = "http://localhost:4000/api/UpsertContact";
 const fetchAccountsbyName = "http://localhost:4000/api/accountsname";
@@ -27,6 +28,10 @@ const ContactDetailPage = ({ item }) => {
 
     const[emailModalOpen,setEmailModalOpen]=useState(false)
 
+          // notification
+          const[notify,setNotify]=useState({isOpen:false,message:'',type:''})
+
+
     useEffect(() => {
         console.log('passed record', location.state.record.item);
         setsingleContact(location.state.record.item);
@@ -34,6 +39,7 @@ const ContactDetailPage = ({ item }) => {
         setshowNew(!location.state.record.item)
         // fetchAccountsName();     
         FetchAccountsbyName('');
+
     }, [])
 
 
@@ -141,9 +147,15 @@ const ContactDetailPage = ({ item }) => {
         axios.post(url, values)
             .then((res) => {
                 console.log('upsert record  response', res);
-                setShowAlert(true)
-                setAlertMessage(res.data)
-                setAlertSeverity('success')
+                setNotify({
+                    isOpen:true,
+                    message:res.data,
+                    type:'success'
+          
+                  })
+                // setShowAlert(true)
+                // setAlertMessage(res.data)
+                // setAlertSeverity('success')
                 setTimeout(() => {
                     navigate(-1);
                 }, 2000)
@@ -151,9 +163,15 @@ const ContactDetailPage = ({ item }) => {
             })
             .catch((error) => {
                 console.log('upsert record error', error);
-                setShowAlert(true)
-                setAlertMessage(error.message)
-                setAlertSeverity('error')
+                setNotify({
+                    isOpen:true,
+                    message:error.message,
+                    type:'error'
+          
+                  })
+                // setShowAlert(true)
+                // setAlertMessage(error.message)
+                // setAlertSeverity('error')
             })
     }
 
@@ -233,6 +251,8 @@ const ContactDetailPage = ({ item }) => {
 
                             return (
                                 <>
+                                   <Notification notify={notify} setNotify={setNotify}/>
+
                                     {
                                         showAlert ? <SimpleSnackbar severity={alertSeverity} message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> : <SimpleSnackbar message={showAlert} />
                                     }
@@ -397,8 +417,10 @@ const ContactDetailPage = ({ item }) => {
           <EmailModalPage  data={singleContact}  handleModal={setEmailModalClose} bulkMail={false} />
         </Box>
       </Modal>
-
+   
         </div>
+
+
     )
 
 }
