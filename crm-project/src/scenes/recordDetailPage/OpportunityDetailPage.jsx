@@ -5,9 +5,9 @@ import * as Yup from "yup";
 import { Grid,Button ,Forminput,DialogActions,TextField,Autocomplete} from "@mui/material";
 import { useParams,useNavigate } from "react-router-dom"
 import axios from 'axios'
-import SimpleSnackbar from "../toast/SimpleSnackbar";
 import "../formik/FormStyles.css"
-
+import EmailModalPage from './EmailModalPage';
+import Notification from '../toast/Notification';
 
 const url ="http://localhost:4000/api/UpsertOpportunity";
 const fetchLeadsbyName ="http://localhost:4000/api/LeadsbyName";
@@ -20,12 +20,9 @@ const OpportunityDetailPage = ({item}) => {
     const location = useLocation();
     const navigate =useNavigate();
     const [showNew, setshowNew] = useState()
-    const [showAlert, setShowAlert] = useState(false);
-    const [alertMessage, setAlertMessage] = useState();
-    const [alertSeverity, setAlertSeverity] = useState();
     const [leadsRecords,setLeadsRecords]= useState([]);
     const [inventoriesRecord,setInventoriesRecord]= useState([]);
-    const[relatedTask,setRelatedTask] = useState([]);
+    const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
 
     useEffect(()=>{
         console.log('passed record',location.state.record.item);
@@ -88,12 +85,7 @@ const OpportunityDetailPage = ({item}) => {
         let dateSeconds = new Date().getTime();        
         let createDateSec = new Date(values.createdDate).getTime()
         let closeDateSec =new Date(values.closeDate).getTime()
-       
-        //console.log(' convrt close date',closeDateSec)
-        //   var d1 = new Date(values.closeDate).toISOString().split('T')[0];
-        // let d = new Date();
-        // const formatDate =  [d.getDate(), d.getMonth()+1,d.getFullYear()].join('/')+' '+ [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
-        
+   
         if(showNew){
             values.modifiedDate = dateSeconds;
             values.createdDate = dateSeconds;
@@ -142,23 +134,23 @@ const OpportunityDetailPage = ({item}) => {
         axios.post(url,values)
         .then((res)=>{
             console.log('post response',res);
-            setShowAlert(true)
-            setAlertMessage(res.data)
-            setAlertSeverity('success')
+            setNotify({
+                isOpen: true,
+                message: res.data,
+                type: 'success'
+            })
             setTimeout(() => {
-                navigate(-1)
-            }, 2000);
+                navigate(-1);
+            }, 2000)
         })
         .catch((error)=> {
             console.log('error',error);
-            setShowAlert(true)
-            setAlertMessage(error.message)
-            setAlertSeverity('error')
+            setNotify({
+                isOpen: true,
+                message: error.message,
+                type: 'error'
+            })
         })    
-    }
-
-    const toastCloseCallback = () => {
-        setShowAlert(false)
     }
 
     const FetchLeadsbyName =(newInputValue) =>{
@@ -221,9 +213,8 @@ const OpportunityDetailPage = ({item}) => {
 
         return (
         <>
-            {
-                showAlert ? <SimpleSnackbar severity={alertSeverity} message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> : <SimpleSnackbar message={showAlert} />
-            }  
+               <Notification notify={notify} setNotify={setNotify} />
+ 
          <Form>
          <Grid container spacing={2}>
              <Grid item xs={6} md={6}>
@@ -383,16 +374,13 @@ const OpportunityDetailPage = ({item}) => {
          </Grid>
          <div className='action-buttons'>
                                         <DialogActions sx={{ justifyContent: "space-between" }}>
-
                                        
-                                           {
-                                                showNew ?
+                                           { showNew ?
                                                 <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Save</Button>
-                                                    :
-                                                    
-                                                        <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Update</Button>
+                                                :
+                                                <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Update</Button>
                                            }                                      
-                                        <Button type="reset" variant="contained" onClick={handleFormClose}  >Cancel</Button>
+                                            <Button type="reset" variant="contained" onClick={handleFormClose}  >Cancel</Button>
                                         </DialogActions>     
                                        </div>
          </Form>

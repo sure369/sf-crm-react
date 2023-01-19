@@ -2,15 +2,11 @@ import React, { useEffect, useState, useRef } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useLocation, useNavigate } from 'react-router-dom';
-import {
-    Grid, Button, FormControl, Stack, Alert, DialogActions,
-    Autocomplete, TextField
-} from "@mui/material";
+import {    Grid, Button, DialogActions,Autocomplete, TextField} from "@mui/material";
 import axios from 'axios'
-import SimpleSnackbar from "../toast/SimpleSnackbar";
 import "../formik/FormStyles.css"
 import PreviewFile from "../formik/PreviewFile";
-
+import Notification from '../toast/Notification';
 
 
 const UpsertUrl = "http://localhost:4000/api/UpsertTask";
@@ -23,18 +19,13 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
     const [singleTask, setSingleTask] = useState();
     const [showNew, setshowNew] = useState()
     const [url, setUrl] = useState();
-    const [relatedRecNames, setRelatedRecNames] = useState([]);
-    const [showAlert, setShowAlert] = useState(false);
-    const [alertMessage, setAlertMessage] = useState();
-    const [alertSeverity, setAlertSeverity] = useState();
-
     const navigate = useNavigate();
     const fileRef = useRef();
     const location = useLocation();
 
-
+    const [relatedRecNames, setRelatedRecNames] = useState([]);
+    const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
     const [file, setFile] = useState()
-
     const[showModal1,setShowModal1]=useState(showModel)
 
     useEffect(() => {
@@ -43,38 +34,13 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
         console.log('true', !location.state.record.item);
         setshowNew(!location.state.record.item)
         if(location.state.record.item){
-
             callEvent(location.state.record.item.object)
         }
-        //    console.log('AccountId',location.state.record.item.AccountId)
-
-        //    console.log('OpportunityId',location.state.record.item.OpportunityId)
-
-        //    console.log('LeadId',location.state.record.item.LeadId)
-        //    setRealatedValues()
     }, [])
-
-    const setRealatedValues = () => {
-
-        if (singleTask.AccountId) {
-            console.log('AccountId', singleTask.AccountId);
-        }
-        else if (singleTask.OpportunityId) {
-            console.log('OpportunityId', singleTask.OpportunityId);
-
-        }
-        else if (singleTask.LeadId) {
-            console.log('LeadId', singleTask.LeadId);
-        }
-        else {
-            console.log('else')
-        }
-    }
-
 
     const initialValues = {
         subject: '',
-        realatedTo: '',
+        relatedTo: '',
         assignedTo: '',
         StartDate: '',
         StartTime: '',
@@ -95,14 +61,13 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
 
     const savedValues = {
         subject: singleTask?.subject ?? "",
-        realatedTo: singleTask?.realatedTo ?? "",
+        relatedto: singleTask?.relatedto ?? "",
         assignedTo: singleTask?.assignedTo ?? "",
         StartTime: singleTask?.StartTime ?? "",       
         EndTime: singleTask?.EndTime ?? "",
         description: singleTask?.description ?? "",
         attachments: singleTask?.attachments ?? "",
         object: singleTask?.object ?? "",
-        leads: singleTask?.leads ?? "",
         AccountId: singleTask?.AccountId ?? "",
         LeadId: singleTask?.LeadId ?? "",
         OpportunityId: singleTask?.OpportunityId ?? "",
@@ -161,13 +126,13 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
             }else if (values.EndDate) {
                 values.EndDate = EndDateSec
             }
-            if (values.AccountId != '') {               
+            if (values.object === 'Account') {               
                 delete values.OpportunityId; 
                 delete values.LeadId; 
-            }else if (values.OpportunityId != '') {                
+            }else if (values.object === 'Opportunity') {                
                  delete values.AccountId; 
                  delete values.LeadId;    
-            }else if (values.LeadId != '') {
+            }else if (values.object === 'Lead') {
                 delete values.OpportunityId; 
                 delete values.AccountId; 
             }else{
@@ -175,26 +140,6 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
                 delete values.AccountId; 
                 delete values.LeadId; 
             }
-          
-            console.log("test" ,values);
-            await axios.post(UpsertUrl, values)           
-
-                .then((res) => {
-                    console.log('task form Submission  response', res);
-                    setShowAlert(true)
-                    setAlertMessage(res.data)
-                    setAlertSeverity('success')
-                    setTimeout(() => {
-                        navigate(-1);
-                    }, 1000)
-                })
-                .catch((error) => {
-                    console.log('task form Submission  error', error);
-                    setShowAlert(true)
-                    setAlertMessage(error.message)
-                    setAlertSeverity('error')
-                })
-
         }
         else if (!showNew) {
             values.modifiedDate = dateSeconds;
@@ -210,13 +155,15 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
             else if (values.EndDate) {
                 values.EndDate = EndDateSec
             }
-            if (values.AccountId != '') {               
+            if (values.AccountId != '' && values.object === 'Account') {               
                 delete values.OpportunityId; 
-                delete values.LeadId; 
-            }else if (values.OpportunityId != '') {                
+                delete values.LeadId;
+                delete values.opportunityDetails 
+                delete values.leadDetails
+            }else if (values.OpportunityId != '' && values.object === 'Opportunity') {                
                  delete values.AccountId; 
                  delete values.LeadId;    
-            }else if (values.LeadId != '') {
+            }else if (values.LeadId != '' && values.object==='Lead') {
                 delete values.OpportunityId; 
                 delete values.AccountId; 
             }else{
@@ -224,40 +171,35 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
                 delete values.AccountId; 
                 delete values.LeadId; 
             }
+        }
+        console.log('after change form submission value', values);
 
             await axios.post(UpsertUrl, values)
-
                 .then((res) => {
                     console.log('task form Submission  response', res);
-                    setShowAlert(true)
-                    setAlertMessage(res.data)
-                    setAlertSeverity('success')
+                    setNotify({
+                        isOpen: true,
+                        message: res.data,
+                        type: 'success'
+                    })
                     setTimeout(() => {
                         navigate(-1);
-                    }, 1000)
+                    }, 2000)
                 })
                 .catch((error) => {
                     console.log('task form Submission  error', error);
-                    setShowAlert(true)
-                    setAlertMessage(error.message)
-                    setAlertSeverity('error')
+                    setNotify({
+                        isOpen: true,
+                        message: error.message,
+                        type: 'error'
+                    })
                 })
         }
-
-
-
-    }
-
-    const toastCloseCallback = () => {
-        setShowAlert(false)
-    }
 
     const callEvent = (e) => {
 
         let url1 = e === 'Account' ? fetchAccountUrl : e === 'Lead' ? fetchLeadUrl : e === 'Opportunity' ? fetchOpportunityUrl : null
-
         setUrl(url1)
-
         FetchObjectsbyName('', url1);
         if (url == null) {
             console.log('url', url);
@@ -269,7 +211,6 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
 
         console.log('passed url', url)
         console.log('new Input  value', newInputValue)
-
 
         axios.post(`${url}?searchKey=${newInputValue}`)
             .then((res) => {
@@ -315,9 +256,7 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
 
                     return (
                         <>
-                            {
-                                showAlert ? <SimpleSnackbar severity={alertSeverity} message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> : <SimpleSnackbar />
-                            }
+                            <Notification notify={notify} setNotify={setNotify} />
 
                             <Form>
                                 <Grid container spacing={2}>
@@ -353,9 +292,9 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
                                         </Field>
                                     </Grid>
                                     <Grid item xs={6} md={6}>
-                                        <label htmlFor="realatedTo"> Realated To  </label>
+                                        <label htmlFor="relatedto"> Realated To  </label>
                                         <Autocomplete
-                                            name="realatedTo"
+                                            name="relatedto"
                                             options={relatedRecNames}
                                             value={values.accountDetails ||values.opportunityDetails ||values.leadDetails  }
 
@@ -379,7 +318,6 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
                                                         setFieldValue('LeadId', '')
                                                         setFieldValue('leadDetails','')
                                                     }
-                                                    // setFieldValue("realatedTo", value || '')
 
                                                   }else{
                                                     console.log('value',value);
@@ -393,22 +331,7 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
                                                         setFieldValue('LeadId', value.id)
                                                         setFieldValue('leadDetails',value)
                                                     }
-                                                    // setFieldValue("realatedTo", value || '')
                                                   }
-
-
-                                                // if (values.object === 'Account') {
-                                                //     setFieldValue('AccountId', value.id)
-                                                //     setFieldValue('accountDetails',value)
-                                                // } else if (values.object === 'Opportunity') {
-                                                //     setFieldValue('OpportunityId', value.id)
-                                                //     setFieldValue('opportunityDetails',value)
-                                                // } else if (values.object === 'Lead') {
-                                                //     setFieldValue('LeadId', value.id)
-                                                //     setFieldValue('leadDetails',value)
-                                                // }
-                                                // setFieldValue("realatedTo", value || '')
-
                                             }}
 
                                             onInputChange={(event, newInputValue) => {
@@ -525,3 +448,208 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
 }
 export default TaskDetailPage
 
+
+// const formSubmission = async (values, { resetForm }) => {
+//     console.log('inside form Submission', values);
+
+//     let dateSeconds = new Date().getTime();
+//     let createDateSec = new Date(values.createdDate).getTime()
+//     let StartDateSec = new Date(values.StartDate).getTime()
+//     let EndDateSec = new Date(values.EndDate).getTime()
+
+//     if (showNew) {
+
+//         console.log('dateSeconds',dateSeconds)
+//         values.modifiedDate = dateSeconds;
+//         values.createdDate = dateSeconds;
+
+//         if (values.StartDate && values.EndDate) {
+//             values.StartDate = StartDateSec
+//             values.EndDate = EndDateSec
+//         }else if (values.StartDate) {
+//             values.StartDate = StartDateSec
+//         }else if (values.EndDate) {
+//             values.EndDate = EndDateSec
+//         }
+//         if (values.AccountId != '') {               
+//             delete values.OpportunityId; 
+//             delete values.LeadId; 
+//         }else if (values.OpportunityId != '') {                
+//              delete values.AccountId; 
+//              delete values.LeadId;    
+//         }else if (values.LeadId != '') {
+//             delete values.OpportunityId; 
+//             delete values.AccountId; 
+//         }else{
+//             delete values.OpportunityId; 
+//             delete values.AccountId; 
+//             delete values.LeadId; 
+//         }
+      
+//         console.log("test" ,values);
+//         await axios.post(UpsertUrl, values)           
+
+//             .then((res) => {
+//                 console.log('task form Submission  response', res);
+//                 setNotify({
+//                     isOpen: true,
+//                     message: res.data,
+//                     type: 'success'
+//                 })
+//                 setTimeout(() => {
+//                     navigate(-1);
+//                 }, 2000)
+//             })
+//             .catch((error) => {
+//                 console.log('task form Submission  error', error);
+//                 setNotify({
+//                     isOpen: true,
+//                     message: error.message,
+//                     type: 'error'
+//                 })
+//             })
+
+//     }
+//     else if (!showNew) {
+//         values.modifiedDate = dateSeconds;
+//         values.createdDate = createDateSec
+
+//         if (values.StartDate && values.EndDate) {
+//             values.StartDate = StartDateSec
+//             values.EndDate = EndDateSec
+//         }
+//         else if (values.StartDate) {
+//             values.StartDate = StartDateSec
+//         }
+//         else if (values.EndDate) {
+//             values.EndDate = EndDateSec
+//         }
+//         if (values.AccountId != '') {               
+//             delete values.OpportunityId; 
+//             delete values.LeadId; 
+//         }else if (values.OpportunityId != '') {                
+//              delete values.AccountId; 
+//              delete values.LeadId;    
+//         }else if (values.LeadId != '') {
+//             delete values.OpportunityId; 
+//             delete values.AccountId; 
+//         }else{
+//             delete values.OpportunityId; 
+//             delete values.AccountId; 
+//             delete values.LeadId; 
+//         }
+
+//         await axios.post(UpsertUrl, values)
+
+//             .then((res) => {
+//                 console.log('task form Submission  response', res);
+//                 setNotify({
+//                     isOpen: true,
+//                     message: res.data,
+//                     type: 'success'
+//                 })
+//                 setTimeout(() => {
+//                     navigate(-1);
+//                 }, 2000)
+//             })
+//             .catch((error) => {
+//                 console.log('task form Submission  error', error);
+//                 setNotify({
+//                     isOpen: true,
+//                     message: error.message,
+//                     type: 'error'
+//                 })
+//             })
+//     }
+// }
+// ff
+
+// const formSubmission = async (values, { resetForm }) => {
+//     console.log('inside form Submission', values);
+
+//     let dateSeconds = new Date().getTime();
+//     let createDateSec = new Date(values.createdDate).getTime()
+//     let StartDateSec = new Date(values.StartDate).getTime()
+//     let EndDateSec = new Date(values.EndDate).getTime()
+
+//     if (showNew) {
+
+//         console.log('dateSeconds',dateSeconds)
+//         values.modifiedDate = dateSeconds;
+//         values.createdDate = dateSeconds;
+
+//         if (values.StartDate && values.EndDate) {
+//             values.StartDate = StartDateSec
+//             values.EndDate = EndDateSec
+//         }else if (values.StartDate) {
+//             values.StartDate = StartDateSec
+//         }else if (values.EndDate) {
+//             values.EndDate = EndDateSec
+//         }
+//         if (values.AccountId != '') {               
+//             delete values.OpportunityId; 
+//             delete values.LeadId; 
+//         }else if (values.OpportunityId != '') {                
+//              delete values.AccountId; 
+//              delete values.LeadId;    
+//         }else if (values.LeadId != '') {
+//             delete values.OpportunityId; 
+//             delete values.AccountId; 
+//         }else{
+//             delete values.OpportunityId; 
+//             delete values.AccountId; 
+//             delete values.LeadId; 
+//         }
+//     }
+//     else if (!showNew) {
+//         values.modifiedDate = dateSeconds;
+//         values.createdDate = createDateSec
+
+//         if (values.StartDate && values.EndDate) {
+//             values.StartDate = StartDateSec
+//             values.EndDate = EndDateSec
+//         }
+//         else if (values.StartDate) {
+//             values.StartDate = StartDateSec
+//         }
+//         else if (values.EndDate) {
+//             values.EndDate = EndDateSec
+//         }
+//         if (values.AccountId != '') {               
+//             delete values.OpportunityId; 
+//             delete values.LeadId; 
+//         }else if (values.OpportunityId != '') {                
+//              delete values.AccountId; 
+//              delete values.LeadId;    
+//         }else if (values.LeadId != '') {
+//             delete values.OpportunityId; 
+//             delete values.AccountId; 
+//         }else{
+//             delete values.OpportunityId; 
+//             delete values.AccountId; 
+//             delete values.LeadId; 
+//         }
+//     }
+//     console.log('after change form submission value', values);
+
+//         await axios.post(UpsertUrl, values)
+//             .then((res) => {
+//                 console.log('task form Submission  response', res);
+//                 setNotify({
+//                     isOpen: true,
+//                     message: res.data,
+//                     type: 'success'
+//                 })
+//                 setTimeout(() => {
+//                     navigate(-1);
+//                 }, 2000)
+//             })
+//             .catch((error) => {
+//                 console.log('task form Submission  error', error);
+//                 setNotify({
+//                     isOpen: true,
+//                     message: error.message,
+//                     type: 'error'
+//                 })
+//             })
+//     }

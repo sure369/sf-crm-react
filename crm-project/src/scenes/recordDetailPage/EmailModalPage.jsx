@@ -2,11 +2,10 @@ import React, { useEffect, useState, useRef } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useLocation, useNavigate } from 'react-router-dom';
-import {Grid, Button, DialogActions,} from "@mui/material";
+import { Grid, Button, DialogActions, } from "@mui/material";
 import axios from 'axios'
 import "../formik/FormStyles.css"
 import Notification from '../toast/Notification';
-import ConfirmDialog from '../toast/ConfirmDialog';
 
 const urlSendEmailbulk = "http://localhost:4000/api/bulkemail"
 
@@ -18,8 +17,6 @@ const EmailModalPage = ({ data, handleModal, bulkMail }) => {
 
     // notification
     const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
-    //dialog
-    const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subTitle: '' })
 
     useEffect(() => {
         console.log('data', data);
@@ -152,7 +149,6 @@ const EmailModalPage = ({ data, handleModal, bulkMail }) => {
             </Grid>
 
             <Notification notify={notify} setNotify={setNotify} />
-            <ConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog} />
         </>
     )
 }

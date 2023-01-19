@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Button, useTheme, IconButton, Pagination } from "@mui/material";
+import { Box, Button, useTheme, IconButton, Pagination,CircularProgress,Stack } from "@mui/material";
 import {
   DataGrid, GridToolbar,
   gridPageCountSelector, gridPageSelector,
@@ -23,10 +23,12 @@ const Inventories = () => {
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
   const [records, setRecords] = useState([]);
+  const[fetchLoading,setFetchLoading]=useState(true);
   // notification
   const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
   //dialog
   const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subTitle: '' })
+
 
   useEffect(() => {
     fetchRecords();
@@ -40,15 +42,18 @@ const Inventories = () => {
           console.log("res Inventory records", res);
           if (res.data.length > 0 && (typeof (res.data) !== 'string')) {
             setRecords(res.data);
+             setFetchLoading(false)
           }
           else {
             setRecords([]);
+             setFetchLoading(false)
           }
 
         }
       )
       .catch((error) => {
         console.log('res Inventory error', error);
+         setFetchLoading(false)
       })
   }
 
@@ -161,6 +166,7 @@ const Inventories = () => {
     <>
       <Notification notify={notify} setNotify={setNotify} />
       <ConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog} />
+      
 
       <Box m="20px">
         <Header
@@ -186,6 +192,8 @@ const Inventories = () => {
             },
             "& .MuiDataGrid-virtualScroller": {
               backgroundColor: colors.primary[400],
+              // backgroundColor:'#CCFFE5'
+
             },
             "& .MuiDataGrid-footerContainer": {
               borderBottom: "none",
@@ -197,6 +205,14 @@ const Inventories = () => {
             "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
               color: `${colors.grey[100]} !important`,
             },
+            "& .MuiDataGrid-row:hover": {
+              backgroundColor: "#CCE5FF"
+              // color: "red"
+            },            
+            "&.MuiDataGrid-row:selected": {
+              backgroundColor: "#CCE5FF",
+              
+            }
           }}
         >
 
@@ -208,19 +224,23 @@ const Inventories = () => {
               New
             </Button>
           </div>
-          <DataGrid
+          
+           <DataGrid
             rows={records}
             columns={columns}
             getRowId={(row) => row._id}
             pageSize={7}
             rowsPerPageOptions={[7]}
+            hideFooterSelectedRowCount
             components={{
               Pagination: CustomPagination,
-              Toolbar: GridToolbar
+              Toolbar: GridToolbar,
             }}
+            loading={fetchLoading}
           />
         </Box>
       </Box>
+      
     </>
   )
 }

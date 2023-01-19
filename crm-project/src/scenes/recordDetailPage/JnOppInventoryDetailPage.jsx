@@ -5,9 +5,9 @@ import * as Yup from "yup";
 import { Grid, Button, Forminput, DialogActions, TextField, Autocomplete } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom"
 import axios from 'axios'
-import SimpleSnackbar from "../toast/SimpleSnackbar";
 import "../formik/FormStyles.css"
-
+import EmailModalPage from './EmailModalPage';
+import Notification from '../toast/Notification';
 
 const url = "http://localhost:4000/api/UpsertJnOppInventory";
 const fetchInventoriesbyName = "http://localhost:4000/api/InventoryName";
@@ -25,7 +25,8 @@ const JnOppInventoryDetailPage = ({ item }) => {
     const [alertSeverity, setAlertSeverity] = useState();
     const [opportunityRecords, setOpportunityRecords] = useState([]);
     const [inventoriesRecord, setInventoriesRecord] = useState([]);
-    const [relatedTask, setRelatedTask] = useState([]);
+     // notification
+     const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
 
     useEffect(() => {
          console.log('passed record', location.state.record.item);
@@ -82,23 +83,23 @@ const JnOppInventoryDetailPage = ({ item }) => {
         axios.post(url, values)
             .then((res) => {
                 console.log('junction obj res', res);
-                setShowAlert(true)
-                setAlertMessage(res.data)
-                setAlertSeverity('success')
+                setNotify({
+                    isOpen: true,
+                    message: res.data,
+                    type: 'success'
+                })
                 setTimeout(() => {
                     navigate(-1)
                 }, 2000);
             })
             .catch((error) => {
                 console.log('error', error);
-                setShowAlert(true)
-                setAlertMessage(error.message)
-                setAlertSeverity('error')
+                setNotify({
+                    isOpen: true,
+                    message: error.message,
+                    type: 'error'
+                })
             })
-    }
-
-    const toastCloseCallback = () => {
-        setShowAlert(false)
     }
 
     const FetchOpportunitybyName = (newInputValue) => {
@@ -150,19 +151,14 @@ const JnOppInventoryDetailPage = ({ item }) => {
                     {(props) => {
                         const {
                             values,
-                            dirty,
                             isSubmitting,
-                            handleChange,
-                            handleSubmit,
-                            handleReset,
                             setFieldValue,
                         } = props;
 
                         return (
                             <>
-                                {
-                                    showAlert ? <SimpleSnackbar severity={alertSeverity} message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> : <SimpleSnackbar message={showAlert} />
-                                }
+                                   <Notification notify={notify} setNotify={setNotify} />
+
                                 <Form>
                                     <Grid container spacing={2}>
                                         <Grid item xs={6} md={6}>

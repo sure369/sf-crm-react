@@ -2,18 +2,18 @@ import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { Grid, Button, DialogActions, 
-    Modal,Box, Autocomplete, TextField } from "@mui/material";
+import {
+    Grid, Button, DialogActions,
+    Modal, Box, Autocomplete, TextField
+} from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom"
 import axios from 'axios'
-import SimpleSnackbar from "../toast/SimpleSnackbar";
 import "../formik/FormStyles.css"
 import EmailModalPage from './EmailModalPage';
 import Notification from '../toast/Notification';
 
 const url = "http://localhost:4000/api/UpsertContact";
 const fetchAccountsbyName = "http://localhost:4000/api/accountsname";
-const urlSendEmail="http://localhost:4000/api/email"
 
 const ContactDetailPage = ({ item }) => {
 
@@ -22,22 +22,13 @@ const ContactDetailPage = ({ item }) => {
     const location = useLocation();
     const navigate = useNavigate();
     const [showNew, setshowNew] = useState()
-    const [showAlert, setShowAlert] = useState(false);
-    const [alertMessage, setAlertMessage] = useState();
-    const [alertSeverity, setAlertSeverity] = useState();
-
-    const[emailModalOpen,setEmailModalOpen]=useState(false)
-
-          // notification
-          const[notify,setNotify]=useState({isOpen:false,message:'',type:''})
-
+    const [emailModalOpen, setEmailModalOpen] = useState(false)
+    const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
 
     useEffect(() => {
         console.log('passed record', location.state.record.item);
         setsingleContact(location.state.record.item);
-
         setshowNew(!location.state.record.item)
-        // fetchAccountsName();     
         FetchAccountsbyName('');
 
     }, [])
@@ -49,8 +40,8 @@ const ContactDetailPage = ({ item }) => {
         salutation: '',
         firstName: '',
         lastName: '',
-        fullName:'',
-        dob:'',
+        fullName: '',
+        dob: '',
         phone: '',
         department: '',
         leadSource: '',
@@ -67,25 +58,25 @@ const ContactDetailPage = ({ item }) => {
         salutation: singleContact?.salutation ?? "",
         firstName: singleContact?.firstName ?? "",
         lastName: singleContact?.lastName ?? "",
-        fullName:singleContact?.fullName ?? "",
+        fullName: singleContact?.fullName ?? "",
         phone: singleContact?.phone ?? "",
-        dob:new Date(singleContact?.dob).getUTCFullYear()
-        + '-' +  ('0'+ (new Date(singleContact?.dob).getUTCMonth() + 1)).slice(-2) 
-        + '-' + ('0'+ ( new Date(singleContact?.dob).getUTCDate())).slice(-2) ||'',
+        dob: new Date(singleContact?.dob).getUTCFullYear()
+            + '-' + ('0' + (new Date(singleContact?.dob).getUTCMonth() + 1)).slice(-2)
+            + '-' + ('0' + (new Date(singleContact?.dob).getUTCDate())).slice(-2) || '',
 
-         department: singleContact?.department ?? "",
+        department: singleContact?.department ?? "",
         leadSource: singleContact?.leadSource ?? "",
         email: singleContact?.email ?? "",
         fullAddress: singleContact?.fullAddress ?? "",
         description: singleContact?.description ?? "",
         createdbyId: singleContact?.createdbyId ?? "",
-        createdDate:   new Date(singleContact?.createdDate).toLocaleString(),
-        modifiedDate:  new Date(singleContact?.modifiedDate).toLocaleString(),
+        createdDate: new Date(singleContact?.createdDate).toLocaleString(),
+        modifiedDate: new Date(singleContact?.modifiedDate).toLocaleString(),
         _id: singleContact?._id ?? "",
-        accountDetails: singleContact?.accountDetails ??"",
+        accountDetails: singleContact?.accountDetails ?? "",
     }
     const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
- 
+
     const validationSchema = Yup.object({
         firstName: Yup
             .string()
@@ -113,33 +104,33 @@ const ContactDetailPage = ({ item }) => {
 
         console.log('form submission value', values);
 
-            let dateSeconds = new Date().getTime();
-            let createDateSec = new Date(values.createdDate).getTime()
-            let dobSec = new Date(values.dob).getTime()
+        let dateSeconds = new Date().getTime();
+        let createDateSec = new Date(values.createdDate).getTime()
+        let dobSec = new Date(values.dob).getTime()
 
         if (showNew) {
             values.modifiedDate = dateSeconds;
             values.createdDate = dateSeconds;
-            values.fullName = values.firstName +' '+ values.lastName;
-        
-           
-            if( values.dob){
-                values.dob =dobSec;
-            } 
-            if (values.AccountId === '' ) {   
-                delete values.AccountId; 
+            values.fullName = values.firstName + ' ' + values.lastName;
+
+
+            if (values.dob) {
+                values.dob = dobSec;
+            }
+            if (values.AccountId === '') {
+                delete values.AccountId;
             }
 
         }
         else if (!showNew) {
             values.modifiedDate = dateSeconds;
-            values.createdDate =createDateSec
-            values.fullName = values.firstName +' '+ values.lastName;
-            if( values.dob){
-                values.dob =dobSec;
+            values.createdDate = createDateSec
+            values.fullName = values.firstName + ' ' + values.lastName;
+            if (values.dob) {
+                values.dob = dobSec;
             }
-            if (values.AccountId === '' ) {   
-                delete values.AccountId; 
+            if (values.AccountId === '') {
+                delete values.AccountId;
             }
         }
         console.log('after change form submission value', values);
@@ -148,14 +139,10 @@ const ContactDetailPage = ({ item }) => {
             .then((res) => {
                 console.log('upsert record  response', res);
                 setNotify({
-                    isOpen:true,
-                    message:res.data,
-                    type:'success'
-          
-                  })
-                // setShowAlert(true)
-                // setAlertMessage(res.data)
-                // setAlertSeverity('success')
+                    isOpen: true,
+                    message: res.data,
+                    type: 'success'
+                })
                 setTimeout(() => {
                     navigate(-1);
                 }, 2000)
@@ -164,19 +151,11 @@ const ContactDetailPage = ({ item }) => {
             .catch((error) => {
                 console.log('upsert record error', error);
                 setNotify({
-                    isOpen:true,
-                    message:error.message,
-                    type:'error'
-          
-                  })
-                // setShowAlert(true)
-                // setAlertMessage(error.message)
-                // setAlertSeverity('error')
+                    isOpen: true,
+                    message: error.message,
+                    type: 'error'
+                })
             })
-    }
-
-    const toastCloseCallback = () => {
-        setShowAlert(false)
     }
 
     const FetchAccountsbyName = (newInputValue) => {
@@ -192,29 +171,17 @@ const ContactDetailPage = ({ item }) => {
                 console.log('error fetchAccountsbyName', error);
             })
     }
-    const handleFormClose =()=>{
+    const handleFormClose = () => {
         navigate(-1)
     }
-    const handlesendEmail =()=>{
+    const handlesendEmail = () => {
         setEmailModalOpen(true)
-        // console.log('handlesendEmail',singleContact.email);
-        // console.log('urlSendEmail',urlSendEmail);
-        // if(singleContact.email !=''){
-        //     axios.post(urlSendEmail,singleContact)
-        //     .then((res)=>{
-        //         console.log('email send res',res)
-        //     })  
-        // .catch((error)=>{
-        //     console.log('email send error',error);
-        // })      }
-     
-       
     }
-    const setEmailModalClose =()=>{
+    const setEmailModalClose = () => {
         setEmailModalOpen(false)
     }
 
-   
+
 
 
     return (
@@ -227,9 +194,9 @@ const ContactDetailPage = ({ item }) => {
                 </div>
                 <div>
                     {
-                        !showNew ? <Button variant="contained" color="secondary" onClick={handlesendEmail}>Send Email</Button> :''
+                        !showNew ? <Button variant="contained" color="secondary" onClick={handlesendEmail}>Send Email</Button> : ''
                     }
-                    
+
                 </div>
                 <div>
                     <Formik
@@ -251,15 +218,10 @@ const ContactDetailPage = ({ item }) => {
 
                             return (
                                 <>
-                                   <Notification notify={notify} setNotify={setNotify}/>
+                                    <Notification notify={notify} setNotify={setNotify} />
 
-                                    {
-                                        showAlert ? <SimpleSnackbar severity={alertSeverity} message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> : <SimpleSnackbar message={showAlert} />
-                                    }
                                     <Form>
                                         <Grid container spacing={2}>
-                                      
-
                                             <Grid item xs={6} md={2}>
                                                 <label htmlFor="salutation">Salutation  </label>
                                                 <Field name="salutation" as="select" class="form-input">
@@ -286,13 +248,13 @@ const ContactDetailPage = ({ item }) => {
                                                 </div>
                                             </Grid>
                                             {!showNew && (
-                                            <>
-                                                <Grid item xs={6} md={6}>
-                                                    <label htmlFor="fullName" >Full Name</label>
-                                                    <Field name='fullName' type="text" class="form-input" disabled
-                                                    />
-                                                </Grid>
-                                            </>
+                                                <>
+                                                    <Grid item xs={6} md={6}>
+                                                        <label htmlFor="fullName" >Full Name</label>
+                                                        <Field name='fullName' type="text" class="form-input" disabled
+                                                        />
+                                                    </Grid>
+                                                </>
                                             )}
                                             <Grid item xs={6} md={6}>
                                                 <label htmlFor="AccountId">Account Name </label>
@@ -302,14 +264,14 @@ const ContactDetailPage = ({ item }) => {
                                                     value={values.accountDetails}
                                                     getOptionLabel={option => option.accountName || ''}
                                                     onChange={(e, value) => {
-                                                        if(!value){                                
-                                                            console.log('!value',value);
-                                                            setFieldValue("AccountId",'')
-                                                            setFieldValue("accountDetails",'')
-                                                        }else{
-                                                            console.log('value',value);
-                                                            setFieldValue("AccountId",value.id)
-                                                            setFieldValue("accountDetails",value)
+                                                        if (!value) {
+                                                            console.log('!value', value);
+                                                            setFieldValue("AccountId", '')
+                                                            setFieldValue("accountDetails", '')
+                                                        } else {
+                                                            console.log('value', value);
+                                                            setFieldValue("AccountId", value.id)
+                                                            setFieldValue("accountDetails", value)
                                                         }
                                                     }}
                                                     onInputChange={(event, newInputValue) => {
@@ -317,7 +279,7 @@ const ContactDetailPage = ({ item }) => {
 
                                                         if (newInputValue.length >= 3) {
                                                             FetchAccountsbyName(newInputValue);
-                                                        }                                                    
+                                                        }
                                                     }}
                                                     renderInput={params => (
                                                         <Field component={TextField} {...params} name="AccountId" />
@@ -329,7 +291,7 @@ const ContactDetailPage = ({ item }) => {
                                                 <label htmlFor="phone">Phone</label>
                                                 <Field name="phone" type="phone" class="form-input" />
                                                 <div style={{ color: 'red' }}>
-                                                <ErrorMessage name="phone" />
+                                                    <ErrorMessage name="phone" />
                                                 </div>
                                             </Grid>
                                             <Grid item xs={6} md={6}>
@@ -358,7 +320,7 @@ const ContactDetailPage = ({ item }) => {
                                                     <option value="other">Other</option>
                                                 </Field>
                                             </Grid>
-                                         
+
                                             <Grid Grid item xs={6} md={6}>
                                                 <label htmlFor="fullAddress">fullAddress</label>
                                                 <Field as="textarea" name="fullAddress" class="form-input" />
@@ -369,16 +331,16 @@ const ContactDetailPage = ({ item }) => {
                                                 <Field as="textarea" name="description" class="form-input" />
                                             </Grid>
 
-                                         
+
 
                                             {!showNew && (
                                                 <>
-                                                    <Grid item xs={6} md={6}>                                                       
+                                                    <Grid item xs={6} md={6}>
                                                         <label htmlFor="createdDate" >created Date</label>
                                                         <Field name='createdDate' type="text" class="form-input" disabled />
                                                     </Grid>
 
-                                                    <Grid item xs={6} md={6}>                                                        
+                                                    <Grid item xs={6} md={6}>
                                                         <label htmlFor="modifiedDate" >Modified Date</label>
                                                         <Field name='modifiedDate' type="text" class="form-input" disabled />
                                                     </Grid>
@@ -407,17 +369,17 @@ const ContactDetailPage = ({ item }) => {
                 </div>
             </Grid>
 
-        <Modal
-        open={emailModalOpen}
-        onClose={setEmailModalClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <EmailModalPage  data={singleContact}  handleModal={setEmailModalClose} bulkMail={false} />
-        </Box>
-      </Modal>
-   
+            <Modal
+                open={emailModalOpen}
+                onClose={setEmailModalClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box sx={ModalStyle}>
+                    <EmailModalPage data={singleContact} handleModal={setEmailModalClose} bulkMail={false} />
+                </Box>
+            </Modal>
+
         </div>
 
 
@@ -426,7 +388,7 @@ const ContactDetailPage = ({ item }) => {
 }
 export default ContactDetailPage;
 
-const style = {
+const ModalStyle = {
     position: 'absolute',
     top: '50%',
     left: '50%',
@@ -435,4 +397,4 @@ const style = {
     bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 24,
-  };
+};

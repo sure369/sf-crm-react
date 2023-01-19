@@ -22,8 +22,8 @@ const Opportunities = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
-  const [records, setRecords] = useState([]);
-  const [finalClickInfo, setFinalClickInfo] = useState(null);
+  const [records, setRecords] = useState([]);  
+  const[fetchLoading,setFetchLoading]=useState(true);
   // notification
   const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
   //dialog
@@ -42,14 +42,17 @@ const Opportunities = () => {
           console.log("res Opportunity records test", res);
           if (res.data.length > 0 && (typeof (res.data) !== 'string')) {
             setRecords(res.data);
+            setFetchLoading(false)
           }
           else {
             setRecords([]);
+            setFetchLoading(false)
           };
         }
       )
       .catch((error) => {
         console.log('res Opportunity error', error);
+        setFetchLoading(false)
       })
   }
 
@@ -242,6 +245,7 @@ const Opportunities = () => {
               Pagination: CustomPagination,
               Toolbar: GridToolbar
             }}
+            loading={fetchLoading}
           />
         </Box>
       </Box>

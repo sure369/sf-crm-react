@@ -7,6 +7,8 @@ import { useParams, useNavigate } from "react-router-dom"
 import axios from 'axios'
 import SimpleSnackbar from "../toast/SimpleSnackbar";
 import "../formik/FormStyles.css"
+import EmailModalPage from './EmailModalPage';
+import Notification from '../toast/Notification';
 
 const url = "http://localhost:4000/api/UpsertAccount";
 const fetchInventoriesbyName = "http://localhost:4000/api/InventoryName";
@@ -17,14 +19,9 @@ const AccountDetailPage = ({ item }) => {
     const location = useLocation();
     const navigate = useNavigate();
     const [showNew, setshowNew] = useState()
-    const [showAlert, setShowAlert] = useState(false);
-    const [alertMessage, setAlertMessage] = useState();
-    const [alertSeverity, setAlertSeverity] = useState();
     const [inventoriesRecord, setInventoriesRecord] = useState([]);
-    const[relatedTask,setRelatedTask] = useState([]);
-
-    const[convertDate,setConvertDate] = useState('')
-       
+  // notification
+    const[notify,setNotify]=useState({isOpen:false,message:'',type:''})
    
     useEffect(() => {
         console.log('passed record', location.state.record.item);
@@ -35,9 +32,6 @@ const AccountDetailPage = ({ item }) => {
       
     }, [])
 
-
-    
-   
     const initialValues = {
         accountName: '',
         accountNumber: '',
@@ -154,25 +148,26 @@ const AccountDetailPage = ({ item }) => {
         axios.post(url, values)
         .then((res) => {
             console.log('upsert record  response', res);
-            setShowAlert(true)
-            setAlertMessage(res.data)
-            setAlertSeverity('success')
-
+            setNotify({
+                isOpen:true,
+                message:res.data,
+                type:'success'
+      
+              })
             setTimeout(() => {
-                navigate(-1);
-            }, 1000)
+                 navigate(-1);
+            }, 2000)
         })
         .catch((error) => {
             console.log('upsert record  error', error);
-            setShowAlert(true)
-            setAlertMessage(error.message)
-            setAlertSeverity('error')
+            setNotify({
+                isOpen:true,
+                message:error.message,
+                type:'error'
+              })
         })
 
         
-    }
-    const toastCloseCallback = () => {
-        setShowAlert(false)
     }
 
     const FetchInventoriesbyName = (newInputValue) => {
@@ -219,9 +214,8 @@ const AccountDetailPage = ({ item }) => {
 
                         return (
                             <>
-                                {
-                                    showAlert ? <SimpleSnackbar severity={alertSeverity} message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> : <SimpleSnackbar />
-                                }
+                                
+                                <Notification notify={notify} setNotify={setNotify}/>
 
                                 <Form>
                                     <Grid container spacing={2}>

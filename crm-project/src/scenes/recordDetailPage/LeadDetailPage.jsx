@@ -2,17 +2,15 @@ import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { Grid, Button, TextField,Forminput,Autocomplete, DialogActions } from "@mui/material";
+import { Grid, Button, TextField, Forminput, Autocomplete, DialogActions } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom"
 import axios from 'axios'
-import SimpleSnackbar from "../toast/SimpleSnackbar";
 import "../formik/FormStyles.css"
-import Divider from '@mui/material/Divider';
-import EventForm from '../formik/EventForm';
-import NewEventForm from '../formik/NewEvent';
+import EmailModalPage from './EmailModalPage';
+import Notification from '../toast/Notification';
 
 const url = "http://localhost:4000/api/UpsertLead";
-const fetchUsersbyName="http://localhost:4000/api/usersbyName"
+const fetchUsersbyName = "http://localhost:4000/api/usersbyName"
 
 const LeadDetailPage = ({ item }) => {
 
@@ -20,25 +18,17 @@ const LeadDetailPage = ({ item }) => {
     const location = useLocation();
     const navigate = useNavigate();
     const [showNew, setshowNew] = useState()
-    const [showAlert, setShowAlert] = useState(false);
-    const [alertMessage, setAlertMessage] = useState();
-    const [alertSeverity, setAlertSeverity] = useState();
 
-    const[usersRecord,setUsersRecord]= useState([])
-    //user name security
-    const[showField,setShowFiled]= useState(false)
+    const [usersRecord, setUsersRecord] = useState([])
+    // notification
+    const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
+
+
     useEffect(() => {
         console.log('passed record', location.state.record.item);
         setsingleLead(location.state.record.item);
-        console.log('true', !location.state.record.item);
         setshowNew(!location.state.record.item)
         FetchUsersbyName('')
-      
-        if( location.state.record.item){
-            if(location.state.record.item.createdbyId ==="63a1b17bcaad7e97b1b5a537"){
-                setShowFiled(true)
-            }
-        }
         // getTasks(location.state.record.item._id)
     }, [])
 
@@ -67,11 +57,11 @@ const LeadDetailPage = ({ item }) => {
         industry: singleLead?.industry ?? "",
         leadStatus: singleLead?.leadStatus ?? "",
         email: singleLead?.email ?? "",
-        createdbyId: singleLead?.createdbyId ?? "", 
-        createdDate:   new Date(singleLead?.createdDate).toLocaleString(),
-        modifiedDate:  new Date(singleLead?.modifiedDate).toLocaleString(),
+        createdbyId: singleLead?.createdbyId ?? "",
+        createdDate: new Date(singleLead?.createdDate).toLocaleString(),
+        modifiedDate: new Date(singleLead?.modifiedDate).toLocaleString(),
         _id: singleLead?._id ?? "",
-        userDetails:singleLead?.userDetails ?? "", 
+        userDetails: singleLead?.userDetails ?? "",
     }
 
     const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
@@ -102,75 +92,65 @@ const LeadDetailPage = ({ item }) => {
             .required('Required'),
     })
 
-    const FetchUsersbyName=(inputValue)=>{
+    const FetchUsersbyName = (inputValue) => {
         console.log('inside FetchLeadsbyName fn');
-        console.log('newInputValue',inputValue)
+        console.log('newInputValue', inputValue)
         axios.post(`${fetchUsersbyName}?searchKey=${inputValue}`)
-        .then((res) => {
-            console.log('res fetchLeadsbyName', res.data)
-            if(typeof(res.data)=== "object"){
-                setUsersRecord(res.data)
-            }
-        })
-        .catch((error) => {
-            console.log('error fetchLeadsbyName', error);
-        })
+            .then((res) => {
+                console.log('res fetchLeadsbyName', res.data)
+                if (typeof (res.data) === "object") {
+                    setUsersRecord(res.data)
+                }
+            })
+            .catch((error) => {
+                console.log('error fetchLeadsbyName', error);
+            })
     }
 
     const formSubmission = (values) => {
-        console.log('form submission value',values);
-        // let d = new Date();
-        // const formatDate =  [d.getDate(), d.getMonth()+1,d.getFullYear()].join('/')+' '+ [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
-      
+        console.log('form submission value', values);
+
         let dateSeconds = new Date().getTime();
         let createDateSec = new Date(values.createdDate).getTime()
 
-        if(showNew){
+        if (showNew) {
             values.modifiedDate = dateSeconds;
             values.createdDate = dateSeconds;
-            values.fullName = values.firstName +' '+ values.lastName;
-          
+            values.fullName = values.firstName + ' ' + values.lastName;
+
         }
-        else if(!showNew){
+        else if (!showNew) {
             values.modifiedDate = dateSeconds;
             values.createdDate = createDateSec;
-            values.fullName = values.firstName +' '+ values.lastName;
+            values.fullName = values.firstName + ' ' + values.lastName;
         }
-        console.log('after change form submission value',values);
-       
+        console.log('after change form submission value', values);
+
         axios.post(url, values)
-        .then((res) => {
-            console.log('upsert record  response', res);
-            setShowAlert(true)
-            setAlertMessage(res.data)
-            setAlertSeverity('success')
-            setTimeout(() => {
-                navigate(-1)
-            }, 2000);
+            .then((res) => {
+                console.log('upsert record  response', res);
+                setNotify({
+                    isOpen: true,
+                    message: res.data,
+                    type: 'success'
+                })
+                setTimeout(() => {
+                    navigate(-1);
+                }, 2000)
 
-        })
-        .catch((error) => {
-            console.log('upsert record error', error);
-            setShowAlert(true)
-            setAlertMessage(error.message)
-            setAlertSeverity('error')
-        })
+            })
+            .catch((error) => {
+                console.log('upsert record error', error);
+                setNotify({
+                    isOpen: true,
+                    message: error.message,
+                    type: 'error'
+                })
+            })
     }
-    const toastCloseCallback = () => {
-        setShowAlert(false)
-    }
-
-    const handleFormClose =()=>{
+    const handleFormClose = () => {
         navigate(-1)
     }
-
-    // const callEvent = (savedValues) => {
-
-    //     console.log('button click', savedValues);
-    //     let item = savedValues
-    //     navigate('/test1', { state: { record: { item } } })
-
-    // }
 
     return (
         <Grid item xs={12} style={{ margin: "20px" }}>
@@ -179,14 +159,6 @@ const LeadDetailPage = ({ item }) => {
                     showNew ? <h3>New Lead</h3> : <h3>Lead Detail Page </h3>
                 }
             </div>
-            {/* <div style={{ textAlign: "end", marginBottom: "10px" }}>
-
-                {
-                    showNew ? null : <button onClick={() => callEvent(savedValues)}>New Event</button>
-                }
-
-            </div> */}
-
             <div>
                 <Formik
                     enableReinitialize={true}
@@ -207,13 +179,11 @@ const LeadDetailPage = ({ item }) => {
 
                         return (
                             <>
-                                {
-                                    showAlert ? <SimpleSnackbar severity={alertSeverity} message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> : <SimpleSnackbar message={showAlert} />
-                                }
+                                <Notification notify={notify} setNotify={setNotify} />
 
                                 <Form>
                                     <Grid container spacing={2}>
-                                    <Grid item xs={6} md={6}>
+                                        <Grid item xs={6} md={6}>
                                             <label htmlFor="createdbyId">User Name </label>
                                             <Autocomplete
                                                 name="createdbyId"
@@ -224,15 +194,15 @@ const LeadDetailPage = ({ item }) => {
                                                 // isOptionEqualToValue={(option, value) => option.userName === value.userName}
                                                 onChange={(e, value) => {
                                                     console.log('inside onchange values', value);
-                                                    if(!value){                                
-                                                        console.log('!value',value);
-                                                        setFieldValue("createdbyId",'')
-                                                        setFieldValue("userDetails",'')
-                                                      }else{
-                                                        console.log('value',value);
-                                                        setFieldValue("createdbyId",value.id)
-                                                        setFieldValue("userDetails",value)
-                                                      }
+                                                    if (!value) {
+                                                        console.log('!value', value);
+                                                        setFieldValue("createdbyId", '')
+                                                        setFieldValue("userDetails", '')
+                                                    } else {
+                                                        console.log('value', value);
+                                                        setFieldValue("createdbyId", value.id)
+                                                        setFieldValue("userDetails", value)
+                                                    }
                                                 }}
 
                                                 onInputChange={(event, newInputValue) => {
@@ -245,7 +215,6 @@ const LeadDetailPage = ({ item }) => {
                                                     <Field component={TextField} {...params} name="createdbyId" />
                                                 )}
                                             />
-
                                         </Grid>
                                         <Grid item xs={6} md={2}>
                                             <label htmlFor="salutation">Salutation  </label>
@@ -259,7 +228,6 @@ const LeadDetailPage = ({ item }) => {
                                             </Field>
                                         </Grid>
                                         <Grid item xs={6} md={4}>
-
                                             <label htmlFor="firstName" >First Name</label>
                                             <Field name='firstName' type="text" class="form-input" />
                                             <div style={{ color: 'red' }}>
@@ -282,18 +250,14 @@ const LeadDetailPage = ({ item }) => {
                                                 </Grid>
                                             </>
                                         )}
-
-                                        {
-                                            showField &&
-                                            <Grid item xs={6} md={6}>
+                                        <Grid item xs={6} md={6}>
                                             <label htmlFor="phone">Phone</label>
                                             <Field name="phone" type="phone" class="form-input" />
                                             <div style={{ color: 'red' }}>
                                                 <ErrorMessage name="phone" />
                                             </div>
-                                            </Grid>
-                                        }
-                                       
+                                        </Grid>
+
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="email">Email <span className="text-danger">*</span></label>
                                             <Field name="email" type="text" class="form-input" />
@@ -345,9 +309,6 @@ const LeadDetailPage = ({ item }) => {
                                                 <ErrorMessage name="leadStatus" />
                                             </div>
                                         </Grid>
-
-                                      
-
                                         {!showNew && (
                                             <>
                                                 <Grid item xs={6} md={6}>
@@ -360,14 +321,10 @@ const LeadDetailPage = ({ item }) => {
                                                 </Grid>
                                             </>
                                         )}
-
-
                                     </Grid>
 
                                     <div className='action-buttons'>
                                         <DialogActions sx={{ justifyContent: "space-between" }}>
-
-
                                             {
                                                 showNew ?
                                                     <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Save</Button>

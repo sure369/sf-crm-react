@@ -26,6 +26,7 @@ const Contacts = () => {
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
   const [records, setRecords] = useState([]);
+  const[fetchLoading,setFetchLoading]=useState(true);
 
 //email,Whatsapp
   const [showEmail, setShowEmail] = useState(false)
@@ -51,14 +52,17 @@ const Contacts = () => {
           console.log("res Contact records", res);
           if (res.data.length > 0 && (typeof (res.data) !== 'string')) {
             setRecords(res.data);
+            setFetchLoading(false)
           }
           else {
             setRecords([]);
+            setFetchLoading(false)
           }
         }
       )
       .catch((error) => {
         console.log('error', error);
+        setFetchLoading(false)
       })
   }
 
@@ -299,6 +303,7 @@ const Contacts = () => {
               Toolbar: GridToolbar,
               Pagination: CustomPagination,
             }}
+            loading={fetchLoading}
           />
         </Box>
       </Box>

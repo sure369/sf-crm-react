@@ -23,6 +23,7 @@ const Leads = () => {
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
   const [records, setRecords] = useState([]);
+  const[fetchLoading,setFetchLoading]=useState(true);
   // notification
   const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
   //dialog
@@ -40,14 +41,17 @@ const Leads = () => {
           console.log("res Lead records", res);
           if (res.data.length > 0 && (typeof (res.data) !== 'string')) {
             setRecords(res.data);
+            setFetchLoading(false)
           }
           else {
             setRecords([]);
+            setFetchLoading(false)
           }
         }
       )
       .catch((error) => {
         console.log('res Lead error', error);
+        setFetchLoading(false)
       })
   }
   const handleAddRecord = () => {
@@ -216,6 +220,7 @@ const Leads = () => {
               Pagination: CustomPagination,
               Toolbar: GridToolbar
             }}
+            loading={fetchLoading}
           />
         </Box>
       </Box>

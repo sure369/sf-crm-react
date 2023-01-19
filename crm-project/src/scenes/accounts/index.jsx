@@ -24,7 +24,7 @@ const Accounts = () => {
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
   const [records, setRecords] = useState([]);
-
+  const[fetchLoading,setFetchLoading]=useState(true);
   // notification
   const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
   //dialog
@@ -44,14 +44,17 @@ const Accounts = () => {
           console.log("res Account records", res);
           if (res.data.length > 0 && (typeof (res.data) !== 'string')) {
             setRecords(res.data);
+            setFetchLoading(false)
           }
           else {
             setRecords([]);
+             setFetchLoading(false)
           }
         }
       )
       .catch((error) => {
         console.log('res Account error', error);
+        setFetchLoading(false)
       })
   }
   const handleAddRecord = () => {
@@ -226,6 +229,7 @@ const Accounts = () => {
               Toolbar: GridToolbar,
               Pagination: CustomPagination,
             }}
+            loading={fetchLoading}
           />
         </Box>
       </Box>

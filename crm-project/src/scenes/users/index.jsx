@@ -23,6 +23,7 @@ const Users = () => {
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
   const [records, setRecords] = useState([]);
+  const[fetchLoading,setFetchLoading]=useState(true);
   // notification
   const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
   //dialog
@@ -41,14 +42,17 @@ const Users = () => {
           console.log("res users records", res);
           if (res.data.length > 0 && (typeof (res.data) !== 'string')) {
             setRecords(res.data);
+            setFetchLoading(false)
           }
           else {
             setRecords([]);
+            setFetchLoading(false)
           }
         }
       )
       .catch((error) => {
         console.log('res users error', error);
+        setFetchLoading(false)
       })
   }
 
@@ -217,6 +221,7 @@ const Users = () => {
                 Pagination: CustomPagination,
                 Toolbar: GridToolbar
               }}
+              loading={fetchLoading}
             />
           </Box>
         </Box>
