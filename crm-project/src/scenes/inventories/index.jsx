@@ -13,6 +13,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import Notification from '../toast/Notification';
 import ConfirmDialog from '../toast/ConfirmDialog';
+import { ClassNames } from '@emotion/react';
+import { bgcolor } from '@mui/system';
 
 const Inventories = () => {
 
@@ -142,6 +144,13 @@ const Inventories = () => {
     {
       field: "status", headerName: "status",
       headerAlign: 'center', align: 'center', flex: 1,
+      cellClassName: (params) => {
+        const statusClassName = (params.row.status ==='avilable ') ? 'green' : 
+                                (params.row.status ==='booked') ?'pink' :
+                                (params.row.status ==='sold') ?'red' :
+                                (params.row.status ==='processed')?'yellow':''
+        return statusClassName;
+      }
     },
     {
       field: 'actions', headerName: 'Actions',
@@ -160,6 +169,7 @@ const Inventories = () => {
       }
     }
   ];
+
 
 
   return (
@@ -187,16 +197,23 @@ const Inventories = () => {
               color: colors.greenAccent[300],
             },
             "& .MuiDataGrid-columnHeaders": {
+              // backgroundColor:'#6AB187',
               backgroundColor: colors.blueAccent[700],
               borderBottom: "none",
             },
+            "& .MuiDataGrid-columnHeaderTitle": { 
+              fontWeight: 'bold !important',
+              overflow: 'visible !important'
+           },
             "& .MuiDataGrid-virtualScroller": {
-              backgroundColor: colors.primary[400],
+              // table bgcolor& selected row color
+              // backgroundColor: colors.primary[400],
               // backgroundColor:'#CCFFE5'
-
+            
             },
             "& .MuiDataGrid-footerContainer": {
               borderBottom: "none",
+              // backgroundColor:'#6AB187',
               backgroundColor: colors.blueAccent[700],
             },
             "& .MuiCheckbox-root": {
@@ -206,13 +223,30 @@ const Inventories = () => {
               color: `${colors.grey[100]} !important`,
             },
             "& .MuiDataGrid-row:hover": {
-              backgroundColor: "#CCE5FF"
-              // color: "red"
-            },            
-            "&.MuiDataGrid-row:selected": {
-              backgroundColor: "#CCE5FF",
-              
-            }
+              backgroundColor: "#CECEF0"
+            },                     
+            "& .C-MuiDataGrid-row-even":{
+              backgroundColor: "#D7ECFF",
+            }, 
+            "& .C-MuiDataGrid-row-odd":{
+              backgroundColor: "#F0F8FF",
+            },
+            '& .green': {
+              backgroundColor: '#008000',
+              color:'white'
+            },
+            '& .pink': {
+              backgroundColor: '#FF00FF',
+              color:'white'
+            },
+            '& .red': {
+              backgroundColor: '#B22222',
+              color:'white'
+            },
+            '& .yellow': {
+              backgroundColor: '#FFD700',
+              color:'white'
+            },
           }}
         >
 
@@ -237,6 +271,11 @@ const Inventories = () => {
               Toolbar: GridToolbar,
             }}
             loading={fetchLoading}
+            getRowClassName={(params) =>
+              params.indexRelativeToCurrentPage % 2 === 0 ? 'C-MuiDataGrid-row-even' : 'C-MuiDataGrid-row-odd'
+            }
+           
+          
           />
         </Box>
       </Box>

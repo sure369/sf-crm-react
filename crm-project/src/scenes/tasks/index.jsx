@@ -201,8 +201,12 @@ const Task = () => {
               backgroundColor: colors.blueAccent[700],
               borderBottom: "none",
             },
+            "& .MuiDataGrid-columnHeaderTitle": { 
+              fontWeight: 'bold !important',
+              overflow: 'visible !important'
+           },
             "& .MuiDataGrid-virtualScroller": {
-              backgroundColor: colors.primary[400],
+              // backgroundColor: colors.primary[400],
             },
             "& .MuiDataGrid-footerContainer": {
               borderBottom: "none",
@@ -214,6 +218,15 @@ const Task = () => {
             },
             "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
               color: `${colors.grey[100]} !important`,
+            }, 
+            "& .MuiDataGrid-row:hover": {
+              backgroundColor: "#CECEF0"
+            },                     
+            "& .C-MuiDataGrid-row-even":{
+              backgroundColor: "#D7ECFF",
+            }, 
+            "& .C-MuiDataGrid-row-odd":{
+              backgroundColor: "#F0F8FF",
             },
           }}
         >
@@ -236,6 +249,9 @@ const Task = () => {
               Pagination: CustomPagination,
             }}
             loading={fetchLoading}
+            getRowClassName={(params) =>
+              params.indexRelativeToCurrentPage % 2 === 0 ? 'C-MuiDataGrid-row-even' : 'C-MuiDataGrid-row-odd'
+            }
           />
         </Box>
       </Box>

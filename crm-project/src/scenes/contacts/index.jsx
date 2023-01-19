@@ -90,57 +90,43 @@ const Contacts = () => {
     })
   }
 
-  const onConfirmDeleteRecord = (row) => {
-    console.log('onConfirmDeleteRecord row', (row.length))
+  const onebyoneDelete=(row)=>{
+    console.log('one by on delete',row)
 
-    if(row.length){
-      row.forEach(element => {
-     axios.post(urlDelete + element)
-      .then((res) => {
-        console.log('api delete response', res);
-        fetchRecords();
-        setNotify({
-          isOpen: true,
-          message: res.data,
-          type: 'success'
-        })
+    axios.post(urlDelete + row)
+    .then((res) => {
+      console.log('api delete response', res);
+      fetchRecords();
+      setNotify({
+        isOpen: true,
+        message: res.data,
+        type: 'success'
       })
-      .catch((error) => {
-        console.log('api delete error', error);
-        setNotify({
-          isOpen: true,
-          message: error.message,
-          type: 'error'
-        })
+    })
+    .catch((error) => {
+      console.log('api delete error', error);
+      setNotify({
+        isOpen: true,
+        message: error.message,
+        type: 'error'
       })
-      });
-    }
-   else{
-    axios.post(urlDelete + row._id)
-      .then((res) => {
-        console.log('api delete response', res);
-        fetchRecords();
-        setNotify({
-          isOpen: true,
-          message: res.data,
-          type: 'success'
-        })
-      })
-      .catch((error) => {
-        console.log('api delete error', error);
-        setNotify({
-          isOpen: true,
-          message: error.message,
-          type: 'error'
-        })
-      })
-   }
+    })
+
     setConfirmDialog({
       ...confirmDialog,
       isOpen: false
     })
+  }
 
-    
+  const onConfirmDeleteRecord = (row) => {
+    if(row.length){
+      row.forEach(element => {
+        onebyoneDelete(element)
+      });
+    }
+   else{
+    onebyoneDelete(row._id)
+   }
   }
 
   function CustomPagination() {
@@ -187,20 +173,17 @@ const Contacts = () => {
     {
       field: "accountName", headerName: "Account Name",
       headerAlign: 'center', align: 'center', flex: 1,
-      renderCell: (params) => {
-        // console.log(params.row.accountDetails.length);
-        // if(params.row.accountDetails.lenth>1)
-        // {
-        //   return <div className="rowitem">
-        //   {params.row.accountDetails.accountName}
-        // </div>
-        // }
-        // else{
-        //   return <div className="rowitem">
-        //   {null}
-        // </div>
-        // }
-
+      renderCell: (params) => {      
+        if(params.row.accountDetails){
+          return <div className="rowitem">
+           {params.row.accountDetails.accountName}
+            </div>
+        }
+        else{
+          return <div className="rowitem">
+             {null}
+           </div>
+        }
       },
     },
     {
@@ -270,8 +253,12 @@ const Contacts = () => {
               backgroundColor: colors.blueAccent[700],
               borderBottom: "none",
             },
+            "& .MuiDataGrid-columnHeaderTitle": { 
+              fontWeight: 'bold !important',
+              overflow: 'visible !important'
+           },
             "& .MuiDataGrid-virtualScroller": {
-              backgroundColor: colors.primary[400],
+              // backgroundColor: colors.primary[400],
             },
             "& .MuiDataGrid-footerContainer": {
               // borderTop: "none",
@@ -283,6 +270,15 @@ const Contacts = () => {
             },
             "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
               color: `${colors.grey[100]} !important`,
+            }, 
+            "& .MuiDataGrid-row:hover": {
+              backgroundColor: "#CECEF0"
+            },                     
+            "& .C-MuiDataGrid-row-even":{
+              backgroundColor: "#D7ECFF",
+            }, 
+            "& .C-MuiDataGrid-row-odd":{
+              backgroundColor: "#F0F8FF",
             },
           }}
         >
@@ -333,6 +329,9 @@ const Contacts = () => {
               Pagination: CustomPagination,
             }}
             loading={fetchLoading}
+            getRowClassName={(params) =>
+              params.indexRelativeToCurrentPage % 2 === 0 ? 'C-MuiDataGrid-row-even' : 'C-MuiDataGrid-row-odd'
+            }
           />
         </Box>
       </Box>
@@ -375,3 +374,56 @@ const ModalBoxstyle = {
   border: '2px solid #000',
   boxShadow: 24,
 };
+
+// const onConfirmDeleteRecord = (row) => {
+//   console.log('onConfirmDeleteRecord row', (row.length))
+
+//   if(row.length){
+//     row.forEach(element => {
+//    axios.post(urlDelete + element)
+//     .then((res) => {
+//       console.log('api delete response', res);
+//       fetchRecords();
+//       setNotify({
+//         isOpen: true,
+//         message: res.data,
+//         type: 'success'
+//       })
+//     })
+//     .catch((error) => {
+//       console.log('api delete error', error);
+//       setNotify({
+//         isOpen: true,
+//         message: error.message,
+//         type: 'error'
+//       })
+//     })
+//     });
+//   }
+//  else{
+//   axios.post(urlDelete + row._id)
+//     .then((res) => {
+//       console.log('api delete response', res);
+//       fetchRecords();
+//       setNotify({
+//         isOpen: true,
+//         message: res.data,
+//         type: 'success'
+//       })
+//     })
+//     .catch((error) => {
+//       console.log('api delete error', error);
+//       setNotify({
+//         isOpen: true,
+//         message: error.message,
+//         type: 'error'
+//       })
+//     })
+//  }
+//   setConfirmDialog({
+//     ...confirmDialog,
+//     isOpen: false
+//   })
+
+  
+// }
