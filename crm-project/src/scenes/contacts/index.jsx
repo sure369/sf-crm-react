@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Button, IconButton, Typography, Modal ,useTheme,Pagination} from "@mui/material";
+import { Box, Button, IconButton, Typography, Modal, useTheme, Pagination, Tooltip } from "@mui/material";
 import {
   DataGrid, GridToolbar,
   gridPageCountSelector, gridPageSelector,
@@ -15,7 +15,8 @@ import EmailModalPage from '../recordDetailPage/EmailModalPage';
 import WhatAppModalPage from '../recordDetailPage/WhatsAppModalPage';
 import Notification from '../toast/Notification';
 import ConfirmDialog from '../toast/ConfirmDialog';
-
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import EmailIcon from '@mui/icons-material/Email';
 
 const Contacts = () => {
 
@@ -26,9 +27,9 @@ const Contacts = () => {
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
   const [records, setRecords] = useState([]);
-  const[fetchLoading,setFetchLoading]=useState(true);
+  const [fetchLoading, setFetchLoading] = useState(true);
 
-//email,Whatsapp
+  //email,Whatsapp
   const [showEmail, setShowEmail] = useState(false)
   const [selectedRecordIds, setSelectedRecordIds] = useState()
   const [selectedRecordDatas, setSelectedRecordDatas] = useState()
@@ -36,9 +37,9 @@ const Contacts = () => {
   const [whatsAppModalOpen, setWhatsAppModalOpen] = useState(false)
 
   // notification
-   const[notify,setNotify]=useState({isOpen:false,message:'',type:''})
+  const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
   //dialog
-  const[confirmDialog,setConfirmDialog]=useState({isOpen:false,title:'',subTitle:''})
+  const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subTitle: '' })
 
   useEffect(() => {
     fetchRecords();
@@ -82,38 +83,64 @@ const Contacts = () => {
     console.log('req delete rec', row);
 
     setConfirmDialog({
-      isOpen:true,
-      title:`Are you sure to delete this Record ?`,
-      subTitle:"You can't undo this Operation",
-      onConfirm: ()=>{onConfirmDeleteRecord(row)}
+      isOpen: true,
+      title: `Are you sure to delete this Record ?`,
+      subTitle: "You can't undo this Operation",
+      onConfirm: () => { onConfirmDeleteRecord(row) }
     })
   }
 
-  const onConfirmDeleteRecord=(row)=>{
-    console.log('onConfirmDeleteRecord row',row)
+  const onConfirmDeleteRecord = (row) => {
+    console.log('onConfirmDeleteRecord row', (row.length))
+
+    if(row.length){
+      row.forEach(element => {
+     axios.post(urlDelete + element)
+      .then((res) => {
+        console.log('api delete response', res);
+        fetchRecords();
+        setNotify({
+          isOpen: true,
+          message: res.data,
+          type: 'success'
+        })
+      })
+      .catch((error) => {
+        console.log('api delete error', error);
+        setNotify({
+          isOpen: true,
+          message: error.message,
+          type: 'error'
+        })
+      })
+      });
+    }
+   else{
+    axios.post(urlDelete + row._id)
+      .then((res) => {
+        console.log('api delete response', res);
+        fetchRecords();
+        setNotify({
+          isOpen: true,
+          message: res.data,
+          type: 'success'
+        })
+      })
+      .catch((error) => {
+        console.log('api delete error', error);
+        setNotify({
+          isOpen: true,
+          message: error.message,
+          type: 'error'
+        })
+      })
+   }
     setConfirmDialog({
       ...confirmDialog,
-      isOpen:false
+      isOpen: false
     })
 
-    axios.post(urlDelete+row._id)
-      .then((res)=>{
-          console.log('api delete response',res);
-          fetchRecords();
-          setNotify({
-            isOpen:true,
-            message:res.data,
-            type:'success'
-          })
-      })
-      .catch((error)=> {
-          console.log('api delete error',error);
-           setNotify({
-            isOpen:true,
-            message:error.message,
-            type:'error'
-          })
-        })
+    
   }
 
   function CustomPagination() {
@@ -173,7 +200,7 @@ const Contacts = () => {
         //   {null}
         // </div>
         // }
-       
+
       },
     },
     {
@@ -197,7 +224,7 @@ const Contacts = () => {
             {
               !showEmail ?
                 <>
-                  <IconButton style={{ padding: '20px', color:'#0080FF'}} >
+                  <IconButton style={{ padding: '20px', color: '#0080FF' }} >
                     <EditIcon onClick={(e) => handleOnCellClick(e, params.row)} />
                   </IconButton>
                   <IconButton style={{ padding: '20px', color: '#FF3333' }} >
@@ -216,9 +243,9 @@ const Contacts = () => {
 
   return (
     <>
-    
-<Notification notify={notify} setNotify={setNotify}/>
-<ConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog}/>
+
+      <Notification notify={notify} setNotify={setNotify} />
+      <ConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog} />
 
 
       <Box m="20px">
@@ -259,26 +286,28 @@ const Contacts = () => {
             },
           }}
         >
-          <div className='btn-test'>
-            <Button
-                variant="contained" 
-                color="info"
-                onClick={handleAddRecord}
-            >
-              New 
-            </Button>
-
-            <div>
+           <div className='btn-test'>
               {
-                showEmail ? <Button variant="contained" color="secondary" onClick={handlesendEmail}>Send Email</Button> : ''
+                showEmail ?
+                  <>
+                    <Tooltip title="Email">
+                      <IconButton> <EmailIcon sx={{ color: '#DB4437' }} onClick={handlesendEmail} /> </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Whatsapp">
+                      <IconButton> <WhatsAppIcon sx={{ color: '#34A853' }} onClick={handlesendWhatsapp} /> </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Delete Selected">
+                      <IconButton> <DeleteIcon sx={{ color: '#FF3333' }} onClick={(e) => onHandleDelete(e,selectedRecordIds)} /> </IconButton>
+                    </Tooltip>
+                  </>
+                   :
+                  <Button  variant="contained" color="info" onClick={handleAddRecord} >
+                    New
+                  </Button>
+                  
+                  
               }
-              {
-                showEmail ? <Button variant="contained" color="secondary" onClick={handlesendWhatsapp}>What's App</Button> : ''
-              }
-
-            </div>
-
-          </div>
+              </div>
 
           <DataGrid
             rows={records}
