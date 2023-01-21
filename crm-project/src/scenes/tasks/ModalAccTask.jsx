@@ -7,7 +7,6 @@ import {
     Autocomplete, TextField
 } from "@mui/material";
 import axios from 'axios'
-import SimpleSnackbar from "../toast/SimpleSnackbar";
 import "../formik/FormStyles.css"
 
 const UpsertUrl = "http://localhost:4000/api/UpsertTask";
@@ -133,10 +132,6 @@ const ModalAccTask = ({ item, handleModal }) => {
 
                     return (
                         <>
-                            {
-                                showAlert ? <SimpleSnackbar severity={alertSeverity} message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> : <SimpleSnackbar />
-                            }
-
                             <Form>
                                 <Grid container spacing={2}>
                                     <Grid item xs={6} md={4}>

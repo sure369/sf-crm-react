@@ -5,13 +5,13 @@ import {
     , IconButton, Grid, Accordion, AccordionSummary, AccordionDetails, Pagination, Menu, MenuItem
 } from "@mui/material";
 import axios from 'axios'
-import SimpleSnackbar from "../toast/SimpleSnackbar";
-
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ModalInventoryOpportunity from "../opportunities/ModalInventoryOpp";
+import Notification from '../toast/Notification';
 
-const style = {
+
+const ModalStyle = {
     position: 'absolute',
     top: '50%',
     left: '50%',
@@ -24,51 +24,50 @@ const style = {
 
 const InventoryRelatedItems = ({ item }) => {
 
-
-    const taskDeleteURL = "http://localhost:4000/api/deleteTask?code=";
-    const inventoryDeleteURL = "http://localhost:4000/api/deleteInventory?code=";
-
-
+    const opportunityDeleteURL = "http://localhost:4000/api/deleteOpportunity?code=";
+    const urlgetOpportunitiesbyInvid = "http://localhost:4000/api/getOpportunitiesbyInvid?searchId=";
 
     const navigate = useNavigate();
     const location = useLocation();
 
+    const[inventoryRecordId,setInventoryRecordId]=useState()
     const [realtedOpportunity, setRealtedOpportunity] = useState([]);
 
-    
     const [opportunityModalOpen, setOpportunityModalOpen] = useState(false);
     const [opportunityItemsPerPage, setOpportunityItemsPerPage] = useState(2);
     const [opportunityPerPage, setOpportunityPerPage] = useState(1);
     const [opportunityNoOfPages, setOpportunityNoOfPages] = useState(0);
 
     const [realtedOpportunityModalOpen,setRealtedOpportunityModalOpen] =useState()
+    
+    const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
 
     useEffect(() => {
         console.log('inside useEffect', location.state.record.item);
         console.log('inventory id', location.state.record.item._id);
         // setRealtedOpportunity(location.state.record.item._id)
+        setInventoryRecordId( location.state.record.item._id)
         getOpportunitiesbyInvId(location.state.record.item._id)
 
     }, [])
 
     const getOpportunitiesbyInvId = (recId) => {
-        const urlTask = "http://localhost:4000/api/getOpportunitiesbyInvid?searchId=";
-        axios.post(urlTask + recId)
+        
+        axios.post(urlgetOpportunitiesbyInvid + recId)
             .then((res) => {
                 console.log('response getOpportunitiesbyInvId fetch', res);
                 if (res.data.length > 0) {
                     setRealtedOpportunity(res.data);
-                    //   setTaskNoOfPages(Math.ceil(res.data.length / taskItemsPerPage));
-                    //   setTaskPerPage(1)
+                    setOpportunityNoOfPages(Math.ceil(res.data.length / opportunityItemsPerPage));
+                    setOpportunityPerPage(1)
                 }
                 else {
-                    //   setRelatedTask([]);
+                  setRealtedOpportunity([]);
                 }
             })
             .catch((error) => {
                 console.log('error getTasksbyOppId fetch', error)
             })
-
     }
 
 
@@ -78,7 +77,7 @@ const InventoryRelatedItems = ({ item }) => {
 
         console.log('selected record', row);
         const item = row;
-        // navigate("/taskDetailPage", { state: { record: { item } } })
+         navigate("/opportunityDetailPage", { state: { record: { item } } })
     };
 
     const handleTaskCardDelete = (row) => {
@@ -86,60 +85,30 @@ const InventoryRelatedItems = ({ item }) => {
         console.log('req delete rec', row);
         console.log('req delete rec id', row._id);
 
-        // axios.post(taskDeleteURL + row._id)
-        //   .then((res) => {
-        //     console.log('api delete response', res);
-        //     console.log('inside delete response opportunityRecordId', opportunityRecordId)
-        //     getTasksbyOppId(opportunityRecordId)
-        //     setShowAlert(true)
-        //     setAlertMessage(res.data)
-        //     setAlertSeverity('success')
-        //     setMenuOpen(false)
-        //     setTimeout(
-        //       window.location.reload()
-        //     )
-        //   })
-        //   .catch((error) => {
-        //     console.log('api delete error', error);
-        //     setShowAlert(true)
-        //     setAlertMessage(error.message)
-        //     setAlertSeverity('error')
+        axios.post(opportunityDeleteURL + row._id)
+          .then((res) => {
+            console.log('api delete response', res);
+            getOpportunitiesbyInvId(inventoryRecordId)
+            setMenuOpen(false)
+            setNotify({
+              isOpen:true,
+              message:res.data,
+              type:'success'
+            })
+            setTimeout(
+              // window.location.reload()
+            )
+          })
+          .catch((error) => {
+            console.log('api delete error', error);
+            setNotify({
+              isOpen:true,
+              message:error.message,
+              type:'error'
+            })
 
-        //   })
+          })
     };
-
-    const handleInventoryCardEdit = (row) => {
-
-        console.log('Inventory selected edit record', row);
-
-        const item = row
-
-        navigate("/inventoryDetailPage", { state: { record: { item } } })
-    };
-
-    const handleInventoryCardDelete = (row) => {
-
-        console.log('req opp delete rec', row)
-        // axios.post(inventoryDeleteURL + row._id)
-        // .then((res) => {
-        //   console.log('api delete response', res);
-        //   console.log('inside delete response opportunityRecordId', opportunityRecordId)
-        //   getInventorybyOppId(opportunityRecordId)
-        //   setShowAlert(true)
-        //   setAlertMessage(res.data)
-        //   setAlertSeverity('success')
-        //   setMenuOpen(false)
-        // })
-        // .catch((error) => {
-        //   console.log('api delete error', error);
-        //   setShowAlert(true)
-        //   setAlertMessage(error.message)
-        //   setAlertSeverity('error')
-
-        // })
-
-    }
-
 
     const handleOpportunityModalOpen =()=>{
         setRealtedOpportunityModalOpen(true);
@@ -192,6 +161,7 @@ const InventoryRelatedItems = ({ item }) => {
 
     return (
         <>
+ <Notification notify={notify} setNotify={setNotify} />
 
             <div style={{ textAlign: "center", marginBottom: "10px" }}>
 
@@ -297,7 +267,7 @@ const InventoryRelatedItems = ({ item }) => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
+        <Box sx={ModalStyle}>
           <ModalInventoryOpportunity handleModal={handleOpportunityModalClose} />
         </Box>
       </Modal>

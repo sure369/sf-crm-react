@@ -11,7 +11,6 @@ import TaskModalPage from "./ModalLeadTask";
 import DeleteIcon from '@mui/icons-material/Delete';
 import ModeIcon from '@mui/icons-material/Mode';
  
-import SimpleSnackbar from "../toast/SimpleSnackbar";
 import ModalOppTask from "./ModalOppTask";
 import ModalAccTask from "./ModalAccTask";
 
@@ -121,9 +120,7 @@ const CardAccTask = ({ item }) => {
 
     return (
         <>
-         {
-     showAlert && <SimpleSnackbar severity={alertSeverity}  message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> 
-    } 
+       
       
             <div style={{ textAlign: "center", marginBottom: "10px" }}>
 

@@ -8,7 +8,6 @@ import {
   Pagination, Menu, MenuItem
 } from "@mui/material";
 import axios from 'axios'
-import SimpleSnackbar from "../toast/SimpleSnackbar";
 import ModalOppTask from "../tasks/ModalOppTask";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -335,10 +334,7 @@ const columns = [
 
   return (
     <>
-      {
-        showAlert && <SimpleSnackbar severity={alertSeverity} message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} />
-      }
-
+    
       <div style={{ textAlign: "center", marginBottom: "10px" }}>
 
         <h3> Related Items</h3>
@@ -366,9 +362,12 @@ const columns = [
                     .slice((taskPerPage - 1) * taskItemsPerPage, taskPerPage * taskItemsPerPage)
                     .map((item) => {
                       
-                      let   starDateConvert = new Date(item.StartDate).getUTCFullYear()
-                      + '-' +  ('0'+ (new Date(item.StartDate).getUTCMonth() + 1)).slice(-2) 
-                      + '-' + ('0'+ ( new Date(item.StartDate).getUTCDate())).slice(-2)  ||''
+                      let   starDateConvert ;
+                      if(item.StartDate){
+                        starDateConvert = new Date(item.StartDate).getUTCFullYear()
+                        + '-' +  ('0'+ (new Date(item.StartDate).getUTCMonth() + 1)).slice(-2) 
+                        + '-' + ('0'+ ( new Date(item.StartDate).getUTCDate())).slice(-2)  ||''
+                      }
 
                       return (
                         <div >

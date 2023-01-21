@@ -39,17 +39,6 @@ Item.propTypes = {
 
 const FlexInventories = (item) => {
 
-    
-    const [property, setProperty] = useState([{}])
-    const [rowId, setRowId] = useState()
-    const [singleProps, setSingleProps] = useState({})
-    const [loading, setLoading] = useState(true)
-    const [searchText, setSearchText] = useState("");
-    const [searchedColumn, setSearchedColumn] = useState("");
-    const [showNew, setshowNew] = useState()
-    const [showAlert, setShowAlert] = useState(false);
-    const [alertMessage, setAlertMessage] = useState();
-    const [alertSeverity, setAlertSeverity] = useState();
 
     const[passedRecord,setPassedRecord] =useState();
     const location = useLocation();

@@ -4,7 +4,6 @@ import * as Yup from "yup";
 import { Grid,Button ,FormControl} from "@mui/material";
 import axios from 'axios'
 import { useNavigate } from "react-router-dom";
-import SimpleSnackbar from "../toast/SimpleSnackbar"
 
 const url ="http://localhost:4000/api/userInsert";
 
@@ -102,11 +101,7 @@ const onSubmit = (values, { resetForm }) => {
 
             return (
                 <>
-                {
-               showAlert? <SimpleSnackbar severity={alertSeverity}  message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> :<SimpleSnackbar message={showAlert}/>
-              }
-   
-          
+         
                 <form onSubmit={handleSubmit}>
                             <Grid container spacing={2}>                            
                                     <Grid item xs={6} md={6}>

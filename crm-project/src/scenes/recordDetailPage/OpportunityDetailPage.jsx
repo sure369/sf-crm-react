@@ -6,7 +6,6 @@ import { Grid,Button ,Forminput,DialogActions,TextField,Autocomplete} from "@mui
 import { useParams,useNavigate } from "react-router-dom"
 import axios from 'axios'
 import "../formik/FormStyles.css"
-import EmailModalPage from './EmailModalPage';
 import Notification from '../toast/Notification';
 
 const url ="http://localhost:4000/api/UpsertOpportunity";
@@ -110,11 +109,9 @@ const OpportunityDetailPage = ({item}) => {
             values.modifiedDate = dateSeconds;
             values.createdDate =createDateSec
             if( values.closeDate){
-
                 values.closeDate =closeDateSec;
             }
             if (values.LeadId === '' && values.InventoryId === '') {    
-                
                 console.log('both empty !showNew') 
                 delete values.LeadId; 
                 delete values.InventoryId;
@@ -345,7 +342,7 @@ const OpportunityDetailPage = ({item}) => {
                 <Field name="closeDate" type="date" class="form-input" />
             </Grid>
              <Grid item xs={6} md={6}>
-             <label htmlFor="amount">Amount</label>
+             <label htmlFor="amount">Amount<span className="text-danger">*</span> </label>
                  <Field class="form-input" type='text' name="amount" />
                  <div style={{ color: 'red'}}>
                      <ErrorMessage name="amount" />

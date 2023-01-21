@@ -7,7 +7,6 @@ import DatePickerField from "./datePick";
 import axios from 'axios'
 // import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from "react-router-dom";
-import SimpleSnackbar from "../toast/SimpleSnackbar";
 import "./FormStyles.css"
 
 const url = "http://localhost:4000/api/opportunityInsert";
@@ -89,10 +88,7 @@ const OpportunityForm = () => {
                             } = props;
                             return (
                                 <>
-                                    {
-                                        showAlert ? <SimpleSnackbar severity={alertSeverity} message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> : <SimpleSnackbar message={showAlert} />
-                                    }
-
+                                    
 
                                     <Form>
                                         <Grid container spacing={2}>

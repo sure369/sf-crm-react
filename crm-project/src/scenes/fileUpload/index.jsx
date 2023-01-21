@@ -7,13 +7,12 @@ import {
     Autocomplete, TextField
 } from "@mui/material";
 import axios from 'axios'
-import SimpleSnackbar from "../toast/SimpleSnackbar";
 import "../formik/FormStyles.css"
 import download from 'downloadjs';
 import { saveAs } from 'file-saver'
 import Iframe from 'react-iframe'
 import fileDownload from "js-file-download";
-
+import Notification from '../toast/Notification';
 
 const UpsertUrl = "http://localhost:4000/api/uploadfile"; 
 const urlFiles ="http://localhost:4000/api/files"
@@ -23,14 +22,8 @@ const urlDownloadFiles =  "http://localhost:4000/api/download?searchKey="
 
 const DropFileInput = () => {
 
-
-    
-    const [showAlert, setShowAlert] = useState(false);
-    const [alertMessage, setAlertMessage] = useState();
-    const [alertSeverity, setAlertSeverity] = useState();
-
     const [filesList,setFileList] =useState([])
-
+    const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
 
     //iframe 
     const[showIframe,setShowIframe] =useState(false)
@@ -113,21 +106,20 @@ const DropFileInput = () => {
     
             .then((res) => {
                 console.log('file Submission  response', res);
-                setShowAlert(true)
-                setAlertMessage(res.data.insertedId)
-                setAlertSeverity('success')
-            
+                setNotify({
+                    isOpen: true,
+                    message: res.data.insertedId,
+                    type: 'success'
+                })            
             })
             .catch((error) => {
                 console.log('file  Submission  error', error);
-                setShowAlert(true)
-                setAlertMessage(error.message)
-                setAlertSeverity('error')
+                setNotify({
+                    isOpen: true,
+                    message: error.message,
+                    type: 'error'
+                })
             })
-    }
-
-    const toastCloseCallback = () => {
-        setShowAlert(false)
     }
 
     const redirect =(item) =>{
@@ -189,10 +181,7 @@ const DropFileInput = () => {
 
                     return (
                         <>
-                            {
-                                showAlert ? <SimpleSnackbar severity={alertSeverity} message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> : <SimpleSnackbar />
-                            }
-                               
+                                <Notification notify={notify} setNotify={setNotify} />
 
                             <Form>
                                 <Grid container spacing={2}>

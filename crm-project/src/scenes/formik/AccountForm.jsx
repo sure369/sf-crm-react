@@ -5,7 +5,6 @@ import { Grid,Button ,FormControl,Stack ,Alert} from "@mui/material";
 import axios from 'axios'
 // import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState } from "react";
-import SimpleSnackbar from "../toast/SimpleSnackbar";
 import { useNavigate } from "react-router-dom";
 import "./FormStyles.css"
 
@@ -72,19 +71,10 @@ const onSubmit = (values, { resetForm }) => {
 
 const AccountForm = () => {
 
-    const[showAlert,setShowAlert] = useState(false);
-    const[alertMessage,setAlertMessage]=useState();
-    const[alertSeverity,setAlertSeverity]=useState();
-    const[alertNotes,setAlertNotes]=useState({
-                                        isShow:false,
-                                        message:'',
-                                        severity:''
-                                    })
+
     const navigate =useNavigate();
 
-    const toastCloseCallback=()=>{
-        setShowAlert(false)
-    }
+
 
     return (
         <div className="container mb-10">
@@ -111,9 +101,7 @@ const AccountForm = () => {
                             //     severity:'success',
                             //     mode:toastCloseCallback()
                             // })
-                            setShowAlert(true)
-                            setAlertMessage(res.data)
-                            setAlertSeverity('success')
+                           
 
                             setTimeout(() => {
                                 navigate(-1);
@@ -124,9 +112,7 @@ const AccountForm = () => {
                         })
                         .catch((error)=> {
                             console.log('error',error);
-                            setShowAlert(true)
-                            setAlertMessage(error.message)
-                            setAlertSeverity('error')
+                     
                             // setAlertNotes({
                             //     isShow:true,
                             //     message:error.message,
@@ -150,13 +136,8 @@ const AccountForm = () => {
 
             return (
                 <>
-        {/* {
-             showAlert? <SimpleSnackbar obj={alertNotes} /> :<SimpleSnackbar obj={alertNotes} />
-        }  */}
-             
-       {
-        showAlert? <SimpleSnackbar severity={alertSeverity}  message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> :<SimpleSnackbar message={showAlert}/>
-       } 
+
+       
                 <Form>
                             <Grid container spacing={2}>
                                  <Grid item xs={6} md={6}>

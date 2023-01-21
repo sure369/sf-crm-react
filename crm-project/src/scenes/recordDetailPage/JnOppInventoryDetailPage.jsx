@@ -6,7 +6,6 @@ import { Grid, Button, Forminput, DialogActions, TextField, Autocomplete } from 
 import { useParams, useNavigate } from "react-router-dom"
 import axios from 'axios'
 import "../formik/FormStyles.css"
-import EmailModalPage from './EmailModalPage';
 import Notification from '../toast/Notification';
 
 const url = "http://localhost:4000/api/UpsertJnOppInventory";

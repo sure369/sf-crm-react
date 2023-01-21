@@ -5,7 +5,6 @@ import { Grid, Button, Forminput, Box } from "@mui/material";
 import axios from 'axios'
 // import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from "react-router-dom";
-import SimpleSnackbar from "../toast/SimpleSnackbar";
 import "./FormStyles.css"
 
 const url = "http://localhost:4000/api/inventoryInsert";
@@ -74,18 +73,8 @@ const onSubmit = (values, { resetForm }) => {
 
 const InventoryForm = () => {
     const navigate = useNavigate();
-    const [showAlert, setShowAlert] = useState(false);
-    const [alertMessage, setAlertMessage] = useState();
-    const [alertSeverity, setAlertSeverity] = useState();
-    const [alertNotes, setAlertNotes] = useState({
-        isShow: false,
-        message: '',
-        severity: ''
-    })
 
-    const toastCloseCallback = () => {
-        setShowAlert(false)
-    }
+
 
     return (
         <div className="container mb-10">
@@ -127,10 +116,7 @@ const InventoryForm = () => {
 
                         return (
                             <>
-                                {
-                                    showAlert ? <SimpleSnackbar severity={alertSeverity} message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> : <SimpleSnackbar message={showAlert} />
-                                }
-
+                                
 
                                 <Form>
                                     <Grid container spacing={2}>

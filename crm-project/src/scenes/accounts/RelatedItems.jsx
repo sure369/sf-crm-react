@@ -8,11 +8,11 @@ import {
 } from "@mui/material";
 import axios from 'axios'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import SimpleSnackbar from "../toast/SimpleSnackbar";
 import ModalAccTask from "../tasks/ModalAccTask";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import Notification from '../toast/Notification';
 
-const style = {
+const ModalStyle = {
   position: 'absolute',
   top: '50%',
   left: '50%',
@@ -32,12 +32,7 @@ const AccountRelatedItems = ({ item }) => {
   const [relatedTask, setRelatedTask] = useState([]);
   const [relatedInventory, setRelatedInventory] = useState([]);
   const [taskModalOpen, setTaskModalOpen] = useState(false);
-
   const [recordId, setRecordId] = useState()
-
-  const [showAlert, setShowAlert] = useState(false);
-  const [alertMessage, setAlertMessage] = useState();
-  const [alertSeverity, setAlertSeverity] = useState();
 
   const [taskItemsPerPage, setTaskItemsPerPage] = useState(2);
   const [taskPerPage, setTaskPerPage] = useState(1);
@@ -46,6 +41,8 @@ const AccountRelatedItems = ({ item }) => {
   const [invontoryItemsPerPage, setInvontoryItemsPerPage] = useState(2);
   const [invontoryPerPage, setInvontoryPerPage] = useState(1);
   const [invontoryNoOfPages, setInvontoryNoOfPages] = useState(0);
+
+  const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
 
   useEffect(() => {
     console.log('inside useEffect', location.state.record.item);
@@ -127,22 +124,23 @@ const AccountRelatedItems = ({ item }) => {
         console.log('api delete response', res);
         console.log('inside delete response leadRecordId', recordId)
         getTasks(recordId)
-        setShowAlert(true)
-        setAlertMessage(res.data)
-        setAlertSeverity('success')
         setMenuOpen(false)
+        setNotify({
+          isOpen: true,
+          message: res.data,
+          type: 'success'
+      })
       })
       .catch((error) => {
         console.log('api delete error', error);
-        setShowAlert(true)
-        setAlertMessage(error.message)
-        setAlertSeverity('error')
+        setNotify({
+          isOpen: true,
+          message: error.message,
+          type: 'error'
+      })
 
       })
   };
-  const toastCloseCallback = () => {
-    setShowAlert(false)
-  }
 
   const handleChangePage = (event, value) => {
     setTaskPerPage(value);
@@ -167,9 +165,8 @@ const AccountRelatedItems = ({ item }) => {
 
   return (
     <>
-      {
-        showAlert && <SimpleSnackbar severity={alertSeverity} message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} />
-      }
+     
+     <Notification notify={notify} setNotify={setNotify} />
 
       <div style={{ textAlign: "center", marginBottom: "10px" }}>
 
@@ -372,7 +369,7 @@ const AccountRelatedItems = ({ item }) => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
+        <Box sx={ModalStyle}>
           <ModalAccTask handleModal={handleTaskModalClose} />
         </Box>
       </Modal>

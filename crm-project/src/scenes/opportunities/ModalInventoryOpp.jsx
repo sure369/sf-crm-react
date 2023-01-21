@@ -5,7 +5,6 @@ import * as Yup from "yup";
 import { Grid, Button, Forminput, DialogActions, TextField, Autocomplete } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom"
 import axios from 'axios'
-import SimpleSnackbar from "../toast/SimpleSnackbar";
 import "../formik/FormStyles.css"
 
 
@@ -20,10 +19,6 @@ const ModalInventoryOpportunity = ({ item }) => {
 
     const location = useLocation();
     const navigate = useNavigate();
-
-    const [showAlert, setShowAlert] = useState(false);
-    const [alertMessage, setAlertMessage] = useState();
-    const [alertSeverity, setAlertSeverity] = useState();
 
     const [leadsRecords, setLeadsRecords] = useState([]);
 
@@ -75,9 +70,9 @@ const ModalInventoryOpportunity = ({ item }) => {
         if (values.closeDate) {
             values.closeDate = closeDateSec;
         }
-        if (values.InventoryId === '') {
-            console.log('InventoryId empty')
-            delete values.InventoryId;
+        if (values.LeadId === '') {
+            console.log('LeadId empty')
+            delete values.LeadId;
         }
 
 
@@ -86,26 +81,17 @@ const ModalInventoryOpportunity = ({ item }) => {
         axios.post(url, values)
             .then((res) => {
                 console.log('post response', res);
-                setShowAlert(true)
-                setAlertMessage(res.data)
-                setAlertSeverity('success')
+                
                 setTimeout(() => {
-                    window.location.reload();
+                    navigate(-1);
+                    // window.location.reload();
                 }, 2000);
             })
             .catch((error) => {
                 console.log('error', error);
-                setShowAlert(true)
-                setAlertMessage(error.message)
-                setAlertSeverity('error')
+              
             })
     }
-
-    const toastCloseCallback = () => {
-        setShowAlert(false)
-    }
-
-
 
     const FetchLeadsbyName =(newInputValue) =>{
         console.log('inside FetchLeadsbyName fn');
@@ -123,7 +109,8 @@ const ModalInventoryOpportunity = ({ item }) => {
     }
 
     const handleFormClose = () => {
-        navigate(-1)
+        // navigate(-1)
+        navigate("/inventoryDetailPage", { state: { record: { inventoryParentRecord } } })
     }
 
     return (
@@ -152,9 +139,7 @@ const ModalInventoryOpportunity = ({ item }) => {
 
                         return (
                             <>
-                                {
-                                    showAlert ? <SimpleSnackbar severity={alertSeverity} message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> : <SimpleSnackbar message={showAlert} />
-                                }
+                                
                                 <Form>
                                     <Grid container spacing={2}>
                                         <Grid item xs={6} md={6}>
@@ -168,26 +153,36 @@ const ModalInventoryOpportunity = ({ item }) => {
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="LeadId">Lead Name </label>
                                             <Autocomplete
-                                                name="LeadId"
-                                                options={leadsRecords}
-                                                value={values.LeadId}
-                                                getOptionLabel={option => option.leadName || ''}
+                            name="LeadId"
+                            options={leadsRecords}
+                            value={values.leadDetails}
+                            getOptionLabel={option => option.leadName ||''}
+                           
+                            onChange={(e, value) => {
+                                console.log('lead onchange',value);
+                              if(!value){                                
+                                console.log('!value',value);
+                                setFieldValue("LeadId",'')
+                                setFieldValue("leadDetails",'')
+                              }else{
+                                console.log('value',value);
+                                setFieldValue("LeadId",value.id)
+                                setFieldValue("leadDetails",value)
+                              }
+                                
+                            }}
+                            
+                            onInputChange={(event, newInputValue) => {
+                                console.log('newInputValue',newInputValue);
+                                if(newInputValue.length>=3){
+                                    FetchLeadsbyName(newInputValue);
+                                }
+                            }}
+                            renderInput={params => (
+                            <Field component={TextField} {...params} name="LeadId" />
+                            )}
+                />  
 
-                                                onChange={(e, value) => {
-                                                    setFieldValue("LeadId", value.id)
-                                                    setFieldValue("leadName", value)
-                                                }}
-
-                                                onInputChange={(event, newInputValue) => {
-                                                    console.log('newInputValue', newInputValue);
-                                                    if (newInputValue.length >= 3) {
-                                                        FetchLeadsbyName(newInputValue);
-                                                    }
-                                                }}
-                                                renderInput={params => (
-                                                    <Field component={TextField} {...params} name="LeadId" />
-                                                )}
-                                            />
 
                                         </Grid>
                                         <Grid item xs={6} md={6}>

@@ -5,9 +5,7 @@ import * as Yup from "yup";
 import { Grid, Button, DialogActions, Box, TextField, Autocomplete } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom"
 import axios from 'axios'
-import SimpleSnackbar from "../toast/SimpleSnackbar";
 import "../formik/FormStyles.css"
-import EmailModalPage from './EmailModalPage';
 import Notification from '../toast/Notification';
 
 const url = "http://localhost:4000/api/UpsertAccount";

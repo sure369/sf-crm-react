@@ -51,6 +51,7 @@ import TextEditor from "./scenes/RichTextField/TextEditor";
 import Preview from "./scenes/fileUpload/Preview";
 import CircularLoading from "./scenes/toast/CircularLoding";
 
+
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
@@ -62,6 +63,7 @@ function App() {
         <div className="app" style={{height: "fit-content"}}>
           <Sidebar isSidebar={isSidebar} />
           <main className="content" style={{height: "fit-content"}}>
+            <AppNavbar/>
             {/* <Topbar setIsSidebar={setIsSidebar} /> */}
             <Routes>
               <Route path="/" element={< Inventories/>} />

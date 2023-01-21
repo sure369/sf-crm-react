@@ -5,7 +5,6 @@ import * as Yup from "yup";
 import { Grid, Button, Forminput, DialogActions, TextField, Autocomplete } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom"
 import axios from 'axios'
-import SimpleSnackbar from "../toast/SimpleSnackbar";
 import "../formik/FormStyles.css"
 
 
@@ -150,9 +149,7 @@ const ModalLeadOpportunity = ({ item }) => {
 
                         return (
                             <>
-                                {
-                                    showAlert ? <SimpleSnackbar severity={alertSeverity} message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> : <SimpleSnackbar message={showAlert} />
-                                }
+                                
                                 <Form>
                                     <Grid container spacing={2}>
                                         <Grid item xs={6} md={6}>

@@ -8,7 +8,7 @@ import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import axios from 'axios';
 import { useNavigate,useParams } from "react-router-dom";
-import SimpleSnackbar from "../toast/test";
+
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import Pagination from '@mui/material/Pagination';
@@ -197,11 +197,7 @@ const FlexShrink =(props)=> {
   
           return (
               <>
-                  {
-                      showAlert ? 
-                          <SimpleSnackbar severity={alertSeverity} message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} /> :
-                          <SimpleSnackbar message={showAlert} />
-                  }
+                 
   
                   <Form className='font-style'>
                           <Grid container spacing={2} >

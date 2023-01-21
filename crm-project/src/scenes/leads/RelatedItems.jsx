@@ -9,9 +9,9 @@ import {
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import axios from 'axios'
 import ModalLeadTask from "../tasks/ModalLeadTask";
-import SimpleSnackbar from "../toast/SimpleSnackbar";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ModalLeadOpportunity from "../opportunities/ModalLeadOpp";
+import Notification from '../toast/Notification';
 
 const style = {
   position: 'absolute',
@@ -36,10 +36,7 @@ const LeadRelatedItems = ({ item }) => {
   const [relatedOpportunity, setRelatedOpportunity] = useState([]);
 
   const [leadRecordId, setLeadRecordId] = useState()
-
-  const [showAlert, setShowAlert] = useState(false);
-  const [alertMessage, setAlertMessage] = useState();
-  const [alertSeverity, setAlertSeverity] = useState();
+  const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
 
   const [taskModalOpen, setTaskModalOpen] = useState(false);
   const [taskItemsPerPage, setTaskItemsPerPage] = useState(2);
@@ -135,9 +132,11 @@ const LeadRelatedItems = ({ item }) => {
         console.log('api delete response', res);
         console.log('inside delete response leadRecordId', leadRecordId)
         getTasksbyLeadId(leadRecordId)
-        setShowAlert(true)
-        setAlertMessage(res.data)
-        setAlertSeverity('success')
+        setNotify({
+          isOpen: true,
+          message: res.data,
+          type: 'success'
+        })
         setMenuOpen(false)
         setTimeout(
           window.location.reload()
@@ -145,9 +144,11 @@ const LeadRelatedItems = ({ item }) => {
       })
       .catch((error) => {
         console.log('api delete error', error);
-        setShowAlert(true)
-        setAlertMessage(error.message)
-        setAlertSeverity('error')
+        setNotify({
+          isOpen: true,
+          message: error.message,
+          type: 'error'
+        })
 
       })
   };
@@ -168,28 +169,33 @@ const LeadRelatedItems = ({ item }) => {
       console.log('api delete response', res);
       console.log('inside delete response leadRecordId', leadRecordId)
       getOpportunitybyLeadId(leadRecordId)
-      setShowAlert(true)
-      setAlertMessage(res.data)
-      setAlertSeverity('success')
+      setNotify({
+        isOpen: true,
+        message: res.data,
+        type: 'success'
+      })
       setMenuOpen(false)
     })
     .catch((error) => {
       console.log('api delete error', error);
-      setShowAlert(true)
-      setAlertMessage(error.message)
-      setAlertSeverity('error')
+      setNotify({
+        isOpen: true,
+        message: error.message,
+        type: 'error'
+      })
 
     })
 
   }
 
-  const toastCloseCallback = () => {
-    setShowAlert(false)
-  }
 
   const handleChangeTaskPage = (event, value) => {
     setTaskPerPage(value);
   };
+  const handleChangeOpportunityPage = (event, value) => {
+    setOpportunityPerPage(value);
+  };
+
 
   // menu dropdown strart //menu pass rec
   const [anchorEl, setAnchorEl] = useState(null);
@@ -232,9 +238,7 @@ const LeadRelatedItems = ({ item }) => {
     // menu dropdown end
   return (
     <>
-      {
-        showAlert && <SimpleSnackbar severity={alertSeverity} message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} />
-      }
+    <Notification notify={notify} setNotify={setNotify} />
 
       <div style={{ textAlign: "center", marginBottom: "10px" }}>
 
@@ -263,13 +267,12 @@ const LeadRelatedItems = ({ item }) => {
                   relatedTask
                     .slice((taskPerPage - 1) * taskItemsPerPage, taskPerPage * taskItemsPerPage)
                     .map((item) => {  
-
-                        let   starDateConvert = new Date(item.StartDate).getUTCFullYear()
+                      let   starDateConvert ;
+                      if(item.StartDate){
+                        starDateConvert = new Date(item.StartDate).getUTCFullYear()
                         + '-' +  ('0'+ (new Date(item.StartDate).getUTCMonth() + 1)).slice(-2) 
                         + '-' + ('0'+ ( new Date(item.StartDate).getUTCDate())).slice(-2)  ||''
-                      
-
-
+                      }
                       return (
                         <div >
 
@@ -405,12 +408,12 @@ const LeadRelatedItems = ({ item }) => {
 
             </Card>
             {
-              relatedTask.length > 0 &&
+              relatedOpportunity.length > 0 &&
               <Box display="flex" alignItems="center" justifyContent="center">
                 <Pagination
-                  count={taskNoOfPages}
-                  page={taskPerPage}
-                  onChange={handleChangeTaskPage}
+                  count={opportunityNoOfPages}
+                  page={opportunityPerPage}
+                  onChange={handleChangeOpportunityPage}
                   defaultPage={1}
                   color="primary"
                   size="medium"
@@ -431,7 +434,6 @@ const LeadRelatedItems = ({ item }) => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          {/* <TaskDetailPage handleModal={handleTaskModalClose} showModel={true}/> */}
           <ModalLeadTask handleModal={handleTaskModalClose} />
         </Box>
       </Modal>
@@ -443,7 +445,6 @@ const LeadRelatedItems = ({ item }) => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          {/* <TaskDetailPage handleModal={handleTaskModalClose} showModel={true}/> */}
           <ModalLeadOpportunity handleModal={handleOpportunityModalClose} />
         </Box>
       </Modal>

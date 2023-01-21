@@ -9,7 +9,6 @@ import {
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import axios from 'axios'
 import ModalLeadTask from "../tasks/ModalLeadTask";
-import SimpleSnackbar from "../toast/SimpleSnackbar";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 import PreviewFile from "../formik/PreviewFile";
@@ -105,10 +104,7 @@ const TaskRelatedItems = ({ item }) => {
 
   return (
     <>
-      {
-        showAlert && <SimpleSnackbar severity={alertSeverity} message={alertMessage} showAlert={showAlert} onClose={toastCloseCallback} />
-      }
-
+     
       <div style={{ textAlign: "center", marginBottom: "10px" }}>
 
         <h3> Related Items ({relatedTask.length})</h3>
