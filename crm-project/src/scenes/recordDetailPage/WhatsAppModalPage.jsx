@@ -35,6 +35,7 @@ const WhatAppModalPage = ({ data, handleModal, bulkMail }) => {
             .required('Required'),
     })
 
+
     const formSubmission = async (values, { resetForm }) => {
         console.log('inside form Submission', values);
 
@@ -47,10 +48,25 @@ const WhatAppModalPage = ({ data, handleModal, bulkMail }) => {
         let RecordConvert = (values.recordsData.length > 0 ? (values.recordsData) : (arr))
         console.log('RecordConvert', RecordConvert)
 
+
+        RecordConvert.forEach(element => {
+            onebyoneWhatsapp(element,values)
+        });
+
+    }
+
+    const onebyoneWhatsapp=(values,element)=>{
+
+    console.log('values',values);
+    console.log('element',element)
+
+    let mergeBody = `Hai ${values.fullName},`+ '\n'+"\n"+ element.subject
+
         let formData = new FormData();
-        formData.append('subject', values.subject);
-        formData.append('recordsData', JSON.stringify(RecordConvert));
-        formData.append('file', values.attachments);
+        formData.append('subject', mergeBody);
+        formData.append('phoneNumber',values.phone)
+        // formData.append('recordsData', JSON.stringify(RecordConvert));
+        formData.append('file', element.attachments);
 
         axios.post(urlSendWhatsAppbulk, formData)
             .then((res) => {

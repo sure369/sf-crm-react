@@ -46,7 +46,7 @@ const EmailModalPage = ({ data, handleModal, bulkMail }) => {
         console.log('values',values);
         console.log('element',element)
 
-        let mergeBody = `Hai ${element.fullName}`+ "\n"+ `${values.htmlBody},`
+        let mergeBody = `Hai ${element.fullName},`+ '\n'+"\n"+ values.htmlBody
 
         let formData = new FormData();
         formData.append('subject', values.subject);
