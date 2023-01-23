@@ -54,9 +54,9 @@ const EmailModalPage = ({ data, handleModal, bulkMail }) => {
         let formData = new FormData();
         formData.append('subject', values.subject);
         formData.append('htmlBody', mergeBody);
-        formData.append('recordsData', JSON.stringify(element));
+        formData.append('emailId',element.email)
+        // formData.append('recordsData', JSON.stringify(element));
         formData.append('file', values.attachments);
- 
 
         axios.post(urlSendEmailbulk, formData)
             .then((res) => {
