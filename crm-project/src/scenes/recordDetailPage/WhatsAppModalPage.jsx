@@ -117,7 +117,7 @@ const WhatAppModalPage = ({ data, handleModal, bulkMail }) => {
                                     <div className='action-buttons'>
                                         <DialogActions sx={{ justifyContent: "space-between" }}>
 
-                                            <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Save</Button>
+                                            <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Send</Button>
 
                                             <Button type="reset" variant="contained" onClick={(e) => handleModal(false)} >Cancel</Button>
 

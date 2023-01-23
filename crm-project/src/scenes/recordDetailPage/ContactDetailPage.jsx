@@ -3,14 +3,17 @@ import { useLocation } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import {
-    Grid, Button, DialogActions,
-    Modal, Box, Autocomplete, TextField
+    Grid, Button, DialogActions,Tooltip,
+    Modal, Box, Autocomplete, TextField,IconButton
 } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom"
 import axios from 'axios'
 import "../formik/FormStyles.css"
 import EmailModalPage from './EmailModalPage';
 import Notification from '../toast/Notification';
+import EmailIcon from '@mui/icons-material/Email';
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import WhatAppModalPage from './WhatsAppModalPage';
 
 const url = "http://localhost:4000/api/UpsertContact";
 const fetchAccountsbyName = "http://localhost:4000/api/accountsname";
@@ -24,6 +27,7 @@ const ContactDetailPage = ({ item }) => {
     const [showNew, setshowNew] = useState()
     const [emailModalOpen, setEmailModalOpen] = useState(false)
     const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
+    const [whatsAppModalOpen, setWhatsAppModalOpen] = useState(false)
 
     useEffect(() => {
         console.log('passed record', location.state.record.item);
@@ -181,6 +185,13 @@ const ContactDetailPage = ({ item }) => {
         setEmailModalOpen(false)
     }
 
+    const handlesendWhatsapp = () => {
+        setWhatsAppModalOpen(true)
+      }
+    
+      const setWhatAppModalClose = () => {
+        setWhatsAppModalOpen(false)
+      }
 
 
 
@@ -193,9 +204,25 @@ const ContactDetailPage = ({ item }) => {
                     }
                 </div>
                 <div>
+                <div className='btn-test'>
                     {
-                        !showNew ? <Button variant="contained" color="secondary" onClick={handlesendEmail}>Send Email</Button> : ''
+                        !showNew ?  
+                        <>
+                        <Tooltip title="Send Email">
+                        <IconButton> <EmailIcon sx={{ color: '#DB4437' }} onClick={handlesendEmail} /> </IconButton>
+                         </Tooltip>
+                         <Tooltip title="Whatsapp">
+                         <IconButton> <WhatsAppIcon sx={{ color: '#34A853' }} onClick={handlesendWhatsapp} /> </IconButton>
+                       </Tooltip> 
+                        </>
+                          
+                      
+                      : ''
                     }
+                    </div>
+
+                    
+
 
                 </div>
                 <div>
@@ -379,6 +406,16 @@ const ContactDetailPage = ({ item }) => {
                     <EmailModalPage data={singleContact} handleModal={setEmailModalClose} bulkMail={false} />
                 </Box>
             </Modal>
+            <Modal
+        open={whatsAppModalOpen}
+        onClose={setWhatAppModalClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={ModalStyle}>
+          <WhatAppModalPage data={singleContact} handleModal={setWhatAppModalClose} bulkMail={true} />
+        </Box>
+      </Modal>
 
         </div>
 

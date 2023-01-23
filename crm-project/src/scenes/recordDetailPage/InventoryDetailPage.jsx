@@ -212,7 +212,7 @@ const InventoryDetailPage = ({ item }) => {
                                             <label htmlFor="status">Status <span className="text-danger">*</span> </label>
                                             <Field name="status" as="select" class="form-input">
                                                 <option value="">--Select--</option>
-                                                <option value="avilable ">Available </option>
+                                                <option value="available ">Available </option>
                                                 <option value="sold"> Sold</option>
                                                 <option value="booked">Booked</option>
                                                 <option value="processed">Processed</option>
