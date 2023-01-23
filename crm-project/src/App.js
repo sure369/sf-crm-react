@@ -63,7 +63,7 @@ function App() {
         <div className="app" style={{height: "fit-content"}}>
           <Sidebar isSidebar={isSidebar} />
           <main className="content" style={{height: "fit-content"}}>
-            <AppNavbar/>
+            {/* <AppNavbar/> */}
             {/* <Topbar setIsSidebar={setIsSidebar} /> */}
             <Routes>
               <Route path="/" element={< Inventories/>} />

@@ -52,7 +52,7 @@ const InventoryRelatedItems = ({ item }) => {
     }, [])
 
     const getOpportunitiesbyInvId = (recId) => {
-        
+        console.log('id',recId);
         axios.post(urlgetOpportunitiesbyInvid + recId)
             .then((res) => {
                 console.log('response getOpportunitiesbyInvId fetch', res);

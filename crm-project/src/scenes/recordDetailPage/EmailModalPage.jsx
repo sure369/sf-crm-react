@@ -42,26 +42,21 @@ const EmailModalPage = ({ data, handleModal, bulkMail }) => {
         ,
     })
 
-    const formSubmission = async (values, { resetForm }) => {
-        console.log('inside form Submission', values);
+    const onebyoneMail=(values,element)=>{
+        console.log('values',values);
+        console.log('element',element)
 
-        values.recordsData = parentRecord;
-        console.log('len', values.recordsData.length > 0);
 
-        let arr = [];
-        arr.push((values.recordsData));
-        console.log('arr', arr);
-        let RecordConvert = (values.recordsData.length > 0 ? (values.recordsData) : (arr))
-        console.log('RecordConvert', RecordConvert)
+        let mergeBody = `Hai ${element.fullName}`+ "\n"+ values.htmlBody
+       
+        
 
         let formData = new FormData();
         formData.append('subject', values.subject);
-        formData.append('htmlBody', values.htmlBody);
-        formData.append('recordsData', JSON.stringify(RecordConvert));
+        formData.append('htmlBody', mergeBody);
+        formData.append('recordsData', JSON.stringify(element));
         formData.append('file', values.attachments);
-        // , { headers: {
-        //     'Content-Type': 'multipart/form-data'
-        //   } })
+ 
 
         axios.post(urlSendEmailbulk, formData)
             .then((res) => {
@@ -83,6 +78,24 @@ const EmailModalPage = ({ data, handleModal, bulkMail }) => {
                     type: 'error'
                 })
             })
+       
+    }
+
+    const formSubmission = async (values, { resetForm }) => {
+        console.log('inside form Submission', values);
+     
+        values.recordsData = parentRecord;
+
+        let arr = [];
+        arr.push((values.recordsData));
+        console.log('arr', arr);
+        let RecordConvert = (values.recordsData.length > 0 ? (values.recordsData) : (arr))
+     
+        RecordConvert.forEach(element => {
+            onebyoneMail(values,element)
+        });
+
+        
     }
 
     return (

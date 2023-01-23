@@ -127,13 +127,14 @@ const Task = () => {
     {
       field: "realatedTo", headerName: "Realated To",
       headerAlign: 'center', align: 'center', flex: 1,
-      renderCell: (params) => {
+       renderCell: (params) => {
         if (params.row.object === 'Account') {
           return <div className="rowitem">
             {params.row.accountDetails.accountName}
           </div>
         }
         else if (params.row.object === 'Lead') {
+       
           return <div className="rowitem">
             {params.row.leadDetails.leadName}
           </div>
@@ -146,7 +147,7 @@ const Task = () => {
             {null}
           </div>
         }
-      },
+       },
 
     },
     {

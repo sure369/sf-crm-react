@@ -155,17 +155,24 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
             else if (values.EndDate) {
                 values.EndDate = EndDateSec
             }
-            if (values.AccountId != '' && values.object === 'Account') {               
+            if ( values.object === 'Account') {               
                 delete values.OpportunityId; 
                 delete values.LeadId;
-                delete values.opportunityDetails 
-                delete values.leadDetails
-            }else if (values.OpportunityId != '' && values.object === 'Opportunity') {                
+                if(!values.AccountId){
+                    delete values.AccountId
+                }
+            }else if ( values.object === 'Opportunity') {                
                  delete values.AccountId; 
-                 delete values.LeadId;    
-            }else if (values.LeadId != '' && values.object==='Lead') {
+                 delete values.LeadId;  
+                 if(!values.OpportunityId){
+                    delete values.OpportunityId
+                }  
+            }else if (values.object==='Lead') {
                 delete values.OpportunityId; 
                 delete values.AccountId; 
+                if(!values.LeadId){
+                    delete values.LeadId
+                }
             }else{
                 delete values.OpportunityId; 
                 delete values.AccountId; 
