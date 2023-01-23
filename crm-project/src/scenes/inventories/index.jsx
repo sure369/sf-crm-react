@@ -60,7 +60,7 @@ const Inventories = () => {
   }
 
   const handleAddRecord = () => {
-    navigate("/inventoryDetailPage", { state: { record: {} } })
+    navigate("/new-inventories", { state: { record: {} } })
   };
 
   const handleOnCellClick = (e, row) => {

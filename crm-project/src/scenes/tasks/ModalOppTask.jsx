@@ -8,16 +8,15 @@ import {
 } from "@mui/material";
 import axios from 'axios'
 import "../formik/FormStyles.css"
+import Notification from '../toast/Notification';
 
 const UpsertUrl = "http://localhost:4000/api/UpsertTask";
 
 const ModalOppTask = ({ item, handleModal }) => {
 
     const [taskParentRecord, setTaskParentRecord] = useState();
-
-    const [showAlert, setShowAlert] = useState(false);
-    const [alertMessage, setAlertMessage] = useState();
-    const [alertSeverity, setAlertSeverity] = useState();
+    const[notify,setNotify]=useState({isOpen:false,message:'',type:''})
+   
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -72,7 +71,10 @@ const ModalOppTask = ({ item, handleModal }) => {
         values.createdDate = dateSeconds;
         values.OpportunityId = Opportunity;
         values.object = 'Opportunity'
-
+        values.opportunityDetails={
+            opportunityName:taskParentRecord.opportunityName,
+            id:taskParentRecord._id
+        }
         if (values.StartDate && values.EndDate) {
             values.StartDate = StartDateSec
             values.EndDate = EndDateSec
@@ -81,29 +83,29 @@ const ModalOppTask = ({ item, handleModal }) => {
         }else if (values.EndDate) {
             values.EndDate = EndDateSec
         }
-        console.log('valuse after chg',values);
+        console.log('value after chg',values);
    
         await axios.post(UpsertUrl, values)
 
             .then((res) => {
                 console.log('task form Submission  response', res);
-                setShowAlert(true)
-                setAlertMessage(res.data)
-                setAlertSeverity('success')
+                setNotify({
+                    isOpen:true,
+                    message:res.data,
+                    type:'success'
+                  })
                 setTimeout(() => {
-                    window.location.reload();
+                      window.location.reload();
                 }, 1000)
             })
             .catch((error) => {
                 console.log('task form Submission  error', error);
-                setShowAlert(true)
-                setAlertMessage(error.message)
-                setAlertSeverity('error')
+                setNotify({
+                    isOpen:true,
+                    message:error.message,
+                    type:'error'          
+                  })
             })
-    }
-
-    const toastCloseCallback = () => {
-        setShowAlert(false)
     }
 
     return (
@@ -131,7 +133,7 @@ const ModalOppTask = ({ item, handleModal }) => {
 
                     return (
                         <>
-                            
+                             <Notification notify={notify} setNotify={setNotify}/> 
                             <Form>
                                 <Grid container spacing={2}>
                                     <Grid item xs={6} md={4}>

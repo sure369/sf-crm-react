@@ -17,7 +17,7 @@ import ModalOppInventory from "../OppInventory/ModalOppInventory";
 import { DataGrid, GridToolbar,
   gridPageCountSelector,gridPageSelector,
   useGridApiContext,useGridSelector} from "@mui/x-data-grid";
-
+import Notification from '../toast/Notification';
 
 const style = {
   position: 'absolute',
@@ -45,9 +45,8 @@ const OpportunityRelatedItems = ({ item }) => {
 
   const [opportunityRecordId, setOpportunityRecordId] = useState()
 
-  const [showAlert, setShowAlert] = useState(false);
-  const [alertMessage, setAlertMessage] = useState();
-  const [alertSeverity, setAlertSeverity] = useState();
+  const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
+
 
   const [taskModalOpen, setTaskModalOpen] = useState(false);
   const [taskItemsPerPage, setTaskItemsPerPage] = useState(2);
@@ -89,13 +88,10 @@ const OpportunityRelatedItems = ({ item }) => {
 
   }
 
-  const getInventorybyOppId =(leadsId) =>{
+  const getInventorybyOppId =(oppId) =>{
 
     const urlOpp = "http://localhost:4000/api/getInventoriesbyOppid?searchId=";
-    
-    console.log('inside get Inventory by opp id');
-    
-    axios.post(urlOpp + leadsId)
+    axios.post(urlOpp + oppId)
       .then((res) => {
         console.log('response getInventorybyOppId ', res.data);
         if (res.data.length > 0) {
@@ -148,9 +144,11 @@ const OpportunityRelatedItems = ({ item }) => {
         console.log('api delete response', res);
         console.log('inside delete response opportunityRecordId', opportunityRecordId)
         getTasksbyOppId(opportunityRecordId)
-        setShowAlert(true)
-        setAlertMessage(res.data)
-        setAlertSeverity('success')
+        setNotify({
+          isOpen: true,
+          message: res.data,
+          type: 'success'
+        })
         setMenuOpen(false)
         setTimeout(
           window.location.reload()
@@ -158,9 +156,11 @@ const OpportunityRelatedItems = ({ item }) => {
       })
       .catch((error) => {
         console.log('api delete error', error);
-        setShowAlert(true)
-        setAlertMessage(error.message)
-        setAlertSeverity('error')
+        setNotify({
+          isOpen: true,
+          message: error.message,
+          type: 'error'
+        })
 
       })
   };
@@ -183,16 +183,20 @@ const OpportunityRelatedItems = ({ item }) => {
       console.log('api delete response', res);
       console.log('inside delete response opportunityRecordId', opportunityRecordId)
       getInventorybyOppId(opportunityRecordId)
-      setShowAlert(true)
-      setAlertMessage(res.data)
-      setAlertSeverity('success')
+      setNotify({
+        isOpen: true,
+        message: res.data,
+        type: 'success'
+      })
       setMenuOpen(false)
     })
     .catch((error) => {
       console.log('api delete error', error);
-      setShowAlert(true)
-      setAlertMessage(error.message)
-      setAlertSeverity('error')
+      setNotify({
+        isOpen: true,
+        message: error.message,
+        type: 'error'
+      })
 
     })
 
@@ -217,23 +221,23 @@ const OpportunityRelatedItems = ({ item }) => {
       console.log('api delete response', res);
       console.log('inside delete response opportunityRecordId', opportunityRecordId)
       getInventorybyOppId(opportunityRecordId)
-      setShowAlert(true)
-      setAlertMessage(res.data)
-      setAlertSeverity('success')
-      setMenuOpen(false)
+      setNotify({
+        isOpen: true,
+        message: res.data,
+        type: 'success'
+      })
+      setJnOppInvenModalOpen(false)
     })
     .catch((error) => {
       console.log('api delete error', error);
-      setShowAlert(true)
-      setAlertMessage(error.message)
-      setAlertSeverity('error')
+      setNotify({
+        isOpen: true,
+        message: error.message,
+        type: 'error'
+      })
 
     })
 
-  }
-
-  const toastCloseCallback = () => {
-    setShowAlert(false)
   }
 
   const handleChangeTaskPage = (event, value) => {
@@ -335,6 +339,9 @@ const columns = [
   return (
     <>
     
+    <Notification notify={notify} setNotify={setNotify} />
+
+
       <div style={{ textAlign: "center", marginBottom: "10px" }}>
 
         <h3> Related Items</h3>

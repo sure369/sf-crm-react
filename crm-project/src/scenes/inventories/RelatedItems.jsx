@@ -9,6 +9,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ModalInventoryOpportunity from "../opportunities/ModalInventoryOpp";
 import Notification from '../toast/Notification';
+import ModalInventoryAccount from "../accounts/ModalAccountInventory";
 
 
 const ModalStyle = {
@@ -24,35 +25,40 @@ const ModalStyle = {
 
 const InventoryRelatedItems = ({ item }) => {
 
-    const opportunityDeleteURL = "http://localhost:4000/api/deleteOpportunity?code=";
-    const urlgetOpportunitiesbyInvid = "http://localhost:4000/api/getOpportunitiesbyInvid?searchId=";
+  const opportunityDeleteURL = "http://localhost:4000/api/deleteOpportunity?code=";
+  const accountDeleteURL = "http://localhost:4000/api/deleteAccount?code=";
+  const urlgetOpportunitiesbyInvid = "http://localhost:4000/api/getOpportunitiesbyInvid?searchId=";
+  const urlgetAccountsbyInvid = "http://localhost:4000/api/getAccountbyInventory?searchId=";
 
     const navigate = useNavigate();
     const location = useLocation();
 
     const[inventoryRecordId,setInventoryRecordId]=useState()
     const [realtedOpportunity, setRealtedOpportunity] = useState([]);
+    const [relatedAccount, setRelatedAccount] = useState([]);
 
     const [opportunityModalOpen, setOpportunityModalOpen] = useState(false);
     const [opportunityItemsPerPage, setOpportunityItemsPerPage] = useState(2);
     const [opportunityPerPage, setOpportunityPerPage] = useState(1);
     const [opportunityNoOfPages, setOpportunityNoOfPages] = useState(0);
 
-    const [realtedOpportunityModalOpen,setRealtedOpportunityModalOpen] =useState()
+    const [accountModalOpen, setAccountModalOpen] = useState(false);
+    const [accountItemsPerPage, setAccountItemsPerPage] = useState(2);
+    const [accountPerPage, setAccountPerPage] = useState(1);
+    const [accountNoOfPages, setAccountNoOfPages] = useState(0);
+
     
     const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
 
     useEffect(() => {
-        console.log('inside useEffect', location.state.record.item);
-        console.log('inventory id', location.state.record.item._id);
-        // setRealtedOpportunity(location.state.record.item._id)
-        setInventoryRecordId( location.state.record.item._id)
-        getOpportunitiesbyInvId(location.state.record.item._id)
-
+        console.log('related Inventories', location.state.record.item);
+      
+         setInventoryRecordId( location.state.record.item._id)
+         getOpportunitiesbyInvId(location.state.record.item._id)
+         getAccountsbyInvId(location.state.record.item._id)
     }, [])
 
     const getOpportunitiesbyInvId = (recId) => {
-        console.log('id',recId);
         axios.post(urlgetOpportunitiesbyInvid + recId)
             .then((res) => {
                 console.log('response getOpportunitiesbyInvId fetch', res);
@@ -70,17 +76,33 @@ const InventoryRelatedItems = ({ item }) => {
             })
     }
 
+    const getAccountsbyInvId = (InventoryId) => {
+      axios.post(urlgetAccountsbyInvid + InventoryId)
+        .then((res) => {
+          console.log('response getAccountsbyInvId fetch', res);
+          if (res.data.length > 0) {
+            setRelatedAccount(res.data);
+            setAccountNoOfPages(Math.ceil(res.data.length / accountItemsPerPage));
+            setAccountPerPage(1)
+          }
+          else {
+            setRelatedAccount([]);
+          }
+        })
+        .catch((error) => {
+          console.log('error task fetch', error)
+        })
+    }
+  
 
-
-
-    const handleTaskCardEdit = (row) => {
+    const handleOpportunityCardEdit = (row) => {
 
         console.log('selected record', row);
         const item = row;
          navigate("/opportunityDetailPage", { state: { record: { item } } })
     };
 
-    const handleTaskCardDelete = (row) => {
+    const handleOpportunityCardDelete = (row) => {
 
         console.log('req delete rec', row);
         console.log('req delete rec id', row._id);
@@ -89,14 +111,14 @@ const InventoryRelatedItems = ({ item }) => {
           .then((res) => {
             console.log('api delete response', res);
             getOpportunitiesbyInvId(inventoryRecordId)
-            setMenuOpen(false)
+            setOppMenuOpen(false)
             setNotify({
               isOpen:true,
               message:res.data,
               type:'success'
             })
             setTimeout(
-              // window.location.reload()
+               window.location.reload()
             )
           })
           .catch((error) => {
@@ -110,52 +132,100 @@ const InventoryRelatedItems = ({ item }) => {
           })
     };
 
+    const handleAccountCardEdit = (row) => {
+      console.log('selected record', row);
+      const item = row;
+      navigate("/accountDetailPage", { state: { record: { item } } })
+    };
+
+    
+
+  const handleAccountCardDelete = (row) => {
+
+    console.log('req delete rec', row);
+    axios.post(accountDeleteURL+ row._id)
+      .then((res) => {
+        console.log('api delete response', res);
+        getAccountsbyInvId(inventoryRecordId)
+        setNotify({
+          isOpen: true,
+          message: res.data,
+          type: 'success'
+      })
+      setAccountMenuOpen(false)
+      setTimeout(
+        window.location.reload()
+      )
+      })
+      .catch((error) => {
+        console.log('api delete error', error);
+        setNotify({
+          isOpen: true,
+          message: error.message,
+          type: 'error'
+      })
+      })
+  };
+
+
+ 
+  const handleChangeAccountPage = (event, value) => {
+    setAccountPerPage(value);
+  };
+
+
+  const handleChangeOpportunityPage=(event,value)=>{
+    setOpportunityPerPage(value)
+   }
     const handleOpportunityModalOpen =()=>{
-        setRealtedOpportunityModalOpen(true);
+      setOpportunityModalOpen(true);
     }
     
     const handleOpportunityModalClose =()=>{
-        setRealtedOpportunityModalOpen(false);
+      setOpportunityModalOpen(false);
+    }
+    const handleAccountModalOpen =()=>{
+      setAccountModalOpen(true)
+    }
+    const handleAccountModalClose =()=>{
+      setAccountModalOpen(false)
     }
 
-   const handleChangeOpportunityPage=(event,value)=>{
-    setOpportunityPerPage(value)
-   }
-
     // Task menu dropdown strart 
-    const [anchorEl, setAnchorEl] = useState(null);
-    const [menuSelectRec, setMenuSelectRec] = useState()
-    const [menuOpen, setMenuOpen] = useState();
+    const [oppAnchorEl, setOppAnchorEl] = useState(null);
+    const [oppMenuSelectRec, setOppMenuSelectRec] = useState()
+    const [oppMenuOpen, setOppMenuOpen] = useState();
 
-    const handleTaskMoreMenuClick = (item, event) => {
-        setMenuSelectRec(item)
-        setAnchorEl(event.currentTarget);
-        setMenuOpen(true)
+    const handleOpportunityMoreMenuClick = (item, event) => {
+      setOppMenuSelectRec(item)
+      setOppAnchorEl(event.currentTarget);
+      setOppMenuOpen(true)
 
     };
-    const handleTaskMoreMenuClose = () => {
-        setAnchorEl(null);
-        setMenuOpen(false)
+    const handleOpportunityMoreMenuClose = () => {
+      setOppAnchorEl(null);
+        setOppMenuOpen(false)
     };
     // menu dropdown end
 
-    // Inventory menu dropdown strart //menu pass rec
-    const [inventoryAnchorEl, setInventoryAnchorEl] = useState(null);
-    const [inventoryMenuSelectRec, setInventoryMenuSelectRec] = useState()
-    const [inventoryMenuOpen, setInventoryMenuOpen] = useState();
+    // Account menu dropdown strart //menu pass rec
+    const [accountAnchorEl, setAccountAnchorEl] = useState(null);
+    const [accountMenuSelectRec, setAccountMenuSelectRec] = useState()
+    const [accountMenuOpen, setAccountMenuOpen] = useState();
 
-    const handleOppMoreMenuClick = (item, event) => {
+    const handleAccountMoreMenuClick = (item, event) => {
         console.log('handle OPP MoreMenu Click  item', item)
 
-        setInventoryMenuSelectRec(item)
-        setInventoryAnchorEl(event.currentTarget);
-        setInventoryMenuOpen(true)
+        setAccountMenuSelectRec(item)
+        setAccountAnchorEl(event.currentTarget);
+        setAccountMenuOpen(true)
 
     };
-    const handleInventoryMoreMenuClose = () => {
-        setInventoryAnchorEl(null);
-        setInventoryMenuOpen(false)
-        setInventoryMenuSelectRec()
+    const handleAccountMoreMenuClose = () => {
+      setAccountMenuSelectRec()  
+      setAccountAnchorEl(null);
+      setAccountMenuOpen(false)
+       
     };
     // menu dropdown end
 
@@ -190,9 +260,12 @@ const InventoryRelatedItems = ({ item }) => {
                     .slice((opportunityPerPage - 1) * opportunityItemsPerPage, opportunityPerPage * opportunityItemsPerPage)
                     .map((item) => {
                       
-                      let   starDateConvert = new Date(item.closeDate).getUTCFullYear()
-                      + '-' +  ('0'+ (new Date(item.closeDate).getUTCMonth() + 1)).slice(-2) 
-                      + '-' + ('0'+ ( new Date(item.closeDate).getUTCDate())).slice(-2)  ||''
+                      let   starDateConvert 
+                      if(item.closeDate){
+                        starDateConvert = new Date(item.closeDate).getUTCFullYear()
+                        + '-' +  ('0'+ (new Date(item.closeDate).getUTCMonth() + 1)).slice(-2) 
+                        + '-' + ('0'+ ( new Date(item.closeDate).getUTCDate())).slice(-2)  ||''
+                      }
 
                       return (
                         <div >
@@ -210,11 +283,11 @@ const InventoryRelatedItems = ({ item }) => {
                                 <Grid item xs={6} md={2}>
 
                                   <IconButton>
-                                    <MoreVertIcon onClick={(event) => handleTaskMoreMenuClick(item, event)} />
+                                    <MoreVertIcon onClick={(event) => handleOpportunityMoreMenuClick(item, event)} />
                                     <Menu
-                                      anchorEl={anchorEl}
-                                      open={menuOpen}
-                                      onClose={handleTaskMoreMenuClose}
+                                      anchorEl={oppAnchorEl}
+                                      open={oppMenuOpen}
+                                      onClose={handleOpportunityMoreMenuClose}
                                       anchorOrigin={{
                                         vertical: 'top',
                                         horizontal: 'left',
@@ -224,8 +297,8 @@ const InventoryRelatedItems = ({ item }) => {
                                         horizontal: 'left',
                                       }}
                                     >
-                                      <MenuItem onClick={() => handleTaskCardEdit(menuSelectRec)}>Edit</MenuItem>
-                                      <MenuItem onClick={() => handleTaskCardDelete(menuSelectRec)}>Delete</MenuItem>
+                                      <MenuItem onClick={() => handleOpportunityCardEdit(oppMenuSelectRec)}>Edit</MenuItem>
+                                      <MenuItem onClick={() => handleOpportunityCardDelete(oppMenuSelectRec)}>Delete</MenuItem>
                                     </Menu>
                                   </IconButton>
                                 </Grid>
@@ -255,14 +328,95 @@ const InventoryRelatedItems = ({ item }) => {
                 />
               </Box>
             }
-
           </Typography>
         </AccordionDetails>
       </Accordion>
-    
+
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+        >
+          <Typography variant="h4">Accounts ({relatedAccount.length})</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Typography>
+            <div style={{ textAlign: "end", marginBottom: "5px" }}>
+              <Button variant="contained" color="info" onClick={() => handleAccountModalOpen()} >Add Account</Button>
+            </div>
+            <Card dense compoent="span" >
+
+              {
+                    relatedAccount.length > 0 ?
+                    relatedAccount
+                    .slice((accountPerPage - 1) * accountItemsPerPage, accountPerPage * accountItemsPerPage)
+                    .map((item) => {
+                      return (
+                        <div >
+                          <CardContent sx={{ bgcolor: "aliceblue", m: "15px" }}>
+                            <div
+                              key={item._id}
+                            >
+                              <Grid container spacing={2}>
+                                <Grid item xs={6} md={10}>
+                                  <div>Name : {item.accountName} </div>
+                                  <div>Account Number :{item.accountNumber} </div>
+                                  <div>Rating : {item.rating} </div>
+                                </Grid>
+                                <Grid item xs={6} md={2}>
+                                  <IconButton>
+                                    <MoreVertIcon onClick={(event) => handleAccountMoreMenuClick(item, event)} />
+                                    <Menu
+                                      anchorEl={accountAnchorEl}
+                                      open={accountMenuOpen}
+                                      onClose={handleAccountMoreMenuClose}
+                                      anchorOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'left',
+                                      }}
+                                      transformOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'left',
+                                      }}
+                                    >
+                                      <MenuItem onClick={() => handleAccountCardEdit(accountMenuSelectRec)}>Edit</MenuItem>
+                                      <MenuItem onClick={() => handleAccountCardDelete(accountMenuSelectRec)}>Delete</MenuItem>
+                                    </Menu>
+                                  </IconButton>
+                                </Grid>
+                              </Grid>
+                            </div>
+                          </CardContent>
+                        </div>
+
+                      );
+                    })
+                  : ""
+              }
+
+            </Card>
+            {
+              realtedOpportunity.length > 0 &&
+              <Box display="flex" alignItems="center" justifyContent="center">
+                <Pagination
+                  count={accountNoOfPages}
+                  page={accountPerPage}
+                  onChange={handleChangeAccountPage}
+                  defaultPage={1}
+                  color="primary"
+                  size="medium"
+                  showFirstButton
+                  showLastButton
+                />
+              </Box>
+            }
+          </Typography>
+        </AccordionDetails>
+      </Accordion>
 
       <Modal
-        open={realtedOpportunityModalOpen}
+        open={opportunityModalOpen}
         onClose={handleOpportunityModalClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
@@ -271,6 +425,18 @@ const InventoryRelatedItems = ({ item }) => {
           <ModalInventoryOpportunity handleModal={handleOpportunityModalClose} />
         </Box>
       </Modal>
+
+      <Modal
+        open={accountModalOpen}
+        onClose={handleAccountModalClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={ModalStyle}>
+          <ModalInventoryAccount handleModal={handleAccountModalClose} />
+        </Box>
+      </Modal>
+
 
         </>
     )

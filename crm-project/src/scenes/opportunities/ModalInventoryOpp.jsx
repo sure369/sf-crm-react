@@ -6,21 +6,18 @@ import { Grid, Button, Forminput, DialogActions, TextField, Autocomplete } from 
 import { useParams, useNavigate } from "react-router-dom"
 import axios from 'axios'
 import "../formik/FormStyles.css"
-
+import Notification from '../toast/Notification';
 
 const url = "http://localhost:4000/api/UpsertOpportunity";
 const fetchLeadsbyName = "http://localhost:4000/api/LeadsbyName";
-const fetchInventoriesbyName = "http://localhost:4000/api/InventoryName";
-
 
 const ModalInventoryOpportunity = ({ item }) => {
 
     const [inventoryParentRecord, setinventoryParentRecord] = useState();
-
     const location = useLocation();
     const navigate = useNavigate();
-
     const [leadsRecords, setLeadsRecords] = useState([]);
+    const[notify,setNotify]=useState({isOpen:false,message:'',type:''})
 
 
     useEffect(() => {
@@ -43,6 +40,7 @@ const ModalInventoryOpportunity = ({ item }) => {
         createdbyId: '',
         createdDate: '',
         modifiedDate: '',
+        leadDetails:'',
     }
 
     const validationSchema = Yup.object({
@@ -67,6 +65,10 @@ const ModalInventoryOpportunity = ({ item }) => {
         values.InventoryId = inventoryParentRecord._id;
         values.modifiedDate = dateSeconds;
         values.createdDate = dateSeconds;
+        values.inventoryDetails={
+            propertyName:inventoryParentRecord.propertyName,
+            id:inventoryParentRecord._id
+        }
         if (values.closeDate) {
             values.closeDate = closeDateSec;
         }
@@ -81,14 +83,22 @@ const ModalInventoryOpportunity = ({ item }) => {
         axios.post(url, values)
             .then((res) => {
                 console.log('post response', res);
-                
+                setNotify({
+                    isOpen:true,
+                    message:res.data,
+                    type:'success'
+                  })
                 setTimeout(() => {
-                    navigate(-1);
                     // window.location.reload();
                 }, 2000);
             })
             .catch((error) => {
                 console.log('error', error);
+                setNotify({
+                    isOpen:true,
+                    message:error.message,
+                    type:'error'          
+                  })
               
             })
     }
@@ -109,8 +119,8 @@ const ModalInventoryOpportunity = ({ item }) => {
     }
 
     const handleFormClose = () => {
-        // navigate(-1)
-        navigate("/inventoryDetailPage", { state: { record: { inventoryParentRecord } } })
+       navigate(-1)
+        // navigate("/inventoryDetailPage", { state: { record: { inventoryParentRecord } } })
     }
 
     return (
@@ -139,7 +149,7 @@ const ModalInventoryOpportunity = ({ item }) => {
 
                         return (
                             <>
-                                
+                                 <Notification notify={notify} setNotify={setNotify} />
                                 <Form>
                                     <Grid container spacing={2}>
                                         <Grid item xs={6} md={6}>

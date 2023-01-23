@@ -125,7 +125,6 @@ const LeadRelatedItems = ({ item }) => {
   const handleTaskCardDelete = (row) => {
 
     console.log('req delete rec', row);
-    // console.log('req delete rec id',row._id);
 
     axios.post(taskDeleteURL + row._id)
       .then((res) => {
@@ -174,7 +173,7 @@ const LeadRelatedItems = ({ item }) => {
         message: res.data,
         type: 'success'
       })
-      setMenuOpen(false)
+      setOppMenuOpen(false)
     })
     .catch((error) => {
       console.log('api delete error', error);
@@ -218,7 +217,7 @@ const LeadRelatedItems = ({ item }) => {
   // menu dropdown end
 
     // Opp menu dropdown strart //menu pass rec
-    const [oppanchorEl, setOppAnchorEl] = useState(null);
+    const [oppAnchorEl, setOppAnchorEl] = useState(null);
     const [oppMenuSelectRec, setOppMenuSelectRec] = useState()
     const [oppMenuOpen, setOppMenuOpen] = useState();
   
@@ -262,7 +261,6 @@ const LeadRelatedItems = ({ item }) => {
             <Card dense compoent="span" >
 
               {
-
                 relatedTask.length > 0 ?
                   relatedTask
                     .slice((taskPerPage - 1) * taskItemsPerPage, taskPerPage * taskItemsPerPage)
@@ -355,7 +353,6 @@ const LeadRelatedItems = ({ item }) => {
             <Card dense compoent="span" >
 
               {
-
                 relatedOpportunity.length > 0 ?
                 relatedOpportunity
                     .slice((opportunityPerPage - 1) * opportunityItemsPerPage, opportunityPerPage * opportunityItemsPerPage)
@@ -379,7 +376,7 @@ const LeadRelatedItems = ({ item }) => {
                                   <IconButton>
                                     <MoreVertIcon onClick={(event) => handleOppMoreMenuClick(item, event)} />
                                     <Menu
-                                      anchorEl={oppanchorEl}
+                                      anchorEl={oppAnchorEl}
                                       open={oppMenuOpen}
                                       onClose={handleOppMoreMenuClose}
                                       anchorOrigin={{

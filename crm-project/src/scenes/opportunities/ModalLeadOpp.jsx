@@ -6,10 +6,9 @@ import { Grid, Button, Forminput, DialogActions, TextField, Autocomplete } from 
 import { useParams, useNavigate } from "react-router-dom"
 import axios from 'axios'
 import "../formik/FormStyles.css"
-
+import Notification from '../toast/Notification';
 
 const url = "http://localhost:4000/api/UpsertOpportunity";
-const fetchLeadsbyName = "http://localhost:4000/api/LeadsbyName";
 const fetchInventoriesbyName = "http://localhost:4000/api/InventoryName";
 
 
@@ -18,19 +17,14 @@ const ModalLeadOpportunity = ({ item }) => {
     const [leadParentRecord, setLeadParentRecord] = useState();
 
     const location = useLocation();
-    const navigate = useNavigate();
-
-    const [showAlert, setShowAlert] = useState(false);
-    const [alertMessage, setAlertMessage] = useState();
-    const [alertSeverity, setAlertSeverity] = useState();
-
-    const [leadsRecords, setLeadsRecords] = useState([]);
+    const navigate = useNavigate();  
+    const[notify,setNotify]=useState({isOpen:false,message:'',type:''})
     const [inventoriesRecord, setInventoriesRecord] = useState([]);
-
 
     useEffect(() => {
         console.log('Lead parent  record', location.state.record.item);
         setLeadParentRecord(location.state.record.item)
+        FetchInventoriesbyName('')
     }, [])
 
 
@@ -47,6 +41,7 @@ const ModalLeadOpportunity = ({ item }) => {
         createdbyId: '',
         createdDate: '',
         modifiedDate: '',
+        inventoryDetails:'',
     }
 
     const validationSchema = Yup.object({
@@ -71,6 +66,11 @@ const ModalLeadOpportunity = ({ item }) => {
         values.LeadId = leadParentRecord._id;
         values.modifiedDate = dateSeconds;
         values.createdDate = dateSeconds;
+        values.leadDetails={
+            leadName:leadParentRecord.fullName,
+            id:leadParentRecord._id
+        }
+        
         if (values.closeDate) {
             values.closeDate = closeDateSec;
         }
@@ -78,33 +78,31 @@ const ModalLeadOpportunity = ({ item }) => {
             console.log('InventoryId empty')
             delete values.InventoryId;
         }
-
+       
 
         console.log('after change form submission value', values);
 
         axios.post(url, values)
             .then((res) => {
                 console.log('post response', res);
-                setShowAlert(true)
-                setAlertMessage(res.data)
-                setAlertSeverity('success')
+                setNotify({
+                    isOpen:true,
+                    message:res.data,
+                    type:'success'
+                  })
                 setTimeout(() => {
-                    window.location.reload();
-                }, 2000);
+                       window.location.reload();
+                }, 1000)
             })
             .catch((error) => {
                 console.log('error', error);
-                setShowAlert(true)
-                setAlertMessage(error.message)
-                setAlertSeverity('error')
+                setNotify({
+                    isOpen:true,
+                    message:error.message,
+                    type:'error'          
+                  })
             })
     }
-
-    const toastCloseCallback = () => {
-        setShowAlert(false)
-    }
-
-
 
     const FetchInventoriesbyName = (newInputValue) => {
         axios.post(`${fetchInventoriesbyName}?searchKey=${newInputValue}`)
@@ -150,6 +148,7 @@ const ModalLeadOpportunity = ({ item }) => {
                         return (
                             <>
                                 
+  <Notification notify={notify} setNotify={setNotify}/>
                                 <Form>
                                     <Grid container spacing={2}>
                                         <Grid item xs={6} md={6}>
@@ -165,7 +164,7 @@ const ModalLeadOpportunity = ({ item }) => {
                                             <Autocomplete
                                                 name="InventoryId"
                                                 options={inventoriesRecord}
-                                                value={values.Propertydetails}
+                                                value={values.inventoryDetails}
 
                                                 getOptionLabel={option => option.propertyName || ''}
                                                 //  isOptionEqualToValue = {(option,value)=>
@@ -174,8 +173,15 @@ const ModalLeadOpportunity = ({ item }) => {
 
 
                                                 onChange={(e, value) => {
-                                                    setFieldValue("InventoryId", value.id || '')
-                                                    setFieldValue("propertyName", value || '')
+                                                    if(!value){                                
+                                                        console.log('!value',value);
+                                                        setFieldValue("InventoryId",'')
+                                                        setFieldValue("inventoryDetails",'')
+                                                      }else{
+                                                        console.log('value',value);
+                                                        setFieldValue("InventoryId",value.id)
+                                                        setFieldValue("inventoryDetails",value)
+                                                      }
                                                 }}
                                                 onInputChange={(event, newInputValue) => {
                                                     console.log('newInputValue', newInputValue);
@@ -235,7 +241,7 @@ const ModalLeadOpportunity = ({ item }) => {
                                             <Field name="closeDate" type="date" class="form-input" />
                                         </Grid>
                                         <Grid item xs={6} md={6}>
-                                            <label htmlFor="amount">Amount</label>
+                                            <label htmlFor="amount">Amount<span className="text-danger">*</span></label>
                                             <Field class="form-input" type='text' name="amount" />
                                             <div style={{ color: 'red' }}>
                                                 <ErrorMessage name="amount" />
