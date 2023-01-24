@@ -312,7 +312,7 @@ const Contacts = () => {
             onSelectionModelChange={(ids) => {
               var size = Object.keys(ids).length;
               size > 0 ? setShowEmail(true) : setShowEmail(false)
-              console.log('id', ids);
+              console.log('checkbox selection ids', ids);
               setSelectedRecordIds(ids)
               const selectedIDs = new Set(ids);
               const selectedRowRecords = records.filter((row) =>

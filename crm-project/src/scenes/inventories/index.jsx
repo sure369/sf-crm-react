@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Button, useTheme, IconButton, Pagination,CircularProgress,Stack } from "@mui/material";
+import { Box, Button, useTheme, IconButton, Pagination,
+  Tooltip,CircularProgress,Stack } from "@mui/material";
 import {
   DataGrid, GridToolbar,
   gridPageCountSelector, gridPageSelector,
@@ -31,6 +32,9 @@ const Inventories = () => {
   //dialog
   const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subTitle: '' })
 
+  const[showDelete,setShowDelete]=useState(false)
+  const[selectedRecordIds,setSelectedRecordIds]=useState()
+  const[selectedRecordDatas,setSelectedRecordDatas]=useState()
 
   useEffect(() => {
     fetchRecords();
@@ -158,6 +162,8 @@ const Inventories = () => {
       renderCell: (params) => {
         return (
           <>
+          {
+            !showDelete ? <>
             <IconButton style={{ padding: '20px', color: '#0080FF' }}>
               <EditIcon onClick={(e) => handleOnCellClick(e, params.row)} />
             </IconButton>
@@ -165,6 +171,9 @@ const Inventories = () => {
               <DeleteIcon onClick={(e) => onHandleDelete(e, params.row)} />
             </IconButton>
           </>
+          :''
+          }
+              </> 
         );
       }
     }
@@ -251,12 +260,19 @@ const Inventories = () => {
         >
 
           <div className='btn-test'>
-            <Button
-              variant="contained" color="info"
-              onClick={handleAddRecord}
-            >
-              New
-            </Button>
+            {
+              showDelete ? 
+              <>
+              <Tooltip title="Delete Selected">
+                  <IconButton> <DeleteIcon sx={{ color: '#FF3333' }} onClick={(e) => onHandleDelete(e,selectedRecordIds)} /> </IconButton>
+              </Tooltip>
+              </>
+              :
+              <Button variant="contained" color="info" onClick={handleAddRecord}>
+                New
+              </Button>
+            }
+            
           </div>
           
            <DataGrid
@@ -274,7 +290,19 @@ const Inventories = () => {
             getRowClassName={(params) =>
               params.indexRelativeToCurrentPage % 2 === 0 ? 'C-MuiDataGrid-row-even' : 'C-MuiDataGrid-row-odd'
             }
-           
+            checkboxSelection
+            onSelectionModelChange={(ids) => {
+              var size = Object.keys(ids).length;
+              size > 0 ? setShowDelete(true) : setShowDelete(false)
+              console.log('checkbox selection ids', ids);
+              setSelectedRecordIds(ids)
+              const selectedIDs = new Set(ids);
+              const selectedRowRecords = records.filter((row) =>
+                selectedIDs.has(row._id.toString())
+              );
+              setSelectedRecordDatas(selectedRowRecords)
+              console.log('selectedRowRecords', selectedRowRecords)
+            }}
           
           />
         </Box>

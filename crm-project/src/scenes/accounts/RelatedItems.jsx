@@ -11,6 +11,12 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ModalAccTask from "../tasks/ModalAccTask";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Notification from '../toast/Notification';
+import { DataGrid, GridToolbar,
+  gridPageCountSelector,gridPageSelector,
+  useGridApiContext,useGridSelector} from "@mui/x-data-grid";
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import ModalConAccount from "../contacts/ModalConAccount";
 
 const ModalStyle = {
   position: 'absolute',
@@ -26,12 +32,16 @@ const ModalStyle = {
 const AccountRelatedItems = ({ item }) => {
 
   const taskDeleteURL = "http://localhost:4000/api/deleteTask?code=";
+  const urlgetTaskbyAccountId = "http://localhost:4000/api/getTaskbyAccountId?searchId=";
+  const urlgetContactbyAccountId="http://localhost:4000/api/getContactsbyAccountId?searchId=";
+  const contactDeleteURL="http://localhost:4000/api/deleteContact?code=";
 
   const navigate = useNavigate();
   const location = useLocation();
-  const [relatedTask, setRelatedTask] = useState([]);
-
+  
   const [accountRecordId, setAccountRecordId] = useState()
+  const [relatedTask, setRelatedTask] = useState([]);
+  const [relatedContact, setRelatedContact] = useState([]);
   const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
  
   const [taskModalOpen, setTaskModalOpen] = useState(false);
@@ -39,20 +49,24 @@ const AccountRelatedItems = ({ item }) => {
   const [taskPerPage, setTaskPerPage] = useState(1);
   const [taskNoOfPages, setTaskNoOfPages] = useState(0);
 
+  const [contactModalOpen, setContactModalOpen] = useState(false);
+  const [contactItemsPerPage, setContactItemsPerPage] = useState(2);
+  const [contactPerPage, setContactPerPage] = useState(1);
+  const [contactNoOfPages, setContactNoOfPages] = useState(0);
 
   useEffect(() => {
     console.log('inside useEffect', location.state.record.item);
     setAccountRecordId(location.state.record.item._id)
     getTasksbyAccountId(location.state.record.item._id)
-    
+    getContactsbyAccountId(location.state.record.item._id)
   }, [])
 
 
-  const getTasksbyAccountId = (recId) => {
-    const urlTask = "http://localhost:4000/api/getTaskbyAccountId?searchId=";
-    console.log('inside getTasks record Id', recId);
+  const getTasksbyAccountId = (accId) => {
+  
+    console.log('inside getTasks record Id', accId);
 
-    axios.post(urlTask + recId)
+    axios.post(urlgetTaskbyAccountId + accId)
       .then((res) => {
         console.log('response task fetch', res);
         if (res.data.length > 0) {
@@ -69,24 +83,80 @@ const AccountRelatedItems = ({ item }) => {
       })
   }
 
-  const handletaskModalOpen = () => {
+  const getContactsbyAccountId=(accId)=>{
+    console.log('inside getTasks record Id', accId);
 
+    axios.post(urlgetContactbyAccountId + accId)
+      .then((res) => {
+        console.log('response task fetch', res);
+        if (res.data.length > 0) {
+          setRelatedContact(res.data);
+          setContactNoOfPages(Math.ceil(res.data.length / contactItemsPerPage));
+          setContactPerPage(1)
+        }
+        else {
+          setRelatedContact([]);
+        }
+      })
+      .catch((error) => {
+        console.log('error task fetch', error)
+      })
+  }
+
+  const handletaskModalOpen = () => {
     setTaskModalOpen(true);
   }
   const handleTaskModalClose = () => {
-
     setTaskModalOpen(false);
   }
- 
+  const handleContactModalOpen = () => {
+    setContactModalOpen(true);
+  }
+  const handleConatctModalClose = () => {
+    setContactModalOpen(false);
+  }
 
+  const handleContactCardEdit = (e,row) => {
+    console.log('selected record', row);
+    const item = row;
+    navigate("/contactDetailPage", { state: { record: { item } } })
+  };
+
+  const handleContactCardDelete = (row) => {
+
+    console.log('req delete rec', row);
+    axios.post(contactDeleteURL+ row._id)
+      .then((res) => {
+        console.log('api delete response', res);
+        getContactsbyAccountId(accountRecordId)
+        setNotify({
+          isOpen: true,
+          message: res.data,
+          type: 'success'
+      })
+      setMenuOpen(false)
+      setTimeout(
+        window.location.reload()
+      )
+      })
+      .catch((error) => {
+        console.log('api delete error', error);
+        setNotify({
+          isOpen: true,
+          message: error.message,
+          type: 'error'
+      })
+      })
+  };
+ 
   const handleTaskCardEdit = (row) => {
     console.log('selected record', row);
     const item = row;
     navigate("/taskDetailPage", { state: { record: { item } } })
   };
 
-  const handleTaskCardDelete = (row) => {
-
+  const handleTaskCardDelete = (e,row) => {
+e.stopPropagation();
     console.log('req delete rec', row);
     axios.post(taskDeleteURL+ row._id)
       .then((res) => {
@@ -111,10 +181,12 @@ const AccountRelatedItems = ({ item }) => {
       })
       })
   };
- 
 
   const handleChangeTaskPage = (event, value) => {
     setTaskPerPage(value);
+  };
+  const handleChangeContactPage = (event, value) => {
+    setContactPerPage(value);
   };
 
   // menu dropdown strart //menu pass rec
@@ -133,6 +205,54 @@ const AccountRelatedItems = ({ item }) => {
     setMenuOpen(false)
   };
   // menu dropdown end
+
+   // DATA GRID TABLE PAGINATION
+ function CustomPagination() {
+  const apiRef = useGridApiContext();
+  const page = useGridSelector(apiRef, gridPageSelector);
+  const pageCount = useGridSelector(apiRef, gridPageCountSelector);
+
+  return (
+    <Pagination
+      color="primary"
+      count={pageCount}
+      page={page + 1}
+      onChange={(event, value) => apiRef.current.setPage(value - 1)}
+    />
+  );
+}
+
+const columns = [
+  {
+    field: "fullName", headerName: "Name",
+    headerAlign: 'center', align: 'center', flex: 1, 
+  },
+  {
+    field: "email", headerName: "Email",
+    headerAlign: 'center', align: 'center', flex: 1,
+  },
+  {
+    field: "phone", headerName: "Phone",
+    headerAlign: 'center', align: 'center', flex: 1,
+  },
+  {
+    field: 'actions', headerName: 'Actions',
+    headerAlign: 'center', align: 'center', flex: 1, width: 400,
+    renderCell: (params) => {
+      return (
+        <>
+          <IconButton style={{ padding: '20px' }}>
+            <EditIcon onClick={(e) => handleContactCardEdit(e, params.row)} />
+          </IconButton>
+          <IconButton style={{ padding: '20px' }}>
+            <DeleteIcon onClick={(e) => handleContactCardDelete(e, params.row)} />
+          </IconButton>
+        </>
+      );
+    }
+  }
+ 
+];
 
   return (
     <>
@@ -238,7 +358,39 @@ const AccountRelatedItems = ({ item }) => {
         </AccordionDetails>
       </Accordion>
      
+{/* Contact table */}
+<Accordion >
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel2a-content"
+          id="panel2a-header"
+        >
+          <Typography variant="h4">Conatct Table({relatedContact.length}) </Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+       
+        <div style={{ textAlign: "end", marginBottom: "5px" }}>
+              <Button variant="contained" color="info" onClick={() => handleContactModalOpen()} >Add Contact</Button>
+            </div>
+        <Box sx={{ height: 315, width: '100%' }}>
 
+          <DataGrid
+                      rows={relatedContact}
+                      columns={columns}
+                      getRowId={(row) => row._id}
+                      pageSize={4}
+                      rowsPerPageOptions={[4]}
+                      //  onCellClick={handleOnCellClick}
+                      components={{ Pagination:CustomPagination}}
+                     
+                      disableColumnMenu
+                      autoHeight={true}
+                    />
+ 
+    </Box>
+
+        </AccordionDetails>
+      </Accordion>
 
       <Modal
         open={taskModalOpen}
@@ -248,6 +400,19 @@ const AccountRelatedItems = ({ item }) => {
       >
         <Box sx={ModalStyle}>
           <ModalAccTask handleModal={handleTaskModalClose} />
+        </Box>
+      </Modal>
+
+  {/* Contact Modal*/}
+
+  <Modal
+        open={contactModalOpen}
+        onClose={handleConatctModalClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={ModalStyle}>
+          <ModalConAccount  handleModal={handleConatctModalClose} />
         </Box>
       </Modal>
 
