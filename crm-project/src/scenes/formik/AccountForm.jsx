@@ -28,6 +28,8 @@ const initialValues = {
     createdDate: '',
 }
 
+
+
 const citiesList = {
     UAE: [
       { value: "Dubai", label: "Dubai" },
@@ -169,10 +171,7 @@ const AccountForm = () => {
                                         <span className="text-danger">*</span>
                                     </label>
                                     <Field name="rating" as="select" class="form-input">
-                                        <option value="">--Select--</option>
-                                        <option value="Hot">Hot</option>
-                                        <option value="Warm">Warm</option>
-                                        <option value="Cold">Cold</option>
+                                        
                                     </Field>
                                     <div style={{ color: 'red' }} >
                                         <ErrorMessage name="rating" />

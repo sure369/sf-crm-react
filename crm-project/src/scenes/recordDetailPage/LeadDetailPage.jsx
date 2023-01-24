@@ -7,6 +7,7 @@ import { useParams, useNavigate } from "react-router-dom"
 import axios from 'axios'
 import "../formik/FormStyles.css"
 import Notification from '../toast/Notification';
+import { NameSalutionPickList ,LeadSourcePickList ,IndustryPickList, LeadStatusPicklist } from '../../data/pickLists';
 
 const url = "http://localhost:4000/api/UpsertLead";
 const fetchUsersbyName = "http://localhost:4000/api/usersbyName"
@@ -186,12 +187,12 @@ const LeadDetailPage = ({ item }) => {
                                         <Grid item xs={6} md={2}>
                                             <label htmlFor="salutation">Salutation  </label>
                                             <Field name="salutation" as="select" class="form-input">
-                                                <option value="">--Select--</option>
-                                                <option value="Mr.">Mr.</option>
-                                                <option value="Ms.">Ms.</option>
-                                                <option value="Mrs.">Mrs.</option>
-                                                <option value="Dr.">Dr.</option>
-                                                <option value="Prof.">Prof.</option>
+                                            <option value=''><em>None</em></option>
+                                                    {
+                                                        NameSalutionPickList.map((i)=>{
+                                                          return  <option value={i.value}>{i.label}</option>
+                                                        })
+                                                    }
                                             </Field>
                                         </Grid>
                                         <Grid item xs={6} md={4}>
@@ -233,44 +234,36 @@ const LeadDetailPage = ({ item }) => {
                                             </div>
                                         </Grid>
                                         <Grid item xs={6} md={6}>
-                                            <label htmlFor="leadSource"> lead Source</label>
+                                            <label htmlFor="leadSource"> Lead Source</label>
                                             <Field name="leadSource" as="select" class="form-input">
-                                                <option value="">--Select--</option>
-                                                <option value="web">Web</option>
-                                                <option value="phone Inquiry">phone Inquiry</option>
-                                                <option value="Partner Referral">Partner Referral</option>
-                                                <option value="Purchased List">Purchased List</option>
-                                                <option value="other">Other</option>
+                                            <option value=''><em>None</em></option>
+                                                    {
+                                                        LeadSourcePickList.map((i)=>{
+                                                          return  <option value={i.value}>{i.label}</option>
+                                                        })
+                                                    }
                                             </Field>
                                         </Grid>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="industry">Industry</label>
                                             <Field name="industry" as="select" class="form-input">
-                                                <option value="">--Select--</option>
-                                                <option value="Agriculture" >Agriculture</option>
-                                                <option value="Banking" >Banking</option>
-                                                <option value="Communications" >Communications</option>
-                                                <option value="Construction" >Construction</option>
-                                                <option value="Consulting" >Consulting</option>
-                                                <option value="Education" >Education</option>
-                                                <option value="Engineering" >Engineering</option>
-                                                <option value="Government" >Government</option>
-                                                <option value="Manufacturing" >Manufacturing</option>
-                                                <option value="Hospitality" >Hospitality</option>
-                                                <option value="Insurance" >Insurance</option>
-                                                <option value="Technology" >Technology</option>
-                                                <option value="Transportation" >Transportation</option>
-                                                <option value="Other" >Other</option>
+                                            <option value=''><em>None</em></option>
+                                              {
+                                                IndustryPickList.map((i)=>{
+                                                    return <option value={i.value}>{i.label}</option>
+                                                })
+                                              } 
                                             </Field>
                                         </Grid>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="leadStatus"> Lead Status <span className="text-danger">*</span> </label>
                                             <Field name="leadStatus" as="select" class="form-input">
-                                                <option value="">--Select--</option>
-                                                <option value="open-not contacted">Open-Not Contacted</option>
-                                                <option value="working-contacted">Working-Contacted</option>
-                                                <option value="closed-converted">Closed-Converted</option>
-                                                <option value="closed-not converted">closed-Not Converted</option>
+                                            <option value=''><em>None</em></option>
+                                              {
+                                                LeadStatusPicklist.map((i)=>{
+                                                    return <option value={i.value}>{i.label}</option>
+                                                })
+                                              } 
                                             </Field>
                                             <div style={{ color: 'red' }}>
                                                 <ErrorMessage name="leadStatus" />

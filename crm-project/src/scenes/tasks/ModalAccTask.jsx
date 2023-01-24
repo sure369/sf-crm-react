@@ -9,6 +9,7 @@ import {
 import axios from 'axios'
 import "../formik/FormStyles.css"
 import Notification from '../toast/Notification';
+import { TaskSubjectPicklist } from "../../data/pickLists";
 
 const UpsertUrl = "http://localhost:4000/api/UpsertTask";
 
@@ -136,11 +137,12 @@ const ModalAccTask = ({ item, handleModal }) => {
                                     <Grid item xs={6} md={4}>
                                         <label htmlFor="subject">Subject  <span className="text-danger">*</span></label>
                                         <Field name="subject" as="select" class="form-input">
-                                            <option value=""> </option>
-                                            <option value="call"> Call</option>
-                                            <option value="email"> Email</option>
-                                            <option value="meeting"> Meeting</option>
-                                            <option value="send Quote"> Send Quote</option>
+                                        <option value=''><em>None</em></option>
+                                              {
+                                                TaskSubjectPicklist.map((i)=>{
+                                                    return <option value={i.value}>{i.label}</option>
+                                                })
+                                              }  
                                         </Field>
 
                                         <div style={{ color: 'red' }}>

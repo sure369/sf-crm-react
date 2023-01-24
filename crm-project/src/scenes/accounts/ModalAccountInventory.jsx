@@ -7,6 +7,7 @@ import { useParams, useNavigate } from "react-router-dom"
 import axios from 'axios'
 import "../formik/FormStyles.css"
 import Notification from '../toast/Notification';
+import {IndustryPickList, AccRatingPickList,AccTypePickList,AccCitiesPickList, AccCountryPickList} from '../../data/pickLists'
 
 const url = "http://localhost:4000/api/UpsertAccount";
 
@@ -42,29 +43,11 @@ const ModalInventoryAccount = ({ item }) => {
         inventoryDetails:'',
     }
 
-  
-    const citiesList = {
-        UAE: [
-            { value: "Dubai", label: "Dubai" },
-            { value: "Abu Dhabi", label: "Abu Dhabi" },
-            { value: "Sharjah", label: "Sharjah" },
-            { value: "Ajman", label: "Ajman" },
-        ],
-        "Saudi Arabia": [
-            { value: "Mecca", label: "Mecca" },
-            { value: "Jeddah", label: "Jeddah" },
-        ],
-        India: [
-            { value: "Chennai", label: "Chennai" },
-            { value: "Bangalore", label: "Bangalore" },
-            { value: "Coimabatore", label: "Coimabatore" },
-        ],
-    };
 
     const getCities = (billingCountry) => {
         return new Promise((resolve, reject) => {
             console.log("billingCountry", billingCountry);
-            resolve(citiesList[billingCountry] || []);
+            resolve(AccCitiesPickList[billingCountry] || []);
         });
     };
 
@@ -195,10 +178,12 @@ const ModalInventoryAccount = ({ item }) => {
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="rating"> Rating<span className="text-danger">*</span></label>
                                             <Field name="rating" as="select" class="form-input">
-                                                <option value="">--Select--</option>
-                                                <option value="Hot">Hot</option>
-                                                <option value="Warm">Warm</option>
-                                                <option value="Cold">Cold</option>
+                                            <option value=''><em>None</em></option>
+                                               {
+                                                AccRatingPickList.map((i)=>{
+                                                    return <option value={i.value}>{i.label}</option>
+                                                })
+                                               }
                                             </Field>
                                             <div style={{ color: 'red' }} >
                                                 <ErrorMessage name="rating" />
@@ -207,35 +192,25 @@ const ModalInventoryAccount = ({ item }) => {
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="type">Type</label>
                                             <Field name="type" as="select" class="form-input">
-                                                <option value="">--Select--</option>
-                                                <option value="Prospect">Prospect</option>
-                                                <option value="Customer - Direct">Customer - Direct</option>
-                                                <option value="Customer - Channel">Customer - Channel</option>
-                                                <option value="Channel Partner / Reseller">Channel Partner / Reseller</option>
-                                                <option value="Installation Partner"> Installation Partner</option>
-                                                <option value="Technology Partner">Technology Partner</option>
-                                                <option value="Other" >Other</option>
+                                            <option value=''><em>None</em></option>
+                                              {
+                                                AccTypePickList.map((i)=>{
+                                                    return <option value={i.value}>{i.label}</option>
+                                                })
+                                              }
                                             </Field>
                                         </Grid>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="industry">Industry</label>
                                             <Field name="industry" as="select" class="form-input">
-                                                <option value="">--Select--</option>
-                                                <option value="Banking" >Banking</option>
-                                                <option value="Construction" >Construction</option>
-                                                <option value="Consulting" >Consulting</option>
-                                                <option value="Education" >Education</option>
-                                                <option value="Engineering" >Engineering</option>
-                                                <option value="Government" >Government</option>
-                                                <option value="Manufacturing" >Manufacturing</option>
-                                                <option value="Hospitality" >Hospitality</option>
-                                                <option value="Insurance" >Insurance</option>
-                                                <option value="Technology" >Technology</option>
-                                                <option value="Other" >Other</option>
+                                            <option value=''><em>None</em></option>
+                                              {
+                                                IndustryPickList.map((i)=>{
+                                                    return <option value={i.value}>{i.label}</option>
+                                                })
+                                              } 
                                             </Field>
                                         </Grid>
-
-
 
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="billingAddress">Billing Address </label>
@@ -259,10 +234,12 @@ const ModalInventoryAccount = ({ item }) => {
                                                     setFieldValue("billingCities", _billingCities);
                                                 }}
                                             >
-                                                <option value="None">--Select--</option>
-                                                <option value="UAE">UAE</option>
-                                                <option value="Saudi Arabia">Saudi Arabia</option>
-                                                <option value="India">India</option>
+                                            <option value=''><em>None</em></option>
+                                              {
+                                                AccCountryPickList.map((i)=>{
+                                                    return <option value={i.value}>{i.label}</option>
+                                                })
+                                              } 
                                             </Field>
                                         </Grid>
                                         

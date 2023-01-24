@@ -7,6 +7,7 @@ import { useParams, useNavigate } from "react-router-dom"
 import axios from 'axios'
 import "../formik/FormStyles.css"
 import Notification from '../toast/Notification';
+import { InvCitiesPickList,InvCountryPickList, InvStatusPicklist, InvTypePicklist } from '../../data/pickLists';
 
 const url = "http://localhost:4000/api/UpsertInventory";
 
@@ -83,7 +84,7 @@ const InventoryDetailPage = ({ item }) => {
     const getCities = (country) => {
         return new Promise((resolve, reject) => {
             console.log("selected country", country);
-            resolve(citiesList[country] || []);
+            resolve(InvCitiesPickList[country] || []);
         });
     };
 
@@ -197,12 +198,12 @@ const InventoryDetailPage = ({ item }) => {
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="type">Type <span className="text-danger">*</span> </label>
                                             <Field name="type" as="select" class="form-input">
-                                                <option value="">--Select--</option>
-                                                <option value="apartment ">Apartment </option>
-                                                <option value="Commercial Space"> Commercial Space</option>
-                                                <option value="Townhouse">Townhouse</option>
-                                                <option value="Duplex">Duplex</option>
-                                                <option value="Villa">Villa</option>
+                                            <option value=''><em>None</em></option>
+                                               {
+                                                InvTypePicklist.map((i)=>{
+                                                    return <option value={i.value}>{i.label}</option>
+                                                })
+                                               }
                                             </Field>
                                             <div style={{ color: 'red' }}>
                                                 <ErrorMessage name="type" />
@@ -211,11 +212,12 @@ const InventoryDetailPage = ({ item }) => {
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="status">Status <span className="text-danger">*</span> </label>
                                             <Field name="status" as="select" class="form-input">
-                                                <option value="">--Select--</option>
-                                                <option value="available ">Available </option>
-                                                <option value="sold"> Sold</option>
-                                                <option value="booked">Booked</option>
-                                                <option value="processed">Processed</option>
+                                            <option value=''><em>None</em></option>
+                                               {
+                                                InvStatusPicklist.map((i)=>{
+                                                    return <option value={i.value}>{i.label}</option>
+                                                })
+                                               }
                                             </Field>
                                             <div style={{ color: 'red' }}>
                                                 <ErrorMessage name="status" />
@@ -242,10 +244,12 @@ const InventoryDetailPage = ({ item }) => {
                                                     setFieldValue("propertyCities", _cities);
                                                 }}
                                             >
-                                                <option value="None">--Select--</option>
-                                                <option value="UAE">UAE</option>
-                                                <option value="Saudi Arabia">Saudi Arabia</option>
-                                                <option value="India">India</option>
+                                                <option value=''><em>None</em></option>
+                                              {
+                                                InvCountryPickList.map((i)=>{
+                                                    return <option value={i.value}>{i.label}</option>
+                                                })
+                                              }  
                                             </Field>
                                         </Grid>
                                         <Grid item xs={6} md={6}>
@@ -258,7 +262,7 @@ const InventoryDetailPage = ({ item }) => {
                                                 as="select"
                                                 onChange={handleChange}
                                             >
-                                                <option value="None">--Select city--</option>
+                                                <option value=''><em>None</em></option>
                                                 {values.propertyCities &&
                                                     values.propertyCities.map((r) => (
                                                         <option key={r.value} value={r.vlue}>

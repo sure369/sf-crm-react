@@ -7,6 +7,7 @@ import { useParams, useNavigate } from "react-router-dom"
 import axios from 'axios'
 import "../formik/FormStyles.css"
 import Notification from '../toast/Notification';
+import { LeadSourcePickList, OppStagePicklist, OppTypePicklist } from '../../data/pickLists';
 
 const url = "http://localhost:4000/api/UpsertOpportunity";
 const fetchInventoriesbyName = "http://localhost:4000/api/InventoryName";
@@ -198,26 +199,24 @@ const ModalLeadOpportunity = ({ item }) => {
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="stage">Opportunity Stage</label>
                                             <Field name="stage" as="select" class="form-input">
-                                                <option value="">--Select--</option>
-                                                <option value="Prospecting">Prospecting</option>
-                                                <option value="Needs Analysis">Needs Analysis</option>
-                                                <option value="Value Proposition">Value Proposition</option>
-                                                <option value="Perception Analysis">Perception Analysis</option>
-                                                <option value="Proposal Quote">Proposal Quote</option>
-                                                <option value="Negotiation">Negotiation</option>
-                                                <option value="Closed Won">Closed Won</option>
-                                                <option value="Closed Lost">Closed Lost</option>
+                                            <option value=''><em>None</em></option>
+                                                {
+                                                    OppStagePicklist.map((i)=>{
+                                                        return  <option value={i.value}>{i.label}</option>
+                                                    })
+                                                }
                                             </Field>
                                         </Grid>
 
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="type">Type</label>
                                             <Field name="type" as="select" class="form-input">
-                                                <option value="">--Select--</option>
-                                                <option value="New Customer">New Customer</option>
-                                                <option value="Existing Customer - Upgrade">Existing Customer - Upgrade</option>
-                                                <option value="Existing Customer - Replacement">Existing Customer - Replacement</option>
-                                                <option value="Existing Customer - Downgrade">Existing Customer - Downgrade</option>
+                                            <option value=''><em>None</em></option>
+                                                {
+                                                    OppTypePicklist.map((i)=>{
+                                                        return  <option value={i.value}>{i.label}</option>
+                                                    })
+                                                }
                                             </Field>
                                         </Grid>
 
@@ -226,12 +225,12 @@ const ModalLeadOpportunity = ({ item }) => {
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="leadSource"> Lead Source</label>
                                             <Field name="leadSource" as="select" class="form-input">
-                                                <option value="">--Select--</option>
-                                                <option value="web">Web</option>
-                                                <option value="phone Inquiry">phone Inquiry</option>
-                                                <option value="Partner Referral">Partner Referral</option>
-                                                <option value="Purchased List">Purchased List</option>
-                                                <option value="other">Other</option>
+                                            <option value=''><em>None</em></option>
+                                                {
+                                                    LeadSourcePickList.map((i)=>{
+                                                        return  <option value={i.value}>{i.label}</option>
+                                                    })
+                                                }
                                             </Field>
                                         </Grid>
 

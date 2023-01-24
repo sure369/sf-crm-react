@@ -163,10 +163,10 @@ const onebyoneDelete=(row)=>{
       field: "status", headerName: "status",
       headerAlign: 'center', align: 'center', flex: 1,
       cellClassName: (params) => {
-        const statusClassName = (params.row.status ==='available ') ? 'green' : 
-                                (params.row.status ==='booked') ?'pink' :
-                                (params.row.status ==='sold') ?'red' :
-                                (params.row.status ==='processed')?'yellow':''
+        const statusClassName = (params.row.status ==='Available') ? 'green' : 
+                                (params.row.status ==='Booked') ?'pink' :
+                                (params.row.status ==='Sold') ?'red' :
+                                (params.row.status ==='Processed')?'yellow':''
         return statusClassName;
       }
     },

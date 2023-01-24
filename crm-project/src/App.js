@@ -50,7 +50,7 @@ import FlexInventories from "./scenes/Flex/FlexInventory";
 import TextEditor from "./scenes/RichTextField/TextEditor";
 import Preview from "./scenes/fileUpload/Preview";
 import CircularLoading from "./scenes/toast/CircularLoding";
-
+import PicklistField from "./scenes/formik/PicklistField";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -62,8 +62,11 @@ function App() {
         <CssBaseline />
         <div className="app" style={{height: "fit-content"}}>
           {/* <Sidebar isSidebar={isSidebar} /> */}
+         
           <main className="content" style={{height: "fit-content"}}>
-            <AppNavbar/>
+         
+          <AppNavbar/>
+         
             {/* <Topbar setIsSidebar={setIsSidebar} /> */}
             <Routes>
               <Route path="/" element={< Inventories/>} />
@@ -86,7 +89,7 @@ function App() {
 
               <Route path="/dataLoder" element={<DataLoadPage/>} />
               <Route path ='/file' element={<DropFileInput/>} />
-              <Route path ='/test' element={<CircularLoading/>} />
+              <Route path ='/test' element={<PicklistField/>} />
 
               <Route path="/new-inventories" element={<InventoryDetailPage/>} />
               <Route path="/new-leads" element={<LeadDetailPage />} />

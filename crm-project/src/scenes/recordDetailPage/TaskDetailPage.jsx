@@ -7,6 +7,7 @@ import axios from 'axios'
 import "../formik/FormStyles.css"
 import PreviewFile from "../formik/PreviewFile";
 import Notification from '../toast/Notification';
+import { TaskObjectPicklist, TaskSubjectPicklist } from "../../data/pickLists";
 
 
 const UpsertUrl = "http://localhost:4000/api/UpsertTask";
@@ -270,18 +271,17 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
                                     <Grid item xs={6} md={6}>
                                         <label htmlFor="subject">Subject  <span className="text-danger">*</span></label>
                                         <Field name="subject" as="select" class="form-input">
-                                            <option value=""> </option>
-                                            <option value="call"> Call</option>
-                                            <option value="email"> Email</option>
-                                            <option value="meeting"> Meeting</option>
-                                            <option value="send Quote"> Send Quote</option>
+                                        <option value=''><em>None</em></option>
+                                              {
+                                                TaskSubjectPicklist.map((i)=>{
+                                                    return <option value={i.value}>{i.label}</option>
+                                                })
+                                              }  
                                         </Field>
-
                                         <div style={{ color: 'red' }}>
                                             <ErrorMessage name="subject" />
                                         </div>
-                                    </Grid>
-                                 
+                                    </Grid>                            
                                     
                                     <Grid item xs={6} md={6}>
                                         <label htmlFor="object">object  </label>
@@ -292,10 +292,12 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
                                                 setFieldValue('object', e.target.value)
                                             }}
                                         >
-                                            <option value=""></option>
-                                            <option value="Lead">Lead</option>
-                                            <option value="Opportunity">Opportunity</option>
-                                            <option value="Account">Account</option>
+                                             <option value=''><em>None</em></option>
+                                              {
+                                                TaskObjectPicklist.map((i)=>{
+                                                    return <option value={i.value}>{i.label}</option>
+                                                })
+                                              } 
                                         </Field>
                                     </Grid>
                                     <Grid item xs={6} md={6}>
