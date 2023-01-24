@@ -320,13 +320,6 @@ const AccountDetailPage = ({ item }) => {
                                             </Field>
                                         </Grid>
 
-
-
-                                        <Grid item xs={6} md={6}>
-                                            <label htmlFor="billingAddress">Billing Address </label>
-                                            <Field name="billingAddress" type="text" class="form-input" />
-                                        </Grid>
-
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="billingCountry">Billing Country</label>
                                             <Field
@@ -371,6 +364,11 @@ const AccountDetailPage = ({ item }) => {
                                             </Field>
                                         </Grid>
 
+                                        <Grid item xs={6} md={6}>
+                                            <label htmlFor="billingAddress">Billing Address </label>
+                                            <Field name="billingAddress" type="text" class="form-input" />
+                                        </Grid>
+                                        
                                         {!showNew && (
                                             <>
                                                 <Grid item xs={6} md={6}>                                                  

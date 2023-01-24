@@ -87,13 +87,22 @@ const Inventories = () => {
   }
 
   const onConfirmDeleteRecord = (row) => {
-    console.log('onConfirmDeleteRecord row', row)
-    setConfirmDialog({
-      ...confirmDialog,
-      isOpen: false
-    })
+    if(row.length){
+      console.log('if row',row);
+      row.forEach(element => {
+        onebyoneDelete(element)
+      });
+    }
+   else{
+    onebyoneDelete(row._id)
+   }
+  }
 
-    axios.post(urlDelete + row._id)
+const onebyoneDelete=(row)=>{
+
+    console.log('one by one Delete row', row)
+   
+    axios.post(urlDelete + row)
       .then((res) => {
         console.log('api delete response', res);
         fetchRecords();
@@ -111,6 +120,11 @@ const Inventories = () => {
           type: 'error'
         })
       })
+      setConfirmDialog({
+        ...confirmDialog,
+        isOpen: false
+      })
+  
   };
 
   function CustomPagination() {

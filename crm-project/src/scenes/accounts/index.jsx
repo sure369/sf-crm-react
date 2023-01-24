@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Button, useTheme, IconButton, Pagination } from "@mui/material";
+import { Box, Button, useTheme, IconButton, Pagination,Tooltip } from "@mui/material";
 import {
   DataGrid, GridToolbar,
   gridPageCountSelector, gridPageSelector,
@@ -14,7 +14,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import Notification from '../toast/Notification';
 import ConfirmDialog from '../toast/ConfirmDialog';
 
-
 const Accounts = () => {
 
   const urlDelete = "http://localhost:4000/api/deleteAccount?code=";
@@ -24,12 +23,15 @@ const Accounts = () => {
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
   const [records, setRecords] = useState([]);
-  const[fetchLoading,setFetchLoading]=useState(true);
+  const [fetchLoading, setFetchLoading] = useState(true);
   // notification
   const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
   //dialog
   const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subTitle: '' })
 
+  const [showDelete, setShowDelete] = useState(false)
+  const [selectedRecordIds, setSelectedRecordIds] = useState()
+  const [selectedRecordDatas, setSelectedRecordDatas] = useState()
 
   useEffect(() => {
     fetchRecords();
@@ -48,7 +50,7 @@ const Accounts = () => {
           }
           else {
             setRecords([]);
-             setFetchLoading(false)
+            setFetchLoading(false)
           }
         }
       )
@@ -79,13 +81,21 @@ const Accounts = () => {
     })
   }
   const onConfirmDeleteRecord = (row) => {
-    console.log('confirmRecordDelete row', row)
-    setConfirmDialog({
-      ...confirmDialog,
-      isOpen: false
-    })
+    if (row.length) {
+      console.log('if row', row);
+      row.forEach(element => {
+        onebyoneDelete(element)
+      });
+    }
+    else {
+      console.log('else', row._id);
+      onebyoneDelete(row._id)
+    }
+  }
+  const onebyoneDelete = (row) => {
+    console.log('onebyoneDelete rec id', row)
 
-    axios.post(urlDelete + row._id)
+    axios.post(urlDelete + row)
       .then((res) => {
         console.log('api delete response', res);
         fetchRecords();
@@ -103,6 +113,11 @@ const Accounts = () => {
           type: 'error'
         })
       })
+    setConfirmDialog({
+      ...confirmDialog,
+      isOpen: false
+    })
+
   };
 
   function CustomPagination() {
@@ -155,12 +170,18 @@ const Accounts = () => {
       renderCell: (params) => {
         return (
           <>
-            <IconButton style={{ padding: '20px', color: '#0080FF' }}>
-              <EditIcon onClick={(e) => handleOnCellClick(e, params.row)} />
-            </IconButton>
-            <IconButton style={{ padding: '20px', color: '#FF3333' }}>
-              <DeleteIcon onClick={(e) => onHandleDelete(e, params.row)} />
-            </IconButton>
+            {
+              !showDelete ?
+                <>
+                  <IconButton style={{ padding: '20px', color: '#0080FF' }}>
+                    <EditIcon onClick={(e) => handleOnCellClick(e, params.row)} />
+                  </IconButton>
+                  <IconButton style={{ padding: '20px', color: '#FF3333' }}>
+                    <DeleteIcon onClick={(e) => onHandleDelete(e, params.row)} />
+                  </IconButton>
+                </>
+                : ''
+            }
           </>
         )
       }
@@ -194,10 +215,10 @@ const Accounts = () => {
               backgroundColor: colors.blueAccent[700],
               borderBottom: "none",
             },
-            "& .MuiDataGrid-columnHeaderTitle": { 
+            "& .MuiDataGrid-columnHeaderTitle": {
               fontWeight: 'bold !important',
               overflow: 'visible !important'
-           },
+            },
             "& .MuiDataGrid-virtualScroller": {
               // backgroundColor: colors.primary[400],
             },
@@ -214,22 +235,28 @@ const Accounts = () => {
             },
             "& .MuiDataGrid-row:hover": {
               backgroundColor: "#CECEF0"
-            },                     
-            "& .C-MuiDataGrid-row-even":{
+            },
+            "& .C-MuiDataGrid-row-even": {
               backgroundColor: "#D7ECFF",
-            }, 
-            "& .C-MuiDataGrid-row-odd":{
+            },
+            "& .C-MuiDataGrid-row-odd": {
               backgroundColor: "#F0F8FF",
             },
           }}
         >
-          <div className='btn-test'>
-            <Button
-              variant="contained" color="info"
-              onClick={handleAddRecord}
-            >
-              New
-            </Button>
+           <div className='btn-test'>
+          {
+              showDelete ? 
+              <>
+              <Tooltip title="Delete Selected">
+                  <IconButton> <DeleteIcon sx={{ color: '#FF3333' }} onClick={(e) => onHandleDelete(e,selectedRecordIds)} /> </IconButton>
+              </Tooltip>
+              </>
+              :
+              <Button variant="contained" color="info" onClick={handleAddRecord}>
+                New
+              </Button>
+            }
           </div>
 
           <DataGrid
@@ -246,6 +273,18 @@ const Accounts = () => {
             getRowClassName={(params) =>
               params.indexRelativeToCurrentPage % 2 === 0 ? 'C-MuiDataGrid-row-even' : 'C-MuiDataGrid-row-odd'
             }
+            checkboxSelection
+            onSelectionModelChange={(ids) => {
+              var size = Object.keys(ids).length;
+              size > 0 ? setShowDelete(true) : setShowDelete(false)
+              console.log('checkbox selection ids', ids);
+              setSelectedRecordIds(ids)
+              const selectedIDs = new Set(ids);
+              const selectedRowRecords = records.filter((row) =>
+                selectedIDs.has(row._id.toString())
+              );
+              setSelectedRecordDatas(selectedRowRecords)
+            }}
           />
         </Box>
       </Box>

@@ -90,6 +90,17 @@ const Contacts = () => {
     })
   }
 
+  const onConfirmDeleteRecord = (row) => {
+    if(row.length){
+      row.forEach(element => {
+        onebyoneDelete(element)
+      });
+    }
+   else{
+    onebyoneDelete(row._id)
+   }
+  }
+
   const onebyoneDelete=(row)=>{
     console.log('one by on delete',row)
 
@@ -118,16 +129,7 @@ const Contacts = () => {
     })
   }
 
-  const onConfirmDeleteRecord = (row) => {
-    if(row.length){
-      row.forEach(element => {
-        onebyoneDelete(element)
-      });
-    }
-   else{
-    onebyoneDelete(row._id)
-   }
-  }
+ 
 
   function CustomPagination() {
     const apiRef = useGridApiContext();

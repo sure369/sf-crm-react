@@ -2,7 +2,7 @@ import React ,{ useEffect, useState ,useRef } from "react";
 import PropTypes from 'prop-types';
 import { Box,Grid,Button ,DialogActions} from "@mui/material";
 import {useLocation ,useNavigate} from 'react-router-dom';
-import CardAccTask from "../tasks/CardAccTask";
+
 import AccountDetailPage from "../recordDetailPage/AccountDetailPage";
 import AccountRelatedItems from "../accounts/RelatedItems";
 
@@ -40,16 +40,6 @@ Item.propTypes = {
 
 const FlexAccounts = (item) => {
 
-    const [property, setProperty] = useState([{}])
-    const [rowId, setRowId] = useState()
-    const [singleProps, setSingleProps] = useState({})
-    const [loading, setLoading] = useState(true)
-    const [searchText, setSearchText] = useState("");
-    const [searchedColumn, setSearchedColumn] = useState("");
-    const [showNew, setshowNew] = useState()
-    const [showAlert, setShowAlert] = useState(false);
-    const [alertMessage, setAlertMessage] = useState();
-    const [alertSeverity, setAlertSeverity] = useState();
 
     const[passedRecord,setPassedRecord] =useState();
     const location = useLocation();

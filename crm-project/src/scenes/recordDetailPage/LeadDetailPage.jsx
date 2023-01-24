@@ -182,39 +182,7 @@ const LeadDetailPage = ({ item }) => {
 
                                 <Form>
                                     <Grid container spacing={2}>
-                                        <Grid item xs={6} md={6}>
-                                            <label htmlFor="createdbyId">User Name </label>
-                                            <Autocomplete
-                                                name="createdbyId"
-                                                options={usersRecord}
-                                                //  defaultValue={values.userDetails.userName}
-                                                value={values.userDetails}
-                                                getOptionLabel={option => option.userName || ''}
-                                                // isOptionEqualToValue={(option, value) => option.userName === value.userName}
-                                                onChange={(e, value) => {
-                                                    console.log('inside onchange values', value);
-                                                    if (!value) {
-                                                        console.log('!value', value);
-                                                        setFieldValue("createdbyId", '')
-                                                        setFieldValue("userDetails", '')
-                                                    } else {
-                                                        console.log('value', value);
-                                                        setFieldValue("createdbyId", value.id)
-                                                        setFieldValue("userDetails", value)
-                                                    }
-                                                }}
-
-                                                onInputChange={(event, newInputValue) => {
-                                                    console.log('newInputValue', newInputValue);
-                                                    if (newInputValue.length >= 3) {
-                                                        FetchUsersbyName(newInputValue);
-                                                    }
-                                                }}
-                                                renderInput={params => (
-                                                    <Field component={TextField} {...params} name="createdbyId" />
-                                                )}
-                                            />
-                                        </Grid>
+                                        
                                         <Grid item xs={6} md={2}>
                                             <label htmlFor="salutation">Salutation  </label>
                                             <Field name="salutation" as="select" class="form-input">
@@ -307,6 +275,39 @@ const LeadDetailPage = ({ item }) => {
                                             <div style={{ color: 'red' }}>
                                                 <ErrorMessage name="leadStatus" />
                                             </div>
+                                        </Grid>
+                                        <Grid item xs={6} md={6}>
+                                            <label htmlFor="createdbyId">User Name </label>
+                                            <Autocomplete
+                                                name="createdbyId"
+                                                options={usersRecord}
+                                                //  defaultValue={values.userDetails.userName}
+                                                value={values.userDetails}
+                                                getOptionLabel={option => option.userName || ''}
+                                                // isOptionEqualToValue={(option, value) => option.userName === value.userName}
+                                                onChange={(e, value) => {
+                                                    console.log('inside onchange values', value);
+                                                    if (!value) {
+                                                        console.log('!value', value);
+                                                        setFieldValue("createdbyId", '')
+                                                        setFieldValue("userDetails", '')
+                                                    } else {
+                                                        console.log('value', value);
+                                                        setFieldValue("createdbyId", value.id)
+                                                        setFieldValue("userDetails", value)
+                                                    }
+                                                }}
+
+                                                onInputChange={(event, newInputValue) => {
+                                                    console.log('newInputValue', newInputValue);
+                                                    if (newInputValue.length >= 3) {
+                                                        FetchUsersbyName(newInputValue);
+                                                    }
+                                                }}
+                                                renderInput={params => (
+                                                    <Field component={TextField} {...params} name="createdbyId" />
+                                                )}
+                                            />
                                         </Grid>
                                         {!showNew && (
                                             <>

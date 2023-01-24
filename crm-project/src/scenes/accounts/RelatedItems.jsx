@@ -122,7 +122,7 @@ const AccountRelatedItems = ({ item }) => {
     navigate("/contactDetailPage", { state: { record: { item } } })
   };
 
-  const handleContactCardDelete = (row) => {
+  const handleContactCardDelete = (e,row) => {
 
     console.log('req delete rec', row);
     axios.post(contactDeleteURL+ row._id)
