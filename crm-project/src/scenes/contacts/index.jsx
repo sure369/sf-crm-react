@@ -310,7 +310,19 @@ const Contacts = () => {
           <DataGrid
             rows={records}
             columns={columns}
+            getRowId={(row) => row._id}
+            pageSize={7}
+            rowsPerPageOptions={[7]}
+            components={{
+              Toolbar: GridToolbar,
+              Pagination: CustomPagination,
+            }}
+            loading={fetchLoading}
+            getRowClassName={(params) =>
+              params.indexRelativeToCurrentPage % 2 === 0 ? 'C-MuiDataGrid-row-even' : 'C-MuiDataGrid-row-odd'
+            }
             checkboxSelection
+            disableSelectionOnClick
             onSelectionModelChange={(ids) => {
               var size = Object.keys(ids).length;
               size > 0 ? setShowEmail(true) : setShowEmail(false)
@@ -323,17 +335,6 @@ const Contacts = () => {
               setSelectedRecordDatas(selectedRowRecords)
               console.log('selectedRowRecords', selectedRowRecords)
             }}
-            getRowId={(row) => row._id}
-            pageSize={7}
-            rowsPerPageOptions={[7]}
-            components={{
-              Toolbar: GridToolbar,
-              Pagination: CustomPagination,
-            }}
-            loading={fetchLoading}
-            getRowClassName={(params) =>
-              params.indexRelativeToCurrentPage % 2 === 0 ? 'C-MuiDataGrid-row-even' : 'C-MuiDataGrid-row-odd'
-            }
           />
         </Box>
       </Box>

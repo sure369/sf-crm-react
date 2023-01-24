@@ -98,7 +98,7 @@ const Users = () => {
   const onebyoneDelete = (row) => {
     console.log('onebyoneDelete rec id', row)
 
-    axios.post(urlDelete + row._id)
+    axios.post(urlDelete + row)
       .then((res) => {
         console.log('api delete response', res);
         fetchRecords();
@@ -268,6 +268,7 @@ const Users = () => {
                 params.indexRelativeToCurrentPage % 2 === 0 ? 'C-MuiDataGrid-row-even' : 'C-MuiDataGrid-row-odd'
               }
               checkboxSelection
+              disableSelectionOnClick
               onSelectionModelChange={(ids) => {
                 var size = Object.keys(ids).length;
                 size > 0 ? setShowDelete(true) : setShowDelete(false)

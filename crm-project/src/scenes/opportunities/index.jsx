@@ -292,6 +292,7 @@ const Opportunities = () => {
               params.indexRelativeToCurrentPage % 2 === 0 ? 'C-MuiDataGrid-row-even' : 'C-MuiDataGrid-row-odd'
             }
             checkboxSelection
+            disableSelectionOnClick
             onSelectionModelChange={(ids) => {
               var size = Object.keys(ids).length;
               size > 0 ? setShowDelete(true) : setShowDelete(false)
