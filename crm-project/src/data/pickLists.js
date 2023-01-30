@@ -1,166 +1,189 @@
 export const AccRatingPickList = [
-    {label:'Hot',value:'Hot'},
-    {label:'Cold',value:'Cold'},
-    {label:'Warm',value:'Warm'},
+    {text:'None',value:'null'},
+    {text:'Hot',value:'Hot'},
+    {text:'Cold',value:'Cold'},
+    {text:'Warm',value:'Warm'},
 ]
 
 export const AccTypePickList=[
-    {label:'Prospect',value:'Prospect'},
-    {label:'Customer - Direct',value:'Customer - Direct'},
-    {label:'Customer - Channel',value:'Customer - Channel'},
-    {label:'Channel Partner / Reseller',value:'Channel Partner / Reseller'},
-    {label:'Installation Partner',value:'Installation Partner'},
-    {label:'Technology Partner',value:'Technology Partner'},
-    {label:'Other',value:'Other'},
+    
+    {text:'None',value:''},
+    {text:'Prospect',value:'Prospect'},
+    {text:'Customer - Direct',value:'Customer - Direct'},
+    {text:'Customer - Channel',value:'Customer - Channel'},
+    {text:'Channel Partner / Reseller',value:'Channel Partner / Reseller'},
+    {text:'Installation Partner',value:'Installation Partner'},
+    {text:'Technology Partner',value:'Technology Partner'},
+    {text:'Other',value:'Other'},
 ]
 
 export const IndustryPickList=[
-    {label:'Banking',value:'Banking'},
-    {label:'Construction',value:'Construction'},
-    {label:'Consulting',value:'Consulting'},
-    {label:'Education',value:'Education'},
-    {label:'Engineering',value:'Engineering'},
-    {label:'Government',value:'Government'},
-    {label:'Manufacturing',value:'Manufacturing'},
-    {label:'Hospitality',value:'Hospitality'},
-    {label:'Insurance',value:'Insurance'},
-    {label:'Technology',value:'Technology'},
-    {label:'Other',value:'Other'},
+    {text:'None',value:''},
+    {text:'Banking',value:'Banking'},
+    {text:'Construction',value:'Construction'},
+    {text:'Consulting',value:'Consulting'},
+    {text:'Education',value:'Education'},
+    {text:'Engineering',value:'Engineering'},
+    {text:'Government',value:'Government'},
+    {text:'Manufacturing',value:'Manufacturing'},
+    {text:'Hospitality',value:'Hospitality'},
+    {text:'Insurance',value:'Insurance'},
+    {text:'Technology',value:'Technology'},
+    {text:'Other',value:'Other'},
 ]
 
 export const AccCountryPickList=[
-    {label:'UAE',value:'UAE'},
-    {label:'Saudi Arabia',value:'Saudi Arabia'},
-    {label:'India',value:'India'},
+    {text:'None',value:''},
+    {text:'UAE',value:'UAE'},
+    {text:'Saudi Arabia',value:'Saudi Arabia'},
+    {text:'India',value:'India'},
 
 ]
 
 export const AccCitiesPickList={
     UAE: [
-        { value: "Dubai", label: "Dubai" },
-        { value: "Abu Dhabi", label: "Abu Dhabi" },
-        { value: "Sharjah", label: "Sharjah" },
-        { value: "Ajman", label: "Ajman" },
+        {text:'None',value:''},
+        { value: "Dubai", text: "Dubai" },
+        { value: "Abu Dhabi", text: "Abu Dhabi" },
+        { value: "Sharjah", text: "Sharjah" },
+        { value: "Ajman", text: "Ajman" },
     ],
     "Saudi Arabia": [
-        { value: "Mecca", label: "Mecca" },
-        { value: "Jeddah", label: "Jeddah" },
+        {text:'None',value:''},
+        { value: "Mecca", text: "Mecca" },
+        { value: "Jeddah", text: "Jeddah" },
     ],
     India: [
-        { value: "Chennai", label: "Chennai" },
-        { value: "Bangalore", label: "Bangalore" },
-        { value: "Coimabatore", label: "Coimabatore" },
+        {text:'None',value:''},
+        { value: "Chennai", text: "Chennai" },
+        { value: "Bangalore", text: "Bangalore" },
+        { value: "Coimabatore", text: "Coimabatore" },
     ],
 };
 
 
 export const NameSalutionPickList =[
-    {label:'Mr.',value:'Mr.'},
-    {label:'Ms.',value:'Ms.'},
-    {label:'Mrs.',value:'Mrs.'},
-    {label:'Dr.',value:'Dr.'},
-    {label:'Prof.',value:'Prof.'},
+    {text:'None',value:''},
+    {text:'Mr.',value:'Mr.'},
+    {text:'Ms.',value:'Ms.'},
+    {text:'Mrs.',value:'Mrs.'},
+    {text:'Dr.',value:'Dr.'},
+    {text:'Prof.',value:'Prof.'},
 ]
 
 export const LeadSourcePickList =[
-    {label:'Web',value:'Web'},
-    {label:'Phone Inquiry',value:'Phone Inquiry'},
-    {label:'Partner Referral',value:'Partner Referral'},
-    {label:'Purchased List',value:'Purchased List'},
-    {label:'Other',value:'Other'},
+    {text:'None',value:''},
+    {text:'Web',value:'Web'},
+    {text:'Phone Inquiry',value:'Phone Inquiry'},
+    {text:'Partner Referral',value:'Partner Referral'},
+    {text:'Purchased List',value:'Purchased List'},
+    {text:'Other',value:'Other'},
 ]
 
 export const InvCountryPickList=[
-    {label:'UAE',value:'UAE'},
-    {label:'Saudi Arabia',value:'Saudi Arabia'},
-    {label:'India',value:'India'},
+    {text:'None',value:''},
+    {text:'UAE',value:'UAE'},
+    {text:'Saudi Arabia',value:'Saudi Arabia'},
+    {text:'India',value:'India'},
 
 ]
 
 export const InvCitiesPickList={
     UAE: [
-        { value: "Dubai", label: "Dubai" },
-        { value: "Abu Dhabi", label: "Abu Dhabi" },
-        { value: "Sharjah", label: "Sharjah" },
-        { value: "Ajman", label: "Ajman" },
+        {text:'None',value:''},
+        { value: "Dubai", text: "Dubai" },
+        { value: "Abu Dhabi", text: "Abu Dhabi" },
+        { value: "Sharjah", text: "Sharjah" },
+        { value: "Ajman", text: "Ajman" },
     ],
     "Saudi Arabia": [
-        { value: "Mecca", label: "Mecca" },
-        { value: "Jeddah", label: "Jeddah" },
+        {text:'None',value:''},
+        { value: "Mecca", text: "Mecca" },
+        { value: "Jeddah", text: "Jeddah" },
     ],
     India: [
-        { value: "Chennai", label: "Chennai" },
-        { value: "Mumbai", label: "Mumbai" },
-        { value: "Bangalore", label: "Bangalore" },
-        { value: "Coimabatore", label: "Coimabatore" },
-        { value: "Thiruvananthapuram", label: "Thiruvananthapuram" },
+        {text:'None',value:''},
+        { value: "Chennai", text: "Chennai" },
+        { value: "Mumbai", text: "Mumbai" },
+        { value: "Bangalore", text: "Bangalore" },
+        { value: "Coimabatore", text: "Coimabatore" },
+        { value: "Thiruvananthapuram", text: "Thiruvananthapuram" },
         
     ],
 };
 
 export const InvTypePicklist =[
-    {label:'Apartment',value:'Apartment'},
-    {label:'Commercial Space',value:'Commercial Space'},
-    {label:'Duplex',value:'Duplex'},
-    {label:'Townhouse',value:'Townhouse'},
-    {label:'Villa',value:'Villa'},
+    {text:'None',value:''},
+    {text:'Apartment',value:'Apartment'},
+    {text:'Commercial Space',value:'Commercial Space'},
+    {text:'Duplex',value:'Duplex'},
+    {text:'Townhouse',value:'Townhouse'},
+    {text:'Villa',value:'Villa'},
 ]
 
 export const InvStatusPicklist =[
-    {label:'Available',value:'Available'},
-    {label:'Sold',value:'Sold'},
-    {label:'Booked',value:'Booked'},
-    {label:'Processed',value:'Processed'},
+    {text:'None',value:''},
+    {text:'Available',value:'Available'},
+    {text:'Sold',value:'Sold'},
+    {text:'Booked',value:'Booked'},
+    {text:'Processed',value:'Processed'},
 ]
 
 export const LeadStatusPicklist=[
-    {label:'Open-Not Contacted',value:'Open-Not Contacted'},
-    {label:'Working-Contacted',value:'Working-Contacted'},
-    {label:'Closed-Contacted',value:'Closed-Contacted'},
-    {label:'Closed-Not Converted',value:'Closed-Not Contacted'},
+    {text:'None',value:''},
+    {text:'Open-Not Contacted',value:'Open-Not Contacted'},
+    {text:'Working-Contacted',value:'Working-Contacted'},
+    {text:'Closed-Contacted',value:'Closed-Contacted'},
+    {text:'Closed-Not Converted',value:'Closed-Not Contacted'},
 ]
 
 export const OppStagePicklist =[
-    {label:'Prospecting',value:'Prospecting'},
-    {label:'Needs Analysis',value:'Needs Analysis'},
-    {label:'Value Proposition',value:'Value Proposition'},
-    {label:'Perception Analysis',value:'Perception Analysis'},
-    {label:'Proposal Quote',value:'Proposal Quote'},
-    {label:'Negotiation',value:'Negotiation'},
-    {label:'Closed Won',value:'Closed Won'},
-    {label:'Closed Lost',value:'Closed Lost'},
+    {text:'None',value:''},
+    {text:'Prospecting',value:'Prospecting'},
+    {text:'Needs Analysis',value:'Needs Analysis'},
+    {text:'Value Proposition',value:'Value Proposition'},
+    {text:'Perception Analysis',value:'Perception Analysis'},
+    {text:'Proposal Quote',value:'Proposal Quote'},
+    {text:'Negotiation',value:'Negotiation'},
+    {text:'Closed Won',value:'Closed Won'},
+    {text:'Closed Lost',value:'Closed Lost'},
 ]
 
 export const OppTypePicklist=[    
-    {label:'New Customer',value:'New Customer'},
-    {label:'Existing Customer - Upgrade',value:'Existing Customer - Upgrade'},
-    {label:'Existing Customer - Replacement',value:'Existing Customer - Replacement'},
-    {label:'Existing Customer - Downgrade',value:'Existing Customer - Downgrade'},
+    {text:'None',value:''},
+    {text:'New Customer',value:'New Customer'},
+    {text:'Existing Customer - Upgrade',value:'Existing Customer - Upgrade'},
+    {text:'Existing Customer - Replacement',value:'Existing Customer - Replacement'},
+    {text:'Existing Customer - Downgrade',value:'Existing Customer - Downgrade'},
 ]
 
-export const TaskSubjectPicklist=[    
-    {label:'Call',value:'Call'}, 
-    {label:'Email',value:'Email'}, 
-    {label:'Meeting',value:'Meeting'}, 
-    {label:'Send Quote',value:'Send Quote'},
+export const TaskSubjectPicklist=[   
+    {text:'None',value:''}, 
+    {text:'Call',value:'Call'}, 
+    {text:'Email',value:'Email'}, 
+    {text:'Meeting',value:'Meeting'}, 
+    {text:'Send Quote',value:'Send Quote'},
 ]
 
-export const TaskObjectPicklist=[    
-    {label:'Lead',value:'Lead'}, 
-    {label:'Opportunity',value:'Opportunity'}, 
-    {label:'Account',value:'Account'}, 
+export const TaskObjectPicklist=[  
+    {text:'None',value:''},  
+    {text:'Lead',value:'Lead'}, 
+    {text:'Opportunity',value:'Opportunity'}, 
+    {text:'Account',value:'Account'}, 
 ]
 
 export const UserRolePicklist=[
-    {label:'CEO',value:'CEO'}, 
-    {label:'Sales Director',value:'Sales Director'}, 
-    {label:'Sales Manager',value:'Sales Manager'}, 
-    {label:'Sales Rep',value:'Sales Rep'}, 
+    {text:'None',value:''},
+    {text:'CEO',value:'CEO'}, 
+    {text:'Sales Director',value:'Sales Director'}, 
+    {text:'Sales Manager',value:'Sales Manager'}, 
+    {text:'Sales Rep',value:'Sales Rep'}, 
 ]
 
 export const UserAccessPicklist=[  
-    {label:'Read',value:'Read'}, 
-    {label:'Read/Create',value:'Read/Create'}, 
-    {label:'Read/Create/Edit',value:'Read/Create/Edit'}, 
-    {label:'Read/Create/Edit/Delete',value:'Read/Create/Edit/Delete'}, 
+    {text:'None',value:''},
+    {text:'Read',value:'Read'}, 
+    {text:'Read/Create',value:'Read/Create'}, 
+    {text:'Read/Create/Edit',value:'Read/Create/Edit'}, 
+    {text:'Read/Create/Edit/Delete',value:'Read/Create/Edit/Delete'}, 
 ]

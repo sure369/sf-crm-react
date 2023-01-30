@@ -54,7 +54,6 @@ const Inventories = () => {
             setRecords([]);
              setFetchLoading(false)
           }
-
         }
       )
       .catch((error) => {

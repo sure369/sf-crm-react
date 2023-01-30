@@ -275,12 +275,12 @@ const InventoryRelatedItems = ({ item }) => {
                               key={item._id}
                             >
                               <Grid container spacing={2}>
-                                <Grid item xs={6} md={10}>
+                                <Grid item xs={12} md={10}>
                                   <div>Name : {item.opportunityName} </div>
                                   <div>Stage :{item.stage} </div>
                                   <div>Close Date : {starDateConvert} </div>
                                 </Grid>
-                                <Grid item xs={6} md={2}>
+                                <Grid item xs={2} md={2}>
 
                                   <IconButton>
                                     <MoreVertIcon onClick={(event) => handleOpportunityMoreMenuClick(item, event)} />
@@ -359,12 +359,12 @@ const InventoryRelatedItems = ({ item }) => {
                               key={item._id}
                             >
                               <Grid container spacing={2}>
-                                <Grid item xs={6} md={10}>
+                                <Grid item xs={10} md={10}>
                                   <div>Name : {item.accountName} </div>
                                   <div>Account Number :{item.accountNumber} </div>
                                   <div>Rating : {item.rating} </div>
                                 </Grid>
-                                <Grid item xs={6} md={2}>
+                                <Grid item xs={2} md={2}>
                                   <IconButton>
                                     <MoreVertIcon onClick={(event) => handleAccountMoreMenuClick(item, event)} />
                                     <Menu

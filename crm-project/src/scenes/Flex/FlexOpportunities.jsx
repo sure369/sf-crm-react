@@ -58,10 +58,14 @@ const FlexOpportunities = (item) => {
             <Box
                 sx={{ display: 'flex', p: 1, bgcolor: 'background.paper', borderRadius: 1 }}
             >
-
-                <Item sx={{ width: '65%' }}> <OpportunityDetailPage props={passedRecord}/> </Item>
-                <Item sx={{ width: '35%' }}> <OpportunityRelatedItems props={passedRecord} /> </Item>
-
+ <Grid container>
+          <Grid item xs={12} md={8} >
+            <Item > <OpportunityDetailPage props={passedRecord} /> </Item>
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <Item > <OpportunityRelatedItems props={passedRecord} /> </Item>
+          </Grid>
+        </Grid>
                 
             </Box>
         </div>

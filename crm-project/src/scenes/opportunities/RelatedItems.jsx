@@ -384,12 +384,12 @@ const columns = [
                               key={item._id}
                             >
                               <Grid container spacing={2}>
-                                <Grid item xs={6} md={10}>
+                                <Grid item xs={10} md={10}>
                                   <div>Subject : {item.subject} </div>
                                   <div>Date&Time :{starDateConvert} </div>
                                   <div>Description : {item.description} </div>
                                 </Grid>
-                                <Grid item xs={6} md={2}>
+                                <Grid item xs={2} md={2}>
 
                                   <IconButton>
                                     <MoreVertIcon onClick={(event) => handleTaskMoreMenuClick(item, event)} />
@@ -471,12 +471,12 @@ const columns = [
                               key={item._id}
                             >
                               <Grid container spacing={2}>
-                                <Grid item xs={6} md={10}>
+                                <Grid item xs={10} md={10}>
                                   <div>Inventory Name : {item.propertyName} </div>
                                   <div>Status : {item.status}</div>
                                   <div>Type : {item.type} </div>
                                 </Grid>
-                                <Grid item xs={6} md={2}>
+                                <Grid item xs={2} md={2}>
 
                                   <IconButton>
                                     <MoreVertIcon onClick={(event) => handleOppMoreMenuClick(item, event)} />

@@ -1,7 +1,7 @@
-import React ,{ useEffect, useState ,useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import PropTypes from 'prop-types';
-import { Box,Grid,Button ,DialogActions} from "@mui/material";
-import {useLocation ,useNavigate} from 'react-router-dom';
+import { Box, Grid, Button, DialogActions } from "@mui/material";
+import { useLocation, useNavigate } from 'react-router-dom';
 import InventoryDetailPage from "../recordDetailPage/InventoryDetailPage";
 import InventoryRelatedItems from "../inventories/RelatedItems";
 
@@ -40,31 +40,38 @@ Item.propTypes = {
 const FlexInventories = (item) => {
 
 
-    const[passedRecord,setPassedRecord] =useState();
-    const location = useLocation();
+  const [passedRecord, setPassedRecord] = useState();
+  const location = useLocation();
 
-    useEffect(() => {
+  useEffect(() => {
 
-        console.log('passed record',location.state.record.item)
-        setPassedRecord(location.state.record.item); 
-      
-       
-    }, [])
- 
+    console.log('passed record', location.state.record.item)
+    setPassedRecord(location.state.record.item);
 
-   
-    return (
-        <div style={{ width: '100%' }}>
-            <Box
-                sx={{ display: 'flex', p: 1, bgcolor: 'background.paper', borderRadius: 1 }}
-            >
 
-                <Item sx={{ width: '65%' }}> <InventoryDetailPage props={passedRecord}/> </Item>
-                <Item sx={{ width: '35%' }}> <InventoryRelatedItems props={passedRecord} /> </Item>
+  }, [])
 
-                
-            </Box>
-        </div>
-    );
+
+
+  return (
+    <div style={{ width: '100%' }}>
+      <Box
+        sx={{ display: 'flex', p: 1, bgcolor: 'background.paper', borderRadius: 1 }}
+      // sx={{display:{xs:'none',sm:'block'}}} 
+      >
+        <Grid container>
+        <Grid  item xs={12} md={8} >
+          <Item > <InventoryDetailPage props={passedRecord} /> </Item>
+        </Grid>
+        <Grid  item xs={12} md={4}>
+          <Item > <InventoryRelatedItems props={passedRecord} /> </Item>
+        </Grid>
+        </Grid>
+
+
+
+      </Box>
+    </div>
+  );
 }
 export default FlexInventories

@@ -12,6 +12,7 @@ import "../formik/FormStyles.css"
 const UpsertLeadUrl = "http://localhost:4000/api/dataloaderlead";
 const UpsertAccountUrl="http://localhost:4000/api/dataloaderAccount";
 const UpsertOppUrl="http://localhost:4000/api/dataloaderOpportunity";
+const generatePreview ="http://localhost:4000/api/generatePreview";
 
 const DataLoadPage = () => {
     useEffect(() => {
@@ -47,6 +48,21 @@ const DataLoadPage = () => {
 
     })
     
+    const fileSendValue =(obj,files)=>{
+
+        let formData = new FormData();
+        formData.append('file',files)
+        formData.append('object',obj);
+        console.log('modified formData',formData);
+         axios.post(generatePreview, formData)
+    
+            .then((res) => {
+                console.log('task form Submission  response', res);             
+            })
+            .catch((error) => {
+                console.log('task form Submission  error', error);
+            })
+    }
 
      const formSubmission = async (values, { resetForm }) => {
         console.log('inside form Submission', values);
@@ -117,11 +133,10 @@ const DataLoadPage = () => {
                                         
                                         <Field name="file" type="file"
                                         className="form-input"
+                                        accept=".csv"
                                         onChange={(event)=>{
-                                            // console.log(event.target.files[0]);
-                                            console.log('file ',(event.target.files[0]));
-                                            console.log('type ',event.target.files[0].type);
                                             setFieldValue("attachments", (event.target.files[0]));
+                                            fileSendValue(values.object,(event.target.files[0]))
                                         }} 
                                         />
                                          <div style={{ color: 'red' }}>

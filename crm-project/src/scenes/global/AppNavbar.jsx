@@ -44,7 +44,8 @@ function AppNavbar() {
   return (
     
     // 5C5CFF
-    <AppBar position="static" sx={{backgroundColor:'#6666FF' }} >
+    // fixed
+    <AppBar position="static" sx={{backgroundColor:'#5C5CFF' }} >
       <Container maxWidth="xl">
         <Toolbar disableGutters >
           {/* <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} /> */}

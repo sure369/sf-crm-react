@@ -2,29 +2,33 @@ import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { Grid, Button, Forminput, DialogActions, TextField, Autocomplete } from "@mui/material";
+import { Grid, Button, DialogActions, Box, TextField, Autocomplete } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom"
 import axios from 'axios'
 import "../formik/FormStyles.css"
 import Notification from '../toast/Notification';
 import {IndustryPickList, AccRatingPickList,AccTypePickList,AccCitiesPickList, AccCountryPickList} from '../../data/pickLists'
 
-import { Select, CaretIcon, ModalCloseButton }  from "react-responsive-select";
-import 'react-responsive-select/dist/react-responsive-select.css';
-
 const url = "http://localhost:4000/api/UpsertAccount";
+const fetchInventoriesbyName = "http://localhost:4000/api/InventoryName";
 
-const ModalInventoryAccount = ({ item }) => {
+const AccountDetailPage = ({ item }) => {
 
-    const [inventoryParentRecord, setInventoryParentRecord] = useState();
+    const [singleAccount, setsingleAccount] = useState();
     const location = useLocation();
     const navigate = useNavigate();
+    const [showNew, setshowNew] = useState()
+    const [inventoriesRecord, setInventoriesRecord] = useState([]);
   // notification
     const[notify,setNotify]=useState({isOpen:false,message:'',type:''})
    
     useEffect(() => {
         console.log('passed record', location.state.record.item);
-        setInventoryParentRecord(location.state.record.item);      
+        setsingleAccount(location.state.record.item);
+        console.log('true', !location.state.record.item);
+        setshowNew(!location.state.record.item)
+        FetchInventoriesbyName('');
+      
     }, [])
 
     const initialValues = {
@@ -43,9 +47,28 @@ const ModalInventoryAccount = ({ item }) => {
         createdbyId: '',
         createdDate:'',
         modifiedDate: '',
-        inventoryDetails:'',
     }
 
+    const savedValues = {
+        accountName: singleAccount?.accountName ?? "",
+        accountNumber: singleAccount?.accountNumber ?? "",
+        InventoryId: singleAccount?.InventoryId ?? "",
+        inventoryName: singleAccount?.inventoryName ?? "",
+        annualRevenue: singleAccount?.annualRevenue ?? "",
+        rating: singleAccount?.rating ?? "",
+        type: singleAccount?.type ?? "",
+        phone: singleAccount?.phone ?? "",
+        industry: singleAccount?.industry ?? "",
+        billingAddress: singleAccount?.billingAddress ?? "",
+        billingCountry: singleAccount?.billingCountry ?? "",
+        billingCity: singleAccount?.billingCity ?? "",
+        billingCities: singleAccount?.billingCities ?? "",
+        createdbyId: singleAccount?.createdbyId ?? "",
+        createdDate:  new Date(singleAccount?.createdDate).toLocaleString(),
+        modifiedDate: new Date(singleAccount?.modifiedDate).toLocaleString(),
+        _id: singleAccount?._id ?? "",
+        inventoryDetails:singleAccount?.inventoryDetails ?? "", 
+    }
 
     const getCities = (billingCountry) => {
         return new Promise((resolve, reject) => {
@@ -83,15 +106,24 @@ const ModalInventoryAccount = ({ item }) => {
         let dateSeconds = new Date().getTime();
         let createDateSec = new Date(values.createdDate).getTime()
 
-    
+        // let d = new Date();
+        // const formatDate =  [d.getDate(), d.getMonth()+1,d.getFullYear()].join('/')+' '+ [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
+        
+        if(showNew){
             values.modifiedDate = dateSeconds;
             values.createdDate = dateSeconds;
-            values.InventoryId=inventoryParentRecord._id;
-            values.inventoryDetails={
-                propertyName:inventoryParentRecord.propertyName,
-                id:inventoryParentRecord._id
+            if(values.InventoryId===''){
+                delete values.InventoryId;
             }
-       
+        }
+        else if(!showNew){
+            values.modifiedDate = dateSeconds;
+            values.createdDate = createDateSec;
+            if(values.InventoryId===''){
+                delete values.InventoryId;
+            }
+        }
+        
         console.log('after change form submission value',values);
         
         axios.post(url, values)
@@ -104,7 +136,7 @@ const ModalInventoryAccount = ({ item }) => {
       
               })
             setTimeout(() => {
-                //  navigate(-1);
+                 navigate(-1);
             }, 2000)
         })
         .catch((error) => {
@@ -119,6 +151,19 @@ const ModalInventoryAccount = ({ item }) => {
         
     }
 
+    const FetchInventoriesbyName = (newInputValue) => {
+        axios.post(`${fetchInventoriesbyName}?searchKey=${newInputValue}`)
+            .then((res) => {
+                console.log('res fetchInventoriesbyName', res.data)
+                if (typeof (res.data) === "object") {
+                    setInventoriesRecord(res.data)
+                }
+            })
+            .catch((error) => {
+                console.log('error fetchInventoriesbyName', error);
+            })
+    }
+
     const handleFormClose =()=>{
         navigate(-1)
     }
@@ -126,12 +171,14 @@ const ModalInventoryAccount = ({ item }) => {
 
         <Grid item xs={12} style={{ margin: "20px" }}>
             <div style={{ textAlign: "center", marginBottom: "10px" }}>
-                <h3>New Account</h3> 
+                {
+                    showNew ? <h3>New Account</h3> : <h3>Account Detail Page </h3>
+                }
             </div>
             <div>
                 <Formik
                     enableReinitialize={true}
-                    initialValues={initialValues}
+                    initialValues={showNew ? initialValues : savedValues}
                     validationSchema={validationSchema}
                     onSubmit={(values) => { formSubmission(values) }}
                 >
@@ -165,6 +212,41 @@ const ModalInventoryAccount = ({ item }) => {
                                             <Field name="accountNumber" type="number" class="form-input" />
                                         </Grid>
                                         <Grid item xs={6} md={6}>
+                                            <label htmlFor="InventoryId">Inventory Name </label>
+                                            <Autocomplete
+                                                name="InventoryId"
+                                                options={inventoriesRecord}
+                                                value={values.inventoryDetails}
+                                                getOptionLabel={option => option.propertyName || ''}
+                                                // isOptionEqualToValue={(option, value) =>
+                                                //     option.id === value
+                                                // }
+                                                onChange={(e, value) => {
+
+                                                    if(!value){                                
+                                                        console.log('!value',value);
+                                                        setFieldValue("InventoryId",'')
+                                                        setFieldValue("inventoryDetails",'')
+                                                      }else{
+                                                        console.log('value',value);
+                                                        setFieldValue("InventoryId",value.id)
+                                                        setFieldValue("inventoryDetails",value)
+                                                      }
+                                                }}
+                                                onInputChange={(event, newInputValue) => {
+                                                    console.log('newInputValue', newInputValue);
+                                                    if (newInputValue.length >= 3) {
+                                                        FetchInventoriesbyName(newInputValue);
+                                                    }
+                                                }}
+                                                renderInput={params => (
+                                                    <Field component={TextField} {...params} name="InventoryId" />
+                                                )}
+                                            />
+
+                                        </Grid>
+
+                                        <Grid item xs={6} md={6}>
                                             <label htmlFor="annualRevenue">Aannual Revenue</label>
                                             <Field class="form-input" type="text" name="annualRevenue" />
                                             <div style={{ color: 'red' }}>
@@ -180,22 +262,13 @@ const ModalInventoryAccount = ({ item }) => {
                                         </Grid>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="rating"> Rating<span className="text-danger">*</span></label>
-                                            {/* <Select
-                                                name="rating"
-                                                modalCloseButton={<ModalCloseButton />}
-                                                options={AccRatingPickList}
-                                                caretIcon={<CaretIcon />}
-                                                onChange={newValue => {
-                                                setFieldValue('rating',newValue.value)
-                                                }}
-                                            /> */}
                                             <Field name="rating" as="select" class="form-input">
-                                             {/* <option value=''><em>None</em></option> */}
+                                            <option value=''><em>None</em></option>
                                                {
                                                 AccRatingPickList.map((i)=>{
                                                     return <option value={i.value}>{i.text}</option>
                                                 })
-                                               } 
+                                               }
                                             </Field>
                                             <div style={{ color: 'red' }} >
                                                 <ErrorMessage name="rating" />
@@ -209,33 +282,19 @@ const ModalInventoryAccount = ({ item }) => {
                                                 AccTypePickList.map((i)=>{
                                                     return <option value={i.value}>{i.text}</option>
                                                 })
-                                              }
+                                              }                                               
                                             </Field>
                                         </Grid>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="industry">Industry</label>
-                                            {/* <Select
-                                                name="industry"
-                                                modalCloseButton={<ModalCloseButton />}
-                                                options={IndustryPickList}
-                                                caretIcon={<CaretIcon />}
-                                                onChange={newValue => {
-                                                setFieldValue('industry',newValue.value)
-                                                }}
-                                            /> */}
                                             <Field name="industry" as="select" class="form-input">
                                             <option value=''><em>None</em></option>
                                               {
                                                 IndustryPickList.map((i)=>{
-                                                    return <option value={i.value}>{i.label}</option>
+                                                    return <option value={i.value}>{i.text}</option>
                                                 })
-                                              } 
+                                              }  
                                             </Field>
-                                        </Grid>
-
-                                        <Grid item xs={6} md={6}>
-                                            <label htmlFor="billingAddress">Billing Address </label>
-                                            <Field name="billingAddress" type="text" class="form-input" />
                                         </Grid>
 
                                         <Grid item xs={6} md={6}>
@@ -255,12 +314,12 @@ const ModalInventoryAccount = ({ item }) => {
                                                     setFieldValue("billingCities", _billingCities);
                                                 }}
                                             >
-                                            <option value=''><em>None</em></option>
+                                                <option value=''><em>None</em></option>
                                               {
                                                 AccCountryPickList.map((i)=>{
-                                                    return <option value={i.value}>{i.label}</option>
+                                                    return <option value={i.value}>{i.text}</option>
                                                 })
-                                              } 
+                                              }  
                                             </Field>
                                         </Grid>
                                         
@@ -274,24 +333,44 @@ const ModalInventoryAccount = ({ item }) => {
                                                 as="select"
                                                 onChange={handleChange}
                                             >
-                                                <option value="None">--Select billingCity--</option>
+                                               <option value=''><em>None</em></option>
                                                 {values.billingCities &&
                                                     values.billingCities.map((r) => (
-                                                        <option key={r.value} value={r.vlue}>
-                                                            {r.label}
+                                                        <option key={r.value} value={r.value}>
+                                                            {r.text}
                                                         </option>
                                                     ))}
                                             </Field>
                                         </Grid>
 
+                                        <Grid item xs={6} md={6}>
+                                            <label htmlFor="billingAddress">Billing Address </label>
+                                            <Field name="billingAddress" type="text" class="form-input" />
+                                        </Grid>
                                         
+                                        {!showNew && (
+                                            <>
+                                                <Grid item xs={6} md={6}>                                                  
+                                                    <label htmlFor="createdDate" >created Date</label>
+                                                    <Field name='createdDate' type="text" class="form-input" disabled />
+                                                </Grid>
+
+                                                <Grid item xs={6} md={6}>
+                                                    <label htmlFor="modifiedDate" >Modified Date</label>
+                                                    <Field name='modifiedDate' type="text" class="form-input" disabled />
+                                                </Grid>
+                                            </>
+                                        )}
                                     </Grid>
 
                                     <div className='action-buttons'>
                                         <DialogActions sx={{ justifyContent: "space-between" }}>
-
-                                            <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Save</Button>
-
+                                            {
+                                                showNew ?
+                                                    <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Save</Button>
+                                                :
+                                                    <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Update</Button>
+                                            }
                                             <Button type="reset" variant="contained" onClick={handleFormClose}  >Cancel</Button>
                                         </DialogActions>
                                     </div>
@@ -304,5 +383,5 @@ const ModalInventoryAccount = ({ item }) => {
         </Grid>
     )
 }
+export default AccountDetailPage;
 
-export default ModalInventoryAccount;

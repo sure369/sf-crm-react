@@ -1,4 +1,4 @@
-import React ,{useState} from "react";
+import React ,{useEffect, useState} from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import {Box,Button,TextField, Grid ,MenuItem,Select,InputLabel } from "@mui/material";
@@ -6,6 +6,8 @@ import axios from 'axios'
 import Header from "../../components/Header";
 import { mockAccountData } from "../../data/mockData";
 const url ="http://localhost:4000/api/accountInsert";
+
+
 
 
 const initialValues = {
@@ -25,7 +27,22 @@ const onSubmit = (values, { resetForm }) => {
 
 
 const TestForm = () => {
+    const[isMobile,setIsMobile]=useState(false)
 
+    const handleResize =()=>{
+        if(window.innerWidth<720){
+            console.log('true');
+            setIsMobile(true)
+        }
+        else{
+            console.log('false');
+            setIsMobile(false)
+        }
+    }
+    useEffect(()=>{
+        console.log('useEffect');
+        window.addEventListener("resize",handleResize)
+    })
 
     return (
         <Box m="20px">

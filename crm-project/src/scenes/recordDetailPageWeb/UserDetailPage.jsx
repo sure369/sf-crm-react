@@ -2,17 +2,15 @@ import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { Grid, Button, Forminput, DialogActions, MenuItem ,
-    TextField,Autocomplete, Select,} from "@mui/material";
+import { Grid, Button, Forminput, DialogActions, MenuItem } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom"
 import axios from 'axios'
 import "../formik/FormStyles.css"
 import Notification from '../toast/Notification';
 import CustomizedSelectForFormik from '../formik/CustomizedSelectForFormik';
-import { UserAccessPicklist, UserRolePicklist } from '../../data/pickLists';
+import { UserAccessPicklist } from '../../data/pickLists';
 
 const url = "http://localhost:4000/api/UpsertUser";
-const fetchUsersbyName = "http://localhost:4000/api/usersbyName"
 
 const UserDetailPage = ({ item }) => {
 
@@ -22,13 +20,10 @@ const UserDetailPage = ({ item }) => {
     const [showNew, setshowNew] = useState()
     const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
 
-    const[usersRecord,setUsersRecord]=useState([])
-
     useEffect(() => {
         console.log('passed record', location.state.record.item);
         setsingleUser(location.state.record.item);
         setshowNew(!location.state.record.item)
-             FetchUsersbyName('')
     }, [])
 
     const initialValues = {
@@ -134,21 +129,6 @@ const UserDetailPage = ({ item }) => {
         navigate(-1)
     }
 
-    const FetchUsersbyName = (inputValue) => {
-        console.log('inside FetchLeadsbyName fn');
-        console.log('newInputValue', inputValue)
-        axios.post(`${fetchUsersbyName}?searchKey=${inputValue}`)
-            .then((res) => {
-                console.log('res fetchLeadsbyName', res.data)
-                if (typeof (res.data) === "object") {
-                    setUsersRecord(res.data)
-                }
-            })
-            .catch((error) => {
-                console.log('error fetchLeadsbyName', error);
-            })
-    }
-
     return (
         <Grid item xs={12} style={{ margin: "20px" }}>
             <div style={{ textAlign: "center", marginBottom: "10px" }}>
@@ -216,15 +196,25 @@ const UserDetailPage = ({ item }) => {
                                                 <ErrorMessage name="username" />
                                             </div>
                                         </Grid>
-     
                                         <Grid item xs={6} md={6}>
-                                            <label htmlFor="role">Role <span className="text-danger">*</span> </label>
-                                            <Field name="role" component={CustomizedSelectForFormik}>
-                                                {
-                                                    UserRolePicklist.map((i)=>{
-                                                        return <MenuItem value= {i.value}>{i.text}</MenuItem> 
-                                                    })
-                                                }
+                                            <label htmlFor="phone">phone<span className="text-danger">*</span> </label>
+                                            <Field name="phone" type="text" class="form-input" />
+                                            <div style={{ color: 'red' }}>
+                                                <ErrorMessage name="phone" />
+                                            </div>
+                                        </Grid>
+                                        <Grid item xs={6} md={6}>
+                                            <label htmlFor="role">role <span className="text-danger">*</span> </label>
+                                            <Field name="role" component={CustomizedSelectForFormik} class="form-input">
+                                                <MenuItem value={'CEO'}>CEO</MenuItem> 
+                                                <MenuItem value={'Sales Director'}>Sales Director</MenuItem> 
+                                                <MenuItem value={'Sales Manager'}>Sales Manager</MenuItem> 
+                                                <MenuItem value={'Sales Rep'}>Sales Rep</MenuItem> 
+                                                {/* <option value="">--Select--</option>
+                                                <option value="CEO">CEO</option>
+                                                <option value="Sales Director"> Sales Director</option>
+                                                <option value="Sales Manager">Sales Manager</option>
+                                                <option value="Sales Rep">Sales Rep</option> */}
                                             </Field>
                                             <div style={{ color: 'red' }}>
                                                 <ErrorMessage name="role" />
@@ -232,11 +222,11 @@ const UserDetailPage = ({ item }) => {
                                         </Grid>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="access">Access <span className="text-danger">*</span> </label>
-                                            <Field name="access"  component={CustomizedSelectForFormik}>
-                                            
+                                            <Field name="access" as="select" class="form-input">
+                                            <option value=''><em>None</em></option>
                                               {
                                                 UserAccessPicklist.map((i)=>{
-                                                    return <MenuItem value={i.value}>{i.text}</MenuItem>
+                                                    return <option value={i.value}>{i.label}</option>
                                                 })
                                               }  
                                             </Field>
@@ -244,46 +234,6 @@ const UserDetailPage = ({ item }) => {
                                                 <ErrorMessage name="access" />
                                             </div>
                                         </Grid>
-
-                                        <Grid item xs={6} md={6}>
-                                            <label htmlFor="createdbyId">User Name </label>
-                                            <Autocomplete
-                                                name="createdbyId"
-                                                options={usersRecord}
-                                                value={values.userDetails}
-                                                getOptionLabel={option => option.userName || ''}
-                                                onChange={(e, value) => {
-                                                    console.log('inside onchange values', value);
-                                                    if (!value) {
-                                                        console.log('!value', value);
-                                                        setFieldValue("createdbyId", '')
-                                                        setFieldValue("userDetails", '')
-                                                    } else {
-                                                        console.log('value', value);
-                                                        setFieldValue("createdbyId", value.id)
-                                                        setFieldValue("userDetails", value)
-                                                    }
-                                                }}
-
-                                                onInputChange={(event, newInputValue) => {
-                                                    console.log('newInputValue', newInputValue);
-                                                    if (newInputValue.length >= 3) {
-                                                        FetchUsersbyName(newInputValue);
-                                                    }
-                                                }}
-                                                renderInput={params => (
-                                                    <Field component={TextField} {...params} name="createdbyId" />
-                                                )}
-                                            />
-                                            </Grid>
-                                            <Grid item xs={6} md={6}>
-                                            <label htmlFor="phone">phone<span className="text-danger">*</span> </label>
-                                            <Field name="phone" type="text" class="form-input" />
-                                            <div style={{ color: 'red' }}>
-                                                <ErrorMessage name="phone" />
-                                            </div>
-                                        </Grid>
-                                      
                                        
 
                                         {!showNew && (

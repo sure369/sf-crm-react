@@ -51,6 +51,16 @@ import TextEditor from "./scenes/RichTextField/TextEditor";
 import Preview from "./scenes/fileUpload/Preview";
 import CircularLoading from "./scenes/toast/CircularLoding";
 import PicklistField from "./scenes/formik/PicklistField";
+import FormikSelectMobile from "./scenes/formik/FormikSelectMobile";
+import AccountsMobile from "./scenes/accounts/indexMobile";
+import InventoriesMobile from "./scenes/inventories/indexMobile";
+import ResponsiveAccounts from "./scenes/accounts/ResponsiveScreen";
+import ResponsiveInventories from "./scenes/inventories/ResponsiveScreen";
+import ResponsiveContacts from "./scenes/contacts/ResponsiveScreen";
+import ResponsiveLeads from "./scenes/leads/ResponsiveScreen";
+import ResponsiveOpportunities from "./scenes/opportunities/ResponsiveScreen";
+import ResponsiveTasks from "./scenes/tasks/ResponsiveScreen";
+import ResponsiveUsers from "./scenes/users/ResponsiveScreen";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -69,14 +79,14 @@ function App() {
          
             {/* <Topbar setIsSidebar={setIsSidebar} /> */}
             <Routes>
-              <Route path="/" element={< Inventories/>} />
-              <Route path="/accounts" element={<Accounts />} />
-              <Route path="/contacts" element={<Contacts />} />
-              <Route path="/opportunities" element={<Opportunities />} />
-              <Route path="/leads" element={<Leads />} />
-              <Route path="/inventories" element={<Inventories/>} />
-              <Route path="/task" element={<Task />} />
-              <Route path="/users" element={<Users />} />
+              <Route path="/" element={< ResponsiveInventories/>} />
+              <Route path="/accounts" element={<ResponsiveAccounts />} />
+              <Route path="/contacts" element={<ResponsiveContacts />} />
+              <Route path="/opportunities" element={<ResponsiveOpportunities />} />
+              <Route path="/leads" element={<ResponsiveLeads />} />
+              <Route path="/inventories" element={<ResponsiveInventories/>} />
+              <Route path="/task" element={<ResponsiveTasks />} />
+              <Route path="/users" element={<ResponsiveUsers />} />
               <Route path="/oppInventory" element={<OppInventoryJunction />} />
               
               <Route path="/new-contacts" element={<ContactForm />} />
@@ -90,6 +100,11 @@ function App() {
               <Route path="/dataLoder" element={<DataLoadPage/>} />
               <Route path ='/file' element={<DropFileInput/>} />
               <Route path ='/test' element={<PicklistField/>} />
+              <Route path ='/test1' element={<TestForm/>} />
+              <Route path='/mobi' element={<AccountsMobile/>} />
+              <Route path='/invmobi' element={<InventoriesMobile/>} />
+               {/* <Route path ='/test' element={<ResponsiveScreen/>} />  */}
+              
 
               <Route path="/new-inventories" element={<InventoryDetailPage/>} />
               <Route path="/new-leads" element={<LeadDetailPage />} />

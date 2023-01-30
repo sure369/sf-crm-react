@@ -8,6 +8,8 @@ import {
   Button
 } from "@mui/material";
 import "./FormStyles.css"
+import { AccCitiesPickList } from "../../data/pickLists";
+
 
 const  CustomizedSelectForFormik = ({ children, form, field }) => {
     console.log('children',children);
@@ -18,14 +20,19 @@ const  CustomizedSelectForFormik = ({ children, form, field }) => {
   const { name, value } = field;
   const { setFieldValue } = form;
 
+ 
+
   return (
     <Select
-        className="form-child"
+    className="form-customSelect"
       name={name}
       value={value}
-      onChange={e => {
+      onChange={ (e) => {
         setFieldValue(name, e.target.value);
       }}
+      // style={{
+      //   width:'200px'
+      //   }}
     >
       {children}
     </Select>

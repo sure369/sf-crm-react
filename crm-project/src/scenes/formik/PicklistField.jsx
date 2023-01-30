@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { Grid, Button, FormControl, Input, TextField ,Select,MenuItem} from "@mui/material";
+import { Grid, Button, FormControl, Input, TextField ,MenuItem} from "@mui/material";
 import axios from 'axios'
 import { Autocomplete } from "@mui/material";
 //import 'bootstrap/dist/css/bootstrap.min.css';
@@ -10,18 +10,21 @@ import { useRef } from "react";
 import Thumb from "./Thumb";
 import "./FormStyles.css"
 import CustomizedSelectForFormik from "./CustomizedSelectForFormik";
-import {AccRatingPickList} from '../../data/pickLists'
+import CustomizedStringForFormik from "./CustomizedStringForFormik";
 
+import {AccRatingPickList,AccTypePickList} from '../../data/pickLists'
+import { Select, CaretIcon, ModalCloseButton }  from "react-responsive-select";
+import 'react-responsive-select/dist/react-responsive-select.css';
 const initialValues = {
-    rating:'',
+    name:'',
     age:'',
-    list:''
+    dob:'',
+    time:'',
+    type:'',
+    country:'',
+    city:'',
+    lookup:''
 }
-// const ratingList =[
-//     {label:'Hot',value:'hot'},
-//     {label:'Cold',value:'cold'},
-//     {label:'Warm',value:'warm'},
-// ]
 
 function PicklistField() {
   return (
@@ -49,29 +52,14 @@ function PicklistField() {
                                
                                 <Form>
                                     <Grid container spacing={2}>
-                                        <Grid item xs={6} md={6}>
-                                            <label htmlFor="rating">rating  </label>
-                                            <Field name="rating" as="select" class="form-input">
-                                            <option value=''><em>None</em></option>
-                                                {
-                                                    AccRatingPickList.map((i)=>{
-                                                        
-                                                       return <option value={i.value}>{i.label}</option>
-                                                        
-                                                    })
-                                                }
 
+                                    <Grid item xs={6} md={6}>
+                                            <label htmlFor="name">Name  </label>
+                                            <Field name="name" component={CustomizedStringForFormik}>
                                             </Field>
-                                        </Grid>
-                                        <Grid item xs={6} md={6}>
-                                        <label htmlFor="age">age  </label>
-                                        <Field name="age"component={CustomizedSelectForFormik} >
-                                            <MenuItem value={10}>Ten</MenuItem>
-                                            <MenuItem value={20}>Twenty</MenuItem>
-                                            <MenuItem value={30}>Thirty</MenuItem>
-                                        </Field>
+                                    </Grid>
 
-                                        </Grid>
+                                      
                                         <Grid item xs={6} md={6}>
                                         <label htmlFor="list">list  </label>
                                         <Field name="list"component={CustomizedSelectForFormik} >
@@ -79,7 +67,7 @@ function PicklistField() {
                                             <MenuItem value=''><em>None</em></MenuItem>
                                          {
                                             AccRatingPickList.map((i)=>{
-                                              return  <MenuItem value={i.value}>{i.label}</MenuItem>
+                                              return  <MenuItem value={i.value}>{i.text}</MenuItem>
                                             })
                                          }
                                         </Field>

@@ -279,12 +279,12 @@ const LeadRelatedItems = ({ item }) => {
                               key={item._id}
                             >
                               <Grid container spacing={2}>
-                                <Grid item xs={6} md={10}>
+                                <Grid item xs={10} md={10}>
                                   <div>Subject : {item.subject} </div>
                                   <div>Date : {starDateConvert}</div>
                                   <div>Description : {item.description} </div>
                                 </Grid>
-                                <Grid item xs={6} md={2}>
+                                <Grid item xs={2} md={2}>
 
                                   <IconButton>
                                     <MoreVertIcon onClick={(event) => handleMoreMenuClick(item, event)} />
@@ -366,12 +366,12 @@ const LeadRelatedItems = ({ item }) => {
                               key={item._id}
                             >
                               <Grid container spacing={2}>
-                                <Grid item xs={6} md={10}>
-                                  <div>opportunity Name : {item.opportunityName} </div>
-                                  <div>stage : {item.stage}</div>
-                                  <div>amount : {item.amount} </div>
+                                <Grid item  xs={10}  md={10}>
+                                  <div>Opportunity Name : {item.opportunityName} </div>
+                                  <div>Stage : {item.stage}</div>
+                                  <div>Amount : {item.amount} </div>
                                 </Grid>
-                                <Grid item xs={6} md={2}>
+                                <Grid item xs={2} md={2}>
 
                                   <IconButton>
                                     <MoreVertIcon onClick={(event) => handleOppMoreMenuClick(item, event)} />

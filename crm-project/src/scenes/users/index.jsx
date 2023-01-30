@@ -191,7 +191,7 @@ const Users = () => {
         <Box m="20px">
           <Header
             title="Users"
-            subtitle="List of Accounst"
+            subtitle="List of User"
           />
           <Box
             m="40px 0 0 0"
