@@ -1,19 +1,10 @@
 import React from "react";
-import { Formik, Form, Field } from "formik";
-import {
-  Select,TextField,
-  InputLabel,
-  MenuItem,
-  FormControl,
-  Button
-} from "@mui/material";
+import {  Select} from "@mui/material";
 import "./FormStyles.css"
 import { AccCitiesPickList } from "../../data/pickLists";
 
 const  CustomizedControlSelectForFormik = ({ children, form, field }) => {
-    console.log('children',children);
-    console.log('form',form);
-    console.log('field',field);
+
     
 
   const { name, value } = field;
@@ -27,8 +18,8 @@ const  CustomizedControlSelectForFormik = ({ children, form, field }) => {
 };
 
   return (
-    <TextField
-        
+    <Select        
+    className="form-customSelect"
         name={name}
         value={value}
         onChange={async (e) => {
@@ -39,7 +30,7 @@ const  CustomizedControlSelectForFormik = ({ children, form, field }) => {
         }}
   >
     {children}
-  </TextField>
+  </Select>
 
 
   );

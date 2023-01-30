@@ -10,7 +10,7 @@ import { useRef } from "react";
 import Thumb from "./Thumb";
 import "./FormStyles.css"
 import CustomizedSelectForFormik from "./CustomizedSelectForFormik";
-import CustomizedStringForFormik from "./CustomizedStringForFormik";
+import CustomizedStringForFormik from "./CustomizedControlSelectForFormik";
 
 import {AccRatingPickList,AccTypePickList} from '../../data/pickLists'
 import { Select, CaretIcon, ModalCloseButton }  from "react-responsive-select";

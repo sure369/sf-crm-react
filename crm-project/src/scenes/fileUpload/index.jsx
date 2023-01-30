@@ -243,31 +243,7 @@ const DropFileInput = () => {
 
                             console.log('item',item)
 
-                            // fetch(`/api/preview-file/${this.props.fileId}`)
-                            // .then(response => response.arrayBuffer())
-                            // .then(buffer => {
-                            //   // Convert the file buffer to a data URL
-                            //   const fileReader = new FileReader();
-                            //   fileReader.onloadend = () => {
-                            //     this.setState({ fileData: fileReader.result });
-                            //   };
-                            //   fileReader.readAsDataURL(new Blob([buffer]));
-                            // });
-
-
-
-                            // <>
-                            // <iframe src='https://www.youtube.com/embed/s4BibernJxU' />
-
-                            // </>
-                    
-                          
-                            
-                            // saveAs (item.filePath, 'test.pdf')
-
-                        //    redirect(item);
-                             saveAs(item.filePath, `${item.fileName}.${item.fileType}`)
-                            //  downloadFile(item._id, item.filePath, item.fileType)
+                        
                         }
                       }
                     >
@@ -278,7 +254,7 @@ const DropFileInput = () => {
 
                       <iframe src={`https://view.officeapps.live.com/op/embed.aspx?src=http://localhost:4000/${item.fileName}`} width='100%' height='1000%' frameborder='0'>This is an embedded <a target='_blank' href='http://office.com'>Microsoft Office</a> document, powered by <a target='_blank' href='http://office.com/webapps'>Office Online</a>.</iframe>
 
-                        {/* <img src={`http://localhost:4000/${item.filePath}`} /> */}
+        
                       </td>
 
                 </tr>

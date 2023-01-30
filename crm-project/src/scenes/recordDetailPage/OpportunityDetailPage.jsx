@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react'
 import {useLocation} from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { Grid,Button ,Forminput,DialogActions,TextField,Autocomplete} from "@mui/material";
+import { Grid,Button ,Forminput,DialogActions,TextField,Autocomplete,MenuItem} from "@mui/material";
 import { useParams,useNavigate } from "react-router-dom"
 import axios from 'axios'
 import "../formik/FormStyles.css"
 import Notification from '../toast/Notification';
 import { LeadSourcePickList, OppStagePicklist, OppTypePicklist } from '../../data/pickLists';
+import CustomizedSelectForFormik from '../formik/CustomizedSelectForFormik';
 
 const url ="http://localhost:4000/api/UpsertOpportunity";
 const fetchLeadsbyName ="http://localhost:4000/api/LeadsbyName";
@@ -299,11 +300,10 @@ const OpportunityDetailPage = ({item}) => {
 
              <Grid item xs={6} md={6}>
              <label htmlFor="stage">Opportunity Stage</label>
-                 <Field name="stage" as="select" class="form-input">
-                 <option value=''><em>None</em></option>
+                 <Field name="stage" component={CustomizedSelectForFormik}  className="form-customSelect">
                     {
                         OppStagePicklist.map((i)=>{
-                            return  <option value={i.value}>{i.label}</option>
+                            return <MenuItem value={i.value}>{i.text}</MenuItem>	
                         })
                     }
                  </Field>
@@ -311,11 +311,10 @@ const OpportunityDetailPage = ({item}) => {
                 
              <Grid item xs={6} md={6}>
              <label htmlFor="type">Type</label>
-                 <Field name="type" as="select" class="form-input">
-                 <option value=''><em>None</em></option>
+                 <Field name="type" component={CustomizedSelectForFormik}  className="form-customSelect">
                     {
                         OppTypePicklist.map((i)=>{
-                            return  <option value={i.value}>{i.label}</option>
+                            return <MenuItem value={i.value}>{i.text}</MenuItem>	
                         })
                     }
                  </Field>
@@ -323,11 +322,10 @@ const OpportunityDetailPage = ({item}) => {
              
              <Grid item xs={6} md={6}>
              <label htmlFor="leadSource"> Lead Source</label>
-                 <Field name="leadSource" as="select" class="form-input">
-                 <option value=''><em>None</em></option>
+                 <Field name="leadSource" component={CustomizedSelectForFormik}  className="form-customSelect">
                     {
                         LeadSourcePickList.map((i)=>{
-                            return  <option value={i.value}>{i.label}</option>
+                            return <MenuItem value={i.value}>{i.text}</MenuItem>	
                         })
                     }
                  </Field>

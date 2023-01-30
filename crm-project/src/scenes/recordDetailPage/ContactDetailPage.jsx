@@ -4,7 +4,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import {
     Grid, Button, DialogActions,Tooltip,
-    Modal, Box, Autocomplete, TextField,IconButton
+    Modal, Box, Autocomplete, TextField,IconButton,MenuItem
 } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom"
 import axios from 'axios'
@@ -15,6 +15,8 @@ import EmailIcon from '@mui/icons-material/Email';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import WhatAppModalPage from './WhatsAppModalPage';
 import { LeadSourcePickList, NameSalutionPickList} from '../../data/pickLists'
+import CustomizedSelectForFormik from '../formik/CustomizedSelectForFormik';
+
 
 const url = "http://localhost:4000/api/UpsertContact";
 const fetchAccountsbyName = "http://localhost:4000/api/accountsname";
@@ -252,11 +254,10 @@ const ContactDetailPage = ({ item }) => {
                                         <Grid container spacing={2}>
                                             <Grid item xs={6} md={2}>
                                                 <label htmlFor="salutation">Salutation  </label>
-                                                <Field name="salutation" as="select" class="form-input">
-                                                <option value=''><em>None</em></option>
+                                                <Field name="salutation" component={CustomizedSelectForFormik}  className="form-customSelect">
                                                     {
                                                         NameSalutionPickList.map((i)=>{
-                                                          return  <option value={i.value}>{i.label}</option>
+                                                            return <MenuItem value={i.value}>{i.text}</MenuItem>	
                                                         })
                                                     }
                                                 </Field>
@@ -339,11 +340,10 @@ const ContactDetailPage = ({ item }) => {
                                             </Grid>
                                             <Grid item xs={6} md={6}>
                                                 <label htmlFor="leadSource"> lead Source</label>
-                                                <Field name="leadSource" as="select" class="form-input">
-                                                <option value=''><em>None</em></option>
+                                                <Field name="leadSource" component={CustomizedSelectForFormik}  className="form-customSelect">
                                                     {
                                                         LeadSourcePickList.map((i)=>{
-                                                          return  <option value={i.value}>{i.label}</option>
+                                                            return <MenuItem value={i.value}>{i.text}</MenuItem>	
                                                         })
                                                     }
                                                 </Field>

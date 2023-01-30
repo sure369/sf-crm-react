@@ -9,7 +9,7 @@ import "../formik/FormStyles.css"
 import Notification from '../toast/Notification';
 import {IndustryPickList, AccRatingPickList,AccTypePickList,AccCitiesPickList, AccCountryPickList} from '../../data/pickLists'
 import CustomizedSelectForFormik from '../formik/CustomizedSelectForFormik';
-import CustomizedControlSelectForFormik from '../formik/CustomizedStringForFormik';
+import CustomizedControlSelectForFormik from '../formik/CustomizedControlSelectForFormik';
 
 
 const url = "http://localhost:4000/api/UpsertAccount";
@@ -307,7 +307,7 @@ const AccountDetailPage = ({ item }) => {
                                                 className="form-input"
                                                 id="billingCountry"
                                                 name="billingCountry"
-                                                component={CustomizedSelectForFormik}
+                                                component={CustomizedControlSelectForFormik}
                                                 value={values.billingCountry}
                                                 onChange={async (event) => {
                                                     const value = event.target.value;

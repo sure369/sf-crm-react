@@ -158,7 +158,7 @@ export const OppTypePicklist=[
 ]
 
 export const TaskSubjectPicklist=[   
-    {text:'None',value:''}, 
+    {text:'None',value:'None'}, 
     {text:'Call',value:'Call'}, 
     {text:'Email',value:'Email'}, 
     {text:'Meeting',value:'Meeting'}, 

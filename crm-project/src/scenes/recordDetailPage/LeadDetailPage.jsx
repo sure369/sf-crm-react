@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { Grid, Button, TextField, Forminput, Autocomplete, DialogActions } from "@mui/material";
+import { Grid, Button, TextField, Forminput, Autocomplete, DialogActions,MenuItem } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom"
 import axios from 'axios'
 import "../formik/FormStyles.css"
 import Notification from '../toast/Notification';
 import { NameSalutionPickList ,LeadSourcePickList ,IndustryPickList, LeadStatusPicklist } from '../../data/pickLists';
+import CustomizedSelectForFormik from '../formik/CustomizedSelectForFormik';
+
 
 const url = "http://localhost:4000/api/UpsertLead";
 const fetchUsersbyName = "http://localhost:4000/api/usersbyName"
@@ -186,14 +188,13 @@ const LeadDetailPage = ({ item }) => {
                                         
                                         <Grid item xs={6} md={2}>
                                             <label htmlFor="salutation">Salutation  </label>
-                                            <Field name="salutation" as="select" class="form-input">
-                                            <option value=''><em>None</em></option>
+                                            <Field name="salutation" component={CustomizedSelectForFormik}  className="form-customSelect">
                                                     {
                                                         NameSalutionPickList.map((i)=>{
-                                                          return  <option value={i.value}>{i.label}</option>
+                                                            return <MenuItem value={i.value}>{i.text}</MenuItem>	
                                                         })
                                                     }
-                                            </Field>
+                                                </Field>
                                         </Grid>
                                         <Grid item xs={6} md={4}>
                                             <label htmlFor="firstName" >First Name</label>
@@ -235,33 +236,31 @@ const LeadDetailPage = ({ item }) => {
                                         </Grid>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="leadSource"> Lead Source</label>
-                                            <Field name="leadSource" as="select" class="form-input">
-                                            <option value=''><em>None</em></option>
+                                            <Field name="leadSource" component={CustomizedSelectForFormik}  className="form-customSelect">
                                                     {
                                                         LeadSourcePickList.map((i)=>{
-                                                          return  <option value={i.value}>{i.label}</option>
+                                                            return <MenuItem value={i.value}>{i.text}</MenuItem>	
                                                         })
                                                     }
-                                            </Field>
+                                                </Field>
                                         </Grid>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="industry">Industry</label>
-                                            <Field name="industry" as="select" class="form-input">
-                                            <option value=''><em>None</em></option>
+                                            <Field name="industry"  component={CustomizedSelectForFormik}  className="form-customSelect">
+                                            
                                               {
                                                 IndustryPickList.map((i)=>{
-                                                    return <option value={i.value}>{i.label}</option>
+                                                    return <MenuItem value={i.value}>{i.text}</MenuItem>	
                                                 })
                                               } 
                                             </Field>
                                         </Grid>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="leadStatus"> Lead Status <span className="text-danger">*</span> </label>
-                                            <Field name="leadStatus" as="select" class="form-input">
-                                            <option value=''><em>None</em></option>
+                                            <Field name="leadStatus" component={CustomizedSelectForFormik}  className="form-customSelect">
                                               {
                                                 LeadStatusPicklist.map((i)=>{
-                                                    return <option value={i.value}>{i.label}</option>
+                                                    return <MenuItem value={i.value}>{i.text}</MenuItem>	   
                                                 })
                                               } 
                                             </Field>

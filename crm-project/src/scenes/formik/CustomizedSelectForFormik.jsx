@@ -1,25 +1,25 @@
 import React from "react";
-import { Formik, Form, Field } from "formik";
-import {
-  Select,
-  InputLabel,
-  MenuItem,
-  FormControl,
-  Button
-} from "@mui/material";
+import {Select} from "@mui/material";
 import "./FormStyles.css"
-import { AccCitiesPickList } from "../../data/pickLists";
 
 
-const  CustomizedSelectForFormik = ({ children, form, field }) => {
-    console.log('children',children);
-    console.log('form',form);
-    console.log('field',field);
+const  CustomizedSelectForFormik = ({ children, form, field,...props }) => {
+
+     console.log('form',form);
+     console.log('field',field);
+     console.log('props',props)
     
 
   const { name, value } = field;
   const { setFieldValue } = form;
-
+  const changeFunc = (e)=>{
+    // console.log(props.onChange(e));
+    if(props.onChange){
+      props.onChange(e);
+    }
+    setFieldValue(name,e.target.value)
+    
+  }
  
 
   return (
@@ -28,11 +28,10 @@ const  CustomizedSelectForFormik = ({ children, form, field }) => {
       name={name}
       value={value}
       onChange={ (e) => {
-        setFieldValue(name, e.target.value);
+        changeFunc(e);
+        
+
       }}
-      // style={{
-      //   width:'200px'
-      //   }}
     >
       {children}
     </Select>

@@ -2,12 +2,15 @@ import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { Grid, Button, DialogActions } from "@mui/material";
+import { Grid, Button, DialogActions,MenuItem } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom"
 import axios from 'axios'
 import "../formik/FormStyles.css"
 import Notification from '../toast/Notification';
 import { InvCitiesPickList,InvCountryPickList, InvStatusPicklist, InvTypePicklist } from '../../data/pickLists';
+import CustomizedSelectForFormik from '../formik/CustomizedSelectForFormik';
+import CustomizedControl2SelectForFormik from '../formik/CustomizedControlSelectForFormik';
+
 
 const url = "http://localhost:4000/api/UpsertInventory";
 
@@ -197,11 +200,10 @@ const InventoryDetailPage = ({ item }) => {
                                         </Grid>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="type">Type <span className="text-danger">*</span> </label>
-                                            <Field name="type" as="select" class="form-input">
-                                            <option value=''><em>None</em></option>
+                                            <Field name="type" component={CustomizedSelectForFormik}>
                                                {
                                                 InvTypePicklist.map((i)=>{
-                                                    return <option value={i.value}>{i.label}</option>
+                                                    return <MenuItem value={i.value}>{i.text}</MenuItem>	
                                                 })
                                                }
                                             </Field>
@@ -211,11 +213,11 @@ const InventoryDetailPage = ({ item }) => {
                                         </Grid>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="status">Status <span className="text-danger">*</span> </label>
-                                            <Field name="status" as="select" class="form-input">
-                                            <option value=''><em>None</em></option>
+                                            <Field name="status" component={CustomizedSelectForFormik}>
+                                            
                                                {
                                                 InvStatusPicklist.map((i)=>{
-                                                    return <option value={i.value}>{i.label}</option>
+                                                    return <MenuItem value={i.value}>{i.text}</MenuItem>	
                                                 })
                                                }
                                             </Field>
@@ -233,7 +235,7 @@ const InventoryDetailPage = ({ item }) => {
                                                 className="form-input"
                                                 id="country"
                                                 name="country"
-                                                as="select"
+                                                component={CustomizedControl2SelectForFormik}
                                                 value={values.country}
                                                 onChange={async (event) => {
                                                     const value = event.target.value;
@@ -244,10 +246,9 @@ const InventoryDetailPage = ({ item }) => {
                                                     setFieldValue("propertyCities", _cities);
                                                 }}
                                             >
-                                                <option value=''><em>None</em></option>
                                               {
                                                 InvCountryPickList.map((i)=>{
-                                                    return <option value={i.value}>{i.label}</option>
+                                                    return <MenuItem value={i.value}>{i.text}</MenuItem>
                                                 })
                                               }  
                                             </Field>
@@ -259,16 +260,16 @@ const InventoryDetailPage = ({ item }) => {
                                                 value={values.city}
                                                 id="city"
                                                 name="city"
-                                                as="select"
+                                                component={CustomizedSelectForFormik}
                                                 onChange={handleChange}
                                             >
-                                                <option value=''><em>None</em></option>
-                                                {values.propertyCities &&
-                                                    values.propertyCities.map((r) => (
-                                                        <option key={r.value} value={r.vlue}>
-                                                            {r.label}
-                                                        </option>
-                                                    ))}
+                                                 {values.billingCities &&
+                                                    values.billingCities.map((r) => (
+                                                      
+                                                         <MenuItem key={r.value} value={r.value}>{r.text}</MenuItem>
+                                                    )
+                                                        
+                                                    )}
                                             </Field>
                                         </Grid>
 

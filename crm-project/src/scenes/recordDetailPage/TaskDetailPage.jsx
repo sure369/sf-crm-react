@@ -2,13 +2,13 @@ import React, { useEffect, useState, useRef } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useLocation, useNavigate } from 'react-router-dom';
-import {    Grid, Button, DialogActions,Autocomplete, TextField} from "@mui/material";
+import {    Grid, Button, DialogActions,Autocomplete, TextField ,MenuItem} from "@mui/material";
 import axios from 'axios'
 import "../formik/FormStyles.css"
 import PreviewFile from "../formik/PreviewFile";
 import Notification from '../toast/Notification';
 import { TaskObjectPicklist, TaskSubjectPicklist } from "../../data/pickLists";
-
+import CustomizedSelectForFormik from '../formik/CustomizedSelectForFormik';
 
 const UpsertUrl = "http://localhost:4000/api/UpsertTask";
 const fetchAccountUrl = "http://localhost:4000/api/accountsname";
@@ -23,7 +23,7 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
     const navigate = useNavigate();
     const fileRef = useRef();
     const location = useLocation();
-
+    const [parentObject, setParentObject] = useState('');
     const [relatedRecNames, setRelatedRecNames] = useState([]);
     const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
     const [file, setFile] = useState()
@@ -37,6 +37,7 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
         if(location.state.record.item){
             callEvent(location.state.record.item.object)
         }
+        callEvent('Account')
     }, [])
 
     const initialValues = {
@@ -204,7 +205,11 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
                 })
         }
 
+       
+
     const callEvent = (e) => {
+
+        console.log('inside call event',initialValues.object)
 
         let url1 = e === 'Account' ? fetchAccountUrl : e === 'Lead' ? fetchLeadUrl : e === 'Opportunity' ? fetchOpportunityUrl : null
         setUrl(url1)
@@ -270,14 +275,13 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
                                 <Grid container spacing={2}>
                                     <Grid item xs={6} md={6}>
                                         <label htmlFor="subject">Subject  <span className="text-danger">*</span></label>
-                                        <Field name="subject" as="select" class="form-input">
-                                        <option value=''><em>None</em></option>
-                                              {
-                                                TaskSubjectPicklist.map((i)=>{
-                                                    return <option value={i.value}>{i.label}</option>
-                                                })
-                                              }  
-                                        </Field>
+                                        <Field name="subject" component={CustomizedSelectForFormik}  className="form-customSelect">
+                                                    {
+                                                        TaskSubjectPicklist.map((i)=>{
+                                                            return <MenuItem value={i.value}>{i.text}</MenuItem>	
+                                                        })
+                                                    }
+                                                </Field>
                                         <div style={{ color: 'red' }}>
                                             <ErrorMessage name="subject" />
                                         </div>
@@ -285,17 +289,20 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
                                     
                                     <Grid item xs={6} md={6}>
                                         <label htmlFor="object">object  </label>
-                                        <Field name="object" as="select" class="form-input"
-                                            onChange={(e) => {
-                                                console.log('value', e.target.value)
+                                        <Field 
+                                            name="object"
+                                            component={CustomizedSelectForFormik} 
+                                            testprop="testing" 
+                                            onChange = {(e) => {
+                                                console.log('customSelect value', e.target.value)
                                                 callEvent(e.target.value)
                                                 setFieldValue('object', e.target.value)
                                             }}
                                         >
-                                             <option value=''><em>None</em></option>
+                                                                                        
                                               {
                                                 TaskObjectPicklist.map((i)=>{
-                                                    return <option value={i.value}>{i.label}</option>
+                                                    return <MenuItem value={i.value}>{i.text}</MenuItem>
                                                 })
                                               } 
                                         </Field>

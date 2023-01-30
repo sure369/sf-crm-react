@@ -18,6 +18,7 @@
   display: inline-block;
   border-radius: 4px;
   box-sizing: border-box;
+  background-color: white;
 }
   .form-child {
     width: 100%;
