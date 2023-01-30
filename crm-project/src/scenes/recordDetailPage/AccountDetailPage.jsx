@@ -9,7 +9,6 @@ import "../formik/FormStyles.css"
 import Notification from '../toast/Notification';
 import {IndustryPickList, AccRatingPickList,AccTypePickList,AccCitiesPickList, AccCountryPickList} from '../../data/pickLists'
 import CustomizedSelectForFormik from '../formik/CustomizedSelectForFormik';
-import CustomizedControlSelectForFormik from '../formik/CustomizedControlSelectForFormik';
 
 
 const url = "http://localhost:4000/api/UpsertAccount";
@@ -218,6 +217,7 @@ const AccountDetailPage = ({ item }) => {
                                             <label htmlFor="InventoryId">Inventory Name </label>
                                             <Autocomplete
                                                 name="InventoryId"
+                                                className='form-customSelect'
                                                 options={inventoriesRecord}
                                                 value={values.inventoryDetails}
                                                 getOptionLabel={option => option.propertyName || ''}
@@ -307,7 +307,7 @@ const AccountDetailPage = ({ item }) => {
                                                 className="form-input"
                                                 id="billingCountry"
                                                 name="billingCountry"
-                                                component={CustomizedControlSelectForFormik}
+                                                component={CustomizedSelectForFormik}
                                                 value={values.billingCountry}
                                                 onChange={async (event) => {
                                                     const value = event.target.value;
@@ -335,12 +335,11 @@ const AccountDetailPage = ({ item }) => {
                                                 id="billingCity"
                                                 name="billingCity"
                                                 component={CustomizedSelectForFormik}
-                                                onChange={handleChange}
+                                                // onChange={handleChange}
                                             >
                                                
                                                 {values.billingCities &&
-                                                    values.billingCities.map((r) => (
-                                                      
+                                                    values.billingCities.map((r) => (                                                      
                                                          <MenuItem key={r.value} value={r.value}>{r.text}</MenuItem>
                                                     )
                                                         

@@ -9,6 +9,12 @@ import PreviewFile from "../formik/PreviewFile";
 import Notification from '../toast/Notification';
 import { TaskObjectPicklist, TaskSubjectPicklist } from "../../data/pickLists";
 import CustomizedSelectForFormik from '../formik/CustomizedSelectForFormik';
+import { LocalizationProvider   } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import { DatePicker  } from '@mui/x-date-pickers/DatePicker';
+
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 
 const UpsertUrl = "http://localhost:4000/api/UpsertTask";
 const fetchAccountUrl = "http://localhost:4000/api/accountsname";
@@ -37,7 +43,7 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
         if(location.state.record.item){
             callEvent(location.state.record.item.object)
         }
-        callEvent('Account')
+        
     }, [])
 
     const initialValues = {
@@ -365,22 +371,43 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
                                         <label htmlFor="assignedTo">assignedTo  </label>
                                         <Field name="assignedTo" type="text" class="form-input" />
                                     </Grid>
+                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                        
+                                      
                                     <Grid item xs={6} md={6}>
-                                        <label htmlFor="StartDate">Start Date   </label>
-                                        <Field name="StartDate" type="date" class="form-input" />
+                                    <label htmlFor="StartDate">Start Date   </label>
+                                    <DateTimePicker 
+                                    class="form-input"
+                                     name="StartDate"
+                                        value={values.StartDate}
+                                        onChange={(e)=>{
+                                        //   let date= new Date(e.$d).getUTCFullYear()
+                                        //             + '-' +  ('0'+ (new Date(e.$d).getUTCMonth() + 1)).slice(-2) 
+                                        //             + '-' + ('0'+ ( new Date(e.$d).getUTCDate() +1)).slice(-2) 
+                                        //             console.log('date',date)
+                                            setFieldValue('StartDate',e)
+                                        }}
+                                         renderInput={(params) => <TextField {...params} />}
+                                     />
+
                                     </Grid>
-                                    <Grid item xs={6} md={6}>
-                                        <label htmlFor="StartTime">startTime   </label>
-                                        <Field name="StartTime" type="time" class="form-input" />
-                                    </Grid>
+                                  
                                     <Grid item xs={6} md={6}>
                                         <label htmlFor="EndDate">EndDate   </label>
-                                        <Field name="EndDate" type="date" class="form-input" />
+                                        {/* <Field name="EndDate" type="date" class="form-input"
+                                        onChange={(e)=>{console.log(e.target.value)}} /> */}
+                                        
+                                        <DateTimePicker
+                                                renderInput={(params) => <TextField {...params} />}
+                                                value={values.EndDate}
+                                                onChange={(e) => {                                                  
+                                                    setFieldValue('EndDate',e)                                            
+                                                }}
+                                                />
+
                                     </Grid>
-                                    <Grid item xs={6} md={6}>
-                                        <label htmlFor="EndTime">EndTime   </label>
-                                        <Field name="EndTime" type="time" class="form-input" />
-                                    </Grid>
+                                  
+                                    </LocalizationProvider>
                                     {/* <Grid item xs={12} md={12}>
 
                                         <label htmlFor="attachments">attachments</label>

@@ -9,8 +9,6 @@ import "../formik/FormStyles.css"
 import Notification from '../toast/Notification';
 import { InvCitiesPickList,InvCountryPickList, InvStatusPicklist, InvTypePicklist } from '../../data/pickLists';
 import CustomizedSelectForFormik from '../formik/CustomizedSelectForFormik';
-import CustomizedControl2SelectForFormik from '../formik/CustomizedControlSelectForFormik';
-
 
 const url = "http://localhost:4000/api/UpsertInventory";
 
@@ -235,7 +233,7 @@ const InventoryDetailPage = ({ item }) => {
                                                 className="form-input"
                                                 id="country"
                                                 name="country"
-                                                component={CustomizedControl2SelectForFormik}
+                                                component={CustomizedSelectForFormik}
                                                 value={values.country}
                                                 onChange={async (event) => {
                                                     const value = event.target.value;
@@ -263,8 +261,8 @@ const InventoryDetailPage = ({ item }) => {
                                                 component={CustomizedSelectForFormik}
                                                 onChange={handleChange}
                                             >
-                                                 {values.billingCities &&
-                                                    values.billingCities.map((r) => (
+                                                 {values.propertyCities &&
+                                                    values.propertyCities.map((r) => (
                                                       
                                                          <MenuItem key={r.value} value={r.value}>{r.text}</MenuItem>
                                                     )

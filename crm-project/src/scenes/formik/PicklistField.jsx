@@ -10,7 +10,6 @@ import { useRef } from "react";
 import Thumb from "./Thumb";
 import "./FormStyles.css"
 import CustomizedSelectForFormik from "./CustomizedSelectForFormik";
-import CustomizedStringForFormik from "./CustomizedControlSelectForFormik";
 
 import {AccRatingPickList,AccTypePickList} from '../../data/pickLists'
 import { Select, CaretIcon, ModalCloseButton }  from "react-responsive-select";
@@ -55,7 +54,7 @@ function PicklistField() {
 
                                     <Grid item xs={6} md={6}>
                                             <label htmlFor="name">Name  </label>
-                                            <Field name="name" component={CustomizedStringForFormik}>
+                                            <Field name="name" component={CustomizedSelectForFormik}>
                                             </Field>
                                     </Grid>
 
