@@ -3,8 +3,8 @@ import { useLocation } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import {
-    Grid, Button, DialogActions,Tooltip,
-    Modal, Box, Autocomplete, TextField,IconButton,MenuItem
+    Grid, Button, DialogActions, Tooltip,
+    Modal, Box, Autocomplete, TextField, IconButton, MenuItem
 } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom"
 import axios from 'axios'
@@ -14,8 +14,11 @@ import Notification from '../toast/Notification';
 import EmailIcon from '@mui/icons-material/Email';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import WhatAppModalPage from './WhatsAppModalPage';
-import { LeadSourcePickList, NameSalutionPickList} from '../../data/pickLists'
+import { LeadSourcePickList, NameSalutionPickList } from '../../data/pickLists'
 import CustomizedSelectForFormik from '../formik/CustomizedSelectForFormik';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 
 const url = "http://localhost:4000/api/UpsertContact";
@@ -69,7 +72,7 @@ const ContactDetailPage = ({ item }) => {
         phone: singleContact?.phone ?? "",
         dob: new Date(singleContact?.dob).getUTCFullYear()
             + '-' + ('0' + (new Date(singleContact?.dob).getUTCMonth() + 1)).slice(-2)
-            + '-' + ('0' + (new Date(singleContact?.dob).getUTCDate())).slice(-2) || '',
+            + '-' + ('0' + (new Date(singleContact?.dob).getUTCDate()+1)).slice(-2) || '',
 
         department: singleContact?.department ?? "",
         leadSource: singleContact?.leadSource ?? "",
@@ -190,11 +193,11 @@ const ContactDetailPage = ({ item }) => {
 
     const handlesendWhatsapp = () => {
         setWhatsAppModalOpen(true)
-      }
-    
-      const setWhatAppModalClose = () => {
+    }
+
+    const setWhatAppModalClose = () => {
         setWhatsAppModalOpen(false)
-      }
+    }
 
 
 
@@ -207,24 +210,24 @@ const ContactDetailPage = ({ item }) => {
                     }
                 </div>
                 <div>
-                <div className='btn-test'>
-                    {
-                        !showNew ?  
-                        <>
-                        <Tooltip title="Send Email">
-                        <IconButton> <EmailIcon sx={{ color: '#DB4437' }} onClick={handlesendEmail} /> </IconButton>
-                         </Tooltip>
-                         <Tooltip title="Whatsapp">
-                         <IconButton> <WhatsAppIcon sx={{ color: '#34A853' }} onClick={handlesendWhatsapp} /> </IconButton>
-                       </Tooltip> 
-                        </>
-                          
-                      
-                      : ''
-                    }
+                    <div className='btn-test'>
+                        {
+                            !showNew ?
+                                <>
+                                    <Tooltip title="Send Email">
+                                        <IconButton> <EmailIcon sx={{ color: '#DB4437' }} onClick={handlesendEmail} /> </IconButton>
+                                    </Tooltip>
+                                    <Tooltip title="Whatsapp">
+                                        <IconButton> <WhatsAppIcon sx={{ color: '#34A853' }} onClick={handlesendWhatsapp} /> </IconButton>
+                                    </Tooltip>
+                                </>
+
+
+                                : ''
+                        }
                     </div>
 
-                    
+
 
 
                 </div>
@@ -254,10 +257,10 @@ const ContactDetailPage = ({ item }) => {
                                         <Grid container spacing={2}>
                                             <Grid item xs={6} md={2}>
                                                 <label htmlFor="salutation">Salutation  </label>
-                                                <Field name="salutation" component={CustomizedSelectForFormik}  className="form-customSelect">
+                                                <Field name="salutation" component={CustomizedSelectForFormik} className="form-customSelect">
                                                     {
-                                                        NameSalutionPickList.map((i)=>{
-                                                            return <MenuItem value={i.value}>{i.text}</MenuItem>	
+                                                        NameSalutionPickList.map((i) => {
+                                                            return <MenuItem value={i.value}>{i.text}</MenuItem>
                                                         })
                                                     }
                                                 </Field>
@@ -324,8 +327,20 @@ const ContactDetailPage = ({ item }) => {
                                                 </div>
                                             </Grid>
                                             <Grid item xs={6} md={6}>
-                                                <label htmlFor="dob">Date of Birth</label>
-                                                <Field name="dob" type="date" class="form-input" />
+                                                {/* <label htmlFor="dob">Date of Birth</label>
+                                                <Field name="dob" type="date" class="form-input" /> */}
+                                                <label htmlFor="dob">Date of Birth</label><br />
+                                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                    <DatePicker
+                                                        name="dob"
+                                                        value={values.dob}
+                                                        onChange={(e) => {
+                                                            setFieldValue('dob', e)
+                                                        }}
+                                                        renderInput={(params) => <TextField  {...params} className='form-input' />}
+                                                    />
+
+                                                </LocalizationProvider>
                                             </Grid>
                                             <Grid item xs={6} md={6}>
                                                 <label htmlFor="department">Department</label>
@@ -340,10 +355,10 @@ const ContactDetailPage = ({ item }) => {
                                             </Grid>
                                             <Grid item xs={6} md={6}>
                                                 <label htmlFor="leadSource"> lead Source</label>
-                                                <Field name="leadSource" component={CustomizedSelectForFormik}  className="form-customSelect">
+                                                <Field name="leadSource" component={CustomizedSelectForFormik} className="form-customSelect">
                                                     {
-                                                        LeadSourcePickList.map((i)=>{
-                                                            return <MenuItem value={i.value}>{i.text}</MenuItem>	
+                                                        LeadSourcePickList.map((i) => {
+                                                            return <MenuItem value={i.value}>{i.text}</MenuItem>
                                                         })
                                                     }
                                                 </Field>
@@ -408,15 +423,15 @@ const ContactDetailPage = ({ item }) => {
                 </Box>
             </Modal>
             <Modal
-        open={whatsAppModalOpen}
-        onClose={setWhatAppModalClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={ModalStyle}>
-          <WhatAppModalPage data={singleContact} handleModal={setWhatAppModalClose} bulkMail={true} />
-        </Box>
-      </Modal>
+                open={whatsAppModalOpen}
+                onClose={setWhatAppModalClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box sx={ModalStyle}>
+                    <WhatAppModalPage data={singleContact} handleModal={setWhatAppModalClose} bulkMail={true} />
+                </Box>
+            </Modal>
 
         </div>
 

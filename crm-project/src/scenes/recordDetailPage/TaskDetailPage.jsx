@@ -11,9 +11,6 @@ import { TaskObjectPicklist, TaskSubjectPicklist } from "../../data/pickLists";
 import CustomizedSelectForFormik from '../formik/CustomizedSelectForFormik';
 import { LocalizationProvider   } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { TimePicker } from '@mui/x-date-pickers/TimePicker';
-import { DatePicker  } from '@mui/x-date-pickers/DatePicker';
-
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 
 const UpsertUrl = "http://localhost:4000/api/UpsertTask";
@@ -83,13 +80,14 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
         createdDate: new Date(singleTask?.createdDate).toLocaleString(),
         modifiedDate: new Date(singleTask?.modifiedDate).toLocaleString(),
         _id: singleTask?._id ?? "",
-
-        StartDate:new Date(singleTask?.StartDate).getUTCFullYear()
-        + '-' +  ('0'+ (new Date(singleTask?.StartDate).getUTCMonth() + 1)).slice(-2) 
-        + '-' + ('0'+ ( new Date(singleTask?.StartDate).getUTCDate())).slice(-2) ||'',
-        EndDate:  new Date(singleTask?.EndDate).getUTCFullYear()
-        + '-' +  ('0'+ (new Date(singleTask?.EndDate).getUTCMonth() + 1)).slice(-2) 
-        + '-' + ('0'+ ( new Date(singleTask?.EndDate).getUTCDate())).slice(-2) ||'',
+        StartDate:new Date(singleTask?.StartDate),
+        EndDate:new Date(singleTask?.EndDate),
+        // StartDate:new Date(singleTask?.StartDate).getUTCFullYear()
+        // + '-' +  ('0'+ (new Date(singleTask?.StartDate).getUTCMonth() + 1)).slice(-2) 
+        // + '-' + ('0'+ ( new Date(singleTask?.StartDate).getUTCDate())).slice(-2) ||'',
+        // EndDate:  new Date(singleTask?.EndDate).getUTCFullYear()
+        // + '-' +  ('0'+ (new Date(singleTask?.EndDate).getUTCMonth() + 1)).slice(-2) 
+        // + '-' + ('0'+ ( new Date(singleTask?.EndDate).getUTCDate())).slice(-2) ||'',
 
         accountDetails:singleTask?.accountDetails ??"",
         leadDetails:singleTask?.leadDetails ??"",
@@ -375,30 +373,23 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
                                         
                                       
                                     <Grid item xs={6} md={6}>
-                                    <label htmlFor="StartDate">Start Date   </label>
+                                    <label htmlFor="StartDate">Start Date </label> <br/>
                                     <DateTimePicker 
-                                    class="form-input"
                                      name="StartDate"
                                         value={values.StartDate}
                                         onChange={(e)=>{
-                                        //   let date= new Date(e.$d).getUTCFullYear()
-                                        //             + '-' +  ('0'+ (new Date(e.$d).getUTCMonth() + 1)).slice(-2) 
-                                        //             + '-' + ('0'+ ( new Date(e.$d).getUTCDate() +1)).slice(-2) 
-                                        //             console.log('date',date)
                                             setFieldValue('StartDate',e)
                                         }}
-                                         renderInput={(params) => <TextField {...params} />}
+                                         renderInput={(params) => <TextField  {...params} className='form-input'  />}
                                      />
 
                                     </Grid>
                                   
                                     <Grid item xs={6} md={6}>
-                                        <label htmlFor="EndDate">EndDate   </label>
-                                        {/* <Field name="EndDate" type="date" class="form-input"
-                                        onChange={(e)=>{console.log(e.target.value)}} /> */}
+                                        <label htmlFor="EndDate">EndDate   </label> <br/>
                                         
                                         <DateTimePicker
-                                                renderInput={(params) => <TextField {...params} />}
+                                                renderInput={(params) => <TextField {...params} className='form-input' />}
                                                 value={values.EndDate}
                                                 onChange={(e) => {                                                  
                                                     setFieldValue('EndDate',e)                                            

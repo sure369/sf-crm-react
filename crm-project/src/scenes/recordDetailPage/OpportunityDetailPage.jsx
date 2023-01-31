@@ -9,6 +9,9 @@ import "../formik/FormStyles.css"
 import Notification from '../toast/Notification';
 import { LeadSourcePickList, OppStagePicklist, OppTypePicklist } from '../../data/pickLists';
 import CustomizedSelectForFormik from '../formik/CustomizedSelectForFormik';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 const url ="http://localhost:4000/api/UpsertOpportunity";
 const fetchLeadsbyName ="http://localhost:4000/api/LeadsbyName";
@@ -59,7 +62,7 @@ const OpportunityDetailPage = ({item}) => {
         amount:  singleOpportunity?.amount ?? "",
         closeDate:new Date(singleOpportunity?.closeDate).getUTCFullYear()
                     + '-' +  ('0'+ (new Date(singleOpportunity?.closeDate).getUTCMonth() + 1)).slice(-2) 
-                    + '-' + ('0'+ ( new Date(singleOpportunity?.closeDate).getUTCDate())).slice(-2) ||'',
+                    + '-' + ('0'+ ( new Date(singleOpportunity?.closeDate).getUTCDate()+1)).slice(-2) ||'',
         stage:  singleOpportunity?.stage ?? "",
         description:  singleOpportunity?.description ?? "",
         createdbyId:  singleOpportunity?.createdbyId ?? "",
@@ -333,8 +336,18 @@ const OpportunityDetailPage = ({item}) => {
              
             
              <Grid item xs={6} md={6}>
-                <label htmlFor="closeDate">Close Date</label>
-                <Field name="closeDate" type="date" class="form-input" />
+                <label htmlFor="closeDate">Close Date</label> <br/>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker
+                            name="closeDate"
+                            value={values.closeDate}
+                            onChange={(e) => {
+                                setFieldValue('closeDate', e)
+                            }}
+                            renderInput={(params) => <TextField  {...params} className='form-input' />}
+                        />
+                </LocalizationProvider>
+              
             </Grid>
              <Grid item xs={6} md={6}>
              <label htmlFor="amount">Amount<span className="text-danger">*</span> </label>
