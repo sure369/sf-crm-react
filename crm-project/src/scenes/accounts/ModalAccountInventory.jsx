@@ -9,8 +9,6 @@ import "../formik/FormStyles.css"
 import Notification from '../toast/Notification';
 import {IndustryPickList, AccRatingPickList,AccTypePickList,AccCitiesPickList, AccCountryPickList} from '../../data/pickLists'
 
-import { Select, CaretIcon, ModalCloseButton }  from "react-responsive-select";
-import 'react-responsive-select/dist/react-responsive-select.css';
 
 const url = "http://localhost:4000/api/UpsertAccount";
 

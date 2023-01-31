@@ -12,8 +12,6 @@ import "./FormStyles.css"
 import CustomizedSelectForFormik from "./CustomizedSelectForFormik";
 
 import {AccRatingPickList,AccTypePickList} from '../../data/pickLists'
-import { Select, CaretIcon, ModalCloseButton }  from "react-responsive-select";
-import 'react-responsive-select/dist/react-responsive-select.css';
 const initialValues = {
     name:'',
     age:'',

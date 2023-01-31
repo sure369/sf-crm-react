@@ -8,11 +8,12 @@ import {
 } from "@mui/material";
 import axios from 'axios'
 import "../formik/FormStyles.css"
-import download from 'downloadjs';
-import { saveAs } from 'file-saver'
 import Iframe from 'react-iframe'
-import fileDownload from "js-file-download";
+
 import Notification from '../toast/Notification';
+// import download from 'downloadjs';
+// import { saveAs } from 'file-saver'
+// import fileDownload from "js-file-download";
 
 const UpsertUrl = "http://localhost:4000/api/uploadfile"; 
 const urlFiles ="http://localhost:4000/api/files"
@@ -57,28 +58,28 @@ const DropFileInput = () => {
             })
     }
 
-    const downloadFile = async (id,path,mimetype)=>{
-        console.log('inside downloadFile');
-        await axios.post(urlDownloadFiles+id)
-        .then((res)=>{
-            console.log('res',res);
-            console.log('path',path);
+    // const downloadFile = async (id,path,mimetype)=>{
+    //     console.log('inside downloadFile');
+    //     await axios.post(urlDownloadFiles+id)
+    //     .then((res)=>{
+    //         console.log('res',res);
+    //         console.log('path',path);
 
-        const split = path.split('/')
-        console.log('split',split)
-        const filepathname =split[split.length -1];
-        console.log('filename',filepathname);
-        return download(res.data[0],filepathname,mimetype);
-        })
-        .catch((error)=>{
-            console.log('error',error);
-        })
-        // const result = await axios.post(urlDownloadFiles+id,{
-        //     responseType:'blob'
-        // })
-        // console.log('result',result)
+    //     const split = path.split('/')
+    //     console.log('split',split)
+    //     const filepathname =split[split.length -1];
+    //     console.log('filename',filepathname);
+    //     return download(res.data[0],filepathname,mimetype);
+    //     })
+    //     .catch((error)=>{
+    //         console.log('error',error);
+    //     })
+    //     // const result = await axios.post(urlDownloadFiles+id,{
+    //     //     responseType:'blob'
+    //     // })
+    //     // console.log('result',result)
 
-    }
+    // }
 
 
     const initialValues = {

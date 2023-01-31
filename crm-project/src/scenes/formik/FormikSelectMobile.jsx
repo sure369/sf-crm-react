@@ -1,8 +1,6 @@
 import React from "react";
-import { Select, CaretIcon, ModalCloseButton }  from "react-responsive-select";
 import { Formik ,Form} from "formik";
 import * as Yup from "yup";
-import 'react-responsive-select/dist/react-responsive-select.css';
 import {
     Grid, Button, DialogActions,Tooltip,
     Modal, Box, Autocomplete, TextField,IconButton
@@ -65,7 +63,7 @@ const  FormikSelectMobile =()=>{
             >
                  <label htmlFor="rating">Rating Name </label>
             
-               <Select
+               {/* <Select
                 name="rating" 
                 selectedValue={values.rating}
                 modalCloseButton={<ModalCloseButton />}
@@ -93,7 +91,7 @@ const  FormikSelectMobile =()=>{
                 //     }
                 //   });
                 }}
-              />
+              /> */}
               {errors.rating && touched.rating && (
                 <div style={{ color: 'red' }} >{errors.rating}</div>
               )}
