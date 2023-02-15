@@ -12,8 +12,8 @@ import { useRef } from "react";
 import Thumb from "./Thumb";
 import "./FormStyles.css"
 
-const url = "http://localhost:4000/api/contactInsert";
-const fetchAccountsUrl = "http://localhost:4000/api/accountsname";
+const url = `${process.env.REACT_APP_SERVER_URL}/contactInsert`;
+const fetchAccountsUrl = `${process.env.REACT_APP_SERVER_URL}/accountsname`;
 
 const initialValues = {
     accountName: '',

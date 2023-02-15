@@ -8,9 +8,9 @@ import axios from 'axios'
 import "../formik/FormStyles.css"
 import Notification from '../toast/Notification';
 
-const url = "http://localhost:4000/api/UpsertJnOppInventory";
-const fetchInventoriesbyName = "http://localhost:4000/api/InventoryName";
-const fetchOpportunitybyName = "http://localhost:4000/api/opportunitiesbyName";
+const url = `${process.env.REACT_APP_SERVER_URL}/UpsertJnOppInventory`;
+const fetchInventoriesbyName = `${process.env.REACT_APP_SERVER_URL}/InventoryName`;
+const fetchOpportunitybyName = `${process.env.REACT_APP_SERVER_URL}/opportunitiesbyName`;
 
 
 const JnOppInventoryDetailPage = ({ item }) => {

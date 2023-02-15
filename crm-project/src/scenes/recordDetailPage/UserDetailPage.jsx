@@ -11,8 +11,8 @@ import Notification from '../toast/Notification';
 import CustomizedSelectForFormik from '../formik/CustomizedSelectForFormik';
 import { UserAccessPicklist, UserRolePicklist } from '../../data/pickLists';
 
-const url = "http://localhost:4000/api/UpsertUser";
-const fetchUsersbyName = "http://localhost:4000/api/usersbyName"
+const url = `${process.env.REACT_APP_SERVER_URL}/UpsertUser`;
+const fetchUsersbyName = `${process.env.REACT_APP_SERVER_URL}/usersbyName`
 
 const UserDetailPage = ({ item }) => {
 
@@ -337,7 +337,7 @@ export default UserDetailPage;
 // import "../formik/FormStyles.css"
 // import Notification from '../toast/Notification';
 
-// const url = "http://localhost:4000/api/UpsertUser";
+// const url = `${process.env.REACT_APP_SERVER_URL}/UpsertUser`;
 
 // const UserDetailPage = ({ item }) => {
 

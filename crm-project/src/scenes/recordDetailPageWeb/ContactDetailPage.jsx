@@ -16,8 +16,8 @@ import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import WhatAppModalPage from './WhatsAppModalPage';
 import { LeadSourcePickList, NameSalutionPickList} from '../../data/pickLists'
 
-const url = "http://localhost:4000/api/UpsertContact";
-const fetchAccountsbyName = "http://localhost:4000/api/accountsname";
+const url = `${process.env.REACT_APP_SERVER_URL}/UpsertContact`;
+const fetchAccountsbyName =`${process.env.REACT_APP_SERVER_URL}/accountsname`;
 
 const ContactDetailPage = ({ item }) => {
 

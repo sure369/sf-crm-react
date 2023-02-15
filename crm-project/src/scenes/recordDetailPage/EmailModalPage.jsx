@@ -8,7 +8,7 @@ import "../formik/FormStyles.css"
 import Notification from '../toast/Notification';
 import { Editor } from "tinymce";
 
-const urlSendEmailbulk = "http://localhost:4000/api/bulkemail"
+const urlSendEmailbulk = `${process.env.REACT_APP_SERVER_URL}/bulkemail`
 
 const EmailModalPage = ({ data, handleModal, bulkMail }) => {
 
@@ -202,7 +202,7 @@ export default EmailModalPage
 // import Notification from '../toast/Notification';
 // import { Editor } from "tinymce";
 
-// const urlSendEmailbulk = "http://localhost:4000/api/bulkemail"
+// const urlSendEmailbulk = `${process.env.REACT_APP_SERVER_URL}/bulkemail`
 
 // const EmailModalPage = ({ data, handleModal, bulkMail }) => {
 

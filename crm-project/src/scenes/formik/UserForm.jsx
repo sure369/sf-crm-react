@@ -5,7 +5,7 @@ import { Grid,Button ,FormControl} from "@mui/material";
 import axios from 'axios'
 import { useNavigate } from "react-router-dom";
 
-const url ="http://localhost:4000/api/userInsert";
+const url =`${process.env.REACT_APP_SERVER_URL}/userInsert`;
 
 const initialValues = {
     firstName: '',

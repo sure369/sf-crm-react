@@ -22,8 +22,8 @@ import EmailIcon from '@mui/icons-material/Email';
 
 const ContactsMobile = () => {
 
-  const urlContact = "http://localhost:4000/api/contacts";
-  const urlDelete = "http://localhost:4000/api/deleteContact?code=";
+  const urlContact = `${process.env.REACT_APP_SERVER_URL}/contacts`;
+  const urlDelete = `${process.env.REACT_APP_SERVER_URL}/deleteContact?code=`;
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);

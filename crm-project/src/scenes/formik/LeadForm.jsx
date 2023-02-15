@@ -6,7 +6,7 @@ import axios from 'axios'
 // import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from "react-router-dom";
 import "./FormStyles.css"
-const url = "http://localhost:4000/api/leadInsert";
+const url = `${process.env.REACT_APP_SERVER_URL}/leadInsert`;
 
 const initialValues = {
     salutation: '',

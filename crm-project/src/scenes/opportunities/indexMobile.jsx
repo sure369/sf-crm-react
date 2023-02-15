@@ -13,8 +13,8 @@ import ConfirmDialog from '../toast/ConfirmDialog';
 
 const OpportunitiesMobile = () => {
 
-  const urlOpportunity = "http://localhost:4000/api/opportunities";
-  const urlDelete = "http://localhost:4000/api/deleteOpportunity?code=";
+  const urlOpportunity = `${process.env.REACT_APP_SERVER_URL}/opportunities`;
+  const urlDelete = `${process.env.REACT_APP_SERVER_URL}/deleteOpportunity?code=`;
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);

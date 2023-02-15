@@ -17,8 +17,8 @@ import ConfirmDialog from '../toast/ConfirmDialog';
 
 const LeadsMobile = () => {
 
-  const urlLead = "http://localhost:4000/api/leads";
-  const urlDelete = "http://localhost:4000/api/deleteLead?code=";
+  const urlLead = `${process.env.REACT_APP_SERVER_URL}/leads`;
+  const urlDelete = `${process.env.REACT_APP_SERVER_URL}/deleteLead?code=`;
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);

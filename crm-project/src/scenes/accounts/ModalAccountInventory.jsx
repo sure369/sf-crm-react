@@ -10,7 +10,8 @@ import Notification from '../toast/Notification';
 import {IndustryPickList, AccRatingPickList,AccTypePickList,AccCitiesPickList, AccCountryPickList} from '../../data/pickLists'
 
 
-const url = "http://localhost:4000/api/UpsertAccount";
+const url = `${process.env.REACT_APP_SERVER_URL}/UpsertAccount`;
+
 
 const ModalInventoryAccount = ({ item }) => {
 

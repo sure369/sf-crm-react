@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useTheme, Box, Button, IconButton, Pagination,Tooltip } from "@mui/material";
+import { useTheme, Box, Button, IconButton, Pagination,Tooltip ,
+  Grid ,Modal } from "@mui/material";
 import {
   DataGrid, GridToolbar,
   gridPageCountSelector, gridPageSelector,
@@ -13,11 +14,24 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import Notification from '../toast/Notification';
 import ConfirmDialog from '../toast/ConfirmDialog';
+import ModalFileUpload from '../dataLoder/ModalFileUpload';
+
+const ModalStyle = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 600,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+};
+
 
 const Leads = () => {
 
-  const urlLead = "http://localhost:4000/api/leads";
-  const urlDelete = "http://localhost:4000/api/deleteLead?code=";
+  const urlLead = `${process.env.REACT_APP_SERVER_URL}/leads`;
+  const urlDelete = `${process.env.REACT_APP_SERVER_URL}/deleteLead?code=`;
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -32,6 +46,8 @@ const Leads = () => {
   const[showDelete,setShowDelete]=useState(false)
   const[selectedRecordIds,setSelectedRecordIds]=useState()
   const[selectedRecordDatas,setSelectedRecordDatas]=useState()
+
+  const[importModalOpen,setImportModalOpen]= useState(false)
 
 
   useEffect(() => {
@@ -119,6 +135,14 @@ const Leads = () => {
       })
   };
 
+  const handleImportModalOpen = () => {
+
+    setImportModalOpen(true);
+  }
+  const handleImportModalClose = () => {
+
+    setImportModalOpen(false);
+  }
   function CustomPagination() {
     const apiRef = useGridApiContext();
     const page = useGridSelector(apiRef, gridPageSelector);
@@ -244,9 +268,23 @@ const Leads = () => {
               </Tooltip>
               </>
               :
-              <Button variant="contained" color="info" onClick={handleAddRecord}>
+              <Box display="flex" justifyContent="space-between">
+                  <Grid container spacing={2}>
+                    <Grid item xs={6}>
+                      <Button
+                        variant="contained" color="secondary" onClick={handleImportModalOpen}
+                        sx={{ color: 'white' }}
+                      >
+                        Import
+                      </Button>
+                    </Grid>
+                    <Grid item xs={6}>
+                    <Button variant="contained" color="info" onClick={handleAddRecord}>
                 New
               </Button>
+                    </Grid>
+                    </Grid>
+                </Box>
             }
           </div>
 
@@ -282,6 +320,18 @@ const Leads = () => {
           />
         </Box>
       </Box>
+
+      <Modal
+        open={importModalOpen}
+        onClose={handleImportModalClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={ModalStyle}>
+          <ModalFileUpload handleModal={handleImportModalClose} />
+        </Box>
+      </Modal>
+
     </>
   );
 };

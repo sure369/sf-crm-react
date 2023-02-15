@@ -11,8 +11,8 @@ import {IndustryPickList, AccRatingPickList,AccTypePickList,AccCitiesPickList, A
 import CustomizedSelectForFormik from '../formik/CustomizedSelectForFormik';
 
 
-const url = "http://localhost:4000/api/UpsertAccount";
-const fetchInventoriesbyName = "http://localhost:4000/api/InventoryName";
+const url = `${process.env.REACT_APP_SERVER_URL}/UpsertAccount`;
+const fetchInventoriesbyName = `${process.env.REACT_APP_SERVER_URL}/InventoryName`;
 
 const AccountDetailPage = ({ item }) => {
 

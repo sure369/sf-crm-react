@@ -5,7 +5,7 @@ import {Box,Button,TextField, Grid ,MenuItem,Select,InputLabel } from "@mui/mate
 import axios from 'axios'
 import Header from "../../components/Header";
 import { mockAccountData } from "../../data/mockData";
-const url ="http://localhost:4000/api/accountInsert";
+const url =`${process.env.REACT_APP_SERVER_URL}/accountInsert`;
 
 
 

@@ -33,8 +33,8 @@ const style = {
 const OpportunityRelatedItems = ({ item }) => {
 
   
-  const taskDeleteURL = "http://localhost:4000/api/deleteTask?code=";
-  const inventoryDeleteURL = "http://localhost:4000/api/deleteInventory?code=";
+  const taskDeleteURL = `${process.env.REACT_APP_SERVER_URL}/deleteTask?code=`;
+  const inventoryDeleteURL = `${process.env.REACT_APP_SERVER_URL}/deleteInventory?code=`;
 
 
 
@@ -69,7 +69,7 @@ const OpportunityRelatedItems = ({ item }) => {
   }, [])
 
   const getTasksbyOppId = (recId) => {
-    const urlTask = "http://localhost:4000/api/getTaskbyOpportunityId?searchId=";
+    const urlTask = `${process.env.REACT_APP_SERVER_URL}/getTaskbyOpportunityId?searchId=`;
     axios.post(urlTask + recId)
       .then((res) => {
         console.log('response getTasksbyOppId fetch', res);
@@ -90,7 +90,7 @@ const OpportunityRelatedItems = ({ item }) => {
 
   const getInventorybyOppId =(oppId) =>{
 
-    const urlOpp = "http://localhost:4000/api/getInventoriesbyOppid?searchId=";
+    const urlOpp = `${process.env.REACT_APP_SERVER_URL}/getInventoriesbyOppid?searchId=`;
     axios.post(urlOpp + oppId)
       .then((res) => {
         console.log('response getInventorybyOppId ', res.data);

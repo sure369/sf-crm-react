@@ -9,8 +9,8 @@ import "../formik/FormStyles.css"
 import Notification from '../toast/Notification';
 import { NameSalutionPickList ,LeadSourcePickList ,IndustryPickList, LeadStatusPicklist } from '../../data/pickLists';
 
-const url = "http://localhost:4000/api/UpsertLead";
-const fetchUsersbyName = "http://localhost:4000/api/usersbyName"
+const url = `${process.env.REACT_APP_SERVER_URL}/UpsertLead`;
+const fetchUsersbyName = `${process.env.REACT_APP_SERVER_URL}/usersbyName`;
 
 const LeadDetailPage = ({ item }) => {
 

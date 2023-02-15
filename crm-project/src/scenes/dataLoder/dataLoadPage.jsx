@@ -9,10 +9,10 @@ import axios from 'axios'
 import "../formik/FormStyles.css"
 
 
-const UpsertLeadUrl = "http://localhost:4000/api/dataloaderlead";
-const UpsertAccountUrl="http://localhost:4000/api/dataloaderAccount";
-const UpsertOppUrl="http://localhost:4000/api/dataloaderOpportunity";
-const generatePreview ="http://localhost:4000/api/generatePreview";
+const UpsertLeadUrl = `${process.env.REACT_APP_SERVER_URL}/dataloaderlead`;
+const UpsertAccountUrl=`${process.env.REACT_APP_SERVER_URL}/dataloaderAccount`;
+const UpsertOppUrl=`${process.env.REACT_APP_SERVER_URL}/dataloaderOpportunity`;
+const generatePreview =`${process.env.REACT_APP_SERVER_URL}/generatePreview`;
 
 const DataLoadPage = () => {
     useEffect(() => {
@@ -189,7 +189,7 @@ export default DataLoadPage
 
 
 
-// const UpsertUrl = "http://localhost:4000/api/dataloaderlead";
+// const UpsertUrl = "`${process.env.REACT_APP_SERVER_URL}/dataloaderlead`;
 
 // const allowedExtensions =['csv'];
 

@@ -25,10 +25,10 @@ const ModalStyle = {
 
 const InventoryRelatedItems = ({ item }) => {
 
-  const opportunityDeleteURL = "http://localhost:4000/api/deleteOpportunity?code=";
-  const accountDeleteURL = "http://localhost:4000/api/deleteAccount?code=";
-  const urlgetOpportunitiesbyInvid = "http://localhost:4000/api/getOpportunitiesbyInvid?searchId=";
-  const urlgetAccountsbyInvid = "http://localhost:4000/api/getAccountbyInventory?searchId=";
+  const opportunityDeleteURL = `${process.env.REACT_APP_SERVER_URL}/deleteOpportunity?code=`;
+  const accountDeleteURL = `${process.env.REACT_APP_SERVER_URL}/deleteAccount?code=`;
+  const urlgetOpportunitiesbyInvid =`${process.env.REACT_APP_SERVER_URL}/getOpportunitiesbyInvid?searchId=`;
+  const urlgetAccountsbyInvid = `${process.env.REACT_APP_SERVER_URL}/getAccountbyInventory?searchId=`;
 
     const navigate = useNavigate();
     const location = useLocation();

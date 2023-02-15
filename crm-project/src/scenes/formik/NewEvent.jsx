@@ -8,10 +8,10 @@ import axios from 'axios'
 import "./FormStyles.css"
 import PreviewFile from "./PreviewFile";
 
-const UpsertUrl ="http://localhost:4000/api/UpsertTask";
-const fetchAccountUrl ="http://localhost:4000/api/accountsname";
-const fetchLeadUrl ="http://localhost:4000/api/LeadsbyName";
-const fetchOpportunityUrl ="http://localhost:4000/api/opportunitiesbyName";
+const UpsertUrl =`${process.env.REACT_APP_SERVER_URL}/UpsertTask`;
+const fetchAccountUrl =`${process.env.REACT_APP_SERVER_URL}/accountsname`;
+const fetchLeadUrl =`${process.env.REACT_APP_SERVER_URL}/LeadsbyName`;
+const fetchOpportunityUrl =`${process.env.REACT_APP_SERVER_URL}/opportunitiesbyName`;
 
 const NewEventForm = ({item}) => {
 

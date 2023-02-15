@@ -13,8 +13,8 @@ import ConfirmDialog from '../toast/ConfirmDialog';
 
 const TaskMobile = () => {
 
-  const urlDelete = "http://localhost:4000/api/deleteTask?code=";
-  const urlTask = "http://localhost:4000/api/Task";
+  const urlDelete = `${process.env.REACT_APP_SERVER_URL}/deleteTask?code=`;
+  const urlTask = `${process.env.REACT_APP_SERVER_URL}/Task`;
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);

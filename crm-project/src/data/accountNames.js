@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-const fetchAccountsUrl ="http://localhost:4000/api/accountsname";
+const fetchAccountsUrl =`${process.env.REACT_APP_SERVER_URL}/accountsname`;
 
 function AccountNames() {
 

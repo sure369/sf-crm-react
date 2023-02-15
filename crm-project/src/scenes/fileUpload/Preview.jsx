@@ -7,14 +7,14 @@ import axios from 'axios';
 function Preview() {
 
     const[fileData,setFileData]=useState(null);
-    const urlimage ="http://localhost:4000/images"
+    const urlimage =`${process.env.REACT_APP_SERVER_URL}/images`
     const[img,setImg]=useState()
 useEffect(()=>{
   fetchRecords()
     console.log('inside prview component')
    
 
-    // axios(`http://localhost:4000/api/preview-file?searchId=63bcfcae2ed8f352d497fe31 `, {
+    // axios(`${process.env.REACT_APP_SERVER_URL}/preview-file?searchId=63bcfcae2ed8f352d497fe31 `, {
     //     method: "POST",
     //     responseType: "blob"
     //     //Force to receive data in a Blob Format
@@ -34,7 +34,7 @@ useEffect(()=>{
     //       console.log(error);
     //     });
 
-    // fetch(`http://localhost:4000/api/preview-file?searchId=63bcfcae2ed8f352d497fe31`,{
+    // fetch(`${process.env.REACT_APP_SERVER_URL}/preview-file?searchId=63bcfcae2ed8f352d497fe31`,{
     //     method: 'POST'
     //   })
     // .then(response => response.arrayBuffer())

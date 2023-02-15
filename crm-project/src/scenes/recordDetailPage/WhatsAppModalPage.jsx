@@ -7,7 +7,7 @@ import axios from 'axios'
 import "../formik/FormStyles.css"
 import Notification from '../toast/Notification';
 
-const urlSendWhatsAppbulk = "http://localhost:4000/api/bulkewhatsapp"
+const urlSendWhatsAppbulk = `${process.env.REACT_APP_SERVER_URL}/bulkewhatsapp`
 
 const WhatAppModalPage = ({ data, handleModal, bulkMail }) => {
 

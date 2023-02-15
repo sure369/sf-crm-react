@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
 import axios from "axios";
 
-const urlInventory = "http://localhost:4000/api/inventories";
+const urlInventory = `${process.env.REACT_APP_SERVER_URL}/inventories`;
 
 
 export const InventoryMobile = (props) => {

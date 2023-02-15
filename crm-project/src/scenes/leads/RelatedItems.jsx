@@ -26,8 +26,8 @@ const style = {
 
 const LeadRelatedItems = ({ item }) => {
 
-  const taskDeleteURL = "http://localhost:4000/api/deleteTask?code=";
-  const opportunityDeleteURL = "http://localhost:4000/api/deleteOpportunity?code=";
+  const taskDeleteURL = `${process.env.REACT_APP_SERVER_URL}/deleteTask?code=`;
+  const opportunityDeleteURL = `${process.env.REACT_APP_SERVER_URL}/deleteOpportunity?code=`;
 
 
   const navigate = useNavigate();
@@ -60,7 +60,7 @@ const LeadRelatedItems = ({ item }) => {
   const getTasksbyLeadId = (leadsId) => {
     
     console.log('lead id',leadsId);
-    const urlTask = "http://localhost:4000/api/getTaskbyLeadId?searchId=";
+    const urlTask = `${process.env.REACT_APP_SERVER_URL}/getTaskbyLeadId?searchId=`;
     axios.post(urlTask + leadsId)
       .then((res) => {
         console.log('response task fetch', res.data);
@@ -80,7 +80,7 @@ const LeadRelatedItems = ({ item }) => {
 
   const getOpportunitybyLeadId =(leadsId) =>{
 
-    const urlOpp = "http://localhost:4000/api/getLeadsbyOppid?searchId=";
+    const urlOpp = `${process.env.REACT_APP_SERVER_URL}/getLeadsbyOppid?searchId=`;
     axios.post(urlOpp + leadsId)
       .then((res) => {
         console.log('response opportunity fetch', res.data);

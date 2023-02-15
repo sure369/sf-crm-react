@@ -10,7 +10,7 @@ import Notification from '../toast/Notification';
 import { InvCitiesPickList,InvCountryPickList, InvStatusPicklist, InvTypePicklist } from '../../data/pickLists';
 import CustomizedSelectForFormik from '../formik/CustomizedSelectForFormik';
 
-const url = "http://localhost:4000/api/UpsertInventory";
+const url = `${process.env.REACT_APP_SERVER_URL}/UpsertInventory`;
 
 const InventoryDetailPage = ({ item }) => {
 
@@ -276,8 +276,8 @@ const InventoryDetailPage = ({ item }) => {
                                             <Field name="floor" type="text" class="form-input" />
                                         </Grid>
                                         <Grid item xs={6} md={6}>
-                                            <label htmlFor="totalarea">Total Area</label>
-                                            <Field name="totalarea" type="text" class="form-input" />
+                                            <label htmlFor="totalArea">Total Area</label>
+                                            <Field name="totalArea" type="text" class="form-input" />
                                         </Grid>
                                         {!showNew && (
                                             <>

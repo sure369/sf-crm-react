@@ -16,8 +16,8 @@ import ConfirmDialog from '../toast/ConfirmDialog';
 
 const AccountsMobile = () => {
 
-  const urlDelete = "http://localhost:4000/api/deleteAccount?code=";
-  const urlAccount = "http://localhost:4000/api/accounts";
+  const urlDelete = `${process.env.REACT_APP_SERVER_URL}/deleteAccount?code=`;
+  const urlAccount = `${process.env.REACT_APP_SERVER_URL}/accounts`;
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);

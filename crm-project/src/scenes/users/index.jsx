@@ -16,8 +16,8 @@ import ConfirmDialog from '../toast/ConfirmDialog';
 
 const Users = () => {
 
-  const urlDelete = "http://localhost:4000/api/delete?code=";
-  const urlUsers = "http://localhost:4000/api/Users";
+  const urlDelete = `${process.env.REACT_APP_SERVER_URL}/delete?code=`;
+  const urlUsers = `${process.env.REACT_APP_SERVER_URL}/Users`;
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);

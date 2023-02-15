@@ -9,9 +9,9 @@ import "../formik/FormStyles.css"
 import Notification from '../toast/Notification';
 import { LeadSourcePickList, OppStagePicklist, OppTypePicklist } from '../../data/pickLists';
 
-const url ="http://localhost:4000/api/UpsertOpportunity";
-const fetchLeadsbyName ="http://localhost:4000/api/LeadsbyName";
-const fetchInventoriesbyName ="http://localhost:4000/api/InventoryName";
+const url =`${process.env.REACT_APP_SERVER_URL}/UpsertOpportunity`;
+const fetchLeadsbyName =`${process.env.REACT_APP_SERVER_URL}/LeadsbyName`;
+const fetchInventoriesbyName =`${process.env.REACT_APP_SERVER_URL}/InventoryName`;
 
 
 const OpportunityDetailPage = ({item}) => {
@@ -422,7 +422,7 @@ export default OpportunityDetailPage;
 // import DatePickerField from "../formik/datePick";
 
 
-// const url ="http://localhost:4000/api/editOpportunity";
+// const url =`${process.env.REACT_APP_SERVER_URL}/editOpportunity`;
 
 // const OpportunityDetailPage = ({item}) => {
 

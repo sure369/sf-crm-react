@@ -187,3 +187,12 @@ export const UserAccessPicklist=[
     {text:'Read/Create/Edit',value:'Read/Create/Edit'}, 
     {text:'Read/Create/Edit/Delete',value:'Read/Create/Edit/Delete'}, 
 ]
+
+export const OppIndexFilterPicklist=[  
+    // {text:'None',value:''},
+    {text:'All Opportunity',value:'All'}, 
+    {text:'Closing This Month',value:'Closing This Month'}, 
+    {text:'Closing Next Month',value:'Closing Next Month'}, 
+    {text:'New Last Week',value:'New Last Week'}, 
+    {text:'New Last Month',value:'New Last Month'}, 
+]

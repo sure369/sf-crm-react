@@ -62,8 +62,8 @@ const FlexShrink =(props)=> {
 
     console.log('flex prop',props);
 
-        const urlDelete = "http://localhost:4000/api/deleteInventory?code=";
-        const urlInventory = "http://localhost:4000/api/inventories";
+        const urlDelete = `${process.env.REACT_APP_SERVER_URL}/deleteInventory?code=`;
+        const urlInventory = `${process.env.REACT_APP_SERVER_URL}/inventories`;
       
         const theme = useTheme();
         const colors = tokens(theme.palette.mode);
@@ -83,7 +83,7 @@ const FlexShrink =(props)=> {
 
   const InventoryDetailPage = ({item}) => {
   
-    const url ="http://localhost:4000/api/UpsertInventory";
+    const url =`${process.env.REACT_APP_SERVER_URL}/UpsertInventor`;
 
     const [showNew, setshowNew] = useState()
 

@@ -11,7 +11,7 @@ import "../formik/FormStyles.css"
 import Notification from '../toast/Notification';
 import { LeadSourcePickList, NameSalutionPickList} from '../../data/pickLists'
 
-const UpsertUrl = "http://localhost:4000/api/UpsertContact";
+const UpsertUrl = `${process.env.REACT_APP_SERVER_URL}/UpsertContact`;
 
 const ModalConAccount = ({ item, handleModal }) => {
 

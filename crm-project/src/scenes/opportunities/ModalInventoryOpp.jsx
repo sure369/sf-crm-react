@@ -9,8 +9,8 @@ import "../formik/FormStyles.css"
 import Notification from '../toast/Notification';
 import { LeadSourcePickList, OppStagePicklist, OppTypePicklist } from '../../data/pickLists';
 
-const url = "http://localhost:4000/api/UpsertOpportunity";
-const fetchLeadsbyName = "http://localhost:4000/api/LeadsbyName";
+const url = `${process.env.REACT_APP_SERVER_URL}/UpsertOpportunity`;
+const fetchLeadsbyName = `${process.env.REACT_APP_SERVER_URL}/LeadsbyName`;
 
 const ModalInventoryOpportunity = ({ item }) => {
 

@@ -21,8 +21,8 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 
-const url = "http://localhost:4000/api/UpsertContact";
-const fetchAccountsbyName = "http://localhost:4000/api/accountsname";
+const url = `${process.env.REACT_APP_SERVER_URL}/UpsertContact`;
+const fetchAccountsbyName = `${process.env.REACT_APP_SERVER_URL}/accountsname`;
 
 const ContactDetailPage = ({ item }) => {
 

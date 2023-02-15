@@ -13,8 +13,8 @@ import Notification from '../toast/Notification';
 import ConfirmDialog from '../toast/ConfirmDialog';
 const OppInventoryJunction = () => {
   
-  const urlOpportunityInventory ="http://localhost:4000/api/opportuintyinventory";
-  const urlDelete ="http://localhost:4000/api/deleteOpportunityInventory?code=";
+  const urlOpportunityInventory =`${process.env.REACT_APP_SERVER_URL}/opportuintyinventory`;
+  const urlDelete =`${process.env.REACT_APP_SERVER_URL}/deleteOpportunityInventory?code=`;
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);

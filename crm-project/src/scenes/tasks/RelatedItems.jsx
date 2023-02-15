@@ -27,7 +27,7 @@ const style = {
 
 const TaskRelatedItems = ({ item }) => {
 
-  const urlDelete = "http://localhost:4000/api/deleteTask?code=";
+  const urlDelete =`${process.env.REACT_APP_SERVER_URL}/deleteTask?code=`;
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -57,7 +57,7 @@ const TaskRelatedItems = ({ item }) => {
 
 
   const getFiles =()=>{
-    const urll ="http://localhost:4000/api/files"
+    const urll =`${process.env.REACT_APP_SERVER_URL}/files`
 
     axios.post(urll)
     .then((res)=>{
@@ -127,10 +127,10 @@ const TaskRelatedItems = ({ item }) => {
          
          {/* < img src={`data:;base64,${resFiles}`} /> */}
          {/* <img src={`data:image/jpeg;charset=utf-8;base64,${resFiles}`} /> */}
-          {/* <img src={`http://localhost:3000/${resFiles}`} alt="img"/> */}
+          {/* <img src={``${process.env.REACT_APP_SERVER_URL}/${resFiles}`} alt="img"/> */}
 
           
-         {/* <PreviewFile file={`http://localhost:3000/${resFiles}`} />} */}
+         {/* <PreviewFile file={``${process.env.REACT_APP_SERVER_URL}/${resFiles}`} />} */}
 
           </Typography>
         </AccordionDetails>

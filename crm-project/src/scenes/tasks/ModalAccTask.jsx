@@ -11,7 +11,7 @@ import "../formik/FormStyles.css"
 import Notification from '../toast/Notification';
 import { TaskSubjectPicklist } from "../../data/pickLists";
 
-const UpsertUrl = "http://localhost:4000/api/UpsertTask";
+const UpsertUrl = `${process.env.REACT_APP_SERVER_URL}/UpsertTask`;
 
 const ModalAccTask = ({ item, handleModal }) => {
 

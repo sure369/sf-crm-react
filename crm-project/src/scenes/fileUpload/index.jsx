@@ -15,9 +15,9 @@ import Notification from '../toast/Notification';
 // import { saveAs } from 'file-saver'
 // import fileDownload from "js-file-download";
 
-const UpsertUrl = "http://localhost:4000/api/uploadfile"; 
-const urlFiles ="http://localhost:4000/api/files"
-const urlDownloadFiles =  "http://localhost:4000/api/download?searchKey="
+const UpsertUrl = `${process.env.REACT_APP_SERVER_URL}/uploadfile`; 
+const urlFiles =`${process.env.REACT_APP_SERVER_URL}/files`
+const urlDownloadFiles =  `${process.env.REACT_APP_SERVER_URL}/download?searchKey=`
 
 
 

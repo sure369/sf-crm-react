@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Button, useTheme, IconButton, Pagination,Tooltip } from "@mui/material";
+import { Box, Button, useTheme, IconButton, Pagination, 
+  Tooltip, FormControl, InputLabel ,Select ,MenuItem,
+  Typography,Grid,Modal} from "@mui/material";
 import {
   DataGrid, GridToolbar,
   gridPageCountSelector, gridPageSelector,
@@ -13,11 +15,25 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import Notification from '../toast/Notification';
 import ConfirmDialog from '../toast/ConfirmDialog';
+import ModalFileUpload from '../dataLoder/ModalFileUpload';
+import { OppIndexFilterPicklist } from '../../data/pickLists';
+
+const ModalStyle = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 600,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+};
 
 const Opportunities = () => {
 
-  const urlOpportunity = "http://localhost:4000/api/opportunities";
-  const urlDelete = "http://localhost:4000/api/deleteOpportunity?code=";
+  const urlOpportunity = `${process.env.REACT_APP_SERVER_URL}/opportunities`;
+  const urlFilterOpportunity =`${process.env.REACT_APP_SERVER_URL}/opportunitiesFilter?code=`;
+  const urlDelete = `${process.env.REACT_APP_SERVER_URL}/deleteOpportunity?code=`;
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -33,9 +49,12 @@ const Opportunities = () => {
   const [selectedRecordIds, setSelectedRecordIds] = useState()
   const [selectedRecordDatas, setSelectedRecordDatas] = useState()
 
+  const[importModalOpen,setImportModalOpen]= useState(false)
+  const[filterOpportunity,setFilterOpportunity]= useState('All')
 
   useEffect(() => {
     fetchRecords();
+    // filterRecords();
 
   }, []
   );
@@ -60,6 +79,29 @@ const Opportunities = () => {
         setFetchLoading(false)
       })
   }
+
+//   const filterRecords =() =>{
+//     console.log('cc',filterOpportunity)
+//     var conRec=[];
+//      records.map((i)=>{
+//   if(i.stage != undefined && i.stage === filterOpportunity){
+//     console.log(i)
+//     conRec.push(i)
+//   }
+//  })
+//  console.log(conRec)
+// //  setRecords(conRec)
+// if(conRec.length>0){
+//   setRecords(conRec)
+// }
+
+//     // var date = new Date(),
+//     // y = date.getFullYear(),
+//     //  m = date.getMonth();
+//     // var firstDay = new Date(y, m, 1);
+//     // var lastDay = new Date(y, m + 1, 0);  
+  
+//   }
 
   const handleAddRecord = () => {
     navigate("/new-opportunities", { state: { record: {} } })
@@ -119,6 +161,41 @@ const Opportunities = () => {
       isOpen: false
     })
   };
+
+  const handleOppFilterChange =(e)=>{
+ 
+    console.log(e.target)
+    setFilterOpportunity(e.target.value)
+    axios.post(urlFilterOpportunity+e.target.value)
+    .then(
+      (res) => {
+        console.log("res filter Opp", res);
+        if (res.data.length > 0 && (typeof (res.data) !== 'string')) {
+          setRecords(res.data);
+          setFetchLoading(false)
+        }
+        else {
+          setRecords([]);
+          setFetchLoading(false)
+        };
+      }
+    )
+    .catch((error) => {
+      console.log('filter Opportunity error', error);
+      setFetchLoading(false)
+    })
+  }
+
+  const handleImportModalOpen = () => {
+
+    setImportModalOpen(true);
+  }
+  const handleImportModalClose = () => {
+
+    setImportModalOpen(false);
+  }
+
+
 
   function CustomPagination() {
     const apiRef = useGridApiContext();
@@ -213,10 +290,22 @@ const Opportunities = () => {
       <ConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog} />
 
       <Box m="20px">
-        <Header
+        {/* <Header
           title="Opportunities"
-          subtitle="List of Opportunities"
-        />
+          subtitle="List Of {filterOpportunity} Opportunities"
+        /> */}
+         <Typography
+        variant="h2"
+        color={colors.grey[100]}
+        fontWeight="bold"
+        sx={{ m: "0 0 5px 0" }}
+      >
+        Opportunities
+      </Typography>
+      <Typography variant="h5" color={colors.greenAccent[400]} >
+       List Of {filterOpportunity} Opportunities
+      </Typography>
+
         <Box
           m="40px 0 0 0"
           height="75vh"
@@ -262,18 +351,60 @@ const Opportunities = () => {
             },
           }}
         >
-            <div className='btn-test'>
-          {
-              showDelete ? 
-              <>
-              <Tooltip title="Delete Selected">
-                  <IconButton> <DeleteIcon sx={{ color: '#FF3333' }} onClick={(e) => onHandleDelete(e,selectedRecordIds)} /> </IconButton>
-              </Tooltip>
-              </>
-              :
-              <Button variant="contained" color="info" onClick={handleAddRecord}>
-                New
-              </Button>
+          <div className='btn-test'>
+            {
+              showDelete ?
+                <>
+                  <Tooltip title="Delete Selected">
+                    <IconButton> <DeleteIcon sx={{ color: '#FF3333' }} onClick={(e) => onHandleDelete(e, selectedRecordIds)} /> </IconButton>
+                  </Tooltip>
+                </>
+                :
+                <>
+                <Box  display="flex" justifyContent="space-between">
+                <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <FormControl sx={{mr:1 , boxSizing:'small'}}>
+                  <InputLabel id="demo-simple-select-label">Select Opportunity</InputLabel>
+                  <Select 
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={filterOpportunity}
+                    label='Select Opportunity'
+                     style={{ width: 150 }}
+                    SelectDisplayProps={{ style: { paddingTop: 8, paddingBottom: 8 } }}
+                    onChange={handleOppFilterChange}
+                  >
+             
+                  {	
+                    OppIndexFilterPicklist.map((i)=>{	
+                        return <MenuItem  value={i.value}>{i.text}</MenuItem>	
+                    })	
+                  }
+                  </Select>
+                  </FormControl>
+                  </Grid>
+                  <Grid item xs={3}>
+                  <Button
+                   variant="contained" color="secondary" onClick={handleImportModalOpen}
+                   sx={{color:'white'}}
+                   >
+                    Import
+                  </Button>
+                  </Grid>
+                 
+                  <Grid item xs={3}>
+                  <Button
+                   variant="contained" color="info" onClick={handleAddRecord}
+                   >
+                    New
+                  </Button>
+                  </Grid>
+                  </Grid>
+                  </Box>
+                </>
+
+
             }
           </div>
 
@@ -303,11 +434,24 @@ const Opportunities = () => {
                 selectedIDs.has(row._id.toString())
               );
               setSelectedRecordDatas(selectedRowRecords)
-              
+
             }}
           />
         </Box>
       </Box>
+
+
+      <Modal
+        open={importModalOpen}
+        onClose={handleImportModalClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={ModalStyle}>
+          <ModalFileUpload handleModal={handleImportModalClose} />
+        </Box>
+      </Modal>
+
     </>
   )
 }

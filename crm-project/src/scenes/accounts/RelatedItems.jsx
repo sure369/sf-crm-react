@@ -31,10 +31,10 @@ const ModalStyle = {
 
 const AccountRelatedItems = ({ item }) => {
 
-  const taskDeleteURL = "http://localhost:4000/api/deleteTask?code=";
-  const urlgetTaskbyAccountId = "http://localhost:4000/api/getTaskbyAccountId?searchId=";
-  const urlgetContactbyAccountId="http://localhost:4000/api/getContactsbyAccountId?searchId=";
-  const contactDeleteURL="http://localhost:4000/api/deleteContact?code=";
+  const taskDeleteURL = `${process.env.REACT_APP_SERVER_URL}/deleteTask?code=`;
+  const urlgetTaskbyAccountId = `${process.env.REACT_APP_SERVER_URL}/getTaskbyAccountId?searchId=`;
+  const urlgetContactbyAccountId=`${process.env.REACT_APP_SERVER_URL}/getContactsbyAccountId?searchId=`;
+  const contactDeleteURL=`${process.env.REACT_APP_SERVER_URL}/deleteContact?code=`;
 
   const navigate = useNavigate();
   const location = useLocation();

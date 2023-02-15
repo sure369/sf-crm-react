@@ -9,7 +9,7 @@ import axios from 'axios'
 import { useNavigate } from "react-router-dom";
 import "./FormStyles.css"
 
-const url = "http://localhost:4000/api/opportunityInsert";
+const url = `${process.env.REACT_APP_SERVER_URL}/opportunityInsert`;
 
 const initialValues = {
     accountName: '',

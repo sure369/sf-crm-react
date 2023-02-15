@@ -13,9 +13,9 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
-const url ="http://localhost:4000/api/UpsertOpportunity";
-const fetchLeadsbyName ="http://localhost:4000/api/LeadsbyName";
-const fetchInventoriesbyName ="http://localhost:4000/api/InventoryName";
+const url =`${process.env.REACT_APP_SERVER_URL}/UpsertOpportunity`;
+const fetchLeadsbyName =`${process.env.REACT_APP_SERVER_URL}/LeadsbyName`;
+const fetchInventoriesbyName =`${process.env.REACT_APP_SERVER_URL}/InventoryName`;
 
 
 const OpportunityDetailPage = ({item}) => {
@@ -433,7 +433,7 @@ export default OpportunityDetailPage;
 // import DatePickerField from "../formik/datePick";
 
 
-// const url ="http://localhost:4000/api/editOpportunity";
+// const url =`${process.env.REACT_APP_SERVER_URL}/editOpportunity`;
 
 // const OpportunityDetailPage = ({item}) => {
 

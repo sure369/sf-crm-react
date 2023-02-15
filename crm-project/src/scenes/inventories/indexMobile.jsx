@@ -16,8 +16,8 @@ import ConfirmDialog from '../toast/ConfirmDialog';
 
 const InventoriesMobile = () => {
 
-    const urlDelete = "http://localhost:4000/api/deleteInventory?code=";
-    const urlInventory = "http://localhost:4000/api/inventories";
+    const urlDelete = `${process.env.REACT_APP_SERVER_URL}/deleteInventory?code=`;
+    const urlInventory = `${process.env.REACT_APP_SERVER_URL}/inventories`;
   
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
