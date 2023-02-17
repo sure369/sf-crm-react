@@ -117,8 +117,6 @@ const ModalInventoryAccount = ({ item,handleModal }) => {
                 handleModal();
             }, 1000)
         })
-
-        
     }
 
     return (

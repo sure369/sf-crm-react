@@ -128,11 +128,6 @@ const ModalInventoryOpportunity = ({ item ,handleModal }) => {
             })
     }
 
-    const handleFormClose = () => {
-        handleModal()
-        // navigate("/inventoryDetailPage", { state: { record: { inventoryParentRecord } } })
-    }
-
     return (
 
         <Grid item xs={12} style={{ margin: "20px" }}>

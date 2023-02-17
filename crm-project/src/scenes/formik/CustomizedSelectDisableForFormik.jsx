@@ -3,7 +3,7 @@ import {Select} from "@mui/material";
 import "./FormStyles.css"
 
 
-const  CustomizedSelectForFormik = ({ children, form, field,...props }) => {
+const  CustomizedSelectDisableForFormik = ({ children, form, field,...props }) => {
 
     //  console.log('form',form);
     //  console.log('field',field);
@@ -28,6 +28,7 @@ const  CustomizedSelectForFormik = ({ children, form, field,...props }) => {
   return (
     <Select
       className="form-customSelect"
+      disabled
       name={name}
       value={value}
       onChange={ (e) => {
@@ -40,4 +41,4 @@ const  CustomizedSelectForFormik = ({ children, form, field,...props }) => {
     </Select>
   );
 };
-export default CustomizedSelectForFormik
+export default CustomizedSelectDisableForFormik
