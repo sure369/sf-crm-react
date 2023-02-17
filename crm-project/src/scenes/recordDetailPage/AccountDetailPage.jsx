@@ -203,7 +203,7 @@ const AccountDetailPage = ({ item }) => {
                                 <Form>
                                     <Grid container spacing={2}>
                                         <Grid item xs={6} md={6}>
-                                            <label htmlFor="accountName">Name  <span className="text-danger">*</span></label>
+                                            <label htmlFor="accountName">Account Name  <span className="text-danger">*</span></label>
                                             <Field name="accountName" type="text" class="form-input" />
                                             <div style={{ color: 'red' }}>
                                                 <ErrorMessage name="accountName" />

@@ -110,16 +110,15 @@ const InventoryRelatedItems = ({ item }) => {
         axios.post(opportunityDeleteURL + row._id)
           .then((res) => {
             console.log('api delete response', res);
-            getOpportunitiesbyInvId(inventoryRecordId)
             setOppMenuOpen(false)
             setNotify({
               isOpen:true,
               message:res.data,
               type:'success'
             })
-            setTimeout(
-               window.location.reload()
-            )
+            setTimeout(()=>{
+              getOpportunitiesbyInvId(inventoryRecordId)
+            })
           })
           .catch((error) => {
             console.log('api delete error', error);
@@ -146,16 +145,16 @@ const InventoryRelatedItems = ({ item }) => {
     axios.post(accountDeleteURL+ row._id)
       .then((res) => {
         console.log('api delete response', res);
-        getAccountsbyInvId(inventoryRecordId)
+       
         setNotify({
           isOpen: true,
           message: res.data,
           type: 'success'
       })
       setAccountMenuOpen(false)
-      setTimeout(
-        window.location.reload()
-      )
+      setTimeout(()=>{
+        getAccountsbyInvId(inventoryRecordId)
+      })
       })
       .catch((error) => {
         console.log('api delete error', error);
@@ -183,12 +182,16 @@ const InventoryRelatedItems = ({ item }) => {
     
     const handleOpportunityModalClose =()=>{
       setOpportunityModalOpen(false);
+      getOpportunitiesbyInvId(inventoryRecordId)
+      getAccountsbyInvId(inventoryRecordId)
     }
     const handleAccountModalOpen =()=>{
       setAccountModalOpen(true)
     }
     const handleAccountModalClose =()=>{
       setAccountModalOpen(false)
+      getOpportunitiesbyInvId(inventoryRecordId)
+      getAccountsbyInvId(inventoryRecordId)
     }
 
     // Task menu dropdown strart 
