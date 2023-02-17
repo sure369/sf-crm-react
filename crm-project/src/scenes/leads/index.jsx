@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useTheme, Box, Button, IconButton, Pagination,Tooltip ,
-  Grid ,Modal } from "@mui/material";
-import {
-  DataGrid, GridToolbar,
-  gridPageCountSelector, gridPageSelector,
-  useGridApiContext, useGridSelector
+import {  useTheme, Box, Button, IconButton,
+   Pagination, Tooltip, Grid, Modal
+} from "@mui/material";
+import {  DataGrid, GridToolbar,  gridPageCountSelector,
+   gridPageSelector,useGridApiContext, useGridSelector
 } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
@@ -15,6 +14,10 @@ import EditIcon from '@mui/icons-material/Edit';
 import Notification from '../toast/Notification';
 import ConfirmDialog from '../toast/ConfirmDialog';
 import ModalFileUpload from '../dataLoder/ModalFileUpload';
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import EmailIcon from '@mui/icons-material/Email';
+import EmailModalPage from '../recordDetailPage/EmailModalPage';
+import WhatAppModalPage from '../recordDetailPage/WhatsAppModalPage';
 
 const ModalStyle = {
   position: 'absolute',
@@ -37,17 +40,19 @@ const Leads = () => {
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
   const [records, setRecords] = useState([]);
-  const[fetchLoading,setFetchLoading]=useState(true);
+  const [fetchLoading, setFetchLoading] = useState(true);
   // notification
   const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
   //dialog
   const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subTitle: '' })
 
-  const[showDelete,setShowDelete]=useState(false)
-  const[selectedRecordIds,setSelectedRecordIds]=useState()
-  const[selectedRecordDatas,setSelectedRecordDatas]=useState()
+  const [showDelete, setShowDelete] = useState(false)
+  const [selectedRecordIds, setSelectedRecordIds] = useState()
+  const [selectedRecordDatas, setSelectedRecordDatas] = useState()
 
-  const[importModalOpen,setImportModalOpen]= useState(false)
+  const [emailModalOpen, setEmailModalOpen] = useState(false)
+  const [whatsAppModalOpen, setWhatsAppModalOpen] = useState(false)
+  const [importModalOpen, setImportModalOpen] = useState(false)
 
 
   useEffect(() => {
@@ -97,16 +102,16 @@ const Leads = () => {
   }
 
   const onConfirmDeleteRecord = (row) => {
-    if(row.length){
-      console.log('if row',row);
+    if (row.length) {
+      console.log('if row', row);
       row.forEach(element => {
         onebyoneDelete(element)
       });
     }
-   else{
-    console.log('else',row._id);
-    onebyoneDelete(row._id)
-   }
+    else {
+      console.log('else', row._id);
+      onebyoneDelete(row._id)
+    }
   }
 
   const onebyoneDelete = (row) => {
@@ -129,10 +134,10 @@ const Leads = () => {
           type: 'error'
         })
       })
-      setConfirmDialog({
-        ...confirmDialog,
-        isOpen: false
-      })
+    setConfirmDialog({
+      ...confirmDialog,
+      isOpen: false
+    })
   };
 
   const handleImportModalOpen = () => {
@@ -157,6 +162,28 @@ const Leads = () => {
       />
     );
   }
+
+  const handlesendEmail = () => {
+    console.log('inside email')
+    console.log('selectedRecordIds', selectedRecordIds);
+    setEmailModalOpen(true)
+  }
+
+  const setEmailModalClose = () => {
+    setEmailModalOpen(false)
+  }
+
+  const handlesendWhatsapp = () => {
+    console.log('inside whats app')
+    console.log('selectedRecordIds', selectedRecordIds);
+    setWhatsAppModalOpen(true)
+  }
+
+  const setWhatAppModalClose = () => {
+    setWhatsAppModalOpen(false)
+  }
+
+
 
   const columns = [
     {
@@ -185,18 +212,18 @@ const Leads = () => {
       renderCell: (params) => {
         return (
           <>
-          {
-            !showDelete ? 
-            <>
-            <IconButton style={{ padding: '20px', color: '#0080FF' }}>
-              <EditIcon onClick={(e) => handleOnCellClick(e, params.row)} />
-            </IconButton>
-            <IconButton style={{ padding: '20px', color: '#FF3333' }}>
-              <DeleteIcon onClick={(e) => onHandleDelete(e, params.row)} />
-            </IconButton>
-            </>
-            :''
-          }
+            {
+              !showDelete ?
+                <>
+                  <IconButton style={{ padding: '20px', color: '#0080FF' }}>
+                    <EditIcon onClick={(e) => handleOnCellClick(e, params.row)} />
+                  </IconButton>
+                  <IconButton style={{ padding: '20px', color: '#FF3333' }}>
+                    <DeleteIcon onClick={(e) => onHandleDelete(e, params.row)} />
+                  </IconButton>
+                </>
+                : ''
+            }
           </>
         );
       }
@@ -230,10 +257,10 @@ const Leads = () => {
               backgroundColor: colors.blueAccent[700],
               borderBottom: "none",
             },
-            "& .MuiDataGrid-columnHeaderTitle": { 
+            "& .MuiDataGrid-columnHeaderTitle": {
               fontWeight: 'bold !important',
               overflow: 'visible !important'
-           },
+            },
             "& .MuiDataGrid-virtualScroller": {
               // backgroundColor: colors.primary[400],
             },
@@ -249,26 +276,32 @@ const Leads = () => {
             },
             "& .MuiDataGrid-row:hover": {
               backgroundColor: "#CECEF0"
-            },                     
-            "& .C-MuiDataGrid-row-even":{
+            },
+            "& .C-MuiDataGrid-row-even": {
               backgroundColor: "#D7ECFF",
-            }, 
-            "& .C-MuiDataGrid-row-odd":{
+            },
+            "& .C-MuiDataGrid-row-odd": {
               backgroundColor: "#F0F8FF",
             },
           }}
         >
 
           <div className='btn-test'>
-          {
-              showDelete ? 
-              <>
-              <Tooltip title="Delete Selected">
-                  <IconButton> <DeleteIcon sx={{ color: '#FF3333' }} onClick={(e) => onHandleDelete(e,selectedRecordIds)} /> </IconButton>
-              </Tooltip>
-              </>
-              :
-              <Box display="flex" justifyContent="space-between">
+            {
+              showDelete ?
+                <>
+                  <Tooltip title="Email">
+                    <IconButton> <EmailIcon sx={{ color: '#DB4437' }} onClick={handlesendEmail} /> </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Whatsapp">
+                    <IconButton> <WhatsAppIcon sx={{ color: '#34A853' }} onClick={handlesendWhatsapp} /> </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Delete Selected">
+                    <IconButton> <DeleteIcon sx={{ color: '#FF3333' }} onClick={(e) => onHandleDelete(e, selectedRecordIds)} /> </IconButton>
+                  </Tooltip>
+                </>
+                :
+                <Box display="flex" justifyContent="space-between">
                   <Grid container spacing={2}>
                     <Grid item xs={6}>
                       <Button
@@ -279,11 +312,11 @@ const Leads = () => {
                       </Button>
                     </Grid>
                     <Grid item xs={6}>
-                    <Button variant="contained" color="info" onClick={handleAddRecord}>
-                New
-              </Button>
+                      <Button variant="contained" color="info" onClick={handleAddRecord}>
+                        New
+                      </Button>
                     </Grid>
-                    </Grid>
+                  </Grid>
                 </Box>
             }
           </div>
@@ -315,7 +348,7 @@ const Leads = () => {
                 selectedIDs.has(row._id.toString())
               );
               setSelectedRecordDatas(selectedRowRecords)
-              
+
             }}
           />
         </Box>
@@ -329,6 +362,28 @@ const Leads = () => {
       >
         <Box sx={ModalStyle}>
           <ModalFileUpload handleModal={handleImportModalClose} />
+        </Box>
+      </Modal>
+
+      <Modal
+        open={emailModalOpen}
+        onClose={setEmailModalClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={ModalStyle}>
+          <EmailModalPage data={selectedRecordDatas} handleModal={setEmailModalClose} bulkMail={true} />
+        </Box>
+      </Modal>
+
+      <Modal
+        open={whatsAppModalOpen}
+        onClose={setWhatAppModalClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={ModalStyle}>
+          <WhatAppModalPage data={selectedRecordDatas} handleModal={setWhatAppModalClose} bulkMail={true} />
         </Box>
       </Modal>
 

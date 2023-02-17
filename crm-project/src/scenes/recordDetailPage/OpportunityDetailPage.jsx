@@ -256,6 +256,9 @@ const OpportunityDetailPage = ({item}) => {
                                 if(newInputValue.length>=3){
                                     FetchInventoriesbyName(newInputValue);
                                 }
+                                else if(newInputValue.length==0){
+                                    FetchInventoriesbyName(newInputValue);
+                                }
                             }}
                             renderInput={params => (
                             <Field component={TextField} {...params} name="InventoryId" />
@@ -289,6 +292,9 @@ const OpportunityDetailPage = ({item}) => {
                             onInputChange={(event, newInputValue) => {
                                 console.log('newInputValue',newInputValue);
                                 if(newInputValue.length>=3){
+                                    FetchLeadsbyName(newInputValue);
+                                }
+                                else if(newInputValue.length==0){
                                     FetchLeadsbyName(newInputValue);
                                 }
                             }}
@@ -344,7 +350,7 @@ const OpportunityDetailPage = ({item}) => {
                             onChange={(e) => {
                                 setFieldValue('closeDate', e)
                             }}
-                            renderInput={(params) => <TextField  {...params} className='form-input' />}
+                            renderInput={(params) => <TextField  {...params} className='form-input'  error={false}/>}
                         />
                 </LocalizationProvider>
               

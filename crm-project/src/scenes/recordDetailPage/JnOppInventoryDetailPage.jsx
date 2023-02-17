@@ -182,6 +182,9 @@ const JnOppInventoryDetailPage = ({ item }) => {
                                                     if (newInputValue.length >= 3) {
                                                         FetchInventoriesbyName(newInputValue);
                                                     }
+                                                    else  if (newInputValue.length == 0) {
+                                                        FetchInventoriesbyName(newInputValue);
+                                                    }
                                                 }}
                                                 renderInput={params => (
                                                     <Field component={TextField} {...params} name="InventoryId" />
@@ -209,6 +212,9 @@ const JnOppInventoryDetailPage = ({ item }) => {
                                                 onInputChange={(event, newInputValue) => {
                                                     console.log('newInputValue', newInputValue);
                                                     if (newInputValue.length >= 3) {
+                                                        FetchOpportunitybyName(newInputValue);
+                                                    }
+                                                    else  if (newInputValue.length == 0) {
                                                         FetchOpportunitybyName(newInputValue);
                                                     }
                                                 }}

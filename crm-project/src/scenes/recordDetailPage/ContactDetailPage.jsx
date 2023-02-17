@@ -308,8 +308,10 @@ const ContactDetailPage = ({ item }) => {
                                                     }}
                                                     onInputChange={(event, newInputValue) => {
                                                         console.log('newInputValue', newInputValue);
-
                                                         if (newInputValue.length >= 3) {
+                                                            FetchAccountsbyName(newInputValue);
+                                                        }
+                                                        else  if (newInputValue.length == 0) {
                                                             FetchAccountsbyName(newInputValue);
                                                         }
                                                     }}
@@ -337,7 +339,7 @@ const ContactDetailPage = ({ item }) => {
                                                         onChange={(e) => {
                                                             setFieldValue('dob', e)
                                                         }}
-                                                        renderInput={(params) => <TextField  {...params} className='form-input' />}
+                                                        renderInput={(params) => <TextField  {...params} className='form-input' error={false} />}
                                                     />
 
                                                 </LocalizationProvider>

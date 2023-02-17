@@ -359,6 +359,9 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
                                                 if (newInputValue.length >= 3) {
                                                     FetchObjectsbyName(newInputValue, url)
                                                 }
+                                                else  if (newInputValue.length ==0) {
+                                                    FetchObjectsbyName(newInputValue, url)
+                                                }
                                             }}
                                             renderInput={params => (
                                                 <Field component={TextField} {...params} name="realatedTo" />
@@ -381,7 +384,7 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
                                         onChange={(e)=>{
                                             setFieldValue('StartDate',e)
                                         }}
-                                         renderInput={(params) => <TextField  {...params} className='form-input'  />}
+                                         renderInput={(params) => <TextField  {...params} className='form-input' error={false} />}
                                      />
 
                                     </Grid>
@@ -390,7 +393,7 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
                                         <label htmlFor="EndDate">EndDate   </label> <br/>
                                         
                                         <DateTimePicker
-                                                renderInput={(params) => <TextField {...params} className='form-input' />}
+                                                renderInput={(params) => <TextField {...params} className='form-input' error={false}/>}
                                                 value={values.EndDate}
                                                 onChange={(e) => {                                                  
                                                     setFieldValue('EndDate',e)                                            

@@ -1,15 +1,12 @@
 
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect ,useRef} from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Grid, Button, FormControl, Input, TextField } from "@mui/material";
 import axios from 'axios'
 import { Autocomplete } from "@mui/material";
-//import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from "react-router-dom";
-import { useRef } from "react";
-import Thumb from "./Thumb";
 import "./FormStyles.css"
 
 const url = `${process.env.REACT_APP_SERVER_URL}/contactInsert`;

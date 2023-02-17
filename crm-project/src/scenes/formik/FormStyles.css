@@ -51,3 +51,7 @@
   .text-danger{
     color: red;
   }
+
+  .form-richTextBody{
+    height: 150px
+  }

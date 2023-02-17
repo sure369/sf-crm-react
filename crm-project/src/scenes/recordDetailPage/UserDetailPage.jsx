@@ -270,6 +270,9 @@ const UserDetailPage = ({ item }) => {
                                                     if (newInputValue.length >= 3) {
                                                         FetchUsersbyName(newInputValue);
                                                     }
+                                                    else if (newInputValue.length == 0) {
+                                                        FetchUsersbyName(newInputValue);
+                                                    }
                                                 }}
                                                 renderInput={params => (
                                                     <Field component={TextField} {...params} name="createdbyId" />
