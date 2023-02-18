@@ -8,7 +8,8 @@ import axios from 'axios'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ModalInventoryOpportunity from "../opportunities/ModalInventoryOpp";
-import Notification from '../toast/Notification';
+import ToastNotification from "../toast/ToastNotification";
+import DeleteConfirmDialog from "../toast/DeleteConfirmDialog";
 import ModalInventoryAccount from "../accounts/ModalAccountInventory";
 
 
@@ -49,6 +50,7 @@ const InventoryRelatedItems = ({ item }) => {
 
     
     const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
+    const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subTitle: '' })
 
     useEffect(() => {
         console.log('related Inventories', location.state.record.item);
@@ -102,8 +104,19 @@ const InventoryRelatedItems = ({ item }) => {
          navigate("/opportunityDetailPage", { state: { record: { item } } })
     };
 
-    const handleOpportunityCardDelete = (row) => {
+    const handleReqOpportunityCardDelete = (e,row) => {
 
+      e.stopPropagation();
+      console.log('inside handleTaskCardDelete fn')
+          setConfirmDialog({
+            isOpen:true,
+            title:`Are you sure to delete this Record ?`,
+            subTitle:"You can't undo this Operation",
+            onConfirm:()=>{onConfirmOpportunityCardDelete(row)}
+          })
+        }
+
+        const onConfirmOpportunityCardDelete=(row)=>{
         console.log('req delete rec', row);
         console.log('req delete rec id', row._id);
 
@@ -127,7 +140,10 @@ const InventoryRelatedItems = ({ item }) => {
               message:error.message,
               type:'error'
             })
-
+          })
+          setConfirmDialog({
+            ...confirmDialog,
+            isOpen:false
           })
     };
 
@@ -139,8 +155,19 @@ const InventoryRelatedItems = ({ item }) => {
 
     
 
-  const handleAccountCardDelete = (row) => {
+  const handleReqAccountCardDelete = (e,row) => {
 
+    e.stopPropagation();
+    console.log('inside handleTaskCardDelete fn')
+        setConfirmDialog({
+          isOpen:true,
+          title:`Are you sure to delete this Record ?`,
+          subTitle:"You can't undo this Operation",
+          onConfirm:()=>{onConfirmAccountCardDelete(row)}
+        })
+      }
+
+      const onConfirmAccountCardDelete=(row)=>{
     console.log('req delete rec', row);
     axios.post(accountDeleteURL+ row._id)
       .then((res) => {
@@ -163,6 +190,10 @@ const InventoryRelatedItems = ({ item }) => {
           message: error.message,
           type: 'error'
       })
+      })
+      setConfirmDialog({
+        ...confirmDialog,
+        isOpen:false
       })
   };
 
@@ -208,6 +239,8 @@ const InventoryRelatedItems = ({ item }) => {
     const handleOpportunityMoreMenuClose = () => {
       setOppAnchorEl(null);
         setOppMenuOpen(false)
+        setAccountAnchorEl(null);
+        setAccountMenuOpen(false)
     };
     // menu dropdown end
 
@@ -234,7 +267,8 @@ const InventoryRelatedItems = ({ item }) => {
 
     return (
         <>
- <Notification notify={notify} setNotify={setNotify} />
+ <ToastNotification notify={notify} setNotify={setNotify} />
+ <DeleteConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog}  moreModalClose={handleOpportunityMoreMenuClose}/>
 
             <div style={{ textAlign: "center", marginBottom: "10px" }}>
 
@@ -301,7 +335,7 @@ const InventoryRelatedItems = ({ item }) => {
                                       }}
                                     >
                                       <MenuItem onClick={() => handleOpportunityCardEdit(oppMenuSelectRec)}>Edit</MenuItem>
-                                      <MenuItem onClick={() => handleOpportunityCardDelete(oppMenuSelectRec)}>Delete</MenuItem>
+                                      <MenuItem onClick={(e) => handleReqOpportunityCardDelete(e,oppMenuSelectRec)}>Delete</MenuItem>
                                     </Menu>
                                   </IconButton>
                                 </Grid>
@@ -384,7 +418,7 @@ const InventoryRelatedItems = ({ item }) => {
                                       }}
                                     >
                                       <MenuItem onClick={() => handleAccountCardEdit(accountMenuSelectRec)}>Edit</MenuItem>
-                                      <MenuItem onClick={() => handleAccountCardDelete(accountMenuSelectRec)}>Delete</MenuItem>
+                                      <MenuItem onClick={(e) => handleReqAccountCardDelete(e,accountMenuSelectRec)}>Delete</MenuItem>
                                     </Menu>
                                   </IconButton>
                                 </Grid>
@@ -400,7 +434,7 @@ const InventoryRelatedItems = ({ item }) => {
 
             </Card>
             {
-              realtedOpportunity.length > 0 &&
+              relatedAccount.length > 0 &&
               <Box display="flex" alignItems="center" justifyContent="center">
                 <Pagination
                   count={accountNoOfPages}
@@ -423,6 +457,7 @@ const InventoryRelatedItems = ({ item }) => {
         onClose={handleOpportunityModalClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
+        sx={{ backdropFilter: "blur(2px)" }}
       >
         <Box sx={ModalStyle}>
           <ModalInventoryOpportunity handleModal={handleOpportunityModalClose} />
@@ -434,6 +469,7 @@ const InventoryRelatedItems = ({ item }) => {
         onClose={handleAccountModalClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
+        sx={{ backdropFilter: "blur(2px)" }}
       >
         <Box sx={ModalStyle}>
           <ModalInventoryAccount handleModal={handleAccountModalClose} />

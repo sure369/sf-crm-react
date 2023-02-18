@@ -3,11 +3,12 @@ import { Formik, Form, Field, ErrorMessage,useField } from "formik";
 import * as Yup from "yup";
 import {
     Grid, Button, FormControl, Stack, Alert, DialogActions,
-    Autocomplete, TextField
+    Autocomplete, TextField,MenuItem
 } from "@mui/material";
 import axios from 'axios'
 import "../formik/FormStyles.css"
-
+import CustomizedSelectForFormik from "../formik/CustomizedSelectForFormik";
+import { DataLoaderObjectPicklist } from "../../data/pickLists";
 
 const UpsertLeadUrl = `${process.env.REACT_APP_SERVER_URL}/dataloaderlead`;
 const UpsertAccountUrl=`${process.env.REACT_APP_SERVER_URL}/dataloaderAccount`;
@@ -116,12 +117,15 @@ const DataLoadPage = () => {
                                     
                                     <Grid item xs={12} md={12}>
                                         <label htmlFor="object">Select Object</label>
-                                        <Field name="object" as="select" class="form-input">
-                                                <option value=""></option>
-                                                <option value="Account">Account</option>
-                                                <option value="Lead">Lead</option>
-                                                <option value="Opportunity">Opportunity</option>
-                                        </Field>
+                                        
+                                        <Field name="object" component={CustomizedSelectForFormik}  className="form-customSelect">	
+                                            <MenuItem value=""><em>None</em></MenuItem>
+                                               {	
+                                                DataLoaderObjectPicklist.map((i)=>{	
+                                                    return <MenuItem value={i.value}>{i.text}</MenuItem>	
+                                                })	
+                                               }	
+                                            </Field>
                                         <div style={{ color: 'red' }}>
                                                 <ErrorMessage name="object" />
                                             </div>

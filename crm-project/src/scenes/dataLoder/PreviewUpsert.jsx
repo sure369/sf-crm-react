@@ -3,7 +3,7 @@ import axios from 'axios';
 import {
     Paper,Table,TableBody,TableCell,TableHead,TableRow,Typography,DialogActions,Button
 } from "@mui/material";
-import Notification from '../toast/Notification';
+import Notification from '../toast/ToastNotification';
 import { useEffect } from 'react';
 
 

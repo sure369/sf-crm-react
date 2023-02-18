@@ -15,8 +15,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import EmailModalPage from '../recordDetailPage/EmailModalPage';
 import WhatAppModalPage from '../recordDetailPage/WhatsAppModalPage';
-import Notification from '../toast/Notification';
-import ConfirmDialog from '../toast/ConfirmDialog';
+import ToastNotification from '../toast/ToastNotification';
+import DeleteConfirmDialog from '../toast/DeleteConfirmDialog';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import EmailIcon from '@mui/icons-material/Email';
 
@@ -166,8 +166,8 @@ const ContactsMobile = () => {
   return (
     <>
 
-      <Notification notify={notify} setNotify={setNotify} />
-      <ConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog} />
+      <ToastNotification notify={notify} setNotify={setNotify} />
+      <DeleteConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog} />
 
 
       <Box m="20px">

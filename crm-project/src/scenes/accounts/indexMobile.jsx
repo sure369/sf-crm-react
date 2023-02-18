@@ -11,9 +11,8 @@ import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import Notification from '../toast/Notification';
-import ConfirmDialog from '../toast/ConfirmDialog';
-
+import ToastNotification from '../toast/ToastNotification';
+import DeleteConfirmDialog from '../toast/DeleteConfirmDialog';
 const AccountsMobile = () => {
 
   const urlDelete = `${process.env.REACT_APP_SERVER_URL}/deleteAccount?code=`;
@@ -133,8 +132,8 @@ const AccountsMobile = () => {
 
   return (
     <>
-      <Notification notify={notify} setNotify={setNotify} />
-      <ConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog} />
+      <ToastNotification notify={notify} setNotify={setNotify} />
+      <DeleteConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog} />
 
       <Box m="20px">
         <Header
