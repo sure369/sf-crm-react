@@ -10,7 +10,7 @@ function ResponsiveContacts() {
   return (
     <>
     {
-        width < breakpoint ? <Contacts/> : <Contacts/>
+        width < breakpoint ? <ContactsMobile/> : <Contacts/>
     }
     </>
   )

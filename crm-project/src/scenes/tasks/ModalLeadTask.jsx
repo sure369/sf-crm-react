@@ -34,7 +34,6 @@ const ModalTask = ({ item, handleModal }) => {
 
     const initialValues = {
         subject: '',
-        nameofContact: '',
         realatedTo: '',
         assignedTo: '',
         StartDate: '',
