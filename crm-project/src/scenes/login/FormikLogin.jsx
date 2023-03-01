@@ -6,24 +6,16 @@ import { Grid, Button, DialogActions, } from "@mui/material";
 import axios from 'axios'
 import "../formik/FormStyles.css"
 import ToastNotification from "../toast/ToastNotification";
-import CustomizedRichTextField from "../formik/CustomizedRichTextField";
-import { convert } from "html-to-text";
 
-const urlSendEmailbulk = `${process.env.REACT_APP_SERVER_URL}/bulkemail`
+const urlLogin = `${process.env.REACT_APP_SERVER_URL}/login`
 
-const FormikLogin = ({ data, handleModal, bulkMail }) => {
+const FormikLogin = () => {
 
-    const [parentRecord, setParentRecord] = useState([]);
     const navigate = useNavigate();
-    const location = useLocation();
-    // notification
     const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
 
 
     useEffect(() => {
-        console.log('data', data);
-        console.log('bulkMail', bulkMail);
-        setParentRecord(data)
 
     }, [])
 
@@ -46,7 +38,7 @@ const FormikLogin = ({ data, handleModal, bulkMail }) => {
     const formSubmission = async (values, { resetForm }) => {
         console.log('inside form Submission', values);
      
-        axios.post(urlSendEmailbulk, values)
+        axios.post(urlLogin, values)
         .then((res) => {
             console.log('email send res', res)
             setNotify({
@@ -54,9 +46,11 @@ const FormikLogin = ({ data, handleModal, bulkMail }) => {
                 message: res.data,
                 type: 'success'
             })
-            setTimeout(() => {
-                handleModal(false)
-            }, 2000)
+            setTimeout(()=>{
+                if(res.data){
+                    navigate('/home')
+                }
+            })
         })
         .catch((error) => {
             console.log('email send error', error);
@@ -65,9 +59,11 @@ const FormikLogin = ({ data, handleModal, bulkMail }) => {
                 message: error.message,
                 type: 'error'
             })
-        })
+        })        
+    }
 
-        
+    const handleFormClose =()=>{
+        console.log('inside form close')
     }
 
     return (
@@ -105,6 +101,12 @@ const FormikLogin = ({ data, handleModal, bulkMail }) => {
                                              </div>
                                        </Grid>
                                        </Grid>
+                                       <div className='action-buttons'>
+                                        <DialogActions sx={{ justifyContent: "space-between" }}>
+                                            <Button type='success' variant="contained" color="secondary" >Login</Button>
+                                          
+                                        </DialogActions>
+                                    </div>
                                 </Form>
                             </>
                         )

@@ -6,7 +6,7 @@ import FormikLogin from './FormikLogin';
 
 export default function LoginIndex() {
 
-    const paperStyle={padding :20,height:'70vh',width:280, margin:"20px auto"}
+    const paperStyle={padding :20,height:'100%',width:280, margin:"20px auto"}
     const avatarStyle={backgroundColor:'#1bbd7e'}
     const btnstyle={margin:'8px 0'}
     return(
@@ -38,15 +38,7 @@ export default function LoginIndex() {
                   </Grid>               */}
 
                 {/* </Box> */}
-                <FormControlLabel
-                    control={
-                    <Checkbox
-                        name="checkedB"
-                        color="primary"
-                    />
-                    }
-                    label="Remember me"
-                 />
+               
                  
                 
                 <Typography >

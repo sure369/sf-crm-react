@@ -3,7 +3,7 @@ import axios from 'axios';
 import {
     Paper,Table,TableBody,TableCell,TableHead,TableRow,Typography,DialogActions,Button
 } from "@mui/material";
-import Notification from '../toast/ToastNotification';
+import ToastNotification from '../toast/ToastNotification';
 import { useEffect } from 'react';
 
 
@@ -67,7 +67,7 @@ function PreviewUpsert({  data ,file,ModalClose}) {
 
   return (
     <>
-     <Notification notify={notify} setNotify={setNotify} />
+     <ToastNotification notify={notify} setNotify={setNotify} />
     <Paper>
       <Table>
         <TableHead>

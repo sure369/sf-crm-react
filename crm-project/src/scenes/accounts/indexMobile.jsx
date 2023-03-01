@@ -236,6 +236,5 @@ const AccountsMobile = () => {
     </>
   )
 }
-// };
 
 export default AccountsMobile;

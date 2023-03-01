@@ -30,10 +30,13 @@ const DropFileInput = () => {
     const[showIframe,setShowIframe] =useState(false)
     const[filepath,setFilePath]=useState()
 
+    // file upload response
+    const[fileUploadRes,setFileUploadResponse]= useState()
+    console.log('fileUploadRes',fileUploadRes)
     useEffect(() => {
 
         getFilesList();
-
+console.log('fileUploadRes',fileUploadRes)
        
     }, [])
 
@@ -45,7 +48,6 @@ const DropFileInput = () => {
             .then((res) => {
                 console.log('get file list', res);
                 if(typeof(res.data) !=='string'){
-                   console.log('type of',typeof (res.data))
                     setFileList(res.data);
                 }
                 else{
@@ -58,28 +60,7 @@ const DropFileInput = () => {
             })
     }
 
-    // const downloadFile = async (id,path,mimetype)=>{
-    //     console.log('inside downloadFile');
-    //     await axios.post(urlDownloadFiles+id)
-    //     .then((res)=>{
-    //         console.log('res',res);
-    //         console.log('path',path);
-
-    //     const split = path.split('/')
-    //     console.log('split',split)
-    //     const filepathname =split[split.length -1];
-    //     console.log('filename',filepathname);
-    //     return download(res.data[0],filepathname,mimetype);
-    //     })
-    //     .catch((error)=>{
-    //         console.log('error',error);
-    //     })
-    //     // const result = await axios.post(urlDownloadFiles+id,{
-    //     //     responseType:'blob'
-    //     // })
-    //     // console.log('result',result)
-
-    // }
+ 
 
 
     const initialValues = {
@@ -107,6 +88,8 @@ const DropFileInput = () => {
     
             .then((res) => {
                 console.log('file Submission  response', res);
+                 setFileUploadResponse(res.data)
+                // setFileUploadResponse(old => [...old, res.data]);
                 setNotify({
                     isOpen: true,
                     message: res.data.insertedId,
@@ -123,38 +106,49 @@ const DropFileInput = () => {
             })
     }
 
-    const redirect =(item) =>{
-        console.log('inside reirect',item);
+    // const redirect =(item) =>{
+    //     console.log('inside reirect',item);
         
-    //  <ReactPlayer url='https://www.youtube.com/watch?v=ysz5S6PUM-U' />
+    // //  <ReactPlayer url='https://www.youtube.com/watch?v=ysz5S6PUM-U' />
 
-            //  <iframe src= 'https://www.youtube.com/watch?v=tATzWMBoRbI&t=42s' width="540" height="450"></iframe>
+    //         //  <iframe src= 'https://www.youtube.com/watch?v=tATzWMBoRbI&t=42s' width="540" height="450"></iframe>
 
 
-                                     <Iframe
-                                                    url ='https://www.youtube.com/'
-                                                    width="640px"
-                                                    height="320px"
-                                                    id={item._id}
-                                                    className=""
-                                                    display="block"
-                                                    position="relative"
-                                                /> 
+    //                                  <Iframe
+    //                                                 url ='https://www.youtube.com/'
+    //                                                 width="640px"
+    //                                                 height="320px"
+    //                                                 id={item._id}
+    //                                                 className=""
+    //                                                 display="block"
+    //                                                 position="relative"
+    //                                             /> 
 
                                               
                                      
-    }
+    // }
 
-    const iframeFn =()=>{
-        setShowIframe(!showIframe)
-    }
+    // const iframeFn =()=>{
+    //     setShowIframe(!showIframe)
+    // }
    
-    const handleClick =()=>{
-        console.log('test');
-    }
+    // const handleClick =()=>{
+    //     console.log('test');
+    // }
    
-    <iframe src="https://www.youtube.com/embed/s4BibernJxU"></iframe>
+    // <iframe src="https://www.youtube.com/embed/s4BibernJxU"></iframe>
 
+    const hanlePreview=()=>{
+        console.log('inside hanlePreview')       
+        return <div style={{position: "fixed", top: 0, bottom: 0, left: 0, right: 0, backgroundColor: "rgba(0,0,0,0.5)"}}>
+           <iframe 
+            src={`${fileUploadRes}`} 
+            width='100%' height='1000%'
+            embedded='true'
+            allowfullscreen 
+    ></iframe>
+      </div>
+    }
 
 
     return (
@@ -206,12 +200,22 @@ const DropFileInput = () => {
                                     </DialogActions>
                                 </div>
                             </Form>
+                            
                         </>
                     )
                 }}
             </Formik>
-
-            <button onclick={handleClick}>
+                <Button onClick={hanlePreview} >View File</Button>
+            
+            <iframe 
+                    src={`${fileUploadRes}`} 
+                    width='100%' height='1000%'
+                    embedded='true'
+                    allowfullscreen 
+            ></iframe>
+         
+            </Grid>
+            {/* <button onclick={handleClick}>
                                     btn
                                 </button>
             <button onClick={iframeFn}>
@@ -253,7 +257,7 @@ const DropFileInput = () => {
                   </td>
                       <td>
 
-                      <iframe src={`https://view.officeapps.live.com/op/embed.aspx?src=http://localhost:4000/${item.fileName}`} width='100%' height='1000%' frameborder='0'>This is an embedded <a target='_blank' href='http://office.com'>Microsoft Office</a> document, powered by <a target='_blank' href='http://office.com/webapps'>Office Online</a>.</iframe>
+                      <iframe src={`https://view.officeapps.live.com/op/embed.aspx?src=http://localhost:4000/2023-02-20T04-53-45.338Z-sample.pdf`} width='100%' height='1000%' frameborder='0'>This is an embedded <a target='_blank' href='http://office.com'>Microsoft Office</a> document, powered by <a target='_blank' href='http://office.com/webapps'>Office Online</a>.</iframe>
 
         
                       </td>
@@ -267,7 +271,7 @@ const DropFileInput = () => {
                 No files found. Please add some.
               </td>
             </tr>
-          )}
+          )} */}
         </>
     )
 
