@@ -68,7 +68,7 @@ const LeadDetailPage = ({ item }) => {
         location: singleLead?.location ?? "",
         appointmentDate: new Date(singleLead?.appointmentDate).getUTCFullYear()
         + '-' + ('0' + (new Date(singleLead?.appointmentDate).getUTCMonth() + 1)).slice(-2)
-        + '-' + ('0' + (new Date(singleLead?.appointmentDate).getUTCDate())).slice(-2) ||  singleLead?.appointmentDate,
+        + '-' + ('0' + (new Date(singleLead?.appointmentDate).getUTCDate())).slice(-2) ||  "",
         demo: singleLead?.demo ?? "",
         remarks: singleLead?.remarks ?? "",
         createdbyId: singleLead?.createdbyId ?? "",
@@ -83,7 +83,7 @@ const LeadDetailPage = ({ item }) => {
         fullName: Yup
             .string()
             .required('Required')
-            .matches(/^[A-Za-z ]*$/, 'Numeric characters not accepted')
+            // .matches(/^[A-Za-z ]*$/, 'Numeric characters not accepted')
             .max(15, 'lastName must be less than 15 characters'),
             companyName: Yup
             .string()
