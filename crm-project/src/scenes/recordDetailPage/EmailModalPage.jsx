@@ -7,7 +7,8 @@ import axios from 'axios'
 import "../formik/FormStyles.css"
 import ToastNotification from "../toast/ToastNotification";
 import { convert } from "html-to-text";
-
+import CustomizedRichTextField from "../formik/CustomizedRichTextField";
+ 
 
 const urlSendEmailbulk = `${process.env.REACT_APP_SERVER_URL}/bulkemail`
 
@@ -141,7 +142,7 @@ const EmailModalPage = ({ data, handleModal, bulkMail }) => {
                                         </Grid>
                                         <Grid item xs={12} md={12}>
                                              <label htmlFor="htmlBody">Email Body <span className="text-danger">*</span> </label>
-                                             <Field name="htmlBody" as="Textarea"
+                                             <Field name="htmlBody" component={CustomizedRichTextField}
                                              />
                                              <div style={{ color: 'red' }}>
                                                  <ErrorMessage name="htmlBody" />

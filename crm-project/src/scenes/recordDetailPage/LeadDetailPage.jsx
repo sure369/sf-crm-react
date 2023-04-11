@@ -37,7 +37,8 @@ const LeadDetailPage = ({ item }) => {
         
         fullName: '',
         companyName:'',
-        phone: '',
+        designation:'',
+        phone: '',    
         leadSource: '',
         industry: '',
         leadStatus: '',
@@ -51,14 +52,12 @@ const LeadDetailPage = ({ item }) => {
         createdDate: '',
         modifiedDate: '',
     }
-    //app-date
-    //demo-pic -- 1,2,final
-    //remarks --textarea
 
     const savedValues = {
        
         fullName: singleLead?.fullName ?? "",
         companyName:singleLead?.companyName ?? "",
+        designation:singleLead?.designation??"",
         phone: singleLead?.phone ?? "",
         leadSource: singleLead?.leadSource ?? "",
         industry: singleLead?.industry ?? "",
@@ -198,6 +197,16 @@ const LeadDetailPage = ({ item }) => {
                                                 <ErrorMessage name="companyName" />
                                             </div>
                                         </Grid>
+
+                                        <Grid item xs={6} md={6}>
+                                            <label htmlFor="designation" >Designation<span className="text-danger">*</span> </label>
+                                            <Field name='designation' type="text" class="form-input" />
+                                            <div style={{ color: 'red' }}>
+                                                <ErrorMessage name="companyName" />
+                                            </div>
+                                        </Grid>
+
+                                        
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="phone">Phone</label>
                                             <Field name="phone" type="phone" class="form-input" />
