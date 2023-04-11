@@ -32,23 +32,26 @@ const AccountDetailPage = ({ item }) => {
       
     }, [])
 
-    const initialValues = {
-        accountName: '',
-        accountNumber: '',
-        InventoryId: '',
-        annualRevenue: '',
-        rating: '',
-        type: '',
-        phone: '',
-        industry: '',
-        billingAddress: '',
-        billingCountry: '',
-        billingCity: '',
-        billingCities: [],
-        createdbyId: '',
-        createdDate:'',
-        modifiedDate: '',
-    }
+    const initialValues = [
+
+       {name:'accountName',type:'text',component:'input',label:'Account Name'},
+        {name:'accountNumber',type:'number',component:'input',label:'Account Number'},
+        {name:'InventoryId',type:'autoComplete',component:Autocomplete,label:'Invertory Name'},
+        {name:'annualRevenue',type:'text',component:'input',label:'Annual Revenue'},
+        {name:'rating',type:'picklist',component:CustomizedSelectForFormik,label:'Rating',options:AccRatingPickList},
+        {name:'type',type:'picklist',component:CustomizedSelectForFormik,label:'Type',options:AccTypePickList},
+        {name:'phone',type:'phone',component:'input',label:'Phone'},
+        {name:'industry',type:'picklist',component:CustomizedSelectForFormik,label:'Industry',options:IndustryPickList},
+        {name:'billingAddress',type:'text',component:'input',label:'Billing Address'},
+        {name:'billingCountry',type:'picklist',component:CustomizedSelectForFormik,label:'Billing Country',options:AccCountryPickList},
+        {name:'billingCity',type:'picklist',component:CustomizedSelectForFormik,label:'Billing City',options:AccCitiesPickList},
+        {name:'createdbyId',type:'text',component:'input',label:'Created Id'},
+        {name:'createdDate',type:'text',component:'input',label:'Crated Date'},
+        {name:'modifiedDate',type:'text',component:'input',lable:'Modified Date'}
+        // createdbyId: '',
+        // createdDate:'',
+        // modifiedDate: '',
+    ]
 
     const savedValues = {
         accountName: singleAccount?.accountName ?? "",
@@ -77,6 +80,7 @@ const AccountDetailPage = ({ item }) => {
             resolve(AccCitiesPickList[billingCountry] || []);
         });
     };
+      
 
     console.log('getCities',getCities('India'))
     const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
@@ -166,6 +170,15 @@ const AccountDetailPage = ({ item }) => {
     const handleFormClose =()=>{
         navigate(-1)
     }
+    
+    const fieldConfig =initialValues.reduce((acc,config)=>{
+        return {...acc,[config.name]:''}
+    })
+
+    const fieldConfigs = initialValues.reduce((acc, config) => {
+        return { ...acc, [config.name]: '' };
+      }, {});
+
     return (
 
         <Grid item xs={12} style={{ margin: "20px" }}>
@@ -200,7 +213,39 @@ const AccountDetailPage = ({ item }) => {
                                 <ToastNotification notify={notify} setNotify={setNotify}/>
 
                                 <Form>
-                                    <Grid container spacing={2}>
+                                    {
+                                        fieldConfigs.map((item)=>(
+
+                                            <Grid container spacing={2}>
+                                            <Grid item xs={6} md={6} >
+                                            <div key={item.name}>
+                                            <label htmlFor={item.name}>{item.label}</label>
+                                            {
+                                                item.component ==='input' ?(
+                                                    <Field type={item.type} name={item.name}/>
+                                                ) :
+                                                item.component =='CustomizedSelectForFormik' ?(
+                                                   
+                                                    <Field name={item.name} component={CustomizedSelectForFormik}  className="form-customSelect">	
+                                                    <MenuItem value=""><em>None</em></MenuItem>
+                                                       {	
+                                                        item.options.map((i)=>{	
+                                                            return <MenuItem value={i.value}>{i.text}</MenuItem>	
+                                                        })	
+                                                       }	
+                                                    </Field>
+                                                    
+                                                ):''
+                                            }
+                                            </div>
+                                            </Grid>
+                                        </Grid>
+
+
+                                        ))
+                                    }
+                                   
+                                    {/* <Grid container spacing={2}>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="accountName">Account Name  <span className="text-danger">*</span></label>
                                             <Field name="accountName" type="text" class="form-input" />
@@ -369,7 +414,7 @@ const AccountDetailPage = ({ item }) => {
                                                 </Grid>
                                             </>
                                         )}
-                                    </Grid>
+                                    </Grid> */}
 
                                     <div className='action-buttons'>
                                         <DialogActions sx={{ justifyContent: "space-between" }}>

@@ -6,7 +6,6 @@ import { Grid, Button, DialogActions, } from "@mui/material";
 import axios from 'axios'
 import "../formik/FormStyles.css"
 import ToastNotification from "../toast/ToastNotification";
-import CustomizedRichTextField from "../formik/CustomizedRichTextField";
 import { convert } from "html-to-text";
 
 
@@ -142,7 +141,7 @@ const EmailModalPage = ({ data, handleModal, bulkMail }) => {
                                         </Grid>
                                         <Grid item xs={12} md={12}>
                                              <label htmlFor="htmlBody">Email Body <span className="text-danger">*</span> </label>
-                                             <Field name="htmlBody" component={CustomizedRichTextField} 
+                                             <Field name="htmlBody" as="Textarea"
                                              />
                                              <div style={{ color: 'red' }}>
                                                  <ErrorMessage name="htmlBody" />

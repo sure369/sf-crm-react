@@ -85,7 +85,9 @@ const Accounts = () => {
   const handleOnCellClick = (e, row) => {
     console.log('selected record', row);
     const item = row;
-    navigate("/accountDetailPage", { state: { record: { item } } })
+    navigate(`/accountDetailPage`, { state: { record: { item } } })
+    
+    // navigate(`/accountDetailPage/${row._id}`, { state: { record: { item } } })
   };
 
   const onHandleDelete = (e, row) => {

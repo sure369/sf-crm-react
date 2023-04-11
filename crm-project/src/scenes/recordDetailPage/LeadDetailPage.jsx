@@ -7,7 +7,7 @@ import { useParams, useNavigate } from "react-router-dom"
 import axios from 'axios'
 import "../formik/FormStyles.css"
 import ToastNotification from '../toast/ToastNotification';
-import { NameSalutionPickList, LeadSourcePickList, IndustryPickList, LeadStatusPicklist } from '../../data/pickLists';
+import { NameSalutionPickList, LeadSourcePickList, IndustryPickList, LeadStatusPicklist ,LeadsDemoPicklist } from '../../data/pickLists';
 import CustomizedSelectForFormik from '../formik/CustomizedSelectForFormik';
 
 
@@ -30,55 +30,65 @@ const LeadDetailPage = ({ item }) => {
         console.log('passed record', location.state.record.item);
         setsingleLead(location.state.record.item);
         setshowNew(!location.state.record.item)
-        FetchUsersbyName('')
         // getTasks(location.state.record.item._id)
     }, [])
 
     const initialValues = {
-        salutation: '',
-        firstName: '',
-        lastName: '',
+        
         fullName: '',
+        companyName:'',
         phone: '',
         leadSource: '',
         industry: '',
         leadStatus: '',
         email: '',
+        linkedinProfile:'',
+        location:'',
+        appointmentDate:'',
+        demo:'',
+        remarks:'',
         createdbyId: '',
         createdDate: '',
         modifiedDate: '',
     }
+    //app-date
+    //demo-pic -- 1,2,final
+    //remarks --textarea
 
     const savedValues = {
-        salutation: singleLead?.salutation ?? "",
-        firstName: singleLead?.firstName ?? "",
-        lastName: singleLead?.lastName ?? "",
+       
         fullName: singleLead?.fullName ?? "",
+        companyName:singleLead?.companyName ?? "",
         phone: singleLead?.phone ?? "",
         leadSource: singleLead?.leadSource ?? "",
         industry: singleLead?.industry ?? "",
         leadStatus: singleLead?.leadStatus ?? "",
-        email: singleLead?.email ?? "",
+        email: singleLead?.email ?? "",      
+        linkedinProfile: singleLead?.linkedinProfile ?? "",
+        location: singleLead?.location ?? "",
+        appointmentDate: new Date(singleLead?.appointmentDate).getUTCFullYear()
+        + '-' + ('0' + (new Date(singleLead?.appointmentDate).getUTCMonth() + 1)).slice(-2)
+        + '-' + ('0' + (new Date(singleLead?.appointmentDate).getUTCDate())).slice(-2) ||  singleLead?.appointmentDate,
+        demo: singleLead?.demo ?? "",
+        remarks: singleLead?.remarks ?? "",
         createdbyId: singleLead?.createdbyId ?? "",
         createdDate: new Date(singleLead?.createdDate).toLocaleString(),
         modifiedDate: new Date(singleLead?.modifiedDate).toLocaleString(),
         _id: singleLead?._id ?? "",
-        userDetails: singleLead?.userDetails ?? "",
     }
 
     const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
 
     const validationSchema = Yup.object({
-        firstName: Yup
-            .string()
-            .matches(/^[A-Za-z ]*$/, 'Numeric characters not accepted')
-            .max(15, 'lastName must be less than 15 characters'),
-        lastName: Yup
+        fullName: Yup
             .string()
             .required('Required')
             .matches(/^[A-Za-z ]*$/, 'Numeric characters not accepted')
-            .min(3, 'lastName must be more than 3 characters')
             .max(15, 'lastName must be less than 15 characters'),
+            companyName: Yup
+            .string()
+            .required('Required')
+            .max(25, 'lastName must be less than 15 characters'),
         phone: Yup
             .string()
             .matches(phoneRegExp, 'Phone number is not valid')
@@ -94,37 +104,22 @@ const LeadDetailPage = ({ item }) => {
             .required('Required'),
     })
 
-    const FetchUsersbyName = (inputValue) => {
-        console.log('inside FetchLeadsbyName fn');
-        console.log('newInputValue', inputValue)
-        axios.post(`${fetchUsersbyName}?searchKey=${inputValue}`)
-            .then((res) => {
-                console.log('res fetchLeadsbyName', res.data)
-                if (typeof (res.data) === "object") {
-                    setUsersRecord(res.data)
-                }
-            })
-            .catch((error) => {
-                console.log('error fetchLeadsbyName', error);
-            })
-    }
 
     const formSubmission = (values) => {
         console.log('form submission value', values);
 
         let dateSeconds = new Date().getTime();
         let createDateSec = new Date(values.createdDate).getTime()
-
+        let appointmentDateSec = new Date (values.appointmentDate).getTime()
         if (showNew) {
             values.modifiedDate = dateSeconds;
             values.createdDate = dateSeconds;
-            values.fullName = values.firstName + ' ' + values.lastName;
-
+           values.appointmentDate = appointmentDateSec;
         }
         else if (!showNew) {
             values.modifiedDate = dateSeconds;
             values.createdDate = createDateSec;
-            values.fullName = values.firstName + ' ' + values.lastName;
+            values.appointmentDate = appointmentDateSec;
         }
         console.log('after change form submission value', values);
 
@@ -185,40 +180,20 @@ const LeadDetailPage = ({ item }) => {
                                 <Form>
                                     <Grid container spacing={2}>
 
-                                        <Grid item xs={6} md={2}>
-                                            <label htmlFor="salutation">Salutation  </label>
-                                            <Field name="salutation" component={CustomizedSelectForFormik} className="form-customSelect">
-                                                <MenuItem value=""><em>None</em></MenuItem>
-                                                {
-                                                    NameSalutionPickList.map((i) => {
-                                                        return <MenuItem value={i.value}>{i.text}</MenuItem>
-                                                    })
-                                                }
-                                            </Field>
-                                        </Grid>
-                                        <Grid item xs={6} md={4}>
-                                            <label htmlFor="firstName" >First Name</label>
-                                            <Field name='firstName' type="text" class="form-input" />
+                                        <Grid item xs={6} md={6}>
+                                            <label htmlFor="fullName">Full Name<span className="text-danger">*</span></label>
+                                            <Field name='fullName' type="text" class="form-input" />
                                             <div style={{ color: 'red' }}>
-                                                <ErrorMessage name="firstName" />
+                                                <ErrorMessage name="fullName" />
                                             </div>
                                         </Grid>
                                         <Grid item xs={6} md={6}>
-                                            <label htmlFor="lastName" >Last Name<span className="text-danger">*</span> </label>
-                                            <Field name='lastName' type="text" class="form-input" />
+                                            <label htmlFor="companyName" >Company Name<span className="text-danger">*</span> </label>
+                                            <Field name='companyName' type="text" class="form-input" />
                                             <div style={{ color: 'red' }}>
-                                                <ErrorMessage name="lastName" />
+                                                <ErrorMessage name="companyName" />
                                             </div>
                                         </Grid>
-                                        {!showNew && (
-                                            <>
-                                                <Grid item xs={6} md={6}>
-                                                    <label htmlFor="fullName" >Full Name</label>
-                                                    <Field name='fullName' type="text" class="form-input" disabled
-                                                    />
-                                                </Grid>
-                                            </>
-                                        )}
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="phone">Phone</label>
                                             <Field name="phone" type="phone" class="form-input" />
@@ -270,45 +245,38 @@ const LeadDetailPage = ({ item }) => {
                                                 <ErrorMessage name="leadStatus" />
                                             </div>
                                         </Grid>
+
                                         <Grid item xs={6} md={6}>
-                                            <label htmlFor="createdbyId">User Name </label>
-                                            <Autocomplete
-                                                name="createdbyId"
-                                                options={usersRecord}
-                                                //  defaultValue={values.userDetails.userName}
-                                                value={values.userDetails}
-                                                getOptionLabel={option => option.userName || ''}
-                                                // isOptionEqualToValue={(option, value) => option.userName === value.userName}
-                                                onChange={(e, value) => {
-                                                    console.log('inside onchange values', value);
-                                                    if (!value) {
-                                                        console.log('!value', value);
-                                                        setFieldValue("createdbyId", '')
-                                                        setFieldValue("userDetails", '')
-                                                    } else {
-                                                        console.log('value', value);
-                                                        setFieldValue("createdbyId", value.id)
-                                                        setFieldValue("userDetails", value)
-                                                    }
-                                                }}
-                                                onInputChange={(event, newInputValue) => {
-                                                    console.log('newInputValue', newInputValue);
-                                                    if (newInputValue.length >= 3) {
-                                                        FetchUsersbyName(newInputValue);
-                                                    }
-                                                    else if (newInputValue.length == 0) {
-                                                        FetchUsersbyName(newInputValue);
-                                                    }
-                                                }}
-                                                renderInput={params => (
-                                                    <Field component={TextField} {...params} name="createdbyId" />
-                                                )}
-                                            />
+                                            <label htmlFor="linkedinProfile">Linkedin Profile</label>
+                                            <Field name="linkedinProfile" type="url" class="form-input" />
+                                        </Grid>
+                                        <Grid item xs={6} md={6}>
+                                            <label htmlFor="location">Location</label>
+                                            <Field name="location" type="text" class="form-input" />
+                                        </Grid>
+                                        <Grid item xs={6} md={6}>
+                                            <label htmlFor="appointmentDate">Appointment Date</label>
+                                            <Field name="appointmentDate" type="date" class="form-input" />
+                                        </Grid>
+                                        <Grid item xs={6} md={6}>
+                                            <label htmlFor="demo">demo</label>
+                                            <Field name="demo" component={CustomizedSelectForFormik} className="form-customSelect">
+                                                <MenuItem value=""><em>None</em></MenuItem>
+                                                {
+                                                    LeadsDemoPicklist.map((i) => {
+                                                        return <MenuItem value={i.value}>{i.text}</MenuItem>
+                                                    })
+                                                }
+                                            </Field>
+                                        </Grid>
+                                        <Grid item xs={6} md={6}>
+                                            <label htmlFor="remarks">Remarks</label>
+                                            <Field name="remarks" as="textarea" class="form-input" />
                                         </Grid>
                                         {!showNew && (
                                             <>
                                                 <Grid item xs={6} md={6}>
-                                                    <label htmlFor="createdDate" >created Date</label>
+                                                    <label htmlFor="createdDate" >Created Date</label>
                                                     <Field name='createdDate' type="text" class="form-input" disabled />
                                                 </Grid>
                                                 <Grid item xs={6} md={6}>

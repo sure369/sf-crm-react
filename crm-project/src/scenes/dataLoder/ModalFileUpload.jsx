@@ -111,7 +111,7 @@ const ModalFileUpload = ({ item, handleModal }) => {
                                 <Grid container spacing={2}>
                                     <Grid item xs={12} md={12}>
 
-                                        <label htmlFor="file">Import Opportunity File</label>
+                                        <label htmlFor="file">Import csv File</label>
                                         <Field name="file" type="file"
                                         className="form-input"
                                         accept=".csv"

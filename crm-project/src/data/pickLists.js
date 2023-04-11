@@ -203,3 +203,10 @@ export const DataLoaderObjectPicklist=[
     {text:'Lead',value:'Lead'}, 
     {text:'Opportunity',value:'Opportunity'}, 
 ]
+
+export const LeadsDemoPicklist=[  
+    
+    {text:'First',value:'First'}, 
+    {text:'Second',value:'Second'}, 
+    {text:'Final',value:'Final'}, 
+]

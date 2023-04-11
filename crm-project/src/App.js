@@ -63,6 +63,8 @@ import ResponsiveTasks from "./scenes/tasks/ResponsiveScreen";
 import ResponsiveUsers from "./scenes/users/ResponsiveScreen";
 import LoginIndex from "./scenes/login/LoginIndex";
 
+import FooterComponnet from "./scenes/footer";
+
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
@@ -116,6 +118,7 @@ function App() {
               <Route path="/leadDetailPage" element={<FlexLeads/>}  />
               {/* <Route path="/leadDetailPage/:Id" element={<LeadDetailPage/>} /> */}
               <Route path="/opportunityDetailPage" element={<FlexOpportunities/>}/>
+              {/* <Route path="/accountDetailPage/:id" element={<FlexAccounts/>} /> */}
               <Route path="/accountDetailPage" element={<FlexAccounts/>} />
               <Route path="/taskDetailPage" element={<FlexTasks/>}/>
               <Route path="/inventoryDetailPage" element={<FlexInventories/>}/>
@@ -132,7 +135,9 @@ function App() {
             
             </Routes>
           </main>
+         
         </div>
+        {/* <FooterComponnet/> */}
       </ThemeProvider>
      </ColorModeContext.Provider>
   );

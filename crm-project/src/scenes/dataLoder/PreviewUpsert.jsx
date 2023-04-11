@@ -20,6 +20,9 @@ function PreviewUpsert({  data ,file,ModalClose}) {
     const headers = Object.keys(data[0]);
 
     useEffect(()=>{
+
+      console.log(data,"data")
+      
       if(window.location.href.includes('opportunities')){
         setUpsertUrl(UpsertOppUrl)
       }
