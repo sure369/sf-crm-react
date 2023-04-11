@@ -149,6 +149,10 @@ const LeadDetailPage = ({ item }) => {
         navigate(-1)
     }
 
+    const openInNewTab = (url) => {
+        window.open(url, '_blank');
+      }
+
     return (
         <Grid item xs={12} style={{ margin: "20px" }}>
             <div style={{ textAlign: "center", marginBottom: "10px" }}>
@@ -248,7 +252,17 @@ const LeadDetailPage = ({ item }) => {
 
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="linkedinProfile">Linkedin Profile</label>
-                                            <Field name="linkedinProfile" type="url" class="form-input" />
+                                            <Field name="linkedinProfile" type="url" class="form-input" 
+                                            style={{color: 'blue', textDecoration: 'underline'}}
+                                             onClick={() => {
+                                                const linkedinProfile = values.linkedinProfile;
+                                                if (linkedinProfile) {
+                                                //   window.location.href = linkedinProfile;
+                                                  openInNewTab(linkedinProfile)
+                                                }
+                                              }}
+                                              />
+                                        
                                         </Grid>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="location">Location</label>
