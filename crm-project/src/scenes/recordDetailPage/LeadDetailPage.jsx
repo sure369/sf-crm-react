@@ -48,6 +48,8 @@ const LeadDetailPage = ({ item }) => {
         appointmentDate:'',
         demo:'',
         remarks:'',
+        primaryPhone:'',
+        secondaryPhone:'',
         createdbyId: '',
         createdDate: '',
         modifiedDate: '',
@@ -65,6 +67,8 @@ const LeadDetailPage = ({ item }) => {
         email: singleLead?.email ?? "",      
         linkedinProfile: singleLead?.linkedinProfile ?? "",
         location: singleLead?.location ?? "",
+        primaryPhone:singleLead?.primaryPhone ??"",
+        secondaryPhone:singleLead?.secondaryPhone??"",
         appointmentDate: new Date(singleLead?.appointmentDate).getUTCFullYear()
         + '-' + ('0' + (new Date(singleLead?.appointmentDate).getUTCMonth() + 1)).slice(-2)
         + '-' + ('0' + (new Date(singleLead?.appointmentDate).getUTCDate())).slice(-2) ||  "",
@@ -78,6 +82,13 @@ const LeadDetailPage = ({ item }) => {
 
     const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
 
+
+
+    const phoneRegex = /^\d{10}$/; // matches 10 digits
+    const landlineRegex = /^\d{2,5}-\d{6,8}$/; // matches 2-5 digits, hyphen, 6-8 digits
+
+
+
     const validationSchema = Yup.object({
         fullName: Yup
             .string()
@@ -90,7 +101,7 @@ const LeadDetailPage = ({ item }) => {
             .max(25, 'lastName must be less than 15 characters'),
         phone: Yup
             .string()
-            .matches(phoneRegExp, 'Phone number is not valid')
+            .matches(phoneRegex, 'Phone number is not valid')
             .min(10, "Phone number must be 10 characters, its short")
             .max(10, "Phone number must be 10 characters,its long"),
 
@@ -101,6 +112,13 @@ const LeadDetailPage = ({ item }) => {
             .string()
             .email('Invalid email address')
             .required('Required'),
+
+        primaryPhone: Yup
+            .string()
+            .matches(phoneRegex, 'Phone number is not valid'),
+        secondaryPhone:Yup
+            .string()
+            .matches(landlineRegex,'Phone number is not valid'),
     })
 
 
@@ -199,11 +217,8 @@ const LeadDetailPage = ({ item }) => {
                                         </Grid>
 
                                         <Grid item xs={6} md={6}>
-                                            <label htmlFor="designation" >Designation<span className="text-danger">*</span> </label>
+                                            <label htmlFor="designation" >Designation</label>
                                             <Field name='designation' type="text" class="form-input" />
-                                            <div style={{ color: 'red' }}>
-                                                <ErrorMessage name="companyName" />
-                                            </div>
                                         </Grid>
 
                                         
@@ -291,6 +306,20 @@ const LeadDetailPage = ({ item }) => {
                                                     })
                                                 }
                                             </Field>
+                                        </Grid>
+                                        <Grid item xs={6} md={6}>
+                                            <label htmlFor="primaryPhone">Primary Phone</label>
+                                            <Field name="primaryPhone" type="text" class="form-input" />
+                                            <div style={{ color: 'red' }}>
+                                                <ErrorMessage name="primaryPhone" />
+                                            </div>
+                                        </Grid>
+                                        <Grid item xs={6} md={6}>
+                                            <label htmlFor="secondaryPhone">Secondary Phone</label>
+                                            <Field name="secondaryPhone" type="text" class="form-input" />
+                                            <div style={{ color: 'red' }}>
+                                                <ErrorMessage name="secondaryPhone" />
+                                            </div>
                                         </Grid>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="remarks">Remarks</label>
