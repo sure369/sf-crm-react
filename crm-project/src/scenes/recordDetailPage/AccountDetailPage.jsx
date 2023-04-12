@@ -5,10 +5,12 @@ import * as Yup from "yup";
 import { Grid, Button, DialogActions, Box, TextField, Autocomplete,MenuItem, Select} from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom"
 import axios from 'axios'
-import "../formik/FormStyles.css"
+// import "../formik/FormStyles.css"
 import {IndustryPickList, AccRatingPickList,AccTypePickList,AccCitiesPickList, AccCountryPickList} from '../../data/pickLists'
 import CustomizedSelectForFormik from '../formik/CustomizedSelectForFormik';
 import ToastNotification from '../toast/ToastNotification';
+import './Form.css'
+
 
 const url = `${process.env.REACT_APP_SERVER_URL}/UpsertAccount`;
 const fetchInventoriesbyName = `${process.env.REACT_APP_SERVER_URL}/InventoryName`;
@@ -69,14 +71,15 @@ const AccountDetailPage = ({ item }) => {
         industry: singleAccount?.industry ?? "",
         billingAddress: singleAccount?.billingAddress ?? "",
         billingCountry: singleAccount?.billingCountry ?? "",
-        billingCity: singleAccount?.billingcity ?? "",
-        billingCities: cityPicklist?? "",
-        // billingCities:singleAccount?.billingCities ?? "",
+        billingCity: singleAccount?.billingCity ?? "",
+        // billingCities: cityPicklist?? "",
+        billingCities:singleAccount?.billingCities ?? "",
         createdbyId: singleAccount?.createdbyId ?? "",
         createdDate:  new Date(singleAccount?.createdDate).toLocaleString(),
         modifiedDate: new Date(singleAccount?.modifiedDate).toLocaleString(),
         _id: singleAccount?._id ?? "",
-        inventoryDetails:singleAccount?.InventoryDetails ?? "", 
+        inventoryDetails:singleAccount?.inventoryDetails ?? "", 
+        
         InventoryId: singleAccount?.InventoryId ?? "",
         InventoryName: singleAccount?.InventoryName ?? "",
     }
@@ -249,7 +252,7 @@ const AccountDetailPage = ({ item }) => {
                                 
                                 <ToastNotification notify={notify} setNotify={setNotify}/>
 
-                                <Form>
+                                <Form className="my-form">
                                     <Grid container spacing={2}>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="accountName">Account Name  <span className="text-danger">*</span></label>
@@ -266,7 +269,6 @@ const AccountDetailPage = ({ item }) => {
                                             <label htmlFor="InventoryId">Inventory Name </label>
                                             <Autocomplete
                                                 name="InventoryId"
-                                                className='form-customSelect'
                                                 options={inventoriesRecord}
                                                 value={values.inventoryDetails}
                                                 getOptionLabel={option => option.propertyName || ''}
@@ -365,29 +367,29 @@ const AccountDetailPage = ({ item }) => {
                                                 value={values.billingCountry}
                                                 onChange={async (event) => {
                                                     console.log('onchange',event.target.value)
-                                                    setFieldValue("billingCountry", event.target.value)
-                                                    // axios.post(getCityPicklists,{city:event.target.value,table:'Account'})
-                                                    axios.post(`${getCityPicklists}${event.target.value}&table=Account`)
-                                                    .then((res)=>{
-                                                        console.log('get cities',res.data)
-                                                        setCitiesPicklist(res.data)
+                                                    // setFieldValue("billingCountry", event.target.value)
+                                                    // // axios.post(getCityPicklists,{city:event.target.value,table:'Account'})
+                                                    // axios.post(`${getCityPicklists}${event.target.value}&table=Account`)
+                                                    // .then((res)=>{
+                                                    //     console.log('get cities',res.data)
+                                                    //     setCitiesPicklist(res.data)
                                                        
-                                                    })
-                                                    .catch((error)=>{
-                                                        console.log('error',error)
-                                                    })
-                                                    // const value = event.target.value;
-                                                    // const _billingCities = await getCities(value);
-                                                    // console.log('billingCities',_billingCities);
-                                                    // setFieldValue("billingCountry", value);
-                                                    // setFieldValue("billingCity", "");
-                                                    // setFieldValue("billingCities", _billingCities);
+                                                    // })
+                                                    // .catch((error)=>{
+                                                    //     console.log('error',error)
+                                                    // })
+                                                    const value = event.target.value;
+                                                    const _billingCities = await getCities(value);
+                                                    console.log('billingCities',_billingCities);
+                                                    setFieldValue("billingCountry", value);
+                                                    setFieldValue("billingCity", "");
+                                                    setFieldValue("billingCities", _billingCities);
                                                 }}
                                             >
                                                 <MenuItem value=""><em>None</em></MenuItem>
                                               {
-                                                countryPicklist.map((i)=>{
-                                                    return <MenuItem value={i.Country}>{i.Country}</MenuItem>
+                                                AccCountryPickList.map((i)=>{
+                                                    return <MenuItem value={i.value}>{i.text}</MenuItem>
                                                 })
                                               }  
                                             </Field>
@@ -404,9 +406,9 @@ const AccountDetailPage = ({ item }) => {
                                         
                                             >
                                                 <MenuItem value=""><em>None</em></MenuItem>
-                                                { cityPicklist&&
-                                                   cityPicklist.map((r) => (                                                      
-                                                         <MenuItem key={r.City} value={r.City} onClick={(e)=>MenuItemhandleclick(e)}>{r.City}</MenuItem>
+                                                { values.billingCities&&
+                                                   values.billingCities.map((r) => (                                                      
+                                                         <MenuItem key={r.value} value={r.value} onClick={(e)=>MenuItemhandleclick(e)}>{r.text}</MenuItem>
                                                     )
                                                         
                                                     )}

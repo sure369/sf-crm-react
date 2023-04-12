@@ -1,0 +1,64 @@
+.my-form {
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    width: 100%;
+    /* border: 1px solid #ccc; */
+    padding: 20px;
+  }
+  
+  .my-form label {
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .my-form .form-input {
+    height: 40px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  
+  .my-form .form-customSelect {
+    height: 40px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  
+  /* .my-form .MuiAutocomplete-root {
+    height: 40px;
+    align-items: center;
+  } */
+  
+  .my-form .MuiInputBase-root {
+    height: 40px;
+    font-size: 16px;
+    
+
+    
+  }
+
+  .my-form .MuiAutocomplete-root {
+    height: 40px;
+    display: flex;
+    /* align-items: center; */
+  }
+  
+  .my-form .MuiAutocomplete-inputRoot[class*="MuiOutlinedInput-root"] {
+    padding: 0;
+    height: 100%;
+  }
+  
+  .my-form .MuiInputBase-input {
+    font-size: 16px;
+    /* text-align: center; */
+    padding: 10px;
+  }
+  
+  .my-form .MuiFormLabel-root {
+    font-size: 16px;
+    font-weight: bold;
+  }

@@ -7,14 +7,14 @@ import {
     Autocomplete, TextField, MenuItem
 } from "@mui/material";
 import axios from 'axios'
-import "../formik/FormStyles.css"
+// import "../formik/FormStyles.css"
 import ToastNotification from "../toast/ToastNotification";
 import { TaskSubjectPicklist } from "../../data/pickLists";
 import CustomizedSelectForFormik from '../formik/CustomizedSelectForFormik';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-
+import '../recordDetailPage/Form.css'
 
 const UpsertUrl = `${process.env.REACT_APP_SERVER_URL}/UpsertTask`;
 
@@ -137,7 +137,7 @@ const ModalOppTask = ({ item, handleModal }) => {
                     return (
                         <>
                             <ToastNotification notify={notify} setNotify={setNotify} />
-                            <Form>
+                            <Form className="my-form">
                                 <Grid container spacing={2}>
                                     <Grid item xs={6} md={6}>
                                         <label htmlFor="subject">Subject  <span className="text-danger">*</span></label>
@@ -165,13 +165,13 @@ const ModalOppTask = ({ item, handleModal }) => {
                                                 onChange={(e) => {
                                                     setFieldValue('StartDate', e)
                                                 }}
-                                                renderInput={(params) => <TextField  {...params} className='form-input' error={false} />}
+                                                renderInput={(params) => <TextField  {...params} style={{width:'100%'}} error={false} />}
                                             />
                                         </Grid>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="EndDate">EndDate   </label> <br />
                                             <DateTimePicker
-                                                renderInput={(params) => <TextField {...params} className='form-input' error={false} />}
+                                                renderInput={(params) => <TextField {...params} style={{width:'100%'}} error={false} />}
                                                 value={values.EndDate}
                                                 onChange={(e) => {
                                                     setFieldValue('EndDate', e)

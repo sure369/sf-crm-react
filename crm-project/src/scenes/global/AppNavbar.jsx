@@ -24,7 +24,7 @@ const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 function AppNavbar() {
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
-  const [selected, setSelected] = useState("Users");
+  const [selected, setSelected] = useState("Inventories");
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -41,6 +41,12 @@ function AppNavbar() {
     setAnchorElUser(null);
   };
 
+  const handleMenuItemClick =(title)=>{
+    setSelected(title);
+    handleCloseNavMenu();
+  }
+
+
   return (
     
     // 5C5CFF
@@ -48,8 +54,7 @@ function AppNavbar() {
     <AppBar position="sticky" sx={{backgroundColor:'#5C5CFF' }} >
       <Container maxWidth="xl">
         <Toolbar disableGutters >
-          {/* <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} /> */}
-          <Typography
+           <Typography
             variant="h3"
              noWrap
             component="a"
@@ -92,15 +97,16 @@ function AppNavbar() {
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
               sx={{
-                display: { xs: 'block', md: 'none' },
-                "& .active": { color: "red", }
+                display: { xs: 'block', md: 'none' }
               }}
             >
               {pages.map((page, index) => (
                 <MenuItem key={page.title} 
-                 onClick={handleCloseNavMenu}
+                 onClick={() => handleMenuItemClick(page.title)}
                 active={selected === page.title}
-                
+                  sx={
+                    selected === page.title ? {color:"red"} :{}
+                  }
                 >
                   <Link to={page.toNav}
                     style={{ textDecoration: 'none', color: 'unset' }}
@@ -131,13 +137,15 @@ function AppNavbar() {
             Clouddesk
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } 
-                     , "& .active":{
-                      color: "red",
-                      }}}>
+                     , }}>
             {pages.map((page, index) => (
               <MenuItem key={page.title} 
-             
-              >
+              onClick={() => handleMenuItemClick(page.title)}
+             active={selected === page.title}
+               sx={
+                 selected === page.title ? {color:"red"} :{}
+               }
+             >
                 <Link to={page.toNav}
                   style={{ textDecoration: 'none', color: 'unset' }}
                 >

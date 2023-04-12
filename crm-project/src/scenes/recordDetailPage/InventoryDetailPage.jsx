@@ -5,10 +5,12 @@ import * as Yup from "yup";
 import { Grid, Button, DialogActions,MenuItem } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom"
 import axios from 'axios'
-import "../formik/FormStyles.css"
+// import "../formik/FormStyles.css"
 import ToastNotification from '../toast/ToastNotification';
 import { InvCitiesPickList,InvCountryPickList, InvStatusPicklist, InvTypePicklist } from '../../data/pickLists';
 import CustomizedSelectForFormik from '../formik/CustomizedSelectForFormik';
+import './Form.css'
+
 
 const url = `${process.env.REACT_APP_SERVER_URL}/UpsertInventory`;
 
@@ -176,7 +178,7 @@ const InventoryDetailPage = ({ item }) => {
                         return (
                             <>
                                 <ToastNotification notify={notify} setNotify={setNotify} />
-                                <Form>
+                                <Form className='my-form'>
                                     <Grid container spacing={2}>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="projectName">Project Name <span className="text-danger">*</span> </label>

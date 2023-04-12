@@ -8,10 +8,12 @@ import {
 } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom"
 import axios from 'axios'
-import "../formik/FormStyles.css"
+// import "../formik/FormStyles.css"
 import ToastNotification from '../toast/ToastNotification';
 import CustomizedSelectForFormik from '../formik/CustomizedSelectForFormik';
 import { UserAccessPicklist, UserRolePicklist } from '../../data/pickLists';
+import './Form.css'
+
 
 const url = `${process.env.REACT_APP_SERVER_URL}/UpsertUser`;
 const fetchUsersbyName = `${process.env.REACT_APP_SERVER_URL}/usersbyName`
@@ -57,8 +59,8 @@ const UserDetailPage = ({ item }) => {
         role: singleUser?.role ?? "",
         access: singleUser?.access ?? "",
         createdbyId: singleUser?.createdbyId ?? "",
-        createdDate: singleUser?.createdDate ?? "",
-        modifiedDate: singleUser?.modifiedDate ?? "",
+        createdDate:  new Date(singleUser?.createdDate).toLocaleString(),
+        modifiedDate: new Date(singleUser?.modifiedDate).toLocaleDateString(),
         _id: singleUser?._id ?? "",
     }
 
@@ -179,7 +181,7 @@ const UserDetailPage = ({ item }) => {
                         return (
                             <>
                                 <ToastNotification notify={notify} setNotify={setNotify} />
-                                <Form>
+                                <Form className='my-form'>
                                     <Grid container spacing={2}>
 
                                         <Grid item xs={6} md={6}>

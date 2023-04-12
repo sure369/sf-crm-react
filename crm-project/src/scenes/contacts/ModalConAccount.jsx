@@ -7,14 +7,14 @@ import {
     Autocomplete, TextField ,MenuItem
 } from "@mui/material";
 import axios from 'axios'
-import "../formik/FormStyles.css"
+// import "../formik/FormStyles.css"
 import ToastNotification from "../toast/ToastNotification";
 import { LeadSourcePickList, NameSalutionPickList} from '../../data/pickLists'
 import CustomizedSelectForFormik from '../formik/CustomizedSelectForFormik';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-
+import '../recordDetailPage/Form.css'
 
 const UpsertUrl = `${process.env.REACT_APP_SERVER_URL}/UpsertContact`;
 
@@ -141,7 +141,7 @@ const ModalConAccount = ({ item, handleModal }) => {
                     return (
                         <>
                           <ToastNotification notify={notify} setNotify={setNotify}/>
-                          <Form>
+                          <Form className="my-form">
                                         <Grid container spacing={2}>
                                             <Grid item xs={6} md={2}>
                                                 <label htmlFor="salutation">Salutation  </label>
@@ -187,7 +187,7 @@ const ModalConAccount = ({ item, handleModal }) => {
                                                         onChange={(e) => {
                                                             setFieldValue('dob', e)
                                                         }}
-                                                        renderInput={(params) => <TextField  {...params} className='form-input' error={false} />}
+                                                        renderInput={(params) => <TextField  {...params} style={{width:'100%'}} error={false} />}
                                                     />
 
                                                 </LocalizationProvider>

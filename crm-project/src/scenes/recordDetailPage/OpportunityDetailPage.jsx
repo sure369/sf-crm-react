@@ -2,16 +2,19 @@ import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { Grid, Button, Forminput, DialogActions, TextField, Autocomplete, MenuItem } from "@mui/material";
+import { Grid, Button, Forminput, DialogActions, TextField, Autocomplete, MenuItem ,Chip } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom"
 import axios from 'axios'
-import "../formik/FormStyles.css"
+// import "../formik/FormStyles.css"
 import ToastNotification from '../toast/ToastNotification';
 import { LeadSourcePickList, OppStagePicklist, OppTypePicklist } from '../../data/pickLists';
 import CustomizedSelectForFormik from '../formik/CustomizedSelectForFormik';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import './Form.css'
+
+
 
 const url = `${process.env.REACT_APP_SERVER_URL}/UpsertOpportunity`;
 const fetchLeadsbyName = `${process.env.REACT_APP_SERVER_URL}/LeadsbyName`;
@@ -37,6 +40,9 @@ const OpportunityDetailPage = ({ item }) => {
         FetchLeadsbyName('');
 
     }, [])
+
+
+
 
     const initialValues = {
         LeadId: '',
@@ -216,7 +222,7 @@ const OpportunityDetailPage = ({ item }) => {
                         return (
                             <>
                                 <ToastNotification notify={notify} setNotify={setNotify} />
-                                <Form>
+                                <Form className="my-form">
                                     <Grid container spacing={2}>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="opportunityName" >Opportunity Name<span className="text-danger">*</span> </label>
@@ -228,6 +234,7 @@ const OpportunityDetailPage = ({ item }) => {
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="InventoryId">Inventory Name </label>
                                             <Autocomplete
+                                          
                                                 name="InventoryId"
                                                 options={inventoriesRecord}
                                                 value={values.inventoryDetails}
@@ -255,8 +262,18 @@ const OpportunityDetailPage = ({ item }) => {
                                                         FetchInventoriesbyName(newInputValue);
                                                     }
                                                 }}
+                                                renderTags={(value, getTagProps) =>
+                                                    value.map((option, index) => (
+                                                        <Chip
+                                                            key={index}
+                                                            label={option.propertyName}
+                                                            {...getTagProps({ index })}
+                                                            sx={{ my: 0.5 }}
+                                                        />
+                                                    ))
+                                                }
                                                 renderInput={params => (
-                                                    <Field component={TextField} {...params} name="InventoryId" />
+                                                    <Field component={TextField} {...params} name="InventoryId"   />
                                                 )}
                                             />
                                         </Grid>
@@ -318,7 +335,7 @@ const OpportunityDetailPage = ({ item }) => {
                                         </Grid>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="leadSource"> Lead Source</label>
-                                            <Field name="leadSource" component={CustomizedSelectForFormik} className="form-customSelect">
+                                            <Field name="leadSource" component={CustomizedSelectForFormik} className="form-customSelect" >
                                                 <MenuItem value=""><em>None</em></MenuItem>
                                                 {
                                                     LeadSourcePickList.map((i) => {
@@ -336,7 +353,7 @@ const OpportunityDetailPage = ({ item }) => {
                                                     onChange={(e) => {
                                                         setFieldValue('closeDate', e)
                                                     }}
-                                                    renderInput={(params) => <TextField  {...params} className='form-input' error={false} />}
+                                                    renderInput={(params) => <TextField  {...params} style={{width: '100%'}} error={false} />}
                                                 />
                                             </LocalizationProvider>
                                         </Grid>

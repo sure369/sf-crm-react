@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom"
 import axios from 'axios'
-import "../formik/FormStyles.css"
+// import "../formik/FormStyles.css"
 import EmailModalPage from './EmailModalPage';
 import ToastNotification from '../toast/ToastNotification';
 import EmailIcon from '@mui/icons-material/Email';
@@ -19,6 +19,7 @@ import CustomizedSelectForFormik from '../formik/CustomizedSelectForFormik';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import './Form.css'
 
 
 const url = `${process.env.REACT_APP_SERVER_URL}/UpsertContact`;
@@ -252,8 +253,7 @@ const ContactDetailPage = ({ item }) => {
                             return (
                                 <>
                                     <ToastNotification notify={notify} setNotify={setNotify} />
-
-                                    <Form>
+                                    <Form className="my-form">
                                         <Grid container spacing={2}>
                                             <Grid item xs={6} md={2}>
                                                 <label htmlFor="salutation">Salutation  </label>
@@ -340,7 +340,7 @@ const ContactDetailPage = ({ item }) => {
                                                         onChange={(e) => {
                                                             setFieldValue('dob', e)
                                                         }}
-                                                        renderInput={(params) => <TextField  {...params} className='form-input' error={false} />}
+                                                        renderInput={(params) => <TextField  {...params} style={{width:'100%'}} error={false} />}
                                                     />
 
                                                 </LocalizationProvider>

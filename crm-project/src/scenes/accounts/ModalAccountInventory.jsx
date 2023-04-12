@@ -5,10 +5,11 @@ import * as Yup from "yup";
 import { Grid, Button, Forminput, DialogActions, MenuItem } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom"
 import axios from 'axios'
-import "../formik/FormStyles.css"
+// import "../formik/FormStyles.css"
 import ToastNotification from '../toast/ToastNotification';
 import {IndustryPickList, AccRatingPickList,AccTypePickList,AccCitiesPickList, AccCountryPickList} from '../../data/pickLists'
 import CustomizedSelectForFormik from '../formik/CustomizedSelectForFormik';
+import '../recordDetailPage/Form.css'
 
 
 const url = `${process.env.REACT_APP_SERVER_URL}/UpsertAccount`;
@@ -148,7 +149,7 @@ const ModalInventoryAccount = ({ item,handleModal }) => {
                                 
                                 <ToastNotification notify={notify} setNotify={setNotify}/>
 
-                                <Form>
+                                <Form className='my-form'>
                                     <Grid container spacing={2}>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="accountName">Account Name  <span className="text-danger">*</span></label>
@@ -192,6 +193,7 @@ const ModalInventoryAccount = ({ item,handleModal }) => {
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="type">Type</label>
                                             <Field name="type" component={CustomizedSelectForFormik}>
+                                            <MenuItem value=""><em>None</em></MenuItem>
                                               {
                                                 AccTypePickList.map((i)=>{
                                                     return <MenuItem value={i.value}>{i.text}</MenuItem>	
@@ -202,7 +204,7 @@ const ModalInventoryAccount = ({ item,handleModal }) => {
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="industry">Industry</label>
                                             <Field name="industry"  component={CustomizedSelectForFormik}>
-                                          
+                                            <MenuItem value=""><em>None</em></MenuItem>
                                           {
                                             IndustryPickList.map((i)=>{
                                                 return <MenuItem value={i.value}>{i.text}</MenuItem>	
@@ -228,6 +230,7 @@ const ModalInventoryAccount = ({ item,handleModal }) => {
                                                     setFieldValue("billingCities", _billingCities);
                                                 }}
                                             >
+                                                 <MenuItem value=""><em>None</em></MenuItem>
                                                
                                               {
                                                 AccCountryPickList.map((i)=>{
@@ -247,6 +250,7 @@ const ModalInventoryAccount = ({ item,handleModal }) => {
                                                 component={CustomizedSelectForFormik}
                                                 // onChange={handleChange}
                                             >
+                                                 <MenuItem value=""><em>None</em></MenuItem>
                                                
                                                 {values.billingCities &&
                                                     values.billingCities.map((r) => (                                                      
