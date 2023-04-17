@@ -323,7 +323,7 @@ const LeadDetailPage = ({ item }) => {
                                         </Grid>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="remarks">Remarks</label>
-                                            <Field name="remarks" as="textarea" class="form-input" />
+                                            <Field name="remarks" as="textarea" rows="6" class="form-input" />
                                         </Grid>
                                         {!showNew && (
                                             <>

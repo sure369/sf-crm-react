@@ -62,13 +62,17 @@ import ResponsiveOpportunities from "./scenes/opportunities/ResponsiveScreen";
 import ResponsiveTasks from "./scenes/tasks/ResponsiveScreen";
 import ResponsiveUsers from "./scenes/users/ResponsiveScreen";
 import LoginIndex from "./scenes/login/LoginIndex";
-
 import FooterComponnet from "./scenes/footer";
 
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
 
+  const [isAuthenticated,setIsAuthenticated] =useState(false)
+
+  const handleAuthentication =()=>{
+    setIsAuthenticated(true)
+  }
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
@@ -78,10 +82,17 @@ function App() {
          
           <main className="content" style={{height: "fit-content"}}>
          
-          <AppNavbar/>
+         {
+          isAuthenticated ? <>
+          
+          
+         <AppNavbar/>
          
             {/* <Topbar setIsSidebar={setIsSidebar} /> */}
             <Routes>
+
+            {/* <Route path ='/test' element={<LoginIndex/>} /> */}
+            
               <Route path="/" element={< ResponsiveInventories/>} />
               <Route path="/accounts" element={<ResponsiveAccounts />} />
               <Route path="/contacts" element={<ResponsiveContacts />} />
@@ -102,7 +113,7 @@ function App() {
 
               <Route path="/dataLoder" element={<DataLoadPage/>} />
               <Route path ='/file' element={<DropFileInput/>} />
-              <Route path ='/test' element={<LoginIndex/>} />
+            
               <Route path ='/test1' element={<TestForm/>} />
               <Route path='/mobi' element={<AccountsMobile/>} />
               <Route path='/invmobi' element={<InventoriesMobile/>} />
@@ -134,6 +145,11 @@ function App() {
             <Route path="/test-date" element={<MaterialUIPickers/>} />
             
             </Routes>
+
+            </>
+            :
+            <LoginIndex onAuthentication={handleAuthentication} />
+         }
           </main>
          
         </div>

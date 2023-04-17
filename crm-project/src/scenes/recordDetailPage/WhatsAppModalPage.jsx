@@ -4,8 +4,10 @@ import * as Yup from "yup";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Grid, Button, DialogActions } from "@mui/material";
 import axios from 'axios'
-import "../formik/FormStyles.css"
+// import "../formik/FormStyles.css"
 import ToastNotification from '../toast/ToastNotification';
+import '../recordDetailPage/Form.css'
+
 
 const urlSendWhatsAppbulk = `${process.env.REACT_APP_SERVER_URL}/bulkewhatsapp`
 
@@ -109,7 +111,7 @@ const WhatAppModalPage = ({ data, handleModal, bulkMail }) => {
 
                         return (
                             <>
-                                <Form>
+                                <Form className="my-form">
                                     <Grid container spacing={2}>
                                         <Grid item xs={12} md={12}>
                                             <label htmlFor="subject">Subject  <span className="text-danger">*</span></label>

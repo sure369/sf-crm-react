@@ -17,7 +17,7 @@ function PreviewUpsert({  data ,file,ModalClose}) {
 
   const[upsertUrl,setUpsertUrl]=useState()
 
-    const headers = Object.keys(data[0]);
+    const headers = Object.keys(data[0]).slice(0,8);
 
     useEffect(()=>{
 

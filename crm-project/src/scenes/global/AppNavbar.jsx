@@ -14,6 +14,7 @@ const pages = [
   { title: 'Opportunities', toNav: '/opportunities' },
   { title: 'Task', toNav: '/task' },
   { title: 'Users', toNav: '/users' },
+  {title:'Test',toNav:'/test'},
   { title: 'Data Loder', toNav: '/dataLoder' },
   { title: 'File Upload', toNav: '/file' },
   // { title: 'Junction Object', toNav: '/oppInventory' },
@@ -105,7 +106,7 @@ function AppNavbar() {
                  onClick={() => handleMenuItemClick(page.title)}
                 active={selected === page.title}
                   sx={
-                    selected === page.title ? {color:"red"} :{}
+                    selected === page.title ? {bgcolor:"#243665"} :{}
                   }
                 >
                   <Link to={page.toNav}
@@ -143,7 +144,7 @@ function AppNavbar() {
               onClick={() => handleMenuItemClick(page.title)}
              active={selected === page.title}
                sx={
-                 selected === page.title ? {color:"red"} :{}
+                 selected === page.title ? {bgcolor:"#243665"} :{}
                }
              >
                 <Link to={page.toNav}

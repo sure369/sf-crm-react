@@ -6,7 +6,8 @@ import {
     Autocomplete, TextField,Table
 } from "@mui/material";
 import axios from 'axios'
-import "../formik/FormStyles.css"
+// import "../formik/FormStyles.css"
+import '../recordDetailPage/Form.css'
 import PreviewDataload from "./PreviewUpsert";
 
 const generatePreview =`${process.env.REACT_APP_SERVER_URL}/generatePreview`;
@@ -107,7 +108,7 @@ const ModalFileUpload = ({ item, handleModal }) => {
                    
                     return (
                         <>
-                            <Form>
+                            <Form className="my-form">
                                 <Grid container spacing={2}>
                                     <Grid item xs={12} md={12}>
 
