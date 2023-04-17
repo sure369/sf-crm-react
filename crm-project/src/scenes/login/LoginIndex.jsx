@@ -7,7 +7,7 @@ import axios from 'axios'
 import '../recordDetailPage/Form.css'
 import Cdlogo from '../assets/cdlogo.jpg';
 
-const urlLogin = `${process.env.REACT_APP_SERVER_URL}/login`
+const loginUrl = `${process.env.REACT_APP_SERVER_URL}/signin`
 
 export default function LoginIndex({onAuthentication}) {
 
@@ -42,16 +42,25 @@ export default function LoginIndex({onAuthentication}) {
     })
     const formSubmission = async (values, { resetForm }) => {
         console.log('inside form Submission', values);
-        if(values.userName ===users.userName && values.password === users.password)
-        {
-             console.log('if')
-             onAuthentication();
-             // localStorage.setItem("authenticated", true);
-            // navigate("/accounts");
-        }
-        else{
-            console.log('else')
-        }
+
+        axios.post(loginUrl,values)
+        .then((res)=>{
+            console.log(res.data,"login api res")
+            onAuthentication();
+        })
+        .catch((error)=>{
+            console.log(error,"error")
+        })
+        // if(values.userName ===users.userName && values.password === users.password)
+        // {
+        //      console.log('if')
+        //      onAuthentication();
+        //      // localStorage.setItem("authenticated", true);
+        //     // navigate("/accounts");
+        // }
+        // else{
+        //     console.log('else')
+        // }
        
     }
     return(
