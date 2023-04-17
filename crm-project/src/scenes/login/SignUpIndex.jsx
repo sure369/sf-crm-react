@@ -7,12 +7,10 @@ import axios from 'axios'
 import '../recordDetailPage/Form.css'
 import Cdlogo from '../assets/cdlogo.jpg';
 
-const urlLogin = `${process.env.REACT_APP_SERVER_URL}/login`
+const singupUrl = `${process.env.REACT_APP_SERVER_URL}/signup`
 
-export default function LoginIndex({onAuthentication}) {
+export default function SignUpIndex() {
 
-
-    console.log(onAuthentication,"onAuthentication");
 
     const paperStyle={padding :20,height:'100%',width:280, margin:"20px auto"}
     const avatarStyle={   width: 100,height: 100}
@@ -25,11 +23,13 @@ export default function LoginIndex({onAuthentication}) {
 
     const initialValues = {
         userName: '',
+        email:'',
         password: '',
+        confirmPassword:''
     }
 
     const validationSchema = Yup.object({
-        userName: Yup
+        email:Yup
             .string()
             .email()
             .required('Required'),
@@ -37,21 +37,32 @@ export default function LoginIndex({onAuthentication}) {
             .string()
             .min(6,"Minimum 6 characters exist")
             .max(15,"Maximum 15 characters exist")
-            .required('Required')
+            .required('Please enter your password.')
         ,
+        confirmPassword:  Yup.string()
+        .required('Please re-enter your password.')
+        .oneOf([Yup.ref('password')], 'Your passwords do not match.')
     })
     const formSubmission = async (values, { resetForm }) => {
         console.log('inside form Submission', values);
-        if(values.userName ===users.userName && values.password === users.password)
-        {
-             console.log('if')
-             onAuthentication();
-             // localStorage.setItem("authenticated", true);
-            // navigate("/accounts");
-        }
-        else{
-            console.log('else')
-        }
+        values.userName=values.email;
+        delete values.confirmPassword;
+
+        console.log('after ', values);
+
+        axios.post(singupUrl,values)
+        .then((res)=>{
+            console.log(res.data,"sign up response")
+        })
+        // if(values.userName ===users.userName && values.password === users.password)
+        // {
+        //      console.log('if')
+        //      // localStorage.setItem("authenticated", true);
+        //     // navigate("/accounts");
+        // }
+        // else{
+        //     console.log('else')
+        // }
        
     }
     return(
@@ -61,7 +72,7 @@ export default function LoginIndex({onAuthentication}) {
                      <Avatar style={avatarStyle}>
                      <img src={Cdlogo} alt="cdlogo"  style={avatarStyle}/>
                      </Avatar>
-                    <h2>Sign In</h2>
+                    <h2>Sign Up</h2>
                 </Grid>
                 {/* <FormikLogin/>              */}
                 <Grid item xs={12} style={{ margin: "20px" }}>
@@ -78,13 +89,13 @@ export default function LoginIndex({onAuthentication}) {
                                <Form >
                                    <Grid container spacing={2}>
 
-                                       <Grid item xs={12} md={12}>
-                                           <label htmlFor="userName">User Name  <span className="text-danger">*</span></label>
-                                           <Field name="userName" type="email" class="login-form-input" />
+                                   <Grid item xs={12} md={12}>
+                                           <label htmlFor="email">Email/User Name  <span className="text-danger">*</span></label>
+                                           <Field name="email" type="email" class="login-form-input" />
                                            <div style={{ color: 'red' }}>
-                                               <ErrorMessage name="userName" />
+                                               <ErrorMessage name="email" />
                                            </div>
-                                       </Grid>
+                                       </Grid>                                       
                                        <Grid item xs={12} md={12}>
                                             <label htmlFor="password">Password <span className="text-danger">*</span> </label>
                                             <Field name="password"  type='password' class="login-form-input"/>
@@ -92,10 +103,17 @@ export default function LoginIndex({onAuthentication}) {
                                                 <ErrorMessage name="password" />
                                             </div>
                                       </Grid>
+                                      <Grid item xs={12} md={12}>
+                                            <label htmlFor="confirmPassword">Confirm Password <span className="text-danger">*</span> </label>
+                                            <Field name="confirmPassword"  type='password' class="login-form-input"/>
+                                            <div style={{ color: 'red' }}>
+                                                <ErrorMessage name="confirmPassword" />
+                                            </div>
+                                      </Grid>
                                       </Grid>
                                       <div className='action-buttons'>
                                        <DialogActions sx={{ justifyContent: "space-between",marginTop:'10px' }}>
-                                           <Button   type='success' color="secondary" variant="contained"  disabled={!isValid} >Login</Button>
+                                           <Button   type='success' color="secondary" variant="contained"  disabled={!isValid} >Sign Up</Button>
                                        </DialogActions>
                                    </div>
                                </Form>
@@ -104,17 +122,7 @@ export default function LoginIndex({onAuthentication}) {
                    }}
                </Formik>
            </Grid>
-           <div style={{ display: "flex" ,alignItems:"center", gap: "2rem"  }}>
 
-                <Typography component={Link} 
-                to="/forgot-password"> 
-                        Forgot password ?
-                </Typography>
-                <Typography component={Link} 
-                to="/sign-up"> 
-                        Sign Up
-                </Typography>
-                </div>
             </Paper>
         </Grid>
     )
