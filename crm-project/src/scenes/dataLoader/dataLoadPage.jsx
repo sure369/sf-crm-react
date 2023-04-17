@@ -150,7 +150,7 @@ const DataLoadPage = () => {
                                 </Grid>
 
                                 {
-    uplodedData.length>0 &&  <PreviewDataload  data={uplodedData} file={uplodedFile} ModalClose={handleModal} />
+    uplodedData.length>0 &&  <PreviewDataload  data={uplodedData} file={uplodedFile} ModalClose={handleModal} obj={values.object}/>
 }
 
                                 {/* <div className='action-buttons'>

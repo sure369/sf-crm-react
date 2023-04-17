@@ -11,9 +11,9 @@ const UpsertLeadUrl = `${process.env.REACT_APP_SERVER_URL}/dataloaderlead`;
 const UpsertAccountUrl=`${process.env.REACT_APP_SERVER_URL}/dataloaderAccount`;
 const UpsertOppUrl=`${process.env.REACT_APP_SERVER_URL}/dataloaderOpportunity`;
 
-function PreviewUpsert({  data ,file,ModalClose}) {
+function PreviewUpsert({  data ,file,ModalClose,obj}) {
 
-  // console.log(obj,"obj")
+  console.log(obj,"obj")
   const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
 
   const[upsertUrl,setUpsertUrl]=useState()
@@ -24,7 +24,8 @@ function PreviewUpsert({  data ,file,ModalClose}) {
 
       console.log(data,"data")
       
-      if(window.location.href.includes('opportunities')){
+      if(!obj){
+ if(window.location.href.includes('opportunities')){
         setUpsertUrl(UpsertOppUrl)
       }
       else if(window.location.href.includes('accounts')){
@@ -33,6 +34,19 @@ function PreviewUpsert({  data ,file,ModalClose}) {
       else if(window.location.href.includes('leads')){
         setUpsertUrl(UpsertLeadUrl)
       }
+      }
+      else{
+        if(obj==='Account'){
+          setUpsertUrl(UpsertAccountUrl)
+        }
+        else  if(obj==='Lead '){
+          setUpsertUrl(UpsertLeadUrl)
+        }
+        else  if(obj==='Opportunity'){
+          setUpsertUrl(UpsertOppUrl)
+        }
+      }
+     
     })
     const handleModal=()=>{
       
