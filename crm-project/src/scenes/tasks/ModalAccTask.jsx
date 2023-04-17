@@ -114,7 +114,7 @@ const ModalAccTask = ({ item, handleModal }) => {
     return (
         <Grid item xs={12} style={{ margin: "20px" }}>
             <div style={{ textAlign: "center", marginBottom: "10px" }}>
-                <h3>New Task</h3>
+                <h3>New Envet Log</h3>
             </div>
 
             <Formik
@@ -155,7 +155,7 @@ const ModalAccTask = ({ item, handleModal }) => {
                                         </div>
                                     </Grid>
                                     <Grid item xs={6} md={6}>
-                                        <label htmlFor="assignedTo">assignedTo  </label>
+                                        <label htmlFor="assignedTo">Assigned To  </label>
                                         <Field name="assignedTo" type="text" class="form-input" />
                                     </Grid>
                                     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -171,7 +171,7 @@ const ModalAccTask = ({ item, handleModal }) => {
                                             />
                                         </Grid>
                                         <Grid item xs={6} md={6}>
-                                            <label htmlFor="EndDate">EndDate   </label> <br />
+                                            <label htmlFor="EndDate">End Date   </label> <br />
                                             <DateTimePicker
                                                 renderInput={(params) => <TextField {...params} style={{width:'100%'}} error={false} />}
                                                 value={values.EndDate}
@@ -182,8 +182,8 @@ const ModalAccTask = ({ item, handleModal }) => {
 
                                         </Grid>
                                     </LocalizationProvider>
-                                    <Grid item xs={12} md={12}>
-                                        <label htmlFor="attachments">attachments</label>
+                                    {/* <Grid item xs={12} md={12}>
+                                        <label htmlFor="attachments">Attachments</label>
                                         <Field name="attacgments" type="file"
                                             className="form-input"
                                             onChange={(event) => {
@@ -193,7 +193,7 @@ const ModalAccTask = ({ item, handleModal }) => {
                                         <div style={{ color: 'red' }}>
                                             <ErrorMessage name="attachments" />
                                         </div>
-                                    </Grid>
+                                    </Grid> */}
                                     <Grid item xs={12} md={12}>
                                         <label htmlFor="description">Description</label>
                                         <Field as="textarea" name="description" class="form-input" />

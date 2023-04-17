@@ -65,9 +65,9 @@ const Task = () => {
     navigate("/taskDetailPage", { state: { record: {} } })
   };
 
-  const handleOnCellClick = (e, row) => {
-    console.log('selected record', row);
-    const item = row;
+  const handleOnCellClick = (e) => {
+    console.log('selected record', e);
+    const item = e.row;
     navigate("/taskDetailPage", { state: { record: { item } } })
   };
 
@@ -183,9 +183,9 @@ const Task = () => {
             {
               !showDelete ?
                 <>
-                  <IconButton style={{ padding: '20px', color: '#0080FF' }}>
+                  {/* <IconButton style={{ padding: '20px', color: '#0080FF' }}>
                     <EditIcon onClick={(e) => handleOnCellClick(e, params.row)} />
-                  </IconButton>
+                  </IconButton> */}
                   <IconButton style={{ padding: '20px', color: '#FF3333' }}>
                     <DeleteIcon onClick={(e) => onHandleDelete(e, params.row)} />
                   </IconButton>
@@ -206,8 +206,8 @@ const Task = () => {
 
       <Box m="20px">
         <Header
-          title="Task"
-          subtitle="List of Task"
+          title="Event Log"
+          subtitle="List of Event Log"
         />
         <Box
           m="40px 0 0 0"
@@ -245,7 +245,8 @@ const Task = () => {
               color: `${colors.grey[100]} !important`,
             },
             "& .MuiDataGrid-row:hover": {
-              backgroundColor: "#CECEF0"
+              backgroundColor: "#CECEF0",
+              cursor:'pointer',
             },
             "& .C-MuiDataGrid-row-even": {
               backgroundColor: "#D7ECFF",
@@ -297,6 +298,7 @@ const Task = () => {
               );
               setSelectedRecordDatas(selectedRowRecords)
             }}
+            onRowClick={(e) => handleOnCellClick(e)}
           />
         </Box>
       </Box>

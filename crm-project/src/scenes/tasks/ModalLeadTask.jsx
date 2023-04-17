@@ -119,7 +119,7 @@ const ModalTask = ({ item, handleModal }) => {
     return (
         <Grid item xs={12} style={{ margin: "20px" }}>
             <div style={{ textAlign: "center", marginBottom: "10px" }}>
-                <h3>New Task</h3>
+                <h3>New Event Log</h3>
             </div>
 
             <Formik
@@ -160,7 +160,7 @@ const ModalTask = ({ item, handleModal }) => {
                                         </div>
                                     </Grid>
                                     <Grid item xs={6} md={6}>
-                                        <label htmlFor="assignedTo">AssignedTo  </label>
+                                        <label htmlFor="assignedTo">Assigned To  </label>
                                         <Field name="assignedTo" type="text" class="form-input" />
                                     </Grid>
                                     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -176,7 +176,7 @@ const ModalTask = ({ item, handleModal }) => {
                                             />
                                         </Grid>
                                         <Grid item xs={6} md={6}>
-                                            <label htmlFor="EndDate">EndDate   </label> <br />
+                                            <label htmlFor="EndDate">End Date   </label> <br />
                                             <DateTimePicker
                                                 renderInput={(params) => <TextField {...params} style={{width:'100%'}} error={false} />}
                                                 value={values.EndDate}

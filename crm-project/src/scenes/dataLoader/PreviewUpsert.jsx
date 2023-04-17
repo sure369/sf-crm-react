@@ -13,6 +13,7 @@ const UpsertOppUrl=`${process.env.REACT_APP_SERVER_URL}/dataloaderOpportunity`;
 
 function PreviewUpsert({  data ,file,ModalClose}) {
 
+  // console.log(obj,"obj")
   const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
 
   const[upsertUrl,setUpsertUrl]=useState()

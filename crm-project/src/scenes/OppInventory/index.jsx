@@ -162,11 +162,11 @@ const OppInventoryJunction = () => {
       renderCell: (params) => {
       return (
         <>
-          <IconButton style={{ padding: '20px',color: '#0080FF'  }}>
-            <EditIcon onClick={(e) => handleOnCellClick(e, params.row)} />
+          <IconButton onClick={(e) => handleOnCellClick(e, params.row)} style={{ padding: '20px',color: '#0080FF'  }}>
+            <EditIcon  />
           </IconButton>
-          <IconButton style={{ padding: '20px' ,color: '#FF3333' }}>
-            <DeleteIcon onClick={(e) => onHandleDelete(e, params.row)} />
+          <IconButton onClick={(e) => onHandleDelete(e, params.row)} style={{ padding: '20px' ,color: '#FF3333' }}>
+            <DeleteIcon  />
           </IconButton>
         </>
       )} 

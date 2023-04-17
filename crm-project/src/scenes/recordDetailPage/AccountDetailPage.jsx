@@ -304,7 +304,7 @@ const AccountDetailPage = ({ item }) => {
                                         </Grid>
 
                                         <Grid item xs={6} md={6}>
-                                            <label htmlFor="annualRevenue">Aannual Revenue</label>
+                                            <label htmlFor="annualRevenue">Annual Revenue</label>
                                             <Field class="form-input" type="text" name="annualRevenue" />
                                             <div style={{ color: 'red' }}>
                                                 <ErrorMessage name="annualRevenue" />
@@ -428,7 +428,7 @@ const AccountDetailPage = ({ item }) => {
                                         {!showNew && (
                                             <>
                                                 <Grid item xs={6} md={6}>                                                  
-                                                    <label htmlFor="createdDate" >created Date</label>
+                                                    <label htmlFor="createdDate" >Created Date</label>
                                                     <Field name='createdDate' type="text" class="form-input" disabled />
                                                 </Grid>
 

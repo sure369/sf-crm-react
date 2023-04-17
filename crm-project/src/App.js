@@ -42,7 +42,7 @@ import FlexAccounts from "./scenes/Flex/FlexAccounts";
 import FlexTasks from "./scenes/Flex/FlexTasks";
 import TaskDetailPage from "./scenes/recordDetailPage/TaskDetailPage";
 import Task from "./scenes/tasks";
-import DataLoadPage from "./scenes/dataLoder/dataLoadPage";
+import DataLoadPage from "./scenes/dataLoader/dataLoadPage";
 import DropFileInput from "./scenes/fileUpload";
 import JnOppInventoryDetailPage from "./scenes/recordDetailPage/JnOppInventoryDetailPage";
 import OppInventoryJunction from "./scenes/OppInventory";
@@ -114,7 +114,7 @@ function App() {
               <Route path="/team" element={<Team />} />
               <Route path="/faq" element={<FAQ />} />
 
-              <Route path="/dataLoder" element={<DataLoadPage/>} />
+              <Route path="/dataLoader" element={<DataLoadPage/>} />
               <Route path ='/file' element={<DropFileInput/>} />
             
               <Route path ='/test1' element={<TestForm/>} />
@@ -134,7 +134,7 @@ function App() {
               <Route path="/opportunityDetailPage" element={<FlexOpportunities/>}/>
               {/* <Route path="/accountDetailPage/:id" element={<FlexAccounts/>} /> */}
               <Route path="/accountDetailPage" element={<FlexAccounts/>} />
-              <Route path="/taskDetailPage" element={<FlexTasks/>}/>
+              <Route path="/taskDetailPage" element={<TaskDetailPage/>}/>
               <Route path="/inventoryDetailPage" element={<FlexInventories/>}/>
               
               <Route path="/contactDetailPage" element={<ContactDetailPage/>} />

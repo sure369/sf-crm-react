@@ -16,7 +16,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import ToastNotification from '../toast/ToastNotification';
 import DeleteConfirmDialog from '../toast/DeleteConfirmDialog';
-import ModalFileUpload from '../dataLoder/ModalFileUpload';
+import ModalFileUpload from '../dataLoader/ModalFileUpload';
 
 const ModalStyle = {
   position: 'absolute',
@@ -82,9 +82,9 @@ const Accounts = () => {
     navigate("/new-accounts", { state: { record: {} } })
   };
 
-  const handleOnCellClick = (e, row) => {
-    console.log('selected record', row);
-    const item = row;
+  const handleOnCellClick = (e) => {
+    console.log('selected record', e);
+    const item = e.row;
     navigate(`/accountDetailPage`, { state: { record: { item } } })
     
     // navigate(`/accountDetailPage/${row._id}`, { state: { record: { item } } })
@@ -179,13 +179,13 @@ const Accounts = () => {
       headerAlign: 'center', align: 'center', flex: 1,
     },
     {
-      field: "annualRevenue", headerName: "annualRevenue",
+      field: "annualRevenue", headerName: "Annual Revenue",
       headerAlign: 'center', align: 'center', flex: 1,
       renderCell: (params) => {
         const formatCurrency = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', })
         return (
           <>
-            {formatCurrency.format(params.row.annualRevenue)}
+            { params.row.annualRevenue ? formatCurrency.format(params.row.annualRevenue):null}
           </>
         )
       }
@@ -203,11 +203,11 @@ const Accounts = () => {
             {
               !showDelete ?
                 <>
-                  <IconButton style={{ padding: '20px', color: '#0080FF' }}>
-                    <EditIcon onClick={(e) => handleOnCellClick(e, params.row)} />
-                  </IconButton>
-                  <IconButton style={{ padding: '20px', color: '#FF3333' }}>
-                    <DeleteIcon onClick={(e) => onHandleDelete(e, params.row)} />
+                  {/* <IconButton onClick={(e) => handleOnCellClick(e, params.row)} style={{ padding: '20px', color: '#0080FF' }}>
+                    <EditIcon  />
+                  </IconButton> */}
+                  <IconButton  onClick={(e) => onHandleDelete(e, params.row)} style={{ padding: '20px', color: '#FF3333' }}>
+                    <DeleteIcon />
                   </IconButton>
                 </>
                 : ''
@@ -264,7 +264,8 @@ const Accounts = () => {
               color: `${colors.grey[100]} !important`,
             },
             "& .MuiDataGrid-row:hover": {
-              backgroundColor: "#CECEF0"
+              backgroundColor: "#CECEF0",
+              cursor:'pointer'
             },
             "& .C-MuiDataGrid-row-even": {
               backgroundColor: "#D7ECFF",
@@ -331,6 +332,7 @@ const Accounts = () => {
               );
               setSelectedRecordDatas(selectedRowRecords)
             }}
+            onRowClick={(e) => handleOnCellClick(e)}
           />
         </Box>
       </Box>

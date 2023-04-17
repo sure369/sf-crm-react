@@ -372,7 +372,7 @@ const OpportunityDetailPage = ({ item }) => {
                                             <>
                                                 <Grid item xs={6} md={6}>
                                                     {/* value is aagined to  the fields */}
-                                                    <label htmlFor="createdDate" >created Date</label>
+                                                    <label htmlFor="createdDate" >Created Date</label>
                                                     <Field name='createdDate' type="text" class="form-input" disabled />
                                                 </Grid>
 

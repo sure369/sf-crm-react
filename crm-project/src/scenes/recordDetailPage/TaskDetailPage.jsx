@@ -253,7 +253,7 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
         <Grid item xs={12} style={{ margin: "20px" }}>
             <div style={{ textAlign: "center", marginBottom: "10px" }}>
                 {
-                    showNew ? <h3>New Task</h3> : <h3>Task Detail Page </h3>
+                    showNew ? <h3>New Event Log</h3> : <h3>Task Event Log </h3>
                 }
             </div>
 
@@ -294,7 +294,7 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
                                         </div>
                                     </Grid>                           
                                     <Grid item xs={6} md={6}>
-                                        <label htmlFor="object">object  </label>
+                                        <label htmlFor="object">Object  </label>
                                         <Field 
                                             name="object"
                                             component={autocompleteReadOnly ? CustomizedSelectDisableForFormik :CustomizedSelectForFormik } 
@@ -367,7 +367,7 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
                                                 />                                         
                                     </Grid>
                                     <Grid item xs={6} md={6}>
-                                        <label htmlFor="assignedTo">assignedTo  </label>
+                                        <label htmlFor="assignedTo">Assigned To  </label>
                                         <Field name="assignedTo" type="text" class="form-input" />
                                     </Grid>
                                     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -383,7 +383,7 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
                                      />
                                     </Grid>
                                     <Grid item xs={6} md={6}>
-                                        <label htmlFor="EndDate">EndDate   </label> <br/>
+                                        <label htmlFor="EndDate">End Date   </label> <br/>
                                         <DateTimePicker
                                                 renderInput={(params) => <TextField {...params} style={{width:'100%'}} error={false}/>}
                                                 value={values.EndDate}
@@ -437,7 +437,7 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
                                     {!showNew && (
                                         <>
                                             <Grid item xs={6} md={6}>
-                                                <label htmlFor="createdDate" >created Date</label>
+                                                <label htmlFor="createdDate" >Created Date</label>
                                                 <Field name='createdDate' type="text" class="form-input" disabled />
                                             </Grid>
                                             <Grid item xs={6} md={6}>

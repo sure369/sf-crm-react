@@ -297,7 +297,7 @@ const LeadDetailPage = ({ item }) => {
                                             <Field name="appointmentDate" type="date" class="form-input" />
                                         </Grid>
                                         <Grid item xs={6} md={6}>
-                                            <label htmlFor="demo">demo</label>
+                                            <label htmlFor="demo">Demo</label>
                                             <Field name="demo" component={CustomizedSelectForFormik} className="form-customSelect">
                                                 <MenuItem value=""><em>None</em></MenuItem>
                                                 {

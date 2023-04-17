@@ -13,7 +13,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import ToastNotification from '../toast/ToastNotification';
 import DeleteConfirmDialog from '../toast/DeleteConfirmDialog';
-import ModalFileUpload from '../dataLoder/ModalFileUpload';
+import ModalFileUpload from '../dataLoader/ModalFileUpload';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import EmailIcon from '@mui/icons-material/Email';
 import EmailModalPage from '../recordDetailPage/EmailModalPage';
@@ -84,9 +84,9 @@ const Leads = () => {
     navigate("/new-leads", { state: { record: {} } })
   };
 
-  const handleOnCellClick = (e, row) => {
-    console.log('selected record', row);
-    const item = row;
+  const handleOnCellClick = (e) => {
+    console.log('selected record', e);
+    const item = e.row;
     navigate("/leadDetailPage", { state: { record: { item } } })
   };
 
@@ -215,11 +215,11 @@ const Leads = () => {
             {
               !showDelete ?
                 <>
-                  <IconButton style={{ padding: '20px', color: '#0080FF' }}>
-                    <EditIcon onClick={(e) => handleOnCellClick(e, params.row)} />
-                  </IconButton>
-                  <IconButton style={{ padding: '20px', color: '#FF3333' }}>
-                    <DeleteIcon onClick={(e) => onHandleDelete(e, params.row)} />
+                  {/* <IconButton  onClick={(e) => handleOnCellClick(e, params.row)} style={{ padding: '20px', color: '#0080FF' }}>
+                    <EditIcon />
+                  </IconButton> */}
+                  <IconButton onClick={(e) => onHandleDelete(e, params.row)} style={{ padding: '20px', color: '#FF3333' }}>
+                    <DeleteIcon  />
                   </IconButton>
                 </>
                 : ''
@@ -275,7 +275,8 @@ const Leads = () => {
               color: `${colors.grey[100]} !important`,
             },
             "& .MuiDataGrid-row:hover": {
-              backgroundColor: "#CECEF0"
+              backgroundColor: "#CECEF0",
+              cursor:'pointer'
             },
             "& .C-MuiDataGrid-row-even": {
               backgroundColor: "#D7ECFF",
@@ -350,6 +351,7 @@ const Leads = () => {
               setSelectedRecordDatas(selectedRowRecords)
 
             }}
+            onRowClick={(e) => handleOnCellClick(e)}
           />
         </Box>
       </Box>

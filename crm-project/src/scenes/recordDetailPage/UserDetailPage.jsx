@@ -213,7 +213,7 @@ const UserDetailPage = ({ item }) => {
                                             </div>
                                         </Grid>
                                         <Grid item xs={6} md={6}>
-                                            <label htmlFor="username">username<span className="text-danger">*</span> </label>
+                                            <label htmlFor="username">User Name<span className="text-danger">*</span> </label>
                                             <Field name="username" type="text" class="form-input" />
                                             <div style={{ color: 'red' }}>
                                                 <ErrorMessage name="username" />
@@ -249,7 +249,7 @@ const UserDetailPage = ({ item }) => {
                                             </div>
                                         </Grid>
 
-                                        <Grid item xs={6} md={6}>
+                                        {/* <Grid item xs={6} md={6}>
                                             <label htmlFor="createdbyId">User Name </label>
                                             <Autocomplete
                                                 name="createdbyId"
@@ -281,9 +281,9 @@ const UserDetailPage = ({ item }) => {
                                                     <Field component={TextField} {...params} name="createdbyId" />
                                                 )}
                                             />
-                                        </Grid>
+                                        </Grid> */}
                                         <Grid item xs={6} md={6}>
-                                            <label htmlFor="phone">phone<span className="text-danger">*</span> </label>
+                                            <label htmlFor="phone">Phone<span className="text-danger">*</span> </label>
                                             <Field name="phone" type="text" class="form-input" />
                                             <div style={{ color: 'red' }}>
                                                 <ErrorMessage name="phone" />

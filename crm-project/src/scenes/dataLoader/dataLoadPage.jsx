@@ -6,9 +6,11 @@ import {
     Autocomplete, TextField,MenuItem
 } from "@mui/material";
 import axios from 'axios'
-import "../formik/FormStyles.css"
+// import "../formik/FormStyles.css"
+import '../recordDetailPage/Form.css'
 import CustomizedSelectForFormik from "../formik/CustomizedSelectForFormik";
 import { DataLoaderObjectPicklist } from "../../data/pickLists";
+import PreviewDataload from "./PreviewUpsert";
 
 const UpsertLeadUrl = `${process.env.REACT_APP_SERVER_URL}/dataloaderlead`;
 const UpsertAccountUrl=`${process.env.REACT_APP_SERVER_URL}/dataloaderAccount`;
@@ -16,6 +18,10 @@ const UpsertOppUrl=`${process.env.REACT_APP_SERVER_URL}/dataloaderOpportunity`;
 const generatePreview =`${process.env.REACT_APP_SERVER_URL}/generatePreview`;
 
 const DataLoadPage = () => {
+
+    const[uplodedData,setUplodedData]=useState([])
+    const[uplodedFile,setUploadedFile]=useState()
+
     useEffect(() => {
        
     }, [])
@@ -27,26 +33,11 @@ const DataLoadPage = () => {
     }   
     const SUPPORTED_FORMATS=['text/csv'];
     const FILE_SIZE =1024 * 1024
+
     const validationSchema = Yup.object({
         object: Yup
             .string()
-            .required('Required'),
-        
-        // file:Yup.mixed()
-        // .required('Required')
-        //         .test(
-        //             "fileSize",
-        //             "File is too large",
-        //             value => !value || (value && value.size <= FILE_SIZE)
-        //         )
-        //         .test(
-        //             "fileFormat",
-        //             "Unsupported Format",
-        //             value => !value || (value => value && SUPPORTED_FORMATS.includes(value.type))
-        //         )
-                        
-       
-
+            .required('Required'),                      
     })
     
     const fileSendValue =(obj,files)=>{
@@ -58,10 +49,11 @@ const DataLoadPage = () => {
          axios.post(generatePreview, formData)
     
             .then((res) => {
-                console.log('task form Submission  response', res);             
+                console.log('form  response', res.data); 
+                setUplodedData(res.data)            
             })
             .catch((error) => {
-                console.log('task form Submission  error', error);
+                console.log('form  error', error);
             })
     }
 
@@ -86,11 +78,16 @@ const DataLoadPage = () => {
             })
       }
       
+
+      const handleModal=()=>{
+        setUplodedData([])
+      }
     return (
         <Grid item xs={12} style={{ margin: "20px" }}>
             <div style={{ textAlign: "center", marginBottom: "10px" }}>
                 <h3>Data Loader</h3>                 
             </div>
+
 
             <Formik
                 initialValues={initialValues}
@@ -99,7 +96,7 @@ const DataLoadPage = () => {
             >
                 {(props) => {
                     const {
-                        values,
+                        values,isValid,
                         dirty,
                         isSubmitting,
                         handleChange,
@@ -112,11 +109,11 @@ const DataLoadPage = () => {
                         <>
                            
 
-                            <Form>
+                            <Form className="my-form">
                                 <Grid container spacing={2}>
                                     
-                                    <Grid item xs={12} md={12}>
-                                        <label htmlFor="object">Select Object</label>
+                                    <Grid item xs={6} md={6}>
+                                        <label htmlFor="object">Select Object <span className="text-danger">*</span></label>
                                         
                                         <Field name="object" component={CustomizedSelectForFormik}  className="form-customSelect">	
                                             <MenuItem value=""><em>None</em></MenuItem>
@@ -131,9 +128,9 @@ const DataLoadPage = () => {
                                             </div>
                                     </Grid>
                                        
-                                    <Grid item xs={12} md={12}>
+                                    <Grid item xs={6} md={6}>
 
-                                        <label htmlFor="file">file</label>
+                                        <label htmlFor="file">File</label>
                                         
                                         <Field name="file" type="file"
                                         className="form-input"
@@ -152,17 +149,24 @@ const DataLoadPage = () => {
                                  
                                 </Grid>
 
-                                <div className='action-buttons'>
+                                {
+    uplodedData.length>0 &&  <PreviewDataload  data={uplodedData} file={uplodedFile} ModalClose={handleModal} />
+}
+
+                                {/* <div className='action-buttons'>
                                     <DialogActions sx={{ justifyContent: "space-between" }}>
 
                                    
-                                                <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Save</Button>
+                                   {
+                                    uplodedData.length>0 &&
+                                  
+                                                <Button type='success' variant="contained" color="secondary" disabled={isValid}>Save</Button>
                                                  
-                                                                            
+                                            }                                      
                                         
 
                                     </DialogActions>
-                                </div>
+                                </div> */}
                             </Form>
                         </>
                     )

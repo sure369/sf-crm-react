@@ -176,12 +176,12 @@ const OpportunityRelatedItems = ({ item }) => {
           aria-controls="panel1a-content"
           id="panel1a-header"
         >
-          <Typography variant="h4">Task ({relatedTask.length})</Typography>
+          <Typography variant="h4">Event Log ({relatedTask.length})</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <Typography>
             <div style={{ textAlign: "end", marginBottom: "5px" }}>
-              <Button variant="contained" color="info" onClick={() => handleTaskModalOpen()} >New Task</Button>
+              <Button variant="contained" color="info" onClick={() => handleTaskModalOpen()} >NEW EVENT</Button>
             </div>
             <Card dense compoent="span" >
 

@@ -71,9 +71,9 @@ const Contacts = () => {
     navigate("/contactDetailPage", { state: { record: {} } })
   };
 
-  const handleOnCellClick = (e, row) => {
-    console.log('selected record', row);
-    const item = row;
+  const handleOnCellClick = (e) => {
+    console.log('selected record', e);
+    const item = e.row;
     navigate("/contactDetailPage", { state: { record: { item } } })
   };
 
@@ -209,11 +209,11 @@ const Contacts = () => {
             {
               !showEmail ?
                 <>
-                  <IconButton style={{ padding: '20px', color: '#0080FF' }} >
-                    <EditIcon onClick={(e) => handleOnCellClick(e, params.row)} />
-                  </IconButton>
-                  <IconButton style={{ padding: '20px', color: '#FF3333' }} >
-                    <DeleteIcon onClick={(e) => onHandleDelete(e, params.row)} />
+                  {/* <IconButton onClick={(e) => handleOnCellClick(e, params.row)} style={{ padding: '20px', color: '#0080FF' }} >
+                    <EditIcon  />
+                  </IconButton> */}
+                  <IconButton onClick={(e) => onHandleDelete(e, params.row)} style={{ padding: '20px', color: '#FF3333' }} >
+                    <DeleteIcon  />
                   </IconButton>
                 </>
                 : ''
@@ -274,7 +274,8 @@ const Contacts = () => {
               color: `${colors.grey[100]} !important`,
             }, 
             "& .MuiDataGrid-row:hover": {
-              backgroundColor: "#CECEF0"
+              backgroundColor: "#CECEF0",
+              cursor:'pointer'
             },                     
             "& .C-MuiDataGrid-row-even":{
               backgroundColor: "#D7ECFF",
@@ -291,9 +292,9 @@ const Contacts = () => {
                     <Tooltip title="Email">
                       <IconButton> <EmailIcon sx={{ color: '#DB4437' }} onClick={handlesendEmail} /> </IconButton>
                     </Tooltip>
-                    <Tooltip title="Whatsapp">
+                    {/* <Tooltip title="Whatsapp">
                       <IconButton> <WhatsAppIcon sx={{ color: '#34A853' }} onClick={handlesendWhatsapp} /> </IconButton>
-                    </Tooltip>
+                    </Tooltip> */}
                     <Tooltip title="Delete Selected">
                       <IconButton> <DeleteIcon sx={{ color: '#FF3333' }} onClick={(e) => onHandleDelete(e,selectedRecordIds)} /> </IconButton>
                     </Tooltip>
@@ -335,6 +336,7 @@ const Contacts = () => {
               setSelectedRecordDatas(selectedRowRecords)
               console.log('selectedRowRecords', selectedRowRecords)
             }}
+            onRowClick={(e) => handleOnCellClick(e)}
           />
         </Box>
       </Box>

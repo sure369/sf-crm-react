@@ -15,7 +15,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import ToastNotification from '../toast/ToastNotification';
 import DeleteConfirmDialog from '../toast/DeleteConfirmDialog';
-import ModalFileUpload from '../dataLoder/ModalFileUpload';
+import ModalFileUpload from '../dataLoader/ModalFileUpload';
 import { OppIndexFilterPicklist } from '../../data/pickLists';
 
 const ModalStyle = {
@@ -87,9 +87,9 @@ const Opportunities = () => {
     navigate("/new-opportunities", { state: { record: {} } })
   };
 
-  const handleOnCellClick = (e, row) => {
-    console.log('selected record', row);
-    const item = row;
+  const handleOnCellClick = (e) => {
+    console.log('selected record', e);
+    const item = e.row;
     navigate("/opportunityDetailPage", { state: { record: { item } } })
   };
 
@@ -352,7 +352,7 @@ console.log(records,"allRecords")
       headerAlign: 'center', align: 'center', flex: 1,
     },
     {
-      field: "amount", headerName: "Opp Amount",
+      field: "amount", headerName: "Opportunity Amount",
       headerAlign: 'center', align: 'center', flex: 1,
       renderCell: (params) => {
         const formatCurrency = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', })
@@ -376,11 +376,11 @@ console.log(records,"allRecords")
             {
               !showDelete ?
                 <>
-                  <IconButton style={{ padding: '20px', color: '#0080FF' }}>
-                    <EditIcon onClick={(e) => handleOnCellClick(e, params.row)} />
-                  </IconButton>
-                  <IconButton style={{ padding: '20px', color: '#FF3333' }}>
-                    <DeleteIcon onClick={(e) => onHandleDelete(e, params.row)} />
+                  {/* <IconButton onClick={(e) => handleOnCellClick(e, params.row)} style={{ padding: '20px', color: '#0080FF' }}>
+                    <EditIcon  />
+                  </IconButton> */}
+                  <IconButton onClick={(e) => onHandleDelete(e, params.row)}  style={{ padding: '20px', color: '#FF3333' }}>
+                    <DeleteIcon />
                   </IconButton>
                 </>
                 : ''
@@ -449,7 +449,8 @@ console.log(records,"allRecords")
               color: `${colors.grey[100]} !important`,
             },
             "& .MuiDataGrid-row:hover": {
-              backgroundColor: "#CECEF0"
+              backgroundColor: "#CECEF0",
+              cursor:'pointer'
             },
             "& .C-MuiDataGrid-row-even": {
               backgroundColor: "#D7ECFF",
@@ -471,8 +472,8 @@ console.log(records,"allRecords")
                 <>
                 <Box  display="flex" justifyContent="space-between">
                 <Grid container spacing={2}>
-                <Grid item xs={6}>
-                  <FormControl sx={{mr:1 , boxSizing:'small'}}>
+                 {/*<Grid item xs={6}>
+                   <FormControl sx={{mr:1 , boxSizing:'small'}}> 
                   <InputLabel id="demo-simple-select-label">Select Opportunity</InputLabel>
                   <Select 
                     labelId="demo-simple-select-label"
@@ -491,8 +492,8 @@ console.log(records,"allRecords")
                   }
                   </Select>
                   </FormControl>
-                  </Grid>
-                  <Grid item xs={3}>
+                  </Grid> */}
+                  <Grid item xs={6}>
                   <Button
                    variant="contained" color="secondary" onClick={handleImportModalOpen}
                    sx={{color:'white'}}
@@ -501,7 +502,7 @@ console.log(records,"allRecords")
                   </Button>
                   </Grid>
                  
-                  <Grid item xs={3}>
+                  <Grid item xs={6}>
                   <Button
                    variant="contained" color="info" onClick={handleAddRecord}
                    >
@@ -544,6 +545,7 @@ console.log(records,"allRecords")
               setSelectedRecordDatas(selectedRowRecords)
 
             }}
+            onRowClick={(e) => handleOnCellClick(e)}
           />
         </Box>
       </Box>

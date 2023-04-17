@@ -299,12 +299,12 @@ const columns = [
           aria-controls="panel1a-content"
           id="panel1a-header"
         >
-          <Typography variant="h4">Related Task ({relatedTask.length})</Typography>
+          <Typography variant="h4">Event Logs ({relatedTask.length})</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <Typography>
             <div style={{ textAlign: "end", marginBottom: "5px" }}>
-              <Button variant="contained" color="info" onClick={() => handletaskModalOpen()} >New Task</Button>
+              <Button variant="contained" color="info" onClick={() => handletaskModalOpen()} >NEW EVENT</Button>
             </div>
             <Card dense compoent="span" >
 
@@ -395,7 +395,7 @@ const columns = [
           aria-controls="panel2a-content"
           id="panel2a-header"
         >
-          <Typography variant="h4">Conatct Table({relatedContact.length}) </Typography>
+          <Typography variant="h4">Contact Table({relatedContact.length}) </Typography>
         </AccordionSummary>
         <AccordionDetails>
        

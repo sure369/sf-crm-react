@@ -7,10 +7,13 @@ import axios from 'axios'
 import '../recordDetailPage/Form.css'
 import Cdlogo from '../assets/cdlogo.jpg';
 
-const loginUrl = `${process.env.REACT_APP_SERVER_URL}/signin`
+const loginUrl = `${process.env.REACT_APP_SERVER_URL}/signin`;
+
+// const loginUrl ='http://localhost:80/api/signin';
 
 export default function LoginIndex({onAuthentication}) {
 
+    console.log(process.env.REACT_APP_SERVER_URL,"REACT_APP_SERVER_URL")
 
     console.log(onAuthentication,"onAuthentication");
 
@@ -19,6 +22,8 @@ export default function LoginIndex({onAuthentication}) {
     const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
     const [showPassword, setShowPassword] = useState(false);
 
+    const[signInCredential,setSignInCredential]=useState(false)
+    const[signInData,setSignInData]=useState()
     const users ={userName:'suresh@gmail.com',password:'123456'}
 
     const navigate=useNavigate()
@@ -42,11 +47,15 @@ export default function LoginIndex({onAuthentication}) {
     })
     const formSubmission = async (values, { resetForm }) => {
         console.log('inside form Submission', values);
-
         axios.post(loginUrl,values)
         .then((res)=>{
             console.log(res.data,"login api res")
-            onAuthentication();
+            res.data.status ==='success' ?setSignInCredential(true) :setSignInCredential(false)
+           
+            setSignInData(res.data)
+            if(res.data.status==='success'){
+                onAuthentication()
+            }
         })
         .catch((error)=>{
             console.log(error,"error")
@@ -86,7 +95,6 @@ export default function LoginIndex({onAuthentication}) {
                            <>
                                <Form >
                                    <Grid container spacing={2}>
-
                                        <Grid item xs={12} md={12}>
                                            <label htmlFor="userName">User Name  <span className="text-danger">*</span></label>
                                            <Field name="userName" type="email" class="login-form-input" />

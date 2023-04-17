@@ -218,9 +218,9 @@ const ContactDetailPage = ({ item }) => {
                                     <Tooltip title="Send Email">
                                         <IconButton> <EmailIcon sx={{ color: '#DB4437' }} onClick={handlesendEmail} /> </IconButton>
                                     </Tooltip>
-                                    <Tooltip title="Whatsapp">
+                                    {/* <Tooltip title="Whatsapp">
                                         <IconButton> <WhatsAppIcon sx={{ color: '#34A853' }} onClick={handlesendWhatsapp} /> </IconButton>
-                                    </Tooltip>
+                                    </Tooltip> */}
                                 </>
 
 
@@ -357,7 +357,7 @@ const ContactDetailPage = ({ item }) => {
                                                 </div>
                                             </Grid>
                                             <Grid item xs={6} md={6}>
-                                                <label htmlFor="leadSource"> lead Source</label>
+                                                <label htmlFor="leadSource"> Lead Source</label>
                                                 <Field name="leadSource" component={CustomizedSelectForFormik} className="form-customSelect">
                                                 <MenuItem value=""><em>None</em></MenuItem>
                                                  {
@@ -369,7 +369,7 @@ const ContactDetailPage = ({ item }) => {
                                             </Grid>
 
                                             <Grid Grid item xs={6} md={6}>
-                                                <label htmlFor="fullAddress">fullAddress</label>
+                                                <label htmlFor="fullAddress">Full Address</label>
                                                 <Field as="textarea" name="fullAddress" class="form-input" />
                                             </Grid>
 
@@ -383,7 +383,7 @@ const ContactDetailPage = ({ item }) => {
                                             {!showNew && (
                                                 <>
                                                     <Grid item xs={6} md={6}>
-                                                        <label htmlFor="createdDate" >created Date</label>
+                                                        <label htmlFor="createdDate" >Created Date</label>
                                                         <Field name='createdDate' type="text" class="form-input" disabled />
                                                     </Grid>
 

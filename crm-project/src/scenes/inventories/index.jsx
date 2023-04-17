@@ -65,8 +65,9 @@ const Inventories = () => {
   };
 
   const handleOnCellClick = (e, row) => {
+    console.log("event",e.row)
     console.log('selected record', row);
-    const item = row;
+    const item = e.row;
     navigate("/inventoryDetailPage", { state: { record: { item } } })
   };
 
@@ -157,7 +158,7 @@ const onebyoneDelete=(row)=>{
       headerAlign: 'center', align: 'center', flex: 1,
     },
     {
-      field: "status", headerName: "status",
+      field: "status", headerName: "Status",
       headerAlign: 'center', align: 'center', flex: 1,
       cellClassName: (params) => {
         const statusClassName = (params.row.status ==='Available') ? 'green' : 
@@ -175,11 +176,11 @@ const onebyoneDelete=(row)=>{
           <>
           {
             !showDelete ? <>
-            <IconButton style={{ padding: '20px', color: '#0080FF' }}>
-              <EditIcon onClick={(e) => handleOnCellClick(e, params.row)} />
-            </IconButton>
-            <IconButton style={{ padding: '20px', color: '#FF3333' }}>
-              <DeleteIcon onClick={(e) => onHandleDelete(e, params.row)} />
+            {/* <IconButton onClick={(e) => handleOnCellClick(e, params.row)} style={{ padding: '20px', color: '#0080FF' }}>
+              <EditIcon  />
+            </IconButton> */}
+            <IconButton onClick={(e) => onHandleDelete(e, params.row)} style={{ padding: '20px', color: '#FF3333' }}>
+              <DeleteIcon  />
             </IconButton>
           </>
           :''
@@ -243,7 +244,8 @@ const onebyoneDelete=(row)=>{
               color: `${colors.grey[100]} !important`,
             },
             "& .MuiDataGrid-row:hover": {
-              backgroundColor: "#CECEF0"
+              backgroundColor: "#CECEF0",
+              cursor:'pointer'
             },                     
             "& .C-MuiDataGrid-row-even":{
               backgroundColor: "#D7ECFF",
@@ -315,6 +317,7 @@ const onebyoneDelete=(row)=>{
               setSelectedRecordDatas(selectedRowRecords)
               console.log('selectedRowRecords', selectedRowRecords)
             }}
+            onRowClick={(e) => handleOnCellClick(e)}
           
           />
         </Box>

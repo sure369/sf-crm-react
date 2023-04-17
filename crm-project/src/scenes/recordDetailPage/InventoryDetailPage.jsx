@@ -287,7 +287,7 @@ const InventoryDetailPage = ({ item }) => {
                                         {!showNew && (
                                             <>
                                                 <Grid item xs={6} md={6}>
-                                                    <label htmlFor="createdDate" >created Date</label>
+                                                    <label htmlFor="createdDate" >Created Date</label>
                                                     <Field name='createdDate' type="text" class="form-input" disabled />
                                                 </Grid>
 

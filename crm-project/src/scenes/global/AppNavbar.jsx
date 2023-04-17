@@ -12,11 +12,12 @@ const pages = [
   { title: 'Accounts', toNav: '/accounts' },
   { title: 'Contacts', toNav: '/contacts' },
   { title: 'Opportunities', toNav: '/opportunities' },
-  { title: 'Task', toNav: '/task' },
+  { title: 'Event Log', toNav: '/task' },
   { title: 'Users', toNav: '/users' },
-  {title:'Test',toNav:'/test'},
-  { title: 'Data Loder', toNav: '/dataLoder' },
+  { title: 'Data Loader', toNav: '/dataLoader' },
   { title: 'File Upload', toNav: '/file' },
+  
+  // {title:'Test',toNav:'/test'},
   // { title: 'Junction Object', toNav: '/oppInventory' },
 ];
 
