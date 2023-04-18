@@ -15,7 +15,7 @@ export default function LoginIndex({onAuthentication}) {
 
     console.log(process.env.REACT_APP_SERVER_URL,"REACT_APP_SERVER_URL")
 
-    console.log(onAuthentication,"onAuthentication");
+
 
     const paperStyle={padding :20,height:'100%',width:280, margin:"20px auto"}
     const avatarStyle={   width: 100,height: 100}
@@ -25,6 +25,8 @@ export default function LoginIndex({onAuthentication}) {
     const[signInCredential,setSignInCredential]=useState(false)
     const[signInData,setSignInData]=useState()
     const users ={userName:'suresh@gmail.com',password:'123456'}
+    const [authenticated, setauthenticated] = useState(localStorage.getItem(localStorage.getItem("authenticated")|| false));
+    
 
     const navigate=useNavigate()
 
@@ -54,6 +56,13 @@ export default function LoginIndex({onAuthentication}) {
            
             setSignInData(res.data)
             if(res.data.status==='success'){
+                localStorage.setItem('token',res.data.content)
+                localStorage.setItem('authenticated',true)
+                onAuthentication()
+               
+            }
+            else{
+                localStorage.setItem('authenticated',false)
                 onAuthentication()
             }
         })

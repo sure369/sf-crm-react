@@ -21,7 +21,7 @@ const pages = [
   // { title: 'Junction Object', toNav: '/oppInventory' },
 ];
 
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const settings = ['Logout'];
 
 function AppNavbar() {
   const [anchorElNav, setAnchorElNav] = useState(null);
@@ -41,6 +41,9 @@ function AppNavbar() {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+    console.log(localStorage.getItem('authenticated'),"get item")
+    localStorage.removeItem('token')
+    localStorage.setItem('authenticated',false)
   };
 
   const handleMenuItemClick =(title)=>{
@@ -181,7 +184,7 @@ function AppNavbar() {
             >
               {settings.map((setting) => (
                 <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+                  {setting}
                 </MenuItem>
               ))}
             </Menu>

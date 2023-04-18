@@ -66,7 +66,7 @@ function PreviewUpsert({  data ,file,ModalClose,obj}) {
                   type: 'success'
                 })
              setTimeout(()=>{
-               window.location.reload();      
+              //  window.location.reload();      
              },2000)
                     
             })
