@@ -71,13 +71,13 @@ const ContactsMobile = () => {
   }
 
   const handleAddRecord = () => {
-    navigate("/contactDetailPage", { state: { record: {} } })
+    navigate("/new-contacts", { state: { record: {} } })
   };
 
   const handleCardEdit = (row) => {
     console.log('selected record', row);
     const item = row;
-    navigate("/contactDetailPage", { state: { record: { item } } })
+    navigate(`/contactDetailPage/${item._id}`, { state: { record: { item } } })
   };
 
 

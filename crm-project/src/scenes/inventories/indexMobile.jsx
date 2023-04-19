@@ -70,7 +70,7 @@ const InventoriesMobile = () => {
   const handleCardEdit = (row) => {
     console.log('selected record', row);
     const item = row;
-    navigate("/inventoryDetailPage", { state: { record: { item } } })
+    navigate(`/inventoryDetailPage/${item._id}`, { state: { record: { item } } })
   };
 
 

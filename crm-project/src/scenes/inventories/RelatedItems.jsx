@@ -103,7 +103,7 @@ const InventoryRelatedItems = ({ item }) => {
 
         console.log('selected record', row);
         const item = row;
-         navigate("/opportunityDetailPage", { state: { record: { item } } })
+         navigate(`/opportunityDetailPage/${item._id}`, { state: { record: { item } } })
     };
 
     const handleReqOpportunityCardDelete = (e,row) => {
@@ -152,7 +152,7 @@ const InventoryRelatedItems = ({ item }) => {
     const handleAccountCardEdit = (row) => {
       console.log('selected record', row);
       const item = row;
-      navigate("/accountDetailPage", { state: { record: { item } } })
+      navigate(`/accountDetailPage/${item._id}`, { state: { record: { item } } })
     };
 
     

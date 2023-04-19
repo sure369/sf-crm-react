@@ -90,7 +90,7 @@ const Opportunities = () => {
   const handleOnCellClick = (e) => {
     console.log('selected record', e);
     const item = e.row;
-    navigate("/opportunityDetailPage", { state: { record: { item } } })
+    navigate(`/opportunityDetailPage/${item._id}`, { state: { record: { item } } })
   };
 
   const onHandleDelete = (e, row) => {

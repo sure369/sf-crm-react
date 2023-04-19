@@ -69,7 +69,7 @@ const OpportunitiesMobile = () => {
   const handleCardEdit = (row) => {
     console.log('selected record', row);
     const item = row;
-    navigate("/opportunityDetailPage", { state: { record: { item } } })
+    navigate(`/opportunityDetailPage/${item._id}`, { state: { record: { item } } })
   };
 
   const handleCardDelete = (e, row) => {

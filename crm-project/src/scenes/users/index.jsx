@@ -62,13 +62,13 @@ const Users = () => {
   }
 
   const handleAddRecord = () => {
-    navigate("/userDetailPage", { state: { record: {} } })
+    navigate("/new-users", { state: { record: {} } })
   };
 
   const handleOnCellClick = (e, row) => {
     console.log(' selected  rec', row);
     const item = row;
-    navigate("/userDetailPage", { state: { record: { item } } })
+    navigate(`/userDetailPage/${item._id}`, { state: { record: { item } } })
   };
 
 

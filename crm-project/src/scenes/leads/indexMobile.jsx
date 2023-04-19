@@ -68,7 +68,7 @@ const LeadsMobile = () => {
   const handleCardEdit = (row) => {
     console.log('selected record', row);
     const item = row;
-    navigate("/leadDetailPage", { state: { record: { item } } })
+    navigate(`/leadDetailPage/${item._id}`, { state: { record: { item } } })
   };
 
   const handleCardDelete = (e, row) => {

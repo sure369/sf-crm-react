@@ -85,7 +85,7 @@ const OpportunityRelatedItems = ({ item }) => {
   const handleTaskCardEdit = (row) => {
     console.log('selected record', row);
     const item = row;
-   navigate("/taskDetailPage", { state: { record: { item } } })
+   navigate(`/taskDetailPage/${item._id}`, { state: { record: { item } } })
   };
 
   const handleReqTaskCardDelete = (e,row) => {

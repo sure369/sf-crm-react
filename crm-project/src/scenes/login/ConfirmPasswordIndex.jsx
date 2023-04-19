@@ -9,39 +9,36 @@ import Cdlogo from '../assets/cdlogo.jpg';
 
 const singupUrl = `${process.env.REACT_APP_SERVER_URL}/signup`
 
-export default function SignUpIndex() {
+export default function ConfirmPasswordIndex({ item }) {
 
 
     const paperStyle = { padding: 20, height: '100%', width: 280, margin: "20px auto" }
     const avatarStyle = { width: 100, height: 100 }
     const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
-    const [showPassword, setShowPassword] = useState(false);
 
-    const users = { userName: 'suresh@gmail.com', password: '123456' }
+    const[userRecord,setUserRecord]=useState();
 
+    const location =useLocation();
     const navigate = useNavigate()
 
+    useEffect(()=>{
+        console.log(location.state.record.item,"uselocation")
+        setUserRecord(location.state.record.item);
+    })
+
+
     const initialValues = {
-        userName: '',
-        email: '',
+        userName: location.state.record.item.userName,
+        email: location.state.record.item.email,
         password: '',
         confirmPassword: '',
-        fullName:'',
-        phone:'',
+        _id:location.state.record.item._id,
     }
-    const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
-
     const validationSchema = Yup.object({
         email: Yup
             .string()
             .email('Enter Valid Email Id')
             .required('Required'),
-        fullName:Yup.string().required('Required'),
-        phone: Yup
-            .string()
-            .matches(phoneRegExp, 'Phone number is not valid')
-            .min(10, "Phone number must be 10 characters, its short")
-            .max(10, "Phone number must be 10 characters,its long"),
        
         password: Yup
             .string()
@@ -64,16 +61,9 @@ export default function SignUpIndex() {
             .then((res) => {
                 console.log(res.data, "sign up response")
             })
-        // if(values.userName ===users.userName && values.password === users.password)
-        // {
-        //      console.log('if')
-        //      // localStorage.setItem("authenticated", true);
-        //     // navigate("/accounts");
-        // }
-        // else{
-        //     console.log('else')
-        // }
-
+            .catch((err)=>{
+                console.log(err,"error")
+            })
     }
     return (
         <Grid>
@@ -82,7 +72,7 @@ export default function SignUpIndex() {
                     <Avatar style={avatarStyle}>
                         <img src={Cdlogo} alt="cdlogo" style={avatarStyle} />
                     </Avatar>
-                    <h2>Sign Up</h2>
+                    <h2>Setup New Password</h2>
                 </Grid>
                 {/* <FormikLogin/>              */}
                 <Grid item xs={12} style={{ margin: "20px" }}>
@@ -99,40 +89,25 @@ export default function SignUpIndex() {
                                     <Form >
                                         <Grid container spacing={2}>
 
-                                        <Grid item xs={12} md={12}>
-                                                <label htmlFor="fullName">Full Name  <span className="text-danger">*</span></label>
-                                                <Field name="fullName" type="text" class="login-form-input" />
-                                                <div style={{ color: 'red' }}>
-                                                    <ErrorMessage name="fullName" />
-                                                </div>
-                                            </Grid>
-
                                             <Grid item xs={12} md={12}>
                                                 <label htmlFor="email">Email/User Name  <span className="text-danger">*</span></label>
-                                                <Field name="email" type="email" class="login-form-input" />
+                                                <Field name="email" type="email" class="login-form-input" readOnly />
                                                 <div style={{ color: 'red' }}>
                                                     <ErrorMessage name="email" />
                                                 </div>
                                             </Grid>
                                             <Grid item xs={12} md={12}>
-                                                <label htmlFor="password">Password <span className="text-danger">*</span> </label>
+                                                <label htmlFor="password">New Password <span className="text-danger">*</span> </label>
                                                 <Field name="password" type='password' class="login-form-input" />
                                                 <div style={{ color: 'red' }}>
                                                     <ErrorMessage name="password" />
                                                 </div>
                                             </Grid>
                                             <Grid item xs={12} md={12}>
-                                                <label htmlFor="confirmPassword">Confirm Password <span className="text-danger">*</span> </label>
+                                                <label htmlFor="confirmPassword">Confirm New Password <span className="text-danger">*</span> </label>
                                                 <Field name="confirmPassword" type='password' class="login-form-input" />
                                                 <div style={{ color: 'red' }}>
                                                     <ErrorMessage name="confirmPassword" />
-                                                </div>
-                                            </Grid>
-                                            <Grid item xs={12} md={12}>
-                                                <label htmlFor="phone">Phone <span className="text-danger">*</span> </label>
-                                                <Field name="phone" type='text' class="login-form-input" />
-                                                <div style={{ color: 'red' }}>
-                                                    <ErrorMessage name="phone" />
                                                 </div>
                                             </Grid>
                                         </Grid>

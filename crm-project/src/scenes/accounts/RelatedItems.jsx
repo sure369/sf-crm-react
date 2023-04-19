@@ -121,7 +121,7 @@ const AccountRelatedItems = ({ item }) => {
   const handleContactCardEdit = (e,row) => {
     console.log('selected record', row);
     const item = row;
-    navigate("/contactDetailPage", { state: { record: { item } } })
+    navigate(`/contactDetailPage/${item._id}`, { state: { record: { item } } })
   };
 
   const handleReqContactCardDelete = (e,row) => {
@@ -169,7 +169,7 @@ const AccountRelatedItems = ({ item }) => {
   const handleTaskCardEdit = (row) => {
     console.log('selected record', row);
     const item = row;
-    navigate("/taskDetailPage", { state: { record: { item } } })
+    navigate(`/taskDetailPage/${item._id}`, { state: { record: { item } } })
   };
 
   const handleReqTaskCardDelete = (e,row) => {
@@ -187,7 +187,7 @@ console.log('inside handleTaskCardDelete fn')
     axios.post(taskDeleteURL+ row._id)
       .then((res) => {
         console.log('api delete response', res);
-       
+        getTasksbyAccountId(accountRecordId)
         setNotify({
           isOpen: true,
           message: res.data,
@@ -395,7 +395,7 @@ const columns = [
           aria-controls="panel2a-content"
           id="panel2a-header"
         >
-          <Typography variant="h4">Contact Table({relatedContact.length}) </Typography>
+          <Typography variant="h4">Contact({relatedContact.length}) </Typography>
         </AccordionSummary>
         <AccordionDetails>
        

@@ -65,10 +65,9 @@ const Inventories = () => {
   };
 
   const handleOnCellClick = (e, row) => {
-    console.log("event",e.row)
     console.log('selected record', row);
     const item = e.row;
-    navigate("/inventoryDetailPage", { state: { record: { item } } })
+    navigate(`/inventoryDetailPage/${item._id}`, { state: { record: { item } } })
   };
 
 

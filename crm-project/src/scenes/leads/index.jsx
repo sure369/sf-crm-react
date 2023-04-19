@@ -87,7 +87,7 @@ const Leads = () => {
   const handleOnCellClick = (e) => {
     console.log('selected record', e);
     const item = e.row;
-    navigate("/leadDetailPage", { state: { record: { item } } })
+    navigate(`/leadDetailPage/${item._id}`, { state: { record: { item } } })
   };
 
   const onHandleDelete = (e, row) => {
@@ -294,9 +294,9 @@ const Leads = () => {
                   <Tooltip title="Email">
                     <IconButton> <EmailIcon sx={{ color: '#DB4437' }} onClick={handlesendEmail} /> </IconButton>
                   </Tooltip>
-                  <Tooltip title="Whatsapp">
+                  {/* <Tooltip title="Whatsapp">
                     <IconButton> <WhatsAppIcon sx={{ color: '#34A853' }} onClick={handlesendWhatsapp} /> </IconButton>
-                  </Tooltip>
+                  </Tooltip> */}
                   <Tooltip title="Delete Selected">
                     <IconButton> <DeleteIcon sx={{ color: '#FF3333' }} onClick={(e) => onHandleDelete(e, selectedRecordIds)} /> </IconButton>
                   </Tooltip>

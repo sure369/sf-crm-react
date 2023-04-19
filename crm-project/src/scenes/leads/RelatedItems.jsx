@@ -60,8 +60,8 @@ const LeadRelatedItems = ({ item }) => {
   }, [])
 
   const getTasksbyLeadId = (leadsId) => {
-    
-    console.log('lead id',leadsId);
+
+    console.log('lead id', leadsId);
     const urlTask = `${process.env.REACT_APP_SERVER_URL}/getTaskbyLeadId?searchId=`;
     axios.post(urlTask + leadsId)
       .then((res) => {
@@ -80,7 +80,7 @@ const LeadRelatedItems = ({ item }) => {
       })
   }
 
-  const getOpportunitybyLeadId =(leadsId) =>{
+  const getOpportunitybyLeadId = (leadsId) => {
 
     const urlOpp = `${process.env.REACT_APP_SERVER_URL}/getLeadsbyOppid?searchId=`;
     axios.post(urlOpp + leadsId)
@@ -108,7 +108,7 @@ const LeadRelatedItems = ({ item }) => {
     getTasksbyLeadId(leadRecordId)
   }
 
-  const handleOpportunityModalOpen =() =>{
+  const handleOpportunityModalOpen = () => {
     setOpportunityModalOpen(true)
   }
   const handleOpportunityModalClose = () => {
@@ -119,28 +119,28 @@ const LeadRelatedItems = ({ item }) => {
   const handleTaskCardEdit = (row) => {
     console.log('selected edit record', row);
     const item = row;
-    navigate("/taskDetailPage", { state: { record: { item } } })
+    navigate(`/taskDetailPage/${item._id}`, { state: { record: { item } } })
   };
 
-  const handleReqTaskCardDelete = (e,row) => {
+  const handleReqTaskCardDelete = (e, row) => {
     e.stopPropagation();
     console.log('inside handleTaskCardDelete fn')
-        setConfirmDialog({
-          isOpen:true,
-          title:`Are you sure to delete this Record ?`,
-          subTitle:"You can't undo this Operation",
-          onConfirm:()=>{onConfirmTaskCardDelete(row)}
-        })
-      }
+    setConfirmDialog({
+      isOpen: true,
+      title: `Are you sure to delete this Record ?`,
+      subTitle: "You can't undo this Operation",
+      onConfirm: () => { onConfirmTaskCardDelete(row) }
+    })
+  }
 
-      const onConfirmTaskCardDelete=(row)=>{
+  const onConfirmTaskCardDelete = (row) => {
     console.log('req delete rec', row);
 
     axios.post(taskDeleteURL + row._id)
       .then((res) => {
         console.log('api delete response', res);
         console.log('inside delete response leadRecordId', leadRecordId)
-      
+
         setNotify({
           isOpen: true,
           message: res.data,
@@ -149,7 +149,8 @@ const LeadRelatedItems = ({ item }) => {
         setMenuOpen(false)
         setTimeout(
           getTasksbyLeadId(leadRecordId)
-        )}
+        )
+      }
       )
       .catch((error) => {
         console.log('api delete error', error);
@@ -159,61 +160,60 @@ const LeadRelatedItems = ({ item }) => {
           type: 'error'
         })
       })
-      setConfirmDialog({
-        ...confirmDialog,
-        isOpen:false
-      })
+    setConfirmDialog({
+      ...confirmDialog,
+      isOpen: false
+    })
   };
 
   const handleOpportunityCardEdit = (row) => {
 
     console.log('Opportunity selected edit record', row);
-
     const item = row;
-   navigate("/opportunityDetailPage", { state: { record: { item } } })
+    navigate(`/opportunityDetailPage/${item._id}`, { state: { record: { item } } })
   };
 
-  const handleReqOpportunityCardDelete =(e,row) =>{
+  const handleReqOpportunityCardDelete = (e, row) => {
 
     e.stopPropagation();
     console.log('inside handleTaskCardDelete fn')
-        setConfirmDialog({
-          isOpen:true,
-          title:`Are you sure to delete this Record ?`,
-          subTitle:"You can't undo this Operation",
-          onConfirm:()=>{onConfirmOpportunityCardDelete(row)}
-        })
-      }
+    setConfirmDialog({
+      isOpen: true,
+      title: `Are you sure to delete this Record ?`,
+      subTitle: "You can't undo this Operation",
+      onConfirm: () => { onConfirmOpportunityCardDelete(row) }
+    })
+  }
 
-  const  onConfirmOpportunityCardDelete=(row)=>{
+  const onConfirmOpportunityCardDelete = (row) => {
 
-    console.log('req opp delete rec',row)
+    console.log('req opp delete rec', row)
     axios.post(opportunityDeleteURL + row._id)
-    .then((res) => {
-      console.log('api delete response', res);
-      console.log('inside delete response leadRecordId', leadRecordId)
-     
-      setNotify({
-        isOpen: true,
-        message: res.data,
-        type: 'success'
+      .then((res) => {
+        console.log('api delete response', res);
+        console.log('inside delete response leadRecordId', leadRecordId)
+
+        setNotify({
+          isOpen: true,
+          message: res.data,
+          type: 'success'
+        })
+        setOppMenuOpen(false)
+        setTimeout(() => {
+          getOpportunitybyLeadId(leadRecordId)
+        })
       })
-      setOppMenuOpen(false)
-      setTimeout(()=>{
-        getOpportunitybyLeadId(leadRecordId)
+      .catch((error) => {
+        console.log('api delete error', error);
+        setNotify({
+          isOpen: true,
+          message: error.message,
+          type: 'error'
+        })
       })
-    })
-    .catch((error) => {
-      console.log('api delete error', error);
-      setNotify({
-        isOpen: true,
-        message: error.message,
-        type: 'error'
-      })
-    })
     setConfirmDialog({
       ...confirmDialog,
-      isOpen:false
+      isOpen: false
     })
 
   }
@@ -233,7 +233,7 @@ const LeadRelatedItems = ({ item }) => {
   const [menuOpen, setMenuOpen] = useState();
 
   const handleMoreMenuClick = (item, event) => {
-    console.log('handleMoreMenuClick item',item)
+    console.log('handleMoreMenuClick item', item)
 
     setMenuSelectRec(item)
     setAnchorEl(event.currentTarget);
@@ -247,29 +247,29 @@ const LeadRelatedItems = ({ item }) => {
   };
   // menu dropdown end
 
-    // Opp menu dropdown strart //menu pass rec
-    const [oppAnchorEl, setOppAnchorEl] = useState(null);
-    const [oppMenuSelectRec, setOppMenuSelectRec] = useState()
-    const [oppMenuOpen, setOppMenuOpen] = useState();
-  
-    const handleOppMoreMenuClick = (item, event) => {
-      console.log('handle OPP MoreMenu Click  item',item)
-      
-      setOppMenuSelectRec(item)
-      setOppAnchorEl(event.currentTarget);
-      setOppMenuOpen(true)
-  
-    };
-    const handleOppMoreMenuClose = () => {
-      setOppAnchorEl(null);
-      setOppMenuOpen(false)      
+  // Opp menu dropdown strart //menu pass rec
+  const [oppAnchorEl, setOppAnchorEl] = useState(null);
+  const [oppMenuSelectRec, setOppMenuSelectRec] = useState()
+  const [oppMenuOpen, setOppMenuOpen] = useState();
+
+  const handleOppMoreMenuClick = (item, event) => {
+    console.log('handle OPP MoreMenu Click  item', item)
+
+    setOppMenuSelectRec(item)
+    setOppAnchorEl(event.currentTarget);
+    setOppMenuOpen(true)
+
+  };
+  const handleOppMoreMenuClose = () => {
+    setOppAnchorEl(null);
+    setOppMenuOpen(false)
     setMenuSelectRec()
-    };
-    // menu dropdown end
+  };
+  // menu dropdown end
   return (
     <>
-    <ToastNotification notify={notify} setNotify={setNotify} />
-    <DeleteConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog}  moreModalClose={handleMoreMenuClose}/>
+      <ToastNotification notify={notify} setNotify={setNotify} />
+      <DeleteConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog} moreModalClose={handleMoreMenuClose} />
 
       <div style={{ textAlign: "center", marginBottom: "10px" }}>
 
@@ -296,12 +296,12 @@ const LeadRelatedItems = ({ item }) => {
                 relatedTask.length > 0 ?
                   relatedTask
                     .slice((taskPerPage - 1) * taskItemsPerPage, taskPerPage * taskItemsPerPage)
-                    .map((item) => {  
-                      let   starDateConvert ;
-                      if(item.StartDate){
+                    .map((item) => {
+                      let starDateConvert;
+                      if (item.StartDate) {
                         starDateConvert = new Date(item.StartDate).getUTCFullYear()
-                        + '-' +  ('0'+ (new Date(item.StartDate).getUTCMonth() + 1)).slice(-2) 
-                        + '-' + ('0'+ ( new Date(item.StartDate).getUTCDate())).slice(-2)  ||''
+                          + '-' + ('0' + (new Date(item.StartDate).getUTCMonth() + 1)).slice(-2)
+                          + '-' + ('0' + (new Date(item.StartDate).getUTCDate())).slice(-2) || ''
                       }
                       return (
                         <div >
@@ -334,7 +334,7 @@ const LeadRelatedItems = ({ item }) => {
                                       }}
                                     >
                                       <MenuItem onClick={() => handleTaskCardEdit(menuSelectRec)}>Edit</MenuItem>
-                                      <MenuItem onClick={(e) => handleReqTaskCardDelete(e,menuSelectRec)}>Delete</MenuItem>
+                                      <MenuItem onClick={(e) => handleReqTaskCardDelete(e, menuSelectRec)}>Delete</MenuItem>
                                     </Menu>
                                   </IconButton>
                                 </Grid>
@@ -368,7 +368,7 @@ const LeadRelatedItems = ({ item }) => {
           </Typography>
         </AccordionDetails>
       </Accordion>
-     
+
       <Accordion >
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
@@ -386,9 +386,9 @@ const LeadRelatedItems = ({ item }) => {
 
               {
                 relatedOpportunity.length > 0 ?
-                relatedOpportunity
+                  relatedOpportunity
                     .slice((opportunityPerPage - 1) * opportunityItemsPerPage, opportunityPerPage * opportunityItemsPerPage)
-                    .map((item) => {  
+                    .map((item) => {
 
                       return (
                         <div >
@@ -398,7 +398,7 @@ const LeadRelatedItems = ({ item }) => {
                               key={item._id}
                             >
                               <Grid container spacing={2}>
-                                <Grid item  xs={10}  md={10}>
+                                <Grid item xs={10} md={10}>
                                   <div>Opportunity Name : {item.opportunityName} </div>
                                   <div>Stage : {item.stage}</div>
                                   <div>Amount : {item.amount} </div>
@@ -421,7 +421,7 @@ const LeadRelatedItems = ({ item }) => {
                                       }}
                                     >
                                       <MenuItem onClick={() => handleOpportunityCardEdit(oppMenuSelectRec)}>Edit</MenuItem>
-                                      <MenuItem onClick={(e) => handleReqOpportunityCardDelete(e,oppMenuSelectRec)}>Delete</MenuItem>
+                                      <MenuItem onClick={(e) => handleReqOpportunityCardDelete(e, oppMenuSelectRec)}>Delete</MenuItem>
                                     </Menu>
                                   </IconButton>
                                 </Grid>
@@ -455,7 +455,7 @@ const LeadRelatedItems = ({ item }) => {
         </AccordionDetails>
       </Accordion>
 
-    {/* modal for task */}
+      {/* modal for task */}
       <Modal
         open={taskModalOpen}
         onClose={handleTaskModalClose}
@@ -467,7 +467,7 @@ const LeadRelatedItems = ({ item }) => {
           <ModalLeadTask handleModal={handleTaskModalClose} />
         </Box>
       </Modal>
- {/* modal for Opportunity */}
+      {/* modal for Opportunity */}
       <Modal
         open={opportunityModalOpen}
         onClose={handleOpportunityModalClose}

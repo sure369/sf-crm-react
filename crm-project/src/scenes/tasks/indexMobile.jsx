@@ -64,13 +64,13 @@ const TaskMobile = () => {
       })
   }
   const handleAddRecord = () => {
-    navigate("/taskDetailPage", { state: { record: {} } })
+    navigate("/new-task", { state: { record: {} } })
   };
 
   const handleCardEdit = ( row) => {
     console.log('selected record', row);
     const item = row;
-    navigate("/taskDetailPage", { state: { record: { item } } })
+    navigate(`/taskDetailPage/${item._id}`, { state: { record: { item } } })
   };
 
   const handleCardDelete = (e, row) => {

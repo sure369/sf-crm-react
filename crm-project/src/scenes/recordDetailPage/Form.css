@@ -86,6 +86,10 @@
  cursor: pointer;
  }
 
+ .error-note{
+  color: red;
+ }
+
   /* .login-container {
     display: flex;
     justify-content: center;

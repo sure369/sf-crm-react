@@ -67,7 +67,7 @@ const AccountsMobile = () => {
   const handleCardEdit = (row) => {
     console.log('selected record', row);
     const item = row;
-    navigate("/accountDetailPage", { state: { record: { item } } })
+    navigate(`/accountDetailPage/${item._id}`, { state: { record: { item } } })
   };
 
   const handleCardDelete = (e, row) => {

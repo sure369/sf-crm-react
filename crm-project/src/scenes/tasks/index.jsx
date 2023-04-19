@@ -62,13 +62,13 @@ const Task = () => {
       })
   }
   const handleAddRecord = () => {
-    navigate("/taskDetailPage", { state: { record: {} } })
+    navigate("/new-task", { state: { record: {} } })
   };
 
   const handleOnCellClick = (e) => {
     console.log('selected record', e);
     const item = e.row;
-    navigate("/taskDetailPage", { state: { record: { item } } })
+    navigate(`/taskDetailPage/${item._id}`, { state: { record: { item } } })
   };
 
   const onHandleDelete = (e, row) => {

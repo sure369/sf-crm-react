@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import Topbar from "./scenes/global/Topbar";
 import Sidebar from "./scenes/global/Sidebar";
 import Contacts from "./scenes/contacts";
@@ -61,26 +61,21 @@ import ResponsiveTasks from "./scenes/tasks/ResponsiveScreen";
 import ResponsiveUsers from "./scenes/users/ResponsiveScreen";
 import LoginIndex from "./scenes/login/LoginIndex";
 import SignUpIndex from "./scenes/login/SignUpIndex";
-
 import FooterComponnet from "./scenes/footer";
-import { useEffect } from "react";
+import LayoutIndex from "./scenes/Layout";
+import ForgotPasswordIndex from "./scenes/login/ForgotPassword";
+import ConfirmPasswordIndex from "./scenes/login/ConfirmPasswordIndex";
+import UserNameNotFound from "./scenes/Error/UserNameNotFound";
 
 function App() {
   const [theme, colorMode] = useMode();
-  const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem("authenticated"));
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  useEffect(() => {
-    // handleAuthentication()
-    // setIsAuthenticated(loggedInUser);
-  }, []);
+  const navigate = useNavigate();
 
-  const handleAuthentication =()=>{
-
-    const loggedInUser = localStorage.getItem("authenticated");
-    console.log(localStorage.getItem("authenticated"), "local");
-
-    setIsAuthenticated(loggedInUser)
-  }
+  const handleAuthentication = () => {
+    navigate("/");
+  };
 
   return (
     <ColorModeContext.Provider value={colorMode}>
@@ -90,50 +85,21 @@ function App() {
           {/* <Sidebar isSidebar={isSidebar} /> */}
 
           <main className="content" style={{ height: "fit-content" }}>
+            {localStorage.getItem("token") ? (
               <>
-                <AppNavbar />
-                <Routes>
-                  <Route path="/" element={<ResponsiveInventories />} />
-                  <Route path="/accounts" element={<ResponsiveAccounts />} />
-                  <Route path="/contacts" element={<ResponsiveContacts />} />
-                  <Route path="/opportunities" element={<ResponsiveOpportunities />}/>
-                  <Route path="/leads" element={<ResponsiveLeads />} />
-                  <Route path="/inventories" element={<ResponsiveInventories />}/>
-                  <Route path="/task" element={<ResponsiveTasks />} />
-                  <Route path="/users" element={<ResponsiveUsers />} />
-
-                  <Route path="/new-contacts" element={<ContactForm />} />
-                  <Route path="/new-users" element={<UserForm />} />
-                  <Route path="/new-event" element={<EventForm />} />
-                  <Route path="/new-inventories" element={<InventoryDetailPage />}/>
-                  <Route path="/new-leads" element={<LeadDetailPage />} />
-                  <Route path="/new-opportunities" element={<OpportunityDetailPage />}/>
-                  <Route path="/new-accounts" element={<AccountDetailPage />} />
-                  <Route path="/new-oppInventory" element={<JnOppInventoryDetailPage />}/>
-
-
-                  <Route path="/accountDetailPage" element={<FlexAccounts />} />
-                  <Route path="/taskDetailPage" element={<TaskDetailPage />} />
-                  <Route path="/inventoryDetailPage" element={<FlexInventories />}/>
-                  <Route path="/contactDetailPage" element={<ContactDetailPage />}/>                 
-                  <Route path="/userDetailPage" element={<UserDetailPage />} />
-                  <Route path="/leadDetailPage" element={<FlexLeads />} />
-                  <Route path="/opportunityDetailPage" element={<FlexOpportunities />}/>
-
-                  {/* <Route path="/leadDetailPage/:Id" element={<LeadDetailPage/>} /> */}
-                  {/* <Route path="/accountDetailPage/:id" element={<FlexAccounts/>} /> */}
-
-                  <Route path="/dataLoader" element={<DataLoadPage />} />
-                  <Route path="/file" element={<DropFileInput />} />
-
-                  {/* <Route path='/mobi' element={<AccountsMobile/>} />
-                      <Route path='/invmobi' element={<InventoriesMobile/>} /> 
-                      <Route path ='/test' element={<ResponsiveScreen/>} />  
-                  */}
-                </Routes>
-
+                <LayoutIndex />
               </>
-            
+            ) : (
+              <>
+                <Routes>
+                  <Route path="/" element={<LoginIndex onAuthentication={handleAuthentication} />}/>
+                  <Route path="/sign-up" element={<SignUpIndex />} />
+                  <Route path="/forgot-password" element={<ForgotPasswordIndex />} />
+                  <Route path="/confirm-password" element ={<ConfirmPasswordIndex/>}/>    
+                  <Route path="/noUserFound" element={<UserNameNotFound/>}/>              
+                </Routes>
+              </>
+            )}
           </main>
         </div>
         {/* <FooterComponnet/> */}
@@ -175,11 +141,10 @@ export default App;
 //                 <Route path="/new-accounts" element={<AccountDetailPage />} />
 //                 <Route path="/new-oppInventory" element={<JnOppInventoryDetailPage />}/>
 
-
 //                 <Route path="/accountDetailPage" element={<FlexAccounts />} />
 //                 <Route path="/taskDetailPage" element={<TaskDetailPage />} />
 //                 <Route path="/inventoryDetailPage" element={<FlexInventories />}/>
-//                 <Route path="/contactDetailPage" element={<ContactDetailPage />}/>                 
+//                 <Route path="/contactDetailPage" element={<ContactDetailPage />}/>
 //                 <Route path="/userDetailPage" element={<UserDetailPage />} />
 //                 <Route path="/leadDetailPage" element={<FlexLeads />} />
 //                 <Route path="/opportunityDetailPage" element={<FlexOpportunities />}/>
@@ -191,8 +156,8 @@ export default App;
 //                 <Route path="/file" element={<DropFileInput />} />
 
 //                 {/* <Route path='/mobi' element={<AccountsMobile/>} />
-//                     <Route path='/invmobi' element={<InventoriesMobile/>} /> 
-//                     <Route path ='/test' element={<ResponsiveScreen/>} />  
+//                     <Route path='/invmobi' element={<InventoriesMobile/>} />
+//                     <Route path ='/test' element={<ResponsiveScreen/>} />
 //                 */}
 //               </Routes>
 //             </>

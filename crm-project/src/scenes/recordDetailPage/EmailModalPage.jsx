@@ -66,19 +66,28 @@ const EmailModalPage = ({ data, handleModal, bulkMail }) => {
 
         let formData = new FormData();
         formData.append('subject', values.subject);
-        formData.append('content', mergeBody);
-        formData.append('toEmailId',element.email)
+        formData.append('htmlBody', mergeBody);
+        formData.append('emailId',element.email)
         // formData.append('recordsData', JSON.stringify(element));
         formData.append('file', values.attachments);
 
         axios.post(urlSendEmailbulk, formData)
             .then((res) => {
                 console.log('email send res', res)
-                setNotify({
-                    isOpen: true,
-                    message: res.data,
-                    type: 'success'
-                })
+                if(res.data){
+                    setNotify({
+                        isOpen: true,
+                        message: res.data,
+                        type: 'success'
+                    })
+                }else{
+                    setNotify({
+                        isOpen: true,
+                        message: "Mail sent Succesfully",
+                        type: 'success'
+                    })
+                }
+               
                 setTimeout(() => {
                     handleModal(false)
                 }, 2000)

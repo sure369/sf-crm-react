@@ -68,13 +68,13 @@ const Contacts = () => {
   }
 
   const handleAddRecord = () => {
-    navigate("/contactDetailPage", { state: { record: {} } })
+    navigate("/new-contacts", { state: { record: {} } })
   };
 
   const handleOnCellClick = (e) => {
     console.log('selected record', e);
     const item = e.row;
-    navigate("/contactDetailPage", { state: { record: { item } } })
+    navigate(`/contactDetailPage/${item._id}`, { state: { record: { item } } })
   };
 
 
