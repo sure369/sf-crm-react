@@ -17,6 +17,7 @@ import './Form.css'
 
 const url = `${process.env.REACT_APP_SERVER_URL}/UpsertUser`;
 const fetchUsersbyName = `${process.env.REACT_APP_SERVER_URL}/usersbyName`
+const urlSendEmailbulk = `${process.env.REACT_APP_SERVER_URL}/bulkemail`
 
 const UserDetailPage = ({ item }) => {
 
@@ -25,8 +26,12 @@ const UserDetailPage = ({ item }) => {
     const navigate = useNavigate();
     const [showNew, setshowNew] = useState()
     const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
-
     const [usersRecord, setUsersRecord] = useState([])
+
+    console.log(window.location.protocol,"protocol")
+    console.log(window.location.hostname,"hostName")
+    console.log(window.location.href,"href")
+
 
     useEffect(() => {
         console.log('passed record', location.state.record.item);
@@ -39,7 +44,7 @@ const UserDetailPage = ({ item }) => {
         firstName: '',
         lastName: '',
         fullName: '',
-        username: '',
+        userName: '',
         email: '',
         phone: '',
         role: '',
@@ -53,7 +58,7 @@ const UserDetailPage = ({ item }) => {
         firstName: singleUser?.firstName ?? "",
         lastName: singleUser?.lastName ?? "",
         fullName: singleUser?.fullName ?? "",
-        username: singleUser?.username ?? "",
+        userName: singleUser?.userName ?? "",
         email: singleUser?.email ?? "",
         phone: singleUser?.phone ?? "",
         role: singleUser?.role ?? "",
@@ -80,7 +85,7 @@ const UserDetailPage = ({ item }) => {
             .min(10, "Phone number must be 10 characters, its short")
             .max(10, "Phone number must be 10 characters,its long"),
 
-        username: Yup
+            userName: Yup
             .string()
             .email('invalid Format')
             .required('Required'),
@@ -92,13 +97,61 @@ const UserDetailPage = ({ item }) => {
             .required('Required'),
     })
 
+    const sendInviteEmail=(values)=>{
+
+        const obj ={
+            emailId:`${values.email}`,
+            subject:'Welcome to CloudDesk CRM',
+            htmlBody: ` Dear ${values.fullName}, `+'\n'+'\n'+
+            `Welcome to Clouddesk CRM you can access.`  +'\n'+'\n'+
+
+            `Your UserName is ${values.userName}` +'\n'+'\n'+
+            
+            `To generate your ClouDesk-CRM password, click here ${process.env.REACT_APP_FORGOT_EMAIL_LINK} `  + '\n'+'\n'+
+            
+            `Note this Link will expire in 4 days.` +'\n'+'\n'+
+
+            `if you have any trouble logging in, write to us at ${process.env.REACT_APP_ADMIN_EMAIL_ID}`+ '\n'+'\n'+
+
+            `Thanks and Regards, `+ '\n'+
+            `Clouddesk.`
+        }
+        console.log(obj,"sendInviteEmail")
+
+        axios.post(urlSendEmailbulk,obj)
+        .then((res)=>{
+            console.log("eamil res",res.data)
+            if(res.data){
+                setNotify({
+                    isOpen: true,
+                    message: res.data,
+                    type: 'success'
+                })
+            }else{
+                setNotify({
+                    isOpen: true,
+                    message: "Mail sent Succesfully",
+                    type: 'success'
+                })
+            }
+        })
+        .catch((error) => {
+            console.log('email send error', error);
+            setNotify({
+                isOpen: true,
+                message: error.message,
+                type: 'error'
+            })
+        })  
+    }
+
     const formSubmission = (values) => {
 
         console.log('form submission value', values);
         let dateSeconds = new Date().getTime();
         let createDateSec = new Date(values.createdDate).getTime()
 
-
+        values.userName=values.email;
         if (showNew) {
             values.modifiedDate = dateSeconds;
             values.createdDate = dateSeconds;
@@ -119,6 +172,7 @@ const UserDetailPage = ({ item }) => {
                     message: res.data,
                     type: 'success'
                 })
+                sendInviteEmail(values)
                 setTimeout(() => {
                     navigate(-1);
                 }, 2000)
@@ -213,10 +267,10 @@ const UserDetailPage = ({ item }) => {
                                             </div>
                                         </Grid>
                                         <Grid item xs={6} md={6}>
-                                            <label htmlFor="username">User Name<span className="text-danger">*</span> </label>
-                                            <Field name="username" type="text" class="form-input" />
+                                            <label htmlFor="userName">User Name<span className="text-danger">*</span> </label>
+                                            <Field name="userName" type="text" class="form-input" value={values.email} readOnly />
                                             <div style={{ color: 'red' }}>
-                                                <ErrorMessage name="username" />
+                                                <ErrorMessage name="userName" />
                                             </div>
                                         </Grid>
 

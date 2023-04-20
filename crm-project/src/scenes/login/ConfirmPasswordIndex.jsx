@@ -6,8 +6,9 @@ import { Grid, Button, DialogActions, InputAdornment, IconButton, Paper, Avatar,
 import axios from 'axios'
 import '../recordDetailPage/Form.css'
 import Cdlogo from '../assets/cdlogo.jpg';
+import ToastNotification from "../toast/ToastNotification";
 
-const singupUrl = `${process.env.REACT_APP_SERVER_URL}/signup`
+const singupUrl = `${process.env.REACT_APP_SERVER_URL}/UpsertUser`
 
 export default function ConfirmPasswordIndex({ item }) {
 
@@ -32,8 +33,18 @@ export default function ConfirmPasswordIndex({ item }) {
         email: location.state.record.item.email,
         password: '',
         confirmPassword: '',
+        access:location.state.record.item.access,
+        createdDate:location.state.record.item.createdDate,     
+        createdbyId:location.state.record.item.createdbyId,
+        firstName:location.state.record.item.firstName,
+        lastName:location.state.record.item.lastName,
+        fullName:location.state.record.item.fullName,
+        modifiedDate:location.state.record.item.modifiedDate,
+        phone:location.state.record.item.phone,
+        role:location.state.record.item.role,
         _id:location.state.record.item._id,
     }
+
     const validationSchema = Yup.object({
         email: Yup
             .string()
@@ -59,15 +70,29 @@ export default function ConfirmPasswordIndex({ item }) {
 
         axios.post(singupUrl, values)
             .then((res) => {
-                console.log(res.data, "sign up response")
+                console.log(res.data, "UpsertUser response")
+                setNotify({
+                    isOpen:true,
+                    message:res.data.content,
+                    type:res.data.status,          
+                  })
+                  setTimeout(()=>{
+                    navigate('/');
+                  },2000)
             })
-            .catch((err)=>{
-                console.log(err,"error")
+            .catch((error)=>{
+                console.log(error,"error")
+                setNotify({
+                    isOpen:true,
+                    message:error.message,
+                    type:'error'
+                  })
             })
     }
     return (
         <Grid>
             <Paper elevation={10} style={paperStyle}>
+            <ToastNotification notify={notify} setNotify={setNotify}/>
                 <Grid align='center'>
                     <Avatar style={avatarStyle}>
                         <img src={Cdlogo} alt="cdlogo" style={avatarStyle} />

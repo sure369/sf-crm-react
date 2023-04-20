@@ -17,8 +17,7 @@ export default function SignUpIndex() {
     const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
     const [showPassword, setShowPassword] = useState(false);
 
-    const users = { userName: 'suresh@gmail.com', password: '123456' }
-
+  
     const navigate = useNavigate()
 
     const initialValues = {

@@ -58,7 +58,6 @@ export default function LoginIndex({onAuthentication}) {
             setSignInData(res.data)
             if(res.data.status==='success'){
                 localStorage.setItem('token',res.data.content)
-                // localStorage.setItem('authenticated',true)
                 onAuthentication()
                
             }

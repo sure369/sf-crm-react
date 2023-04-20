@@ -16,7 +16,7 @@ const pages = [
   { title: 'Opportunities', toNav: '/opportunities' },
   { title: 'Event Log', toNav: '/task' },
   { title: 'Users', toNav: '/users' },
-  { title: 'Data Loader', toNav: '/dataLoader' },
+  // { title: 'Data Loader', toNav: '/dataLoader' },
   { title: 'File Upload', toNav: '/file' },
 
   // {title:'Test',toNav:'/test'},
@@ -88,7 +88,7 @@ function AppNavbar() {
             Clouddesk
           </Typography>
 
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' ,} }}>
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -154,7 +154,8 @@ function AppNavbar() {
             Clouddesk
           </Typography>
           <Box sx={{
-            flexGrow: 1, display: { xs: 'none', md: 'flex' }
+            flexGrow: 1, display: { xs: 'none', md: 'flex' },
+            justifyContent:'space-evenly'
             ,
           }}>
             {pages.map((page, index) => (
@@ -162,8 +163,9 @@ function AppNavbar() {
                 onClick={() => handleMenuItemClick(page.title)}
                 active={selected === page.title}
                 sx={
-                  selected === page.title ? { bgcolor: "#243665" } : {}
+                  selected === page.title ? { bgcolor: "#243665" } : {} 
                 }
+                
               >
                 <Link to={page.toNav}
                   style={{ textDecoration: 'none', color: 'unset' }}

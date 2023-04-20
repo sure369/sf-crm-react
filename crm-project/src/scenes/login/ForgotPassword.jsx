@@ -19,6 +19,7 @@ export default function ForgotPasswordIndex() {
     const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
     const [showPassword, setShowPassword] = useState(false);
 
+    const[isUser,setIsUser]=useState(false)
 
 
     const navigate=useNavigate()
@@ -41,17 +42,17 @@ export default function ForgotPasswordIndex() {
         axios.post(confirmEmailURL,values)
         .then((res)=>{
             console.log(res.data,"api res")
-            if(res.data.status){
-                console.log('no user found')
-                navigate('/noUserFound')
-                
-            }else{
-
-                const item =res.data
-                navigate(`/confirm-password`,{ state: { record: { item } } })
+            if(res.data.status==="failure"){
+                setIsUser(true)
+            }else if(res.data.status==="success"){
+                setIsUser(false)
+                 const item =res.data.content
+                navigate('/otp',{ state: { record: { item } }});
+                // navigate(`/confirm-password`,{ state: { record: { item } } })
             }
         })
         .catch((err)=>{
+            console.log(err.status,"status")
             console.log(err,"err")
         })
     }
@@ -73,7 +74,7 @@ export default function ForgotPasswordIndex() {
                    onSubmit={(values, { resetForm }) => formSubmission(values, { resetForm })}
                >
                    {(props) => {
-                       const{isValid,values}=props;
+                       const{isValid,setFieldValue,values}=props;
                        return (
                            <>
                                <Form >
@@ -81,11 +82,21 @@ export default function ForgotPasswordIndex() {
 
                                        <Grid item xs={12} md={12}>
                                            <label htmlFor="userName">Registered Email <span className="text-danger">*</span></label>
-                                           <Field name="userName" type="email" class="login-form-input" />
+                                           <Field name="userName" type="email" class="login-form-input"
+                                            onChange={(e)=>{
+                                                setFieldValue("userName",e.target.value)
+                                                if(e.target.value.length>0){
+                                                    setIsUser(false)
+                                                }
+                                            }}
+                                             />
                                            <div style={{ color: 'red' }}>
                                                <ErrorMessage name="userName" />
                                            </div>
                                        </Grid>
+                                       {
+                                            isUser ? <p className="error-note">Enter Valid Registered Email Id.</p> : null
+                                       }
                                       </Grid>
                                       <div className='action-buttons'>
                                        <DialogActions sx={{ justifyContent: "space-between",marginTop:'10px' }}>
@@ -98,6 +109,9 @@ export default function ForgotPasswordIndex() {
                    }}
                </Formik>
            </Grid>
+           <div style={{ display: "flex", alignItems: "center", gap: "2rem" }}>
+                        <Typography component={Link} to='/'>Login Page</Typography>
+                </div>
             </Paper>
         </Grid>
     )
