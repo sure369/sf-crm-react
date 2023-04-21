@@ -41,7 +41,7 @@ export default function OTPVerification() {
     };
 
     useEffect(() => {
-        console.log(location.state.record.item, "uselocation")
+        console.log(location.state.record.item, "otp useEffect")
        
         if(isRunned.current) return;
        isRunned.current=true;
@@ -74,11 +74,11 @@ export default function OTPVerification() {
     const handleSendEmailId = () => {
         axios.post(generateotpUrl, { emailId: location.state.record.item.email })
             .then((res) => {
-                console.log(res.data, "generateOTP RES")
+                console.log(res.data, "otp email res")
                 
             })
             .catch((err) => {
-                console.log(err, "error")
+                console.log(err, "otp email error")
             })
     }
 

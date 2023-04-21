@@ -51,6 +51,8 @@ const Contacts = () => {
       .then(
         (res) => {
           console.log("res Contact records", res);
+          
+          console.log("res Account records", JSON.parse(res.data.content));
           if (res.data.length > 0 && (typeof (res.data) !== 'string')) {
             setRecords(res.data);
             setFetchLoading(false)

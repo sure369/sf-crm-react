@@ -47,6 +47,7 @@ export default function ForgotPasswordIndex() {
             }else if(res.data.status==="success"){
                 setIsUser(false)
                  const item =res.data.content
+                 console.log(res.data,"item forgot pass")
                 navigate('/otp',{ state: { record: { item } }});
                 // navigate(`/confirm-password`,{ state: { record: { item } } })
             }

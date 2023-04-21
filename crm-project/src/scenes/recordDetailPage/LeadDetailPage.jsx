@@ -7,9 +7,13 @@ import { useParams, useNavigate } from "react-router-dom"
 import axios from 'axios'
 // import "../formik/FormStyles.css"
 import ToastNotification from '../toast/ToastNotification';
-import { NameSalutionPickList, LeadSourcePickList, IndustryPickList, LeadStatusPicklist ,LeadsDemoPicklist } from '../../data/pickLists';
+import { NameSalutionPickList, LeadSourcePickList, IndustryPickList, LeadStatusPicklist ,LeadsDemoPicklist,LeadMonthPicklist } from '../../data/pickLists';
 import CustomizedSelectForFormik from '../formik/CustomizedSelectForFormik';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { DatePicker } from '@mui/x-date-pickers';
 import './Form.css'
+
 
 const url = `${process.env.REACT_APP_SERVER_URL}/UpsertLead`;
 const fetchUsersbyName = `${process.env.REACT_APP_SERVER_URL}/usersbyName`;
@@ -47,6 +51,7 @@ const LeadDetailPage = ({ item }) => {
         location:'',
         appointmentDate:'',
         demo:'',
+        month:'',
         remarks:'',
         primaryPhone:'',
         secondaryPhone:'',
@@ -73,6 +78,7 @@ const LeadDetailPage = ({ item }) => {
         + '-' + ('0' + (new Date(singleLead?.appointmentDate).getUTCMonth() + 1)).slice(-2)
         + '-' + ('0' + (new Date(singleLead?.appointmentDate).getUTCDate())).slice(-2) ||  "",
         demo: singleLead?.demo ?? "",
+        month:singleLead?.month ??"",
         remarks: singleLead?.remarks ?? "",
         createdbyId: singleLead?.createdbyId ?? "",
         createdDate: new Date(singleLead?.createdDate).toLocaleString(),
@@ -82,12 +88,8 @@ const LeadDetailPage = ({ item }) => {
 
     const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
 
-
-
     const phoneRegex = /^\d{10}$/; // matches 10 digits
     const landlineRegex = /^\d{2,5}-\d{6,8}$/; // matches 2-5 digits, hyphen, 6-8 digits
-
-
 
     const validationSchema = Yup.object({
         fullName: Yup
@@ -294,7 +296,18 @@ const LeadDetailPage = ({ item }) => {
                                         </Grid>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="appointmentDate">Appointment Date</label>
-                                            <Field name="appointmentDate" type="date" class="form-input" />
+                                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                    <DatePicker
+                                                        name="appointmentDate"
+                                                        value={values.appointmentDate}
+                                                        onChange={(e) => {
+                                                            setFieldValue('appointmentDate', e)
+                                                        }}
+                                                        renderInput={(params) => <TextField  {...params} style={{width:'100%'}} error={false} />}
+                                                    />
+
+                                                </LocalizationProvider>
+                                            {/* <Field name="appointmentDate" type="date" class="form-input" /> */}
                                         </Grid>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="demo">Demo</label>
@@ -302,6 +315,17 @@ const LeadDetailPage = ({ item }) => {
                                                 <MenuItem value=""><em>None</em></MenuItem>
                                                 {
                                                     LeadsDemoPicklist.map((i) => {
+                                                        return <MenuItem value={i.value}>{i.text}</MenuItem>
+                                                    })
+                                                }
+                                            </Field>
+                                        </Grid>
+                                        <Grid item xs={6} md={6}>
+                                            <label htmlFor="month">Month</label>
+                                            <Field name="month" component={CustomizedSelectForFormik} className="form-customSelect">
+                                                <MenuItem value=""><em>None</em></MenuItem>
+                                                {
+                                                    LeadMonthPicklist.map((i) => {
                                                         return <MenuItem value={i.value}>{i.text}</MenuItem>
                                                     })
                                                 }

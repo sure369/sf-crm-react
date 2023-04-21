@@ -17,6 +17,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import ToastNotification from '../toast/ToastNotification';
 import DeleteConfirmDialog from '../toast/DeleteConfirmDialog';
 import ModalFileUpload from '../dataLoader/ModalFileUpload';
+import ExcelDownload from '../Excel';
 
 const ModalStyle = {
   position: 'absolute',
@@ -62,9 +63,9 @@ const Accounts = () => {
     axios.post(urlAccount)
       .then(
         (res) => {
-          console.log("res Account records", res);
+          console.log("res Account records",(res.data));
           if (res.data.length > 0 && (typeof (res.data) !== 'string')) {
-            setRecords(res.data);
+            setRecords((res.data));
             setFetchLoading(false)
           }
           else {
@@ -150,6 +151,11 @@ const Accounts = () => {
     setImportModalOpen(false);
   }
 
+  const handleExportAll =()=>{
+    console.log("handleExportAll")
+  }
+
+
   function CustomPagination() {
     const apiRef = useGridApiContext();
     const page = useGridSelector(apiRef, gridPageSelector);
@@ -222,6 +228,8 @@ const Accounts = () => {
     <>
       <ToastNotification notify={notify} setNotify={setNotify} />
       <DeleteConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog} />
+ 
+
 
       <Box m="20px">
         <Header
@@ -286,7 +294,7 @@ const Accounts = () => {
                 :
                 <Box display="flex" justifyContent="space-between">
                   <Grid container spacing={2}>
-                    <Grid item xs={6}>
+                    <Grid item xs={4}>
                       <Button
                         variant="contained" color="secondary" onClick={handleImportModalOpen}
                         sx={{ color: 'white' }}
@@ -294,10 +302,14 @@ const Accounts = () => {
                         Import
                       </Button>
                     </Grid>
-                    <Grid item xs={6}>
+                    <Grid item xs={4}>
                       <Button variant="contained" color="info" onClick={handleAddRecord}>
                         New
                       </Button>
+                    </Grid>
+                    <Grid item xs={4}>
+                      <ExcelDownload data={records} filename={`AccountRecords`}/>
+                     
                     </Grid>
                   </Grid>
                 </Box>
@@ -335,6 +347,8 @@ const Accounts = () => {
             onRowClick={(e) => handleOnCellClick(e)}
           />
         </Box>
+
+
       </Box>
 
       
