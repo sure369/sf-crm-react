@@ -85,10 +85,10 @@ const UserDetailPage = ({ item }) => {
             .min(10, "Phone number must be 10 characters, its short")
             .max(10, "Phone number must be 10 characters,its long"),
 
-            userName: Yup
-            .string()
-            .email('invalid Format')
-            .required('Required'),
+            // userName: Yup
+            // .string()
+            // .email('invalid Format')
+            // .required('Required'),
         role: Yup
             .string()
             .required('Required'),
@@ -175,7 +175,7 @@ const UserDetailPage = ({ item }) => {
                 sendInviteEmail(values)
                 setTimeout(() => {
                     navigate(-1);
-                }, 2000)
+                }, 4000)
 
             })
             .catch((error) => {
@@ -361,10 +361,9 @@ const UserDetailPage = ({ item }) => {
                                         <DialogActions sx={{ justifyContent: "space-between" }}>
                                             {
                                                 showNew ?
-                                                    <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Save</Button>
+                                                    <Button type='success' variant="contained" color="secondary" disabled={isSubmitting || !dirty}>Save</Button>
                                                     :
-
-                                                    <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Update</Button>
+                                                    <Button type='success' variant="contained" color="secondary" disabled={isSubmitting || !dirty}>Update</Button>
                                             }
                                             <Button type="reset" variant="contained" onClick={handleFormClose}   >Cancel</Button>
                                         </DialogActions>

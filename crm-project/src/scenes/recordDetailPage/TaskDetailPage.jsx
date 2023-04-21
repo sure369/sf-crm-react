@@ -63,7 +63,8 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
         AccountId: '',
         LeadId: '',
         OpportunityId: '',
-        createdbyId: '',
+        createdBy: '',
+        modifiedBy: '',
         createdDate: '',
         modifiedDate: '',
     }
@@ -78,7 +79,8 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
         AccountId: singleTask?.AccountId ?? "",
         LeadId: singleTask?.LeadId ?? "",
         OpportunityId: singleTask?.OpportunityId ?? "",
-        createdbyId: singleTask?.createdbyId ?? "",
+        createdBy: singleTask?.createdBy.userFullName ?? "",
+        modifiedBy: singleTask?.modifiedBy.userFullName ?? "",
         createdDate: new Date(singleTask?.createdDate).toLocaleString(),
         modifiedDate: new Date(singleTask?.modifiedDate).toLocaleString(),
         _id: singleTask?._id ?? "",
@@ -121,10 +123,11 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
 
         if (showNew) {
 
-            console.log('dateSeconds',dateSeconds)
             values.modifiedDate = dateSeconds;
             values.createdDate = dateSeconds;
-
+            values.createdBy = JSON.parse(localStorage.getItem('loggedInUser'))
+            values.modifiedBy = JSON.parse(localStorage.getItem('loggedInUser'))
+           
             if (values.StartDate && values.EndDate) {
                 values.StartDate = StartDateSec
                 values.EndDate = EndDateSec
@@ -151,6 +154,8 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
         else if (!showNew) {
             values.modifiedDate = dateSeconds;
             values.createdDate = createDateSec
+            values.createdBy = singleTask.createdBy;
+            values.modifiedBy = JSON.parse(localStorage.getItem('loggedInUser'))
 
             if (values.StartDate && values.EndDate) {
                 values.StartDate = StartDateSec
@@ -253,7 +258,7 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
         <Grid item xs={12} style={{ margin: "20px" }}>
             <div style={{ textAlign: "center", marginBottom: "10px" }}>
                 {
-                    showNew ? <h3>New Event Log</h3> : <h3>Task Event Log </h3>
+                    showNew ? <h2>New Event Log</h2> : <h2>Task Event Log </h2>
                 }
             </div>
 
@@ -432,10 +437,18 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
 
                                     <Grid item xs={12} md={12}>
                                         <label htmlFor="description">Description</label>
-                                        <Field as="textarea" name="description" class="form-input" />
+                                        <Field as="textarea" name="description" class="form-input-textarea" style={{width:'100%'}}/>
                                     </Grid>
                                     {!showNew && (
                                         <>
+                                          <Grid item xs={6} md={6}>
+                                                    <label htmlFor="createdBy" >Created By</label>
+                                                    <Field name='createdBy' type="text" class="form-input" disabled />
+                                                </Grid>
+                                                <Grid item xs={6} md={6}>
+                                                    <label htmlFor="modifiedBy" >Modified By</label>
+                                                    <Field name='modifiedBy' type="text" class="form-input" disabled />
+                                                </Grid>
                                             <Grid item xs={6} md={6}>
                                                 <label htmlFor="createdDate" >Created Date</label>
                                                 <Field name='createdDate' type="text" class="form-input" disabled />
@@ -451,10 +464,9 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
                                     <DialogActions sx={{ justifyContent: "space-between" }}>
                                         {
                                             showNew ?
-                                                <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Save</Button>
+                                                <Button type='success' variant="contained" color="secondary" disabled={isSubmitting || !dirty}>Save</Button>
                                                 :
-
-                                                <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Update</Button>
+                                                <Button type='success' variant="contained" color="secondary" disabled={isSubmitting || !dirty}>Update</Button>
                                         }
                                         <Button type="reset" variant="contained" onClick={handleClosePage}  >Cancel</Button>
 

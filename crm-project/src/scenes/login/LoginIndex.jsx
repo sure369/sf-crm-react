@@ -57,7 +57,13 @@ export default function LoginIndex({onAuthentication}) {
            
             setSignInData(res.data)
             if(res.data.status==='success'){
+                let obj ={
+                    userId:res.data.userDetails._id,
+                    userName:res.data.userDetails.userName,
+                    userFullName:res.data.userDetails.fullName
+                }
                 localStorage.setItem('token',res.data.content)
+                localStorage.setItem('loggedInUser',JSON.stringify(obj))
                 onAuthentication()
                
             }
@@ -142,10 +148,10 @@ export default function LoginIndex({onAuthentication}) {
                 to="/forgot-password"> 
                         Forgot password ?
                 </Typography>
-                <Typography component={Link} 
+                {/* <Typography component={Link} 
                 to="/sign-up"> 
                         Sign Up
-                </Typography>
+                </Typography> */}
                 </div>
             </Paper>
         </Grid>

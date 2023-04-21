@@ -17,6 +17,7 @@ import ToastNotification from '../toast/ToastNotification';
 import DeleteConfirmDialog from '../toast/DeleteConfirmDialog';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import EmailIcon from '@mui/icons-material/Email';
+import ExcelDownload from '../Excel';
 
 const Contacts = () => {
 
@@ -51,8 +52,7 @@ const Contacts = () => {
       .then(
         (res) => {
           console.log("res Contact records", res);
-          
-          console.log("res Account records", JSON.parse(res.data.content));
+
           if (res.data.length > 0 && (typeof (res.data) !== 'string')) {
             setRecords(res.data);
             setFetchLoading(false)
@@ -236,13 +236,58 @@ const Contacts = () => {
 
 
       <Box m="20px">
-        <Header
-          title="Contacts"
-          subtitle="List of Contacts"
-        />
+         <Typography
+          variant="h2"
+          color={colors.grey[100]}
+          fontWeight="bold"
+          sx={{ m: "0 0 5px 0" }}
+        >
+          Contacts
+        </Typography>
+        <Box display="flex" justifyContent="space-between">
+          <Typography variant="h5" color={colors.greenAccent[400]}>
+            List Of Contacts
+          </Typography>
+
+
+          <div
+            style={{
+              display: "flex",
+              width: "250px",
+              justifyContent: "space-evenly",
+              height:'30px',
+            }}
+          >
+
+{showEmail ? (
+              <>
+                <Tooltip title="Delete Selected">
+                  <IconButton>
+                    {" "}
+                    <DeleteIcon
+                      sx={{ color: "#FF3333" }}
+                      onClick={(e) => onHandleDelete(e, selectedRecordIds)}
+                    />{" "}
+                  </IconButton>
+                </Tooltip>
+              </>
+            ) : (
+            <>
+
+            <Button variant="contained" color="info" onClick={handleAddRecord}>
+              New
+            </Button>
+
+                      <ExcelDownload data={records} filename={`OpportunityRecords`}/>
+                     
+                
+            </>
+            )}
+          </div>
+        </Box>
         <Box
-          m="40px 0 0 0"
-          height="75vh"
+          m="15px 0 0 0"
+          height="380px"
           sx={{
             "& .MuiDataGrid-root": {
               border: "none",
@@ -287,16 +332,16 @@ const Contacts = () => {
             },
           }}
         >
-           <div className='btn-test'>
+           {/* <div className='btn-test'>
               {
                 showEmail ?
                   <>
                     <Tooltip title="Email">
                       <IconButton> <EmailIcon sx={{ color: '#DB4437' }} onClick={handlesendEmail} /> </IconButton>
                     </Tooltip>
-                    {/* <Tooltip title="Whatsapp">
-                      <IconButton> <WhatsAppIcon sx={{ color: '#34A853' }} onClick={handlesendWhatsapp} /> </IconButton>
-                    </Tooltip> */}
+                    //  <Tooltip title="Whatsapp">
+                    //   <IconButton> <WhatsAppIcon sx={{ color: '#34A853' }} onClick={handlesendWhatsapp} /> </IconButton>
+                    // </Tooltip> 
                     <Tooltip title="Delete Selected">
                       <IconButton> <DeleteIcon sx={{ color: '#FF3333' }} onClick={(e) => onHandleDelete(e,selectedRecordIds)} /> </IconButton>
                     </Tooltip>
@@ -308,7 +353,7 @@ const Contacts = () => {
                   
                   
               }
-              </div>
+              </div> */}
 
           <DataGrid
             rows={records}
@@ -317,7 +362,7 @@ const Contacts = () => {
             pageSize={7}
             rowsPerPageOptions={[7]}
             components={{
-              Toolbar: GridToolbar,
+              // Toolbar: GridToolbar,
               Pagination: CustomPagination,
             }}
             loading={fetchLoading}

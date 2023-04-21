@@ -2,7 +2,7 @@ import React from "react";
 import * as XLSX from "xlsx";
 import * as ExcelJS from "exceljs";
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
-import {IconButton} from '@mui/material'
+import {IconButton, Tooltip} from '@mui/material'
 
 
 function ExcelDownload({ data, filename }) {
@@ -37,10 +37,14 @@ function ExcelDownload({ data, filename }) {
   };
 
   return (
-    <IconButton>
+    <Tooltip title="Excel Download">
+
+<IconButton>
     <SaveAltIcon onClick={handleDownload} >Export</SaveAltIcon>
     </IconButton>
+    </Tooltip>
   )
+  
 }
 
 export default ExcelDownload;

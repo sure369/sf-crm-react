@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   Box, Button, useTheme, IconButton,
-  Pagination, Tooltip, Grid,Modal
+  Pagination, Tooltip, Grid,Modal,Typography
 } from "@mui/material";
 import {
   DataGrid, GridToolbar,
@@ -232,13 +232,65 @@ const Accounts = () => {
 
 
       <Box m="20px">
-        <Header
-          title="Accounts"
-          subtitle="List of Accounts"
-        />
+      <Typography
+          variant="h2"
+          color={colors.grey[100]}
+          fontWeight="bold"
+          sx={{ m: "0 0 5px 0" }}
+        >
+          Accounts
+        </Typography>
+        <Box display="flex" justifyContent="space-between">
+          <Typography variant="h5" color={colors.greenAccent[400]}>
+            List Of Accounts
+          </Typography>
+
+
+          <div
+            style={{
+              display: "flex",
+              width: "250px",
+              justifyContent: "space-evenly",
+              height:'30px',
+            }}
+          >
+
+{showDelete ? (
+              <>
+                <Tooltip title="Delete Selected">
+                  <IconButton>
+                    <DeleteIcon
+                      sx={{ color: "#FF3333" }}
+                      onClick={(e) => onHandleDelete(e, selectedRecordIds)}
+                    />
+                  </IconButton>
+                </Tooltip>
+              </>
+            ) : (
+            <>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={handleImportModalOpen}
+                  sx={{ color: "white" }}
+                >
+                  Import
+                </Button>
+
+            <Button variant="contained" color="info" onClick={handleAddRecord}>
+              New
+            </Button>
+
+                      <ExcelDownload data={records} filename={`AccountRecords`}/>
+                     
+                
+            </>
+            )}
+          </div>
+        </Box>
         <Box
-          m="40px 0 0 0"
-          height="75vh"
+          m="15px 0 0 0"
+          height="380px"
           sx={{
             "& .MuiDataGrid-root": {
               border: "none",
@@ -283,7 +335,7 @@ const Accounts = () => {
             },
           }}
         >
-          <div className='btn-test'>
+          {/* <div className='btn-test'>
             {
               showDelete ?
                 <>
@@ -315,7 +367,7 @@ const Accounts = () => {
                 </Box>
 
             }
-          </div>
+          </div> */}
 
           <DataGrid
             rows={records}
@@ -324,7 +376,7 @@ const Accounts = () => {
             pageSize={7}
             rowsPerPageOptions={[7]}
             components={{
-              Toolbar: GridToolbar,
+              // Toolbar: GridToolbar,
               Pagination: CustomPagination,
             }}
             loading={fetchLoading}

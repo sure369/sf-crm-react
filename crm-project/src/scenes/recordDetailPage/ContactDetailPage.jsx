@@ -59,7 +59,8 @@ const ContactDetailPage = ({ item }) => {
         email: '',
         fullAddress: '',
         description: '',
-        createdbyId: '',
+        createdBy: '',
+        modifiedBy:'',
         createdDate: '',
         modifiedDate: '',
     }
@@ -80,7 +81,8 @@ const ContactDetailPage = ({ item }) => {
         email: singleContact?.email ?? "",
         fullAddress: singleContact?.fullAddress ?? "",
         description: singleContact?.description ?? "",
-        createdbyId: singleContact?.createdbyId ?? "",
+        createdBy: singleContact?.createdBy.userFullName ?? "",
+        modifiedBy: singleContact?.modifiedBy.userFullName ?? "",
         createdDate: new Date(singleContact?.createdDate).toLocaleString(),
         modifiedDate: new Date(singleContact?.modifiedDate).toLocaleString(),
         _id: singleContact?._id ?? "",
@@ -123,7 +125,8 @@ const ContactDetailPage = ({ item }) => {
             values.modifiedDate = dateSeconds;
             values.createdDate = dateSeconds;
             values.fullName = values.firstName + ' ' + values.lastName;
-
+            values.createdBy = JSON.parse(localStorage.getItem('loggedInUser'))
+            values.modifiedBy = JSON.parse(localStorage.getItem('loggedInUser'))
 
             if (values.dob) {
                 values.dob = dobSec;
@@ -137,6 +140,9 @@ const ContactDetailPage = ({ item }) => {
             values.modifiedDate = dateSeconds;
             values.createdDate = createDateSec
             values.fullName = values.firstName + ' ' + values.lastName;
+            values.createdBy = singleContact.createdBy;
+            values.modifiedBy = JSON.parse(localStorage.getItem('loggedInUser'))
+
             if (values.dob) {
                 values.dob = dobSec;
             }
@@ -207,7 +213,7 @@ const ContactDetailPage = ({ item }) => {
             <Grid item xs={12} style={{ margin: "20px" }}>
                 <div style={{ textAlign: "center", marginBottom: "10px" }}>
                     {
-                        showNew ? <h3>New Contact </h3> : <h3>Contact Detail Page </h3>
+                        showNew ? <h2>New Contact </h2> : <h2>Contact Detail Page </h2>
                     }
                 </div>
                 <div>
@@ -222,15 +228,9 @@ const ContactDetailPage = ({ item }) => {
                                         <IconButton> <WhatsAppIcon sx={{ color: '#34A853' }} onClick={handlesendWhatsapp} /> </IconButton>
                                     </Tooltip> */}
                                 </>
-
-
-                                : ''
+                                : null
                         }
                     </div>
-
-
-
-
                 </div>
                 <div>
                     <Formik
@@ -320,7 +320,6 @@ const ContactDetailPage = ({ item }) => {
                                                         <Field component={TextField} {...params} name="AccountId" />
                                                     )}
                                                 />
-
                                             </Grid>
                                             <Grid item xs={6} md={6}>
                                                 <label htmlFor="phone">Phone</label>
@@ -342,7 +341,6 @@ const ContactDetailPage = ({ item }) => {
                                                         }}
                                                         renderInput={(params) => <TextField  {...params} style={{width:'100%'}} error={false} />}
                                                     />
-
                                                 </LocalizationProvider>
                                             </Grid>
                                             <Grid item xs={6} md={6}>
@@ -367,21 +365,24 @@ const ContactDetailPage = ({ item }) => {
                                                     }
                                                 </Field>
                                             </Grid>
-
                                             <Grid Grid item xs={6} md={6}>
                                                 <label htmlFor="fullAddress">Full Address</label>
-                                                <Field as="textarea" name="fullAddress" class="form-input" />
+                                                <Field as="textarea" name="fullAddress" class="form-input-textarea" style={{width:'100%'}} />
                                             </Grid>
-
                                             <Grid Grid item xs={6} md={12}>
                                                 <label htmlFor="description">Description</label>
-                                                <Field as="textarea" name="description" class="form-input" />
+                                                <Field as="textarea" name="description" class="form-input-textarea" style={{width:'100%'}} />
                                             </Grid>
-
-
-
                                             {!showNew && (
                                                 <>
+                                                 <Grid item xs={6} md={6}>
+                                                    <label htmlFor="createdBy" >Created By</label>
+                                                    <Field name='createdBy' type="text" class="form-input" disabled />
+                                                </Grid>
+                                                <Grid item xs={6} md={6}>
+                                                    <label htmlFor="modifiedBy" >Modified By</label>
+                                                    <Field name='modifiedBy' type="text" class="form-input" disabled />
+                                                </Grid>
                                                     <Grid item xs={6} md={6}>
                                                         <label htmlFor="createdDate" >Created Date</label>
                                                         <Field name='createdDate' type="text" class="form-input" disabled />
@@ -396,14 +397,11 @@ const ContactDetailPage = ({ item }) => {
                                         </Grid>
                                         <div className='action-buttons'>
                                             <DialogActions sx={{ justifyContent: "space-between" }}>
-
-
                                                 {
                                                     showNew ?
-                                                        <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Save</Button>
+                                                        <Button type='success' variant="contained" color="secondary" disabled={isSubmitting || !dirty}>Save</Button>
                                                         :
-
-                                                        <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Update</Button>
+                                                        <Button type='success' variant="contained" color="secondary" disabled={isSubmitting || !dirty}>Update</Button>
                                                 }
                                                 <Button type="reset" variant="contained" onClick={handleFormClose}  >Cancel</Button>
                                             </DialogActions>

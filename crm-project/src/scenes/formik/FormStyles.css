@@ -31,13 +31,7 @@
     box-sizing: border-box;
   }
 
-  .action-buttons{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 30px;
- 
-  }
+  
 
   .btn-test{
     display: flex;

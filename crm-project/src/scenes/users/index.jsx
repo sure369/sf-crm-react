@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Button, IconButton, useTheme, Pagination ,Tooltip} from "@mui/material";
+import { Box, Button, IconButton, useTheme, Typography,Pagination ,Tooltip} from "@mui/material";
 import {
   DataGrid, GridToolbar,
   gridPageCountSelector, gridPageSelector,
@@ -13,6 +13,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import ToastNotification from '../toast/ToastNotification';
 import DeleteConfirmDialog from '../toast/DeleteConfirmDialog';
+import ExcelDownload from '../Excel';
 
 const Users = () => {
 
@@ -189,13 +190,57 @@ const Users = () => {
         <DeleteConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog} />
 
         <Box m="20px">
-          <Header
-            title="Users"
-            subtitle="List of User"
-          />
+           <Typography
+          variant="h2"
+          color={colors.grey[100]}
+          fontWeight="bold"
+          sx={{ m: "0 0 5px 0" }}
+        >
+          Users
+        </Typography>
+        <Box display="flex" justifyContent="space-between">
+          <Typography variant="h5" color={colors.greenAccent[400]}>
+            List Of  Users
+          </Typography>
+
+
+          <div
+            style={{
+              display: "flex",
+              width: "250px",
+              justifyContent: "space-evenly",
+              height:'30px',
+            }}
+          >
+
+{showDelete ? (
+              <>
+                <Tooltip title="Delete Selected">
+                  <IconButton>
+                    <DeleteIcon
+                      sx={{ color: "#FF3333" }}
+                      onClick={(e) => onHandleDelete(e, selectedRecordIds)}
+                    />
+                  </IconButton>
+                </Tooltip>
+              </>
+            ) : (
+            <>
+            <Button variant="contained" color="info" onClick={handleAddRecord}>
+              New
+            </Button>
+
+                      {/* <ExcelDownload data={records} filename={`OpportunityRecords`}/> */}
+                     
+                
+            </>
+            )}
+          </div>
+        </Box>
+
           <Box
-            m="40px 0 0 0"
-            height="75vh"
+            m="15px 0 0 0"
+            height="380px"
             sx={{
               "& .MuiDataGrid-root": {
                 border: "none",
@@ -238,7 +283,7 @@ const Users = () => {
               },
             }}
           >
-             <div className='btn-test'>
+             {/* <div className='btn-test'>
           {
               showDelete ? 
               <>
@@ -251,7 +296,7 @@ const Users = () => {
                 New
               </Button>
             }
-          </div>
+          </div> */}
 
             <DataGrid
               rows={records}
@@ -261,7 +306,7 @@ const Users = () => {
               rowsPerPageOptions={[7]}
               components={{
                 Pagination: CustomPagination,
-                Toolbar: GridToolbar
+                // Toolbar: GridToolbar
               }}
               loading={fetchLoading}
               getRowClassName={(params) =>

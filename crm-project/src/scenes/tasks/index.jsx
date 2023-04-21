@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Button, useTheme, IconButton, Pagination,Tooltip } from "@mui/material";
+import { Box, Button, useTheme, IconButton, Typography, Pagination, Tooltip } from "@mui/material";
 import {
   DataGrid, GridToolbar,
   gridPageCountSelector, gridPageSelector,
@@ -13,6 +13,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import ToastNotification from '../toast/ToastNotification';
 import DeleteConfirmDialog from '../toast/DeleteConfirmDialog';
+import ExcelDownload from '../Excel';
 
 const Task = () => {
 
@@ -72,7 +73,7 @@ const Task = () => {
   };
 
   const onHandleDelete = (e, row) => {
-     e.stopPropagation();
+    e.stopPropagation();
     console.log('req delete rec', row);
     setConfirmDialog({
       isOpen: true,
@@ -116,7 +117,7 @@ const Task = () => {
           type: 'error'
         })
       })
-       setConfirmDialog({
+    setConfirmDialog({
       ...confirmDialog,
       isOpen: false
     })
@@ -205,13 +206,52 @@ const Task = () => {
 
 
       <Box m="20px">
-        <Header
-          title="Event Log"
-          subtitle="List of Event Log"
-        />
+        <Typography
+          variant="h2"
+          color={colors.grey[100]}
+          fontWeight="bold"
+          sx={{ m: "0 0 5px 0" }}
+        >
+          Event Log
+        </Typography>
+        <Box display="flex" justifyContent="space-between">
+          <Typography variant="h5" color={colors.greenAccent[400]}>
+            List Of Event Logs
+          </Typography>
+          <div
+            style={{
+              display: "flex",
+              width: "250px",
+              justifyContent: "space-evenly",
+              height: '30px',
+            }}
+          >
+
+            {showDelete ? (
+              <>
+                <Tooltip title="Delete Selected">
+                  <IconButton>
+                    <DeleteIcon
+                      sx={{ color: "#FF3333" }}
+                      onClick={(e) => onHandleDelete(e, selectedRecordIds)}
+                    />
+                  </IconButton>
+                </Tooltip>
+              </>
+            ) : (
+              <>
+                <Button variant="contained" color="info" onClick={handleAddRecord}>
+                  New
+                </Button>
+                <ExcelDownload data={records} filename={`EventLogRecords`} />
+              </>
+            )}
+          </div>
+        </Box>
+
         <Box
-          m="40px 0 0 0"
-          height="75vh"
+          m="15px 0 0 0"
+          height="380px"
           sx={{
             "& .MuiDataGrid-root": {
               border: "none",
@@ -246,7 +286,7 @@ const Task = () => {
             },
             "& .MuiDataGrid-row:hover": {
               backgroundColor: "#CECEF0",
-              cursor:'pointer',
+              cursor: 'pointer',
             },
             "& .C-MuiDataGrid-row-even": {
               backgroundColor: "#D7ECFF",
@@ -256,20 +296,20 @@ const Task = () => {
             },
           }}
         >
-         <div className='btn-test'>
-          {
-              showDelete ? 
-              <>
-              <Tooltip title="Delete Selected">
-                  <IconButton> <DeleteIcon sx={{ color: '#FF3333' }} onClick={(e) => onHandleDelete(e,selectedRecordIds)} /> </IconButton>
-              </Tooltip>
-              </>
-              :
-              <Button variant="contained" color="info" onClick={handleAddRecord}>
-                New
-              </Button>
+          {/* <div className='btn-test'>
+            {
+              showDelete ?
+                <>
+                  <Tooltip title="Delete Selected">
+                    <IconButton> <DeleteIcon sx={{ color: '#FF3333' }} onClick={(e) => onHandleDelete(e, selectedRecordIds)} /> </IconButton>
+                  </Tooltip>
+                </>
+                :
+                <Button variant="contained" color="info" onClick={handleAddRecord}>
+                  New
+                </Button>
             }
-          </div>
+          </div> */}
 
           <DataGrid
             rows={records}
@@ -278,7 +318,7 @@ const Task = () => {
             pageSize={7}
             rowsPerPageOptions={[7]}
             components={{
-              Toolbar: GridToolbar,
+              // Toolbar: GridToolbar,
               Pagination: CustomPagination,
             }}
             loading={fetchLoading}

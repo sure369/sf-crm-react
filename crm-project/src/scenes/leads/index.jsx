@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import {  useTheme, Box, Button, IconButton,
-   Pagination, Tooltip, Grid, Modal
+import {
+  useTheme, Box, Button, IconButton,
+  Pagination, Tooltip, Grid, Modal, Typography,
 } from "@mui/material";
-import {  DataGrid, GridToolbar,  gridPageCountSelector,
-   gridPageSelector,useGridApiContext, useGridSelector
+import {
+  DataGrid, GridToolbar, gridPageCountSelector,
+  gridPageSelector, useGridApiContext, useGridSelector
 } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
@@ -18,6 +20,7 @@ import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import EmailIcon from '@mui/icons-material/Email';
 import EmailModalPage from '../recordDetailPage/EmailModalPage';
 import WhatAppModalPage from '../recordDetailPage/WhatsAppModalPage';
+import ExcelDownload from '../Excel';
 
 const ModalStyle = {
   position: 'absolute',
@@ -219,7 +222,7 @@ const Leads = () => {
                     <EditIcon />
                   </IconButton> */}
                   <IconButton onClick={(e) => onHandleDelete(e, params.row)} style={{ padding: '20px', color: '#FF3333' }}>
-                    <DeleteIcon  />
+                    <DeleteIcon />
                   </IconButton>
                 </>
                 : ''
@@ -236,13 +239,69 @@ const Leads = () => {
       <DeleteConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog} />
 
       <Box m="20px">
-        <Header
-          title="Leads"
-          subtitle="List of Leads"
-        />
+        <Typography
+          variant="h2"
+          color={colors.grey[100]}
+          fontWeight="bold"
+          sx={{ m: "0 0 5px 0" }}
+        >
+          Leads
+        </Typography>
+        <Box display="flex" justifyContent="space-between">
+          <Typography variant="h5" color={colors.greenAccent[400]}>
+            List Of Leads
+          </Typography>
+
+
+          <div
+            style={{
+              display: "flex",
+              width: "250px",
+              justifyContent: "space-evenly",
+              height:'30px',
+            }}
+          >
+
+            {showDelete ? (
+              <>
+                <Tooltip title="Email">
+                  <IconButton>
+                    <EmailIcon sx={{ color: '#DB4437' }} onClick={handlesendEmail} /> </IconButton>
+                </Tooltip>
+                {/* <Tooltip title="Whatsapp">
+                    <IconButton> <WhatsAppIcon sx={{ color: '#34A853' }} onClick={handlesendWhatsapp} /> </IconButton>
+                  </Tooltip> */}
+                <Tooltip title="Delete Selected">
+                  <IconButton>
+                    <DeleteIcon sx={{ color: "#FF3333" }} onClick={(e) => onHandleDelete(e, selectedRecordIds)} />
+                  </IconButton>
+                </Tooltip>
+              </>
+            ) : (
+              <>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={handleImportModalOpen}
+                  sx={{ color: "white" }}
+                >
+                  Import
+                </Button>
+
+                <Button variant="contained" color="info" onClick={handleAddRecord}>
+                  New
+                </Button>
+
+                <ExcelDownload data={records} filename={`LeadRecords`} />
+
+
+              </>
+            )}
+          </div>
+        </Box>
         <Box
-          m="40px 0 0 0"
-          height="75vh"
+          m="15px 0 0 0"
+          height="380px"
           sx={{
             "& .MuiDataGrid-root": {
               border: "none",
@@ -276,7 +335,7 @@ const Leads = () => {
             },
             "& .MuiDataGrid-row:hover": {
               backgroundColor: "#CECEF0",
-              cursor:'pointer'
+              cursor: 'pointer'
             },
             "& .C-MuiDataGrid-row-even": {
               backgroundColor: "#D7ECFF",
@@ -287,16 +346,16 @@ const Leads = () => {
           }}
         >
 
-          <div className='btn-test'>
+          {/* <div className='btn-test'>
             {
               showDelete ?
                 <>
                   <Tooltip title="Email">
                     <IconButton> <EmailIcon sx={{ color: '#DB4437' }} onClick={handlesendEmail} /> </IconButton>
                   </Tooltip>
-                  {/* <Tooltip title="Whatsapp">
-                    <IconButton> <WhatsAppIcon sx={{ color: '#34A853' }} onClick={handlesendWhatsapp} /> </IconButton>
-                  </Tooltip> */}
+                  // <Tooltip title="Whatsapp">
+                    // <IconButton> <WhatsAppIcon sx={{ color: '#34A853' }} onClick={handlesendWhatsapp} /> </IconButton>
+                  // </Tooltip> 
                   <Tooltip title="Delete Selected">
                     <IconButton> <DeleteIcon sx={{ color: '#FF3333' }} onClick={(e) => onHandleDelete(e, selectedRecordIds)} /> </IconButton>
                   </Tooltip>
@@ -320,7 +379,7 @@ const Leads = () => {
                   </Grid>
                 </Box>
             }
-          </div>
+          </div> */}
 
           <DataGrid
             rows={records}
@@ -331,7 +390,7 @@ const Leads = () => {
             // onCellClick={handleOnCellClick}
             components={{
               Pagination: CustomPagination,
-              Toolbar: GridToolbar
+              // Toolbar: GridToolbar
             }}
             loading={fetchLoading}
             getRowClassName={(params) =>

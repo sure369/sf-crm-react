@@ -55,7 +55,8 @@ const AccountDetailPage = ({ item }) => {
         billingCountry: '',
         billingCity: '',
         billingCities: [],
-        createdbyId: '',
+        createdBy: '',
+        modifiedBy: '',
         createdDate:'',
         modifiedDate: '',
         InventoryId: '',
@@ -74,12 +75,12 @@ const AccountDetailPage = ({ item }) => {
         billingCity: singleAccount?.billingCity ?? "",
         // billingCities: cityPicklist?? "",
         billingCities:singleAccount?.billingCities ?? "",
-        createdbyId: singleAccount?.createdbyId ?? "",
+        createdBy: singleAccount?.createdBy.userFullName ?? "",
+        modifiedBy: singleAccount?.modifiedBy.userFullName ?? "",
         createdDate:  new Date(singleAccount?.createdDate).toLocaleString(),
         modifiedDate: new Date(singleAccount?.modifiedDate).toLocaleString(),
         _id: singleAccount?._id ?? "",
         inventoryDetails:singleAccount?.inventoryDetails ?? "", 
-        
         InventoryId: singleAccount?.InventoryId ?? "",
         InventoryName: singleAccount?.InventoryName ?? "",
     }
@@ -132,7 +133,6 @@ const AccountDetailPage = ({ item }) => {
         .then((res)=>{
             console.log('getPicklistNameForCities',res.data)
             setCitiesPicklist(res.data)
-
         })
         .catch((err)=>{
             console.log(err)
@@ -141,7 +141,6 @@ const AccountDetailPage = ({ item }) => {
         else{
             console.log('outside',props)
         }
-      
     }
 
     const formSubmission = (values) => {
@@ -157,6 +156,8 @@ const AccountDetailPage = ({ item }) => {
             values.createdDate = dateSeconds;
             values.InventoryName=values.inventoryDetails.propertyName;
             values.InventoryId =values.inventoryDetails.id;
+            values.createdBy = JSON.parse(localStorage.getItem('loggedInUser'))
+            values.modifiedBy = JSON.parse(localStorage.getItem('loggedInUser'))
 
             if(values.InventoryId===''){
                 delete values.InventoryId;
@@ -167,7 +168,9 @@ const AccountDetailPage = ({ item }) => {
             values.createdDate = createDateSec;
             values.InventoryName=values.inventoryDetails.propertyName;
             values.InventoryId =values.inventoryDetails.id;
-            
+            values.createdBy = singleAccount.createdBy;
+            values.modifiedBy = JSON.parse(localStorage.getItem('loggedInUser'))
+
             if(values.InventoryId===''){
                 delete values.InventoryId;
             }
@@ -182,7 +185,6 @@ const AccountDetailPage = ({ item }) => {
                 isOpen:true,
                 message:res.data,
                 type:'success'
-      
               })
             setTimeout(() => {
                  navigate(-1);
@@ -196,8 +198,6 @@ const AccountDetailPage = ({ item }) => {
                 type:'error'
               })
         })
-
-        
     }
 
     const FetchInventoriesbyName = (newInputValue) => {
@@ -224,7 +224,7 @@ const AccountDetailPage = ({ item }) => {
         <Grid item xs={12} style={{ margin: "20px" }}>
             <div style={{ textAlign: "center", marginBottom: "10px" }}>
                 {
-                    showNew ? <h3>New Account</h3> : <h3>Account Detail Page </h3>
+                    showNew ? <h2>New Account</h2> : <h2>Account Detail Page </h2>
                 }
             </div>
             <div>
@@ -427,6 +427,14 @@ const AccountDetailPage = ({ item }) => {
                                         
                                         {!showNew && (
                                             <>
+                                              <Grid item xs={6} md={6}>
+                                                    <label htmlFor="createdBy" >Created By</label>
+                                                    <Field name='createdBy' type="text" class="form-input" disabled />
+                                                </Grid>
+                                                <Grid item xs={6} md={6}>
+                                                    <label htmlFor="modifiedBy" >Modified By</label>
+                                                    <Field name='modifiedBy' type="text" class="form-input" disabled />
+                                                </Grid>
                                                 <Grid item xs={6} md={6}>                                                  
                                                     <label htmlFor="createdDate" >Created Date</label>
                                                     <Field name='createdDate' type="text" class="form-input" disabled />
@@ -444,9 +452,9 @@ const AccountDetailPage = ({ item }) => {
                                         <DialogActions sx={{ justifyContent: "space-between" }}>
                                             {
                                                 showNew ?
-                                                    <Button type='success' variant="contained" color="secondary" >Save</Button>
+                                                    <Button type='success' variant="contained" color="secondary" disabled={isSubmitting || !dirty} >Save</Button>
                                                 :
-                                                    <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Update</Button>
+                                                    <Button type='success' variant="contained" color="secondary" disabled={isSubmitting || !dirty}>Update</Button>
                                             }
                                             <Button type="reset" variant="contained" onClick={handleFormClose}  >Cancel</Button>
                                         </DialogActions>

@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { Grid, Button, DialogActions,MenuItem } from "@mui/material";
+import { Grid, Button, DialogActions, MenuItem } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom"
 import axios from 'axios'
 // import "../formik/FormStyles.css"
 import ToastNotification from '../toast/ToastNotification';
-import { InvCitiesPickList,InvCountryPickList, InvStatusPicklist, InvTypePicklist } from '../../data/pickLists';
+import { InvCitiesPickList, InvCountryPickList, InvStatusPicklist, InvTypePicklist } from '../../data/pickLists';
 import CustomizedSelectForFormik from '../formik/CustomizedSelectForFormik';
 import './Form.css'
 
@@ -25,6 +25,9 @@ const InventoryDetailPage = ({ item }) => {
 
 
     useEffect(() => {
+
+        console.log(JSON.parse(localStorage.getItem('loggedInUser')), "loggedInUser")
+
         console.log('passed record', location.state.record.item);
         setsingleInventory(location.state.record.item);
         setshowNew(!location.state.record.item)
@@ -43,7 +46,8 @@ const InventoryDetailPage = ({ item }) => {
         floor: '',
         status: '',
         totalArea: '',
-        createdbyId: '',
+        createdBy: '',
+        modifiedBy: '',
         createdDate: '',
         modifiedDate: '',
     }
@@ -60,29 +64,12 @@ const InventoryDetailPage = ({ item }) => {
         floor: singleInventory?.floor ?? "",
         status: singleInventory?.status ?? "",
         totalArea: singleInventory?.totalArea ?? "",
-        createdbyId: singleInventory?.createdbyId ?? "",
+        createdBy: singleInventory?.createdBy.userFullName ?? "",
+        modifiedBy: singleInventory?.modifiedBy.userFullName ?? "",
         createdDate: new Date(singleInventory?.createdDate).toLocaleString(),
         modifiedDate: new Date(singleInventory?.modifiedDate).toLocaleString(),
         _id: singleInventory?._id ?? "",
     }
-
-    const citiesList = {
-        UAE: [
-            { value: "Dubai", label: "Dubai" },
-            { value: "Abu Dhabi", label: "Abu Dhabi" },
-            { value: "Sharjah", label: "Sharjah" },
-            { value: "Ajman", label: "Ajman" },
-        ],
-        "Saudi Arabia": [
-            { value: "Mecca", label: "Mecca" },
-            { value: "Jeddah", label: "Jeddah" },
-        ],
-        India: [
-            { value: "Chennai", label: "Chennai" },
-            { value: "Bangalore", label: "Bangalore" },
-            { value: "Coimabatore", label: "Coimabatore" },
-        ],
-    };
 
     const getCities = (country) => {
         return new Promise((resolve, reject) => {
@@ -110,16 +97,21 @@ const InventoryDetailPage = ({ item }) => {
 
         console.log('form submission value', values);
 
+
         let dateSeconds = new Date().getTime();
         let createDateSec = new Date(values.createdDate).getTime()
 
         if (showNew) {
             values.modifiedDate = dateSeconds;
             values.createdDate = dateSeconds;
+            values.createdBy = JSON.parse(localStorage.getItem('loggedInUser'))
+            values.modifiedBy = JSON.parse(localStorage.getItem('loggedInUser'))
         }
         else if (!showNew) {
             values.modifiedDate = dateSeconds;
             values.createdDate = createDateSec;
+            values.createdBy = singleInventory.createdBy;
+            values.modifiedBy = JSON.parse(localStorage.getItem('loggedInUser'))
         }
 
         console.log('after change form submission value', values);
@@ -154,7 +146,7 @@ const InventoryDetailPage = ({ item }) => {
         <Grid item xs={12} style={{ margin: "20px" }}>
             <div style={{ textAlign: "center", marginBottom: "10px" }}>
                 {
-                    showNew ? <h3>New Inventory</h3> : <h3>Inventory Detail Page </h3>
+                    showNew ? <h2>New Inventory</h2> : <h2>Inventory Detail Page </h2>
                 }
             </div>
             <div>
@@ -201,12 +193,12 @@ const InventoryDetailPage = ({ item }) => {
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="type">Type <span className="text-danger">*</span> </label>
                                             <Field name="type" component={CustomizedSelectForFormik}>
-                                            <MenuItem value=""><em>None</em></MenuItem>
-                                             {
-                                                InvTypePicklist.map((i)=>{
-                                                    return <MenuItem value={i.value}>{i.text}</MenuItem>	
-                                                })
-                                               }
+                                                <MenuItem value=""><em>None</em></MenuItem>
+                                                {
+                                                    InvTypePicklist.map((i) => {
+                                                        return <MenuItem value={i.value}>{i.text}</MenuItem>
+                                                    })
+                                                }
                                             </Field>
                                             <div style={{ color: 'red' }}>
                                                 <ErrorMessage name="type" />
@@ -215,12 +207,12 @@ const InventoryDetailPage = ({ item }) => {
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="status">Status <span className="text-danger">*</span> </label>
                                             <Field name="status" component={CustomizedSelectForFormik}>
-                                            <MenuItem value=""><em>None</em></MenuItem>
-                                               {
-                                                InvStatusPicklist.map((i)=>{
-                                                    return <MenuItem value={i.value}>{i.text}</MenuItem>	
-                                                })
-                                               }
+                                                <MenuItem value=""><em>None</em></MenuItem>
+                                                {
+                                                    InvStatusPicklist.map((i) => {
+                                                        return <MenuItem value={i.value}>{i.text}</MenuItem>
+                                                    })
+                                                }
                                             </Field>
                                             <div style={{ color: 'red' }}>
                                                 <ErrorMessage name="status" />
@@ -247,12 +239,12 @@ const InventoryDetailPage = ({ item }) => {
                                                     setFieldValue("propertyCities", _cities);
                                                 }}
                                             >
-                                                 <MenuItem value=""><em>None</em></MenuItem>
-                                              {
-                                                InvCountryPickList.map((i)=>{
-                                                    return <MenuItem value={i.value}>{i.text}</MenuItem>
-                                                })
-                                              }  
+                                                <MenuItem value=""><em>None</em></MenuItem>
+                                                {
+                                                    InvCountryPickList.map((i) => {
+                                                        return <MenuItem value={i.value}>{i.text}</MenuItem>
+                                                    })
+                                                }
                                             </Field>
                                         </Grid>
                                         <Grid item xs={6} md={6}>
@@ -265,17 +257,16 @@ const InventoryDetailPage = ({ item }) => {
                                                 component={CustomizedSelectForFormik}
                                                 onChange={handleChange}
                                             >
-                                                 <MenuItem value=""><em>None</em></MenuItem>
-                                                 {values.propertyCities &&
+                                                <MenuItem value=""><em>None</em></MenuItem>
+                                                {values.propertyCities &&
                                                     values.propertyCities.map((r) => (
-                                                      
-                                                         <MenuItem key={r.value} value={r.value}>{r.text}</MenuItem>
+
+                                                        <MenuItem key={r.value} value={r.value}>{r.text}</MenuItem>
                                                     )
-                                                        
+
                                                     )}
                                             </Field>
                                         </Grid>
-
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="floor">Floor</label>
                                             <Field name="floor" type="text" class="form-input" />
@@ -287,10 +278,17 @@ const InventoryDetailPage = ({ item }) => {
                                         {!showNew && (
                                             <>
                                                 <Grid item xs={6} md={6}>
+                                                    <label htmlFor="createdBy" >Created By</label>
+                                                    <Field name='createdBy' type="text" class="form-input" disabled />
+                                                </Grid>
+                                                <Grid item xs={6} md={6}>
+                                                    <label htmlFor="modifiedBy" >Modified By</label>
+                                                    <Field name='modifiedBy' type="text" class="form-input" disabled />
+                                                </Grid>
+                                                <Grid item xs={6} md={6}>
                                                     <label htmlFor="createdDate" >Created Date</label>
                                                     <Field name='createdDate' type="text" class="form-input" disabled />
                                                 </Grid>
-
                                                 <Grid item xs={6} md={6}>
                                                     <label htmlFor="modifiedDate" >Modified Date</label>
                                                     <Field name='modifiedDate' type="text" class="form-input" disabled />
@@ -302,9 +300,9 @@ const InventoryDetailPage = ({ item }) => {
                                         <DialogActions sx={{ justifyContent: "space-between" }}>
                                             {
                                                 showNew ?
-                                                    <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Save</Button>
+                                                    <Button type='success' variant="contained" color="secondary" disabled={isSubmitting || !dirty}>Save</Button>
                                                     :
-                                                    <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Update</Button>
+                                                    <Button type='success' variant="contained" color="secondary" disabled={isSubmitting || !dirty}>Update</Button>
                                             }
                                             <Button type="reset" variant="contained" onClick={handleFormClose}   >Cancel</Button>
                                         </DialogActions>

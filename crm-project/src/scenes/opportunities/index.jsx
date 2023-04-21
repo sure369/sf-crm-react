@@ -464,6 +464,7 @@ const Opportunities = () => {
               display: "flex",
               width: "250px",
               justifyContent: "space-evenly",
+              height:'30px',
             }}
           >
 
@@ -471,11 +472,10 @@ const Opportunities = () => {
               <>
                 <Tooltip title="Delete Selected">
                   <IconButton>
-                    {" "}
                     <DeleteIcon
                       sx={{ color: "#FF3333" }}
                       onClick={(e) => onHandleDelete(e, selectedRecordIds)}
-                    />{" "}
+                    />
                   </IconButton>
                 </Tooltip>
               </>
@@ -493,7 +493,6 @@ const Opportunities = () => {
             <Button variant="contained" color="info" onClick={handleAddRecord}>
               New
             </Button>
-
                       <ExcelDownload data={records} filename={`OpportunityRecords`}/>
                      
                 

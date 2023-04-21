@@ -54,7 +54,8 @@ const OpportunityDetailPage = ({ item }) => {
         closeDate: '',
         stage: '',
         description: '',
-        createdbyId: '',
+        createdBy: '',
+        modifiedBy: '',
         createdDate: '',
         modifiedDate: '',
     }
@@ -71,7 +72,8 @@ const OpportunityDetailPage = ({ item }) => {
             + '-' + ('0' + (new Date(singleOpportunity?.closeDate).getUTCDate() + 1)).slice(-2) || '',
         stage: singleOpportunity?.stage ?? "",
         description: singleOpportunity?.description ?? "",
-        createdbyId: singleOpportunity?.createdbyId ?? "",
+        createdBy: singleOpportunity?.createdBy.userFullName ?? "",
+        modifiedBy: singleOpportunity?.modifiedBy.userFullName ?? "",
         createdDate: new Date(singleOpportunity?.createdDate).toLocaleString(),
         modifiedDate: new Date(singleOpportunity?.modifiedDate).toLocaleString(),
         _id: singleOpportunity?._id ?? "",
@@ -85,7 +87,9 @@ const OpportunityDetailPage = ({ item }) => {
         amount: Yup
             .string()
             .required('Required')
-            .matches(/^[0-9]+$/, "Must be only digits")
+            .matches(/^[0-9]+$/, "Must be only digits"),
+        // amount: Yup.number().required('Amount is required').positive('Amount must be positive').integer('Amount must be an integer'),
+
 
     })
 
@@ -99,6 +103,8 @@ const OpportunityDetailPage = ({ item }) => {
         if (showNew) {
             values.modifiedDate = dateSeconds;
             values.createdDate = dateSeconds;
+            values.createdBy = JSON.parse(localStorage.getItem('loggedInUser'))
+            values.modifiedBy = JSON.parse(localStorage.getItem('loggedInUser'))
             if (values.closeDate) {
                 values.closeDate = closeDateSec;
             }
@@ -118,7 +124,10 @@ const OpportunityDetailPage = ({ item }) => {
         }
         else if (!showNew) {
             values.modifiedDate = dateSeconds;
-            values.createdDate = createDateSec
+            values.createdDate = createDateSec;
+            values.createdBy = singleOpportunity.createdBy;
+            values.modifiedBy = JSON.parse(localStorage.getItem('loggedInUser'))
+
             if (values.closeDate) {
                 values.closeDate = closeDateSec;
             }
@@ -198,7 +207,7 @@ const OpportunityDetailPage = ({ item }) => {
         <Grid item xs={12} style={{ margin: "20px" }}>
             <div style={{ textAlign: "center", marginBottom: "10px" }}>
                 {
-                    showNew ? <h3>New Opportunity</h3> : <h3>Opportunity Detail Page </h3>
+                    showNew ? <h2>New Opportunity</h2> : <h2>Opportunity Detail Page </h2>
                 }
             </div>
             <div>
@@ -366,10 +375,18 @@ const OpportunityDetailPage = ({ item }) => {
                                         </Grid>
                                         <Grid item xs={12} md={12}>
                                             <label htmlFor="description">Description</label>
-                                            <Field as="textarea" name="description" class="form-input" />
+                                            <Field as="textarea" name="description" class="form-input-textarea"  style={{width:'100%'}}/>
                                         </Grid>
                                         {!showNew && (
                                             <>
+                                            <Grid item xs={6} md={6}>
+                                                    <label htmlFor="createdBy" >Created By</label>
+                                                    <Field name='createdBy' type="text" class="form-input" disabled />
+                                                </Grid>
+                                                <Grid item xs={6} md={6}>
+                                                    <label htmlFor="modifiedBy" >Modified By</label>
+                                                    <Field name='modifiedBy' type="text" class="form-input" disabled />
+                                                </Grid>
                                                 <Grid item xs={6} md={6}>
                                                     {/* value is aagined to  the fields */}
                                                     <label htmlFor="createdDate" >Created Date</label>
@@ -387,10 +404,10 @@ const OpportunityDetailPage = ({ item }) => {
                                     <div className='action-buttons'>
                                         <DialogActions sx={{ justifyContent: "space-between" }}>
 
-                                            {showNew ?
-                                                <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Save</Button>
+                                            {showNew ? 
+                                                <Button type='success' variant="contained" color="secondary" disabled={isSubmitting || !dirty}>Save</Button>
                                                 :
-                                                <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Update</Button>
+                                                <Button type='success' variant="contained" color="secondary" disabled={isSubmitting || !dirty}>Update</Button>
                                             }
                                             <Button type="reset" variant="contained" onClick={handleFormClose}  >Cancel</Button>
                                         </DialogActions>
