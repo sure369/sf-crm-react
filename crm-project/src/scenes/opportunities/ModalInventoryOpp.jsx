@@ -46,7 +46,8 @@ const ModalInventoryOpportunity = ({ item, handleModal }) => {
         closeDate: '',
         stage: '',
         description: '',
-        createdbyId: '',
+        createdBy: '',
+        modifiedBy: '',
         createdDate: '',
         modifiedDate: '',
         leadDetails: '',
@@ -70,7 +71,8 @@ const ModalInventoryOpportunity = ({ item, handleModal }) => {
         let createDateSec = new Date(values.createdDate).getTime()
         let closeDateSec = new Date(values.closeDate).getTime()
 
-
+        values.createdBy = JSON.parse(localStorage.getItem('loggedInUser'))
+        values.modifiedBy = JSON.parse(localStorage.getItem('loggedInUser'))
         values.InventoryId = inventoryParentRecord._id;
         values.modifiedDate = dateSeconds;
         values.createdDate = dateSeconds;
@@ -255,7 +257,7 @@ const ModalInventoryOpportunity = ({ item, handleModal }) => {
                                         </Grid>
                                         <Grid item xs={12} md={12}>
                                             <label htmlFor="description">Description</label>
-                                            <Field as="textarea" name="description" class="form-input" />
+                                            <Field as="textarea" name="description" class="form-input-textarea" style={{width:'100%'}} />
                                         </Grid>
                                     </Grid>
                                     <div className='action-buttons'>

@@ -107,7 +107,7 @@ const TaskRelatedItems = ({ item }) => {
      
       <div style={{ textAlign: "center", marginBottom: "10px" }}>
 
-        <h3> Related Items ({relatedTask.length})</h3>
+        <h2> Related Items </h2>
 
       </div>
 

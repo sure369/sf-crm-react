@@ -41,7 +41,8 @@ const ModalInventoryAccount = ({ item,handleModal }) => {
         billingCountry: '',
         billingCity: '',
         billingCities: [],
-        createdbyId: '',
+        createdBy: '',
+        modifiedBy: '',
         createdDate:'',
         modifiedDate: '',
         inventoryDetails:'',
@@ -84,10 +85,12 @@ const ModalInventoryAccount = ({ item,handleModal }) => {
         let dateSeconds = new Date().getTime();
         let createDateSec = new Date(values.createdDate).getTime()
 
-            values.modifiedDate = dateSeconds;
-            values.createdDate = dateSeconds;
-            values.InventoryId=inventoryParentRecord._id;
-            values.inventoryDetails={
+        values.createdBy = JSON.parse(localStorage.getItem('loggedInUser'))
+        values.modifiedBy = JSON.parse(localStorage.getItem('loggedInUser'))
+        values.modifiedDate = dateSeconds;
+        values.createdDate = dateSeconds;
+        values.InventoryId=inventoryParentRecord._id;           
+        values.inventoryDetails={
                 propertyName:inventoryParentRecord.propertyName,
                 id:inventoryParentRecord._id
             }

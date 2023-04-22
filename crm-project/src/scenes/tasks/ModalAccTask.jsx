@@ -43,7 +43,8 @@ const ModalAccTask = ({ item, handleModal }) => {
         attachments: null,
         object: '',
         AccountId: '',
-        createdbyId: '',
+        createdBy: '',
+        modifiedBy: '',
         createdDate: '',
         modifiedDate: '',
     }
@@ -69,6 +70,8 @@ const ModalAccTask = ({ item, handleModal }) => {
         let StartDateSec = new Date(values.StartDate).getTime()
         let EndDateSec = new Date(values.EndDate).getTime()
 
+        values.createdBy = JSON.parse(localStorage.getItem('loggedInUser'))
+        values.modifiedBy = JSON.parse(localStorage.getItem('loggedInUser'))
         values.modifiedDate = dateSeconds;
         values.createdDate = dateSeconds;
         values.AccountId = account;
@@ -196,7 +199,7 @@ const ModalAccTask = ({ item, handleModal }) => {
                                     </Grid> */}
                                     <Grid item xs={12} md={12}>
                                         <label htmlFor="description">Description</label>
-                                        <Field as="textarea" name="description" class="form-input" />
+                                        <Field as="textarea" name="description" class="form-input-textarea" style={{width:'100%'}} />
                                     </Grid>
                                 </Grid>
                                 <div className='action-buttons'>

@@ -167,7 +167,7 @@ const OpportunityRelatedItems = ({ item }) => {
 
       <div style={{ textAlign: "center", marginBottom: "10px" }}>
 
-        <h3> Related Items</h3>
+        <h2> Related Items</h2>
 
       </div>
       <Accordion>
@@ -269,11 +269,13 @@ const OpportunityRelatedItems = ({ item }) => {
         onClose={handleTaskModalClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
-        sx={{ backdropFilter: "blur(2px)" }}
+        sx={{ backdropFilter: "blur(1px)" }}
       >
-        <Box sx={style}>
+        <div className="modal">
+        {/* <Box sx={style}> */}
           <ModalOppTask handleModal={handleTaskModalClose} />
-        </Box>
+        {/* </Box> */}
+        </div>
       </Modal>
 
 

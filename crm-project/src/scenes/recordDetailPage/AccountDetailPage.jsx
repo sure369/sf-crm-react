@@ -422,27 +422,44 @@ const AccountDetailPage = ({ item }) => {
 
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="billingAddress">Billing Address </label>
-                                            <Field name="billingAddress" type="text" class="form-input" />
+                                            <Field name="billingAddress" type="textarea" class="form-input-textarea" style={{width:'100%'}} />
                                         </Grid>
-                                        
+
                                         {!showNew && (
                                             <>
-                                              <Grid item xs={6} md={6}>
+                                            
+    <Grid container spacing={2} item xs={12} md={12} direction="row">
+
+
+                                              {/* <Grid item xs={6} md={6}>
                                                     <label htmlFor="createdBy" >Created By</label>
                                                     <Field name='createdBy' type="text" class="form-input" disabled />
                                                 </Grid>
                                                 <Grid item xs={6} md={6}>
                                                     <label htmlFor="modifiedBy" >Modified By</label>
                                                     <Field name='modifiedBy' type="text" class="form-input" disabled />
-                                                </Grid>
+                                                </Grid> */}
                                                 <Grid item xs={6} md={6}>                                                  
-                                                    <label htmlFor="createdDate" >Created Date</label>
-                                                    <Field name='createdDate' type="text" class="form-input" disabled />
+                                                    <label htmlFor="createdDate" >Created By</label>
+                                                    <div style={{ overflowX: 'auto' }}>
+                                                    <Field  
+                                                            name='createdDate' type="text" class="form-input"
+                                                            value={values.createdBy +',  '+values.createdDate} 
+                                                            style={{ whiteSpace: 'nowrap' }} disabled 
+                                                    />
+                                                    </div>
                                                 </Grid>
 
                                                 <Grid item xs={6} md={6}>
-                                                    <label htmlFor="modifiedDate" >Modified Date</label>
-                                                    <Field name='modifiedDate' type="text" class="form-input" disabled />
+                                                    <label htmlFor="modifiedDate">Modified By</label>
+                                                    <div style={{ overflowX: 'auto' }}>
+                                                    <Field 
+                                                            name='modifiedDate' type="text" class="form-input" 
+                                                            value={values.modifiedBy+',  '+values.modifiedDate} 
+                                                            style={{ whiteSpace: 'nowrap' }}  disabled 
+                                                    />
+                                                    </div>
+                                                </Grid>
                                                 </Grid>
                                             </>
                                         )}

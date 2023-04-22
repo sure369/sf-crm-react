@@ -263,13 +263,15 @@ const Contacts = () => {
               <>
                 <Tooltip title="Delete Selected">
                   <IconButton>
-                    {" "}
                     <DeleteIcon
                       sx={{ color: "#FF3333" }}
                       onClick={(e) => onHandleDelete(e, selectedRecordIds)}
-                    />{" "}
+                    />
                   </IconButton>
                 </Tooltip>
+                <Tooltip title="Email">
+                      <IconButton> <EmailIcon sx={{ color: '#DB4437' }} onClick={handlesendEmail} /> </IconButton>
+                    </Tooltip>
               </>
             ) : (
             <>
@@ -394,9 +396,11 @@ const Contacts = () => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={ModalBoxstyle}>
+        <div className='modal'>
+        {/* <Box sx={ModalBoxstyle}> */}
           <EmailModalPage data={selectedRecordDatas} handleModal={setEmailModalClose} bulkMail={true} />
-        </Box>
+        {/* </Box> */}
+        </div>
       </Modal>
 
       <Modal
@@ -405,9 +409,11 @@ const Contacts = () => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={ModalBoxstyle}>
+         <div className='modal'>
+        {/* <Box sx={ModalBoxstyle}> */}
           <WhatAppModalPage data={selectedRecordDatas} handleModal={setWhatAppModalClose} bulkMail={true} />
-        </Box>
+        {/* </Box> */}
+        </div>
       </Modal>
 
     </>

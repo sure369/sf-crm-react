@@ -379,24 +379,28 @@ const OpportunityDetailPage = ({ item }) => {
                                         </Grid>
                                         {!showNew && (
                                             <>
-                                            <Grid item xs={6} md={6}>
+                                                <Grid container spacing={2} item xs={12} md={12} direction="row">
+                                            {/* <Grid item xs={6} md={6}>
                                                     <label htmlFor="createdBy" >Created By</label>
                                                     <Field name='createdBy' type="text" class="form-input" disabled />
                                                 </Grid>
                                                 <Grid item xs={6} md={6}>
                                                     <label htmlFor="modifiedBy" >Modified By</label>
                                                     <Field name='modifiedBy' type="text" class="form-input" disabled />
-                                                </Grid>
+                                                </Grid> */}
                                                 <Grid item xs={6} md={6}>
                                                     {/* value is aagined to  the fields */}
-                                                    <label htmlFor="createdDate" >Created Date</label>
-                                                    <Field name='createdDate' type="text" class="form-input" disabled />
+                                                    <label htmlFor="createdDate" >Created By</label>
+                                                    <Field name='createdDate' type="text" class="form-input"
+                                                     value={values.createdBy +',  '+values.createdDate}  disabled />
                                                 </Grid>
 
                                                 <Grid item xs={6} md={6}>
                                                     {/* value is aagined to  the fields */}
-                                                    <label htmlFor="modifiedDate" >Modified Date</label>
-                                                    <Field name='modifiedDate' type="text" class="form-input" disabled />
+                                                    <label htmlFor="modifiedDate" >Modified By</label>
+                                                    <Field name='modifiedDate' type="text" class="form-input" 
+                                                     value={values.modifiedBy +',  '+values.modifiedDate} disabled />
+                                                </Grid>
                                                 </Grid>
                                             </>
                                         )}

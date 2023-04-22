@@ -16,6 +16,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import ModalConAccount from "../contacts/ModalConAccount";
 import DeleteConfirmDialog from "../toast/DeleteConfirmDialog";
+import '../recordDetailPage/Form.css'
 
 const ModalStyle = {
   position: 'absolute',
@@ -27,6 +28,8 @@ const ModalStyle = {
   border: '2px solid #000',
   boxShadow: 24,
 };
+
+
 
 const AccountRelatedItems = ({ item }) => {
 
@@ -290,7 +293,7 @@ const columns = [
 
       <div style={{ textAlign: "center", marginBottom: "10px" }}>
 
-        <h3> Related Items</h3>
+        <h2> Related Items</h2>
 
       </div>
       <Accordion>
@@ -426,18 +429,18 @@ const columns = [
         </AccordionDetails>
       </Accordion>
 
+
       <Modal
         open={taskModalOpen}
         onClose={handleTaskModalClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
-        sx={{ backdropFilter: "blur(2px)" }}
+        sx={{ backdropFilter: "blur(1px)" }}
       >
-        <Box sx={ModalStyle}>
+        <div className="modal">
           <ModalAccTask handleModal={handleTaskModalClose} />
-        </Box>
+        </div>
       </Modal>
-
   {/* Contact Modal*/}
 
   <Modal
@@ -445,11 +448,13 @@ const columns = [
         onClose={handleConatctModalClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
-        sx={{ backdropFilter: "blur(2px)" }}
+        sx={{ backdropFilter: "blur(1px)"}}
       >
-        <Box sx={ModalStyle}>
+        {/* <Box sx={ModalStyle}> */}
+        <div className="modal">
           <ModalConAccount  handleModal={handleConatctModalClose} />
-        </Box>
+        {/* </Box> */}
+        </div>
       </Modal>
 
     </>

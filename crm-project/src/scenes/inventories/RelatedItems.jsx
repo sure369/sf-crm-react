@@ -11,7 +11,7 @@ import ModalInventoryOpportunity from "../opportunities/ModalInventoryOpp";
 import ToastNotification from "../toast/ToastNotification";
 import DeleteConfirmDialog from "../toast/DeleteConfirmDialog";
 import ModalInventoryAccount from "../accounts/ModalAccountInventory";
-
+import '../recordDetailPage/Form.css'
 
 const ModalStyle = {
     position: 'absolute',
@@ -274,7 +274,7 @@ const InventoryRelatedItems = ({ item }) => {
 
             <div style={{ textAlign: "center", marginBottom: "10px" }}>
 
-                <h3> Related Items</h3>
+                <h2> Related Items</h2>
 
             </div>
             <Accordion>
@@ -314,7 +314,7 @@ const InventoryRelatedItems = ({ item }) => {
                               key={item._id}
                             >
                               <Grid container spacing={2}>
-                                <Grid item xs={12} md={10}>
+                                <Grid item xs={10} md={10}>
                                   <div>Name : {item.opportunityName} </div>
                                   <div>Stage :{item.stage} </div>
                                   <div>Close Date : {starDateConvert} </div>
@@ -459,11 +459,13 @@ const InventoryRelatedItems = ({ item }) => {
         onClose={handleOpportunityModalClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
-        sx={{ backdropFilter: "blur(2px)" }}
+        sx={{ backdropFilter: "blur(1px)" }}
       >
-        <Box sx={ModalStyle}>
+         <div className="modal">
+        {/* <Box sx={ModalStyle}> */}
           <ModalInventoryOpportunity handleModal={handleOpportunityModalClose} />
-        </Box>
+        {/* </Box> */}
+        </div>
       </Modal>
 
       <Modal
@@ -471,11 +473,13 @@ const InventoryRelatedItems = ({ item }) => {
         onClose={handleAccountModalClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
-        sx={{ backdropFilter: "blur(2px)" }}
+        sx={{ backdropFilter: "blur(1px)" }}
       >
-        <Box sx={ModalStyle}>
+        <div className="modal">
+        {/* <Box sx={ModalStyle}> */}
           <ModalInventoryAccount handleModal={handleAccountModalClose} />
-        </Box>
+        {/* </Box> */}
+        </div>
       </Modal>
 
 

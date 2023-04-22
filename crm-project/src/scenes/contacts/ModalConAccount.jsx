@@ -45,7 +45,8 @@ const ModalConAccount = ({ item, handleModal }) => {
         email: '',
         fullAddress: '',
         description: '',
-        createdbyId: '',
+        createdBy: '',
+        modifiedBy: '',
         createdDate: '',
         modifiedDate: '',
     }
@@ -80,6 +81,8 @@ const ModalConAccount = ({ item, handleModal }) => {
         let dateSeconds = new Date().getTime();
         let dobSec = new Date(values.dob).getTime()
 
+        values.createdBy = JSON.parse(localStorage.getItem('loggedInUser'))
+        values.modifiedBy = JSON.parse(localStorage.getItem('loggedInUser'))
         values.modifiedDate = dateSeconds;
         values.createdDate = dateSeconds;
         values.AccountId = account;
@@ -128,15 +131,11 @@ const ModalConAccount = ({ item, handleModal }) => {
                 onSubmit={(values, { resetForm }) => formSubmission(values, { resetForm })}
             >
                 {(props) => {
-                    const {
-                        values,
-                        dirty,
-                        isSubmitting,
-                        handleChange,
-                        handleSubmit,
-                        handleReset,
-                        setFieldValue,
-                    } = props;
+                    const { 
+                            values,isValid,dirty,
+                            isSubmitting,handleChange,
+                            handleSubmit,handleReset,setFieldValue,
+                        } = props;
 
                     return (
                         <>
@@ -213,7 +212,7 @@ const ModalConAccount = ({ item, handleModal }) => {
 
                                             <Grid Grid item xs={6} md={12}>
                                                 <label htmlFor="description">Description</label>
-                                                <Field as="textarea" name="description" class="form-input" />
+                                                <Field as="textarea" name="description" class="form-input-textarea" style={{width:'100%'}} />
                                             </Grid>
 
                                 </Grid>
