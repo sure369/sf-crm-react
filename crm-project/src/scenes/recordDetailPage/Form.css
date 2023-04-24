@@ -138,6 +138,7 @@
     height: fit-content;
     box-shadow: 0 0 10px rgba(254, 252,255, );
     background-color: rgba(254, 252,255);
+    border-radius: 12px;
   }
   
   /* Media query for smaller screens */

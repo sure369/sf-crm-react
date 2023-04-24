@@ -53,6 +53,10 @@ export default function LoginIndex({onAuthentication}) {
         axios.post(loginUrl,values)
         .then((res)=>{
             console.log(res.data,"login api res")
+
+            const time = new Date().getTime()
+            const expiryTime = new Date((time+(1*60*1000)))
+
             res.data.status ==='success' ?setSignInCredential(true) :setSignInCredential(false)
            
             setSignInData(res.data)
@@ -63,6 +67,7 @@ export default function LoginIndex({onAuthentication}) {
                     userFullName:res.data.userDetails.fullName
                 }
                 localStorage.setItem('token',res.data.content)
+               localStorage.setItem('expiry',expiryTime)
                 localStorage.setItem('loggedInUser',JSON.stringify(obj))
                 onAuthentication()
                
