@@ -28,11 +28,6 @@ const UserDetailPage = ({ item }) => {
     const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
     const [usersRecord, setUsersRecord] = useState([])
 
-    console.log(window.location.protocol,"protocol")
-    console.log(window.location.hostname,"hostName")
-    console.log(window.location.href,"href")
-
-
     useEffect(() => {
         console.log('passed record', location.state.record.item);
         setsingleUser(location.state.record.item);
@@ -63,6 +58,7 @@ const UserDetailPage = ({ item }) => {
         phone: singleUser?.phone ?? "",
         role: singleUser?.role ?? "",
         access: singleUser?.access ?? "",
+        password:singleUser?.password ?? "",
         createdbyId: singleUser?.createdbyId ?? "",
         createdDate:  new Date(singleUser?.createdDate).toLocaleString(),
         modifiedDate: new Date(singleUser?.modifiedDate).toLocaleDateString(),
@@ -169,10 +165,12 @@ const UserDetailPage = ({ item }) => {
                 console.log('upsert record  response', res);
                 setNotify({
                     isOpen: true,
-                    message: res.data,
-                    type: 'success'
+                    message: res.data.content,
+                    type: res.data.status
                 })
-                sendInviteEmail(values)
+                if(showNew){
+                    sendInviteEmail(values)
+                }
                 setTimeout(() => {
                     navigate(-1);
                 }, 4000)

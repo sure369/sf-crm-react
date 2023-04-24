@@ -175,9 +175,9 @@ export const TaskObjectPicklist = [
 export const UserRolePicklist = [
   // {text:'None',value:''},
   { text: "CEO", value: "CEO" },
-  { text: "Sales Director", value: "Sales Director" },
-  { text: "Sales Manager", value: "Sales Manager" },
-  { text: "Sales Rep", value: "Sales Rep" },
+  { text: "Admin", value: "admin" },
+  { text: "Developer", value: "developer" },
+  { text: "BA", value: "BA" },
 ];
 
 export const UserAccessPicklist = [

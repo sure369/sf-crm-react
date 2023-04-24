@@ -41,7 +41,9 @@ const Inventories = () => {
   }, []);
 
   const fetchRecords = () => {
-    axios.post(urlInventory)
+    const userData=JSON.parse(localStorage.getItem('loggedInUser'));
+
+    axios.post(urlInventory,{role:userData.userRole})
       .then(
         (res) => {
           console.log("res Inventory records", res);
