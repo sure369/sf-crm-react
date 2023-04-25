@@ -61,7 +61,7 @@ export default function LoginIndex({onAuthentication}) {
                     userId:res.data.userDetails._id,
                     userName:res.data.userDetails.userName,
                     userFullName:res.data.userDetails.fullName,
-                    userRole:res.data.userDetails.role
+                    // userRole:res.data.userDetails.role
                 }
                 sessionStorage.setItem('token',res.data.content)
                 sessionStorage.setItem('loggedInUser',JSON.stringify(obj))

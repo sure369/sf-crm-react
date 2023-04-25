@@ -20,7 +20,8 @@ import EmailModalPage from '../recordDetailPage/EmailModalPage';
 import WhatAppModalPage from '../recordDetailPage/WhatsAppModalPage';
 import ExcelDownload from '../Excel';
 import { RequestServer } from '../api/HttpReq';
-
+import "../recordDetailPage/Form.css";	
+import { LeadMonthPicklist } from "../../data/pickLists";
 
 const ModalStyle = {
   position: 'absolute',
@@ -42,7 +43,8 @@ const Leads = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
-  const [records, setRecords] = useState([]);
+  const [records, setRecords] = useState([]);  	
+  const [filteredRecord, setFilteredRecord] = useState([]);
   const [fetchError,setFetchError]=useState();
   const [fetchLoading, setFetchLoading] = useState(true);
   // notification
@@ -70,6 +72,7 @@ const Leads = () => {
       console.log(res,"index page res")
       if(res.success){
         setRecords(res.data)
+        setFilteredRecord(res.data)
         setFetchLoading(false)
         setFetchError(null)
        
