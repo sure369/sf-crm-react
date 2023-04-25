@@ -2,10 +2,6 @@ import axios from "axios";
 
 export const RequestServer = (method,endpoint,headers,payload)=>{
 
-    console.log(method,"method")
-    console.log(endpoint,"endpoint")
-    console.log(headers,"headers")
-    console.log(payload,"payload")
         let token = sessionStorage.getItem('token');
 
         headers = headers||{};
