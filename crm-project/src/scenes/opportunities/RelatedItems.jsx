@@ -7,33 +7,22 @@ import {
   , IconButton, Grid, Accordion, AccordionSummary, AccordionDetails, 
   Pagination, Menu, MenuItem
 } from "@mui/material";
-import axios from 'axios'
 import ModalOppTask from "../tasks/ModalOppTask";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import ModalOppInventory from "../OppInventory/ModalOppInventory";
-import { DataGrid, GridToolbar,
-  gridPageCountSelector,gridPageSelector,
-  useGridApiContext,useGridSelector} from "@mui/x-data-grid";
 import ToastNotification from "../toast/ToastNotification";
 import DeleteConfirmDialog from "../toast/DeleteConfirmDialog";
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 600,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-};
+import '../recordDetailPage/Form.css'
+import { RequestServer } from "../api/HttpReq";
+
 
 const OpportunityRelatedItems = ({ item }) => {
   
   const taskDeleteURL = `${process.env.REACT_APP_SERVER_URL}/deleteTask?code=`;
-
+  const urlTaskbyOppId = `${process.env.REACT_APP_SERVER_URL}/getTaskbyOpportunityId?searchId=`;
   const navigate = useNavigate();
   const location = useLocation();
   const [relatedTask, setRelatedTask] = useState([]);
@@ -54,22 +43,35 @@ const OpportunityRelatedItems = ({ item }) => {
   }, [])
 
   const getTasksbyOppId = (recId) => {
-    const urlTask = `${process.env.REACT_APP_SERVER_URL}/getTaskbyOpportunityId?searchId=`;
-    axios.post(urlTask + recId)
-      .then((res) => {
-        console.log('response getTasksbyOppId fetch', res);
-        if (res.data.length > 0) {
-          setRelatedTask(res.data);
-          setTaskNoOfPages(Math.ceil(res.data.length / taskItemsPerPage));
-          setTaskPerPage(1)
-        }
-        else {
-          setRelatedTask([]);
-        }
-      })
-      .catch((error) => {
-        console.log('error getTasksbyOppId fetch', error)
-      })
+    
+    RequestServer("post",urlTaskbyOppId + recId,null,{})
+    .then((res)=>{
+      if(res.success){
+        setRelatedTask(res.data);
+        setTaskNoOfPages(Math.ceil(res.data.length / taskItemsPerPage));
+        setTaskPerPage(1)
+      }else{
+        setRelatedTask([])
+      }
+    })
+    .catch((err)=>{
+      console.log('error task fetch', err)
+    })
+    // axios.post(urlTask + recId)
+    //   .then((res) => {
+    //     console.log('response getTasksbyOppId fetch', res);
+    //     if (res.data.length > 0) {
+    //       setRelatedTask(res.data);
+    //       setTaskNoOfPages(Math.ceil(res.data.length / taskItemsPerPage));
+    //       setTaskPerPage(1)
+    //     }
+    //     else {
+    //       setRelatedTask([]);
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.log('error getTasksbyOppId fetch', error)
+    //   })
 
   }
 
@@ -99,38 +101,74 @@ const OpportunityRelatedItems = ({ item }) => {
         })
       }
 
-      const onConfirmTaskCardDelete=(row)=>{
+  const onConfirmTaskCardDelete=(row)=>{
 
     console.log('req delete rec', row);
     console.log('req delete rec id', row._id);
-
-    axios.post(taskDeleteURL + row._id)
-      .then((res) => {
-        console.log('api delete response', res);
-        console.log('inside delete response opportunityRecordId', opportunityRecordId)
+    RequestServer("post",taskDeleteURL+row._id)
+    .then((res)=>{
+      if(res.success){
         
-        setNotify({
-          isOpen: true,
-          message: res.data,
-          type: 'success'
-        })
+        getTasksbyOppId(opportunityRecordId)
         setMenuOpen(false)
-        setTimeout(
-          getTasksbyOppId(opportunityRecordId)
-        )
-      })
-      .catch((error) => {
-        console.log('api delete error', error);
+        setNotify({
+          isOpen:true,
+          message:res.data,
+          type:'success'
+        })
+      }
+      else{
+        console.log(res,"error in then")
         setNotify({
           isOpen: true,
-          message: error.message,
+          message: res.error.message,
           type: 'error'
         })
-      })
+        getTasksbyOppId(opportunityRecordId)
+        setMenuOpen(false)
+      }
+    })
+    .catch((error)=>{
+      console.log('api delete error', error);
+          setNotify({
+            isOpen: true,
+            message: error.message,
+            type: 'error'
+          })
+    })
+    .finally(()=>{
       setConfirmDialog({
         ...confirmDialog,
-        isOpen:false
+        isOpen: false
       })
+    })
+    // axios.post(taskDeleteURL + row._id)
+    //   .then((res) => {
+    //     console.log('api delete response', res);
+    //     console.log('inside delete response opportunityRecordId', opportunityRecordId)
+        
+    //     setNotify({
+    //       isOpen: true,
+    //       message: res.data,
+    //       type: 'success'
+    //     })
+    //     setMenuOpen(false)
+    //     setTimeout(
+    //       getTasksbyOppId(opportunityRecordId)
+    //     )
+    //   })
+    //   .catch((error) => {
+    //     console.log('api delete error', error);
+    //     setNotify({
+    //       isOpen: true,
+    //       message: error.message,
+    //       type: 'error'
+    //     })
+    //   })
+    //   setConfirmDialog({
+    //     ...confirmDialog,
+    //     isOpen:false
+    //   })
   };
 
   const handleChangeTaskPage = (event, value) => {

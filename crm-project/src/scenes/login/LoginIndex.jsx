@@ -25,7 +25,7 @@ export default function LoginIndex({onAuthentication}) {
     const[signInCredential,setSignInCredential]=useState(false)
     const[signInData,setSignInData]=useState()
     const users ={userName:'suresh@gmail.com',password:'123456'}
-    const [authenticated, setauthenticated] = useState(localStorage.getItem(localStorage.getItem("authenticated")|| false));
+    // const [authenticated, setauthenticated] = useState(sessionStorage.getItem(sessionStorage.getItem("authenticated")|| false));
     const[loginError,setLoginError]=useState(false)
     const[loginErrorNote,setLoginErrorNote]=useState()
 
@@ -63,8 +63,8 @@ export default function LoginIndex({onAuthentication}) {
                     userFullName:res.data.userDetails.fullName,
                     userRole:res.data.userDetails.role
                 }
-                localStorage.setItem('token',res.data.content)
-                localStorage.setItem('loggedInUser',JSON.stringify(obj))
+                sessionStorage.setItem('token',res.data.content)
+                sessionStorage.setItem('loggedInUser',JSON.stringify(obj))
                 onAuthentication()
                
             }

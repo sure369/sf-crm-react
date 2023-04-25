@@ -6,14 +6,13 @@ import {
   useGridApiContext, useGridSelector
 } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
-import Header from "../../components/Header";
-import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import ToastNotification from '../toast/ToastNotification';
 import DeleteConfirmDialog from '../toast/DeleteConfirmDialog';
 import ExcelDownload from '../Excel';
+import { RequestServer } from '../api/HttpReq';
 
 const Users = () => {
 
@@ -24,6 +23,7 @@ const Users = () => {
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
   const [records, setRecords] = useState([]);
+  const[fetchError,setFetchError]=useState()
   const [fetchLoading, setFetchLoading] = useState(true);
   // notification
   const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
@@ -42,24 +42,42 @@ const Users = () => {
   );
 
   const fetchRecords = () => {
-    axios.post(urlUsers)
-      .then(
-        (res) => {
-          console.log("res users records", res);
-          if (res.data.length > 0 && (typeof (res.data) !== 'string')) {
-            setRecords(res.data);
-            setFetchLoading(false)
-          }
-          else {
-            setRecords([]);
-            setFetchLoading(false)
-          }
-        }
-      )
-      .catch((error) => {
-        console.log('res users error', error);
+    RequestServer("post",urlUsers,null,{})
+    .then((res)=>{
+      console.log(res,"index page res")
+      if(res.success){
+        setRecords(res.data)
+        setFetchError(null)
         setFetchLoading(false)
-      })
+      }
+      else{
+        setRecords([])
+        setFetchError(res.error.message)
+        setFetchLoading(false)
+      }
+    })
+    .catch((err)=>{
+      setFetchError(err.message)
+      setFetchLoading(false)
+    })
+    // axios.post(urlUsers)
+    //   .then(
+    //     (res) => {
+    //       console.log("res users records", res);
+    //       if (res.data.length > 0 && (typeof (res.data) !== 'string')) {
+    //         setRecords(res.data);
+    //         setFetchLoading(false)
+    //       }
+    //       else {
+    //         setRecords([]);
+    //         setFetchLoading(false)
+    //       }
+    //     }
+    //   )
+    //   .catch((error) => {
+    //     console.log('res users error', error);
+    //     setFetchLoading(false)
+    //   })
   }
 
   const handleAddRecord = () => {
@@ -99,28 +117,62 @@ const Users = () => {
   const onebyoneDelete = (row) => {
     console.log('onebyoneDelete rec id', row)
 
-    axios.post(urlDelete + row)
-      .then((res) => {
-        console.log('api delete response', res);
-        fetchRecords();
+    RequestServer("post",urlDelete+row)
+    .then((res)=>{
+      if(res.success){
+        fetchRecords()
         setNotify({
-          isOpen: true,
-          message: res.data,
-          type: 'success'
+          isOpen:true,
+          message:res.data,
+          type:'success'
         })
-      })
-      .catch((error) => {
-        console.log('api delete error', error);
+      }
+      else{
+        console.log(res,"error in then")
         setNotify({
           isOpen: true,
-          message: error.message,
+          message: res.error.message,
           type: 'error'
         })
-      })
-    setConfirmDialog({
-      ...confirmDialog,
-      isOpen: false
+      }
     })
+    .catch((error)=>{
+      console.log('api delete error', error);
+          setNotify({
+            isOpen: true,
+            message: error.message,
+            type: 'error'
+          })
+    })
+    .finally(()=>{
+      setConfirmDialog({
+        ...confirmDialog,
+        isOpen: false
+      })
+    })
+
+    // axios.post(urlDelete + row)
+    //   .then((res) => {
+    //     console.log('api delete response', res);
+    //     fetchRecords();
+    //     setNotify({
+    //       isOpen: true,
+    //       message: res.data,
+    //       type: 'success'
+    //     })
+    //   })
+    //   .catch((error) => {
+    //     console.log('api delete error', error);
+    //     setNotify({
+    //       isOpen: true,
+    //       message: error.message,
+    //       type: 'error'
+    //     })
+    //   })
+    // setConfirmDialog({
+    //   ...confirmDialog,
+    //   isOpen: false
+    // })
   };
 
   function CustomPagination() {

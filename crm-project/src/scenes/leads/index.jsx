@@ -8,8 +8,6 @@ import {
   gridPageSelector, useGridApiContext, useGridSelector
 } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
-import Header from "../../components/Header";
-import axios from 'axios'
 import { useNavigate } from "react-router-dom";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -21,6 +19,8 @@ import EmailIcon from '@mui/icons-material/Email';
 import EmailModalPage from '../recordDetailPage/EmailModalPage';
 import WhatAppModalPage from '../recordDetailPage/WhatsAppModalPage';
 import ExcelDownload from '../Excel';
+import { RequestServer } from '../api/HttpReq';
+
 
 const ModalStyle = {
   position: 'absolute',
@@ -43,6 +43,7 @@ const Leads = () => {
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
   const [records, setRecords] = useState([]);
+  const [fetchError,setFetchError]=useState();
   const [fetchLoading, setFetchLoading] = useState(true);
   // notification
   const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
@@ -64,24 +65,43 @@ const Leads = () => {
   }, []);
 
   const fetchRecords = () => {
-    axios.post(urlLead)
-      .then(
-        (res) => {
-          console.log("res Lead records", res);
-          if (res.data.length > 0 && (typeof (res.data) !== 'string')) {
-            setRecords(res.data);
-            setFetchLoading(false)
-          }
-          else {
-            setRecords([]);
-            setFetchLoading(false)
-          }
-        }
-      )
-      .catch((error) => {
-        console.log('res Lead error', error);
+    RequestServer("post",urlLead,null,{})
+    .then((res)=>{
+      console.log(res,"index page res")
+      if(res.success){
+        setRecords(res.data)
         setFetchLoading(false)
-      })
+        setFetchError(null)
+       
+      }
+      else{
+        setRecords([])
+        setFetchError(res.error.message)
+        setFetchLoading(false)
+      }
+    })
+    .catch((err)=>{
+      setFetchError(err.message)
+      setFetchLoading(false)
+    })
+    // axios.post(urlLead)
+    //   .then(
+    //     (res) => {
+    //       console.log("res Lead records", res);
+    //       if (res.data.length > 0 && (typeof (res.data) !== 'string')) {
+    //         setRecords(res.data);
+    //         setFetchLoading(false)
+    //       }
+    //       else {
+    //         setRecords([]);
+    //         setFetchLoading(false)
+    //       }
+    //     }
+    //   )
+    //   .catch((error) => {
+    //     console.log('res Lead error', error);
+    //     setFetchLoading(false)
+    //   })
   }
   const handleAddRecord = () => {
     navigate("/new-leads", { state: { record: {} } })
@@ -119,28 +139,61 @@ const Leads = () => {
 
   const onebyoneDelete = (row) => {
     console.log('onebyoneDelete rec id', row)
-    axios.post(urlDelete + row)
-      .then((res) => {
-        console.log('api delete response', res);
-        fetchRecords();
+    RequestServer("post",urlDelete+row)
+    .then((res)=>{
+      if(res.success){
+        fetchRecords()
         setNotify({
-          isOpen: true,
-          message: res.data,
-          type: 'success'
+          isOpen:true,
+          message:res.data,
+          type:'success'
         })
-      })
-      .catch((error) => {
-        console.log('api delete error', error);
+      }
+      else{
+        console.log(res,"error in then")
         setNotify({
           isOpen: true,
-          message: error.message,
+          message: res.error.message,
           type: 'error'
         })
-      })
-    setConfirmDialog({
-      ...confirmDialog,
-      isOpen: false
+      }
     })
+    .catch((error)=>{
+      console.log('api delete error', error);
+          setNotify({
+            isOpen: true,
+            message: error.message,
+            type: 'error'
+          })
+    })
+    .finally(()=>{
+      setConfirmDialog({
+        ...confirmDialog,
+        isOpen: false
+      })
+    })
+    // axios.post(urlDelete + row)
+    //   .then((res) => {
+    //     console.log('api delete response', res);
+    //     fetchRecords();
+    //     setNotify({
+    //       isOpen: true,
+    //       message: res.data,
+    //       type: 'success'
+    //     })
+    //   })
+    //   .catch((error) => {
+    //     console.log('api delete error', error);
+    //     setNotify({
+    //       isOpen: true,
+    //       message: error.message,
+    //       type: 'error'
+    //     })
+    //   })
+    // setConfirmDialog({
+    //   ...confirmDialog,
+    //   isOpen: false
+    // })
   };
 
   const handleImportModalOpen = () => {

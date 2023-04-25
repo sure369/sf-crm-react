@@ -15,6 +15,7 @@ import DeleteConfirmDialog from '../toast/DeleteConfirmDialog';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import EmailIcon from '@mui/icons-material/Email';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { RequestServer } from '../api/HttpReq';
 
 const ContactsMobile = () => {
 
@@ -26,7 +27,7 @@ const ContactsMobile = () => {
   const navigate = useNavigate();
   const [records, setRecords] = useState([]);
   const [fetchLoading, setFetchLoading] = useState(true);
-
+  const[fetchError,setFetchError]=useState()
   //email,Whatsapp
   const [showEmail, setShowEmail] = useState(false)
   const [selectedRecordIds, setSelectedRecordIds] = useState()
@@ -34,9 +35,7 @@ const ContactsMobile = () => {
   const [emailModalOpen, setEmailModalOpen] = useState(false)
   const [whatsAppModalOpen, setWhatsAppModalOpen] = useState(false)
 
-  // notification
   const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
-  //dialog
   const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subTitle: '' })
 
   const [itemsPerPage, setItemsPerPage] = useState(3);
@@ -49,25 +48,44 @@ const ContactsMobile = () => {
   }, []);
 
   const fetchRecords = () => {
-    axios.post(urlContact)
-      .then(
-        (res) => {
-          console.log("res Contact records", res);
-          if (res.data.length > 0 && (typeof (res.data) !== 'string')) {
-            setRecords(res.data);
-            setFetchLoading(false)
-            setNoOfPages(Math.ceil(res.data.length / itemsPerPage));
-          }
-          else {
-            setRecords([]);
-            setFetchLoading(false)
-          }
-        }
-      )
-      .catch((error) => {
-        console.log('error', error);
+    RequestServer("post",urlContact,null,{})
+    .then((res)=>{
+      console.log(res,"index page res")
+      if(res.success){
+        setRecords(res.data)
         setFetchLoading(false)
-      })
+        setFetchError(null)
+        setNoOfPages(Math.ceil(res.data.length / itemsPerPage));
+      }
+      else{
+        setRecords([])
+        setFetchError(res.error.message)
+        setFetchLoading(false)
+      }
+    })
+    .catch((err)=>{
+      setFetchError(err.message)
+      setFetchLoading(false)
+    })
+    // axios.post(urlContact)
+    //   .then(
+    //     (res) => {
+    //       console.log("res Contact records", res);
+    //       if (res.data.length > 0 && (typeof (res.data) !== 'string')) {
+    //         setRecords(res.data);
+    //         setFetchLoading(false)
+    //         setNoOfPages(Math.ceil(res.data.length / itemsPerPage));
+    //       }
+    //       else {
+    //         setRecords([]);
+    //         setFetchLoading(false)
+    //       }
+    //     }
+    //   )
+    //   .catch((error) => {
+    //     console.log('error', error);
+    //     setFetchLoading(false)
+    //   })
   }
 
   const handleAddRecord = () => {
@@ -107,29 +125,64 @@ const ContactsMobile = () => {
   const onebyoneDelete = (row) => {
     console.log('one by on delete', row)
 
-    axios.post(urlDelete + row)
-      .then((res) => {
-        console.log('api delete response', res);
+    RequestServer("post",urlDelete+row ,{}, null)
+    .then((res)=>{
+      if(res.success){
+        fetchRecords()
         setNotify({
-          isOpen: true,
-          message: res.data,
-          type: 'success'
+          isOpen:true,
+          message:res.data,
+          type:'success'
         })
         setMenuOpen(false)
-        fetchRecords()
-      })
-      .catch((error) => {
-        console.log('api delete error', error);
-        setNotify({
-          isOpen: true,
-          message: error.message,
-          type: 'error'
-        })
-      })
-    setConfirmDialog({
-      ...confirmDialog,
-      isOpen: false
+      }
+      else{
+        console.log(res,"error in then")
+          setNotify({
+            isOpen: true,
+            message: res.error.message,
+            type: 'error'
+          })
+          setMenuOpen(false)
+      }
     })
+    .catch((error)=>{
+      console.log('api delete error', error);
+          setNotify({
+            isOpen: true,
+            message: error.message,
+            type: 'error'
+          })
+    })
+    .finally(()=>{
+      setConfirmDialog({
+        ...confirmDialog,
+        isOpen: false
+      })
+    })
+    // axios.post(urlDelete + row)
+    //   .then((res) => {
+    //     console.log('api delete response', res);
+    //     setNotify({
+    //       isOpen: true,
+    //       message: res.data,
+    //       type: 'success'
+    //     })
+    //     setMenuOpen(false)
+    //     fetchRecords()
+    //   })
+    //   .catch((error) => {
+    //     console.log('api delete error', error);
+    //     setNotify({
+    //       isOpen: true,
+    //       message: error.message,
+    //       type: 'error'
+    //     })
+    //   })
+    // setConfirmDialog({
+    //   ...confirmDialog,
+    //   isOpen: false
+    // })
   }
 
   const handlesendEmail = () => {
@@ -276,10 +329,13 @@ const ContactsMobile = () => {
         onClose={setEmailModalClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
+        sx={{backdropFilter:"blur(1px)"}}
       >
-        <Box sx={ModalBoxstyle}>
+        <div className='modal'>
+        {/* <Box sx={ModalBoxstyle}> */}
           <EmailModalPage data={selectedRecordDatas} handleModal={setEmailModalClose} bulkMail={true} />
-        </Box>
+        {/* </Box> */}
+        </div>
       </Modal>
 
       <Modal
@@ -287,10 +343,11 @@ const ContactsMobile = () => {
         onClose={setWhatAppModalClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
+        sx={{backdropFilter:"blur(1px)"}}
       >
-        <Box sx={ModalBoxstyle}>
+        <div className='modal'>
           <WhatAppModalPage data={selectedRecordDatas} handleModal={setWhatAppModalClose} bulkMail={true} />
-        </Box>
+        </div>
       </Modal>
 
     </>

@@ -5,11 +5,11 @@ import {
 } from "@mui/material";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
-import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import ToastNotification from '../toast/ToastNotification';
 import DeleteConfirmDialog from '../toast/DeleteConfirmDialog';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { RequestServer } from '../api/HttpReq';
 
 const InventoriesMobile = () => {
 
@@ -21,6 +21,7 @@ const InventoriesMobile = () => {
   const navigate = useNavigate();
   const [records, setRecords] = useState([]);
   const [fetchLoading, setFetchLoading] = useState(true);
+  const [fetchError,setFetchError]=useState()
   // notification
   const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
   //dialog
@@ -42,25 +43,46 @@ const InventoriesMobile = () => {
   }, []);
 
   const fetchRecords = () => {
-    axios.post(urlInventory)
-      .then(
-        (res) => {
-          console.log("res Inventory records", res);
-          if (res.data.length > 0 && (typeof (res.data) !== 'string')) {
-            setRecords(res.data);
-            setFetchLoading(false)
-            setNoOfPages(Math.ceil(res.data.length / itemsPerPage));
-          }
-          else {
-            setRecords([]);
-            setFetchLoading(false)
-          }
-        }
-      )
-      .catch((error) => {
-        console.log('res Inventory error', error);
+
+    RequestServer("post",urlInventory,null,{})
+    .then((res)=>{
+      console.log(res,"api res index page")
+      if(res.success){
+        setRecords(res.data)
         setFetchLoading(false)
-      })
+        setFetchError(null)
+        setNoOfPages(Math.ceil(res.data.length/itemsPerPage))
+      }
+      else{
+        setRecords([])
+        setFetchLoading(false)
+        setFetchError(res.error.message)
+      }
+    })
+    .catch((err)=>{
+      setFetchError(err.message)
+      setFetchLoading(false)
+    })
+
+    // axios.post(urlInventory)
+    //   .then(
+    //     (res) => {
+    //       console.log("res Inventory records", res);
+    //       if (res.data.length > 0 && (typeof (res.data) !== 'string')) {
+    //         setRecords(res.data);
+    //         setFetchLoading(false)
+    //         setNoOfPages(Math.ceil(res.data.length / itemsPerPage));
+    //       }
+    //       else {
+    //         setRecords([]);
+    //         setFetchLoading(false)
+    //       }
+    //     }
+    //   )
+    //   .catch((error) => {
+    //     console.log('res Inventory error', error);
+    //     setFetchLoading(false)
+    //   })
   }
 
   const handleAddRecord = () => {
@@ -101,29 +123,65 @@ const InventoriesMobile = () => {
 
     console.log('one by one Delete row', row)
 
-    axios.post(urlDelete + row)
-      .then((res) => {
-        console.log('api delete response', res);
-        setMenuOpen(false)
+    RequestServer("post",urlDelete+row,{},null)
+    .then((res)=>{
+      if(res.success){
         fetchRecords()
         setNotify({
-          isOpen: true,
-          message: res.data,
-          type: 'success'
+          isOpen:true,
+          message:res.data,
+          type:'success'
         })
-      })
-      .catch((error) => {
-        console.log('api delete error', error);
+        setMenuOpen(false)
+      }
+      else{
+        console.log(res,"error in then")
         setNotify({
           isOpen: true,
-          message: error.message,
+          message: res.error.message,
           type: 'error'
         })
-      })
-    setConfirmDialog({
-      ...confirmDialog,
-      isOpen: false
+        setMenuOpen(false)
+      }
     })
+    .catch((error)=>{
+      console.log('api delete error', error);
+      setNotify({
+        isOpen: true,
+        message: error.message,
+        type: 'error'
+      })
+    })
+    .finally(()=>{
+      setConfirmDialog({
+        ...confirmDialog,
+        isOpen: false
+      })
+    })
+
+    // axios.post(urlDelete + row)
+    //   .then((res) => {
+    //     console.log('api delete response', res);
+    //     setMenuOpen(false)
+    //     fetchRecords()
+    //     setNotify({
+    //       isOpen: true,
+    //       message: res.data,
+    //       type: 'success'
+    //     })
+    //   })
+    //   .catch((error) => {
+    //     console.log('api delete error', error);
+    //     setNotify({
+    //       isOpen: true,
+    //       message: error.message,
+    //       type: 'error'
+    //     })
+    //   })
+    // setConfirmDialog({
+    //   ...confirmDialog,
+    //   isOpen: false
+    // })
 
   };
   const handleChangePage = (event, value) => {

@@ -125,8 +125,8 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
 
             values.modifiedDate = dateSeconds;
             values.createdDate = dateSeconds;
-            values.createdBy = JSON.parse(localStorage.getItem('loggedInUser'))
-            values.modifiedBy = JSON.parse(localStorage.getItem('loggedInUser'))
+            values.createdBy = JSON.parse(sessionStorage.getItem('loggedInUser'))
+            values.modifiedBy = JSON.parse(sessionStorage.getItem('loggedInUser'))
            
             if (values.StartDate && values.EndDate) {
                 values.StartDate = StartDateSec
@@ -155,7 +155,7 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
             values.modifiedDate = dateSeconds;
             values.createdDate = createDateSec
             values.createdBy = singleTask.createdBy;
-            values.modifiedBy = JSON.parse(localStorage.getItem('loggedInUser'))
+            values.modifiedBy = JSON.parse(sessionStorage.getItem('loggedInUser'))
 
             if (values.StartDate && values.EndDate) {
                 values.StartDate = StartDateSec

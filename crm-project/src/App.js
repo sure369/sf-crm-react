@@ -21,7 +21,7 @@ function App() {
         <CssBaseline />
         <div className="app" style={{ height: "fit-content" }}>
           <main className="content" style={{ height: "fit-content" }}>
-            {localStorage.getItem("token") ? (
+            {sessionStorage.getItem("token") ? (
               <>
                 <LoginLayoutIndex />
               </>

@@ -9,8 +9,6 @@ import {
   useGridApiContext, useGridSelector
 } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
-import Header from "../../components/Header";
-import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -18,18 +16,7 @@ import ToastNotification from '../toast/ToastNotification';
 import DeleteConfirmDialog from '../toast/DeleteConfirmDialog';
 import ModalFileUpload from '../dataLoader/ModalFileUpload';
 import ExcelDownload from '../Excel';
-
-const ModalStyle = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 600,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-};
-
+import { RequestServer } from '../api/HttpReq';
 
 const Accounts = () => {
 
@@ -39,45 +26,60 @@ const Accounts = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
-  const [records, setRecords] = useState([]);
+  const [records, setRecords] = useState([]);  
+  const [fetchError, setFetchError] = useState();
   const [fetchLoading, setFetchLoading] = useState(true);
-  // notification
   const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
-  //dialog
   const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subTitle: '' })
-
   const [showDelete, setShowDelete] = useState(false)
   const [selectedRecordIds, setSelectedRecordIds] = useState()
   const [selectedRecordDatas, setSelectedRecordDatas] = useState()
-
-  
   const[importModalOpen,setImportModalOpen]= useState(false)
 
   useEffect(() => {
     fetchRecords();
-
   }, []
   );
 
   const fetchRecords = () => {
-    axios.post(urlAccount)
-      .then(
-        (res) => {
-          console.log("res Account records",(res.data));
-          if (res.data.length > 0 && (typeof (res.data) !== 'string')) {
-            setRecords((res.data));
-            setFetchLoading(false)
-          }
-          else {
-            setRecords([]);
-            setFetchLoading(false)
-          }
-        }
-      )
-      .catch((error) => {
-        console.log('res Account error', error);
+
+    RequestServer("post",urlAccount,null,{})
+    .then((res)=>{
+      console.log(res,"index page res")
+      if(res.success){
+        setRecords(res.data)
         setFetchLoading(false)
-      })
+        setFetchError(null)
+      }
+      else{
+        setRecords([])
+        setFetchError(res.error.message)
+        setFetchLoading(false)
+      }
+    })
+    .catch((err)=>{
+      setFetchError(err.message)
+      setFetchLoading(false)
+    })
+
+    // axios.post(urlAccount)
+    //   .then(
+    //     (res) => {
+    //       console.log("res Account records",(res.data));
+    //       if (res.data.length > 0 && (typeof (res.data) !== 'string')) {
+    //         setRecords((res.data));
+    //         setFetchLoading(false)
+    //       }
+    //       else {
+    //         setRecords([]);
+    //         setFetchLoading(false)
+    //       }
+    //     }
+    //   )
+    //   .catch((error) => {
+    //     console.log('res Account error', error);
+    //     setFetchLoading(false)
+    //   })
   }
   const handleAddRecord = () => {
     navigate("/new-accounts", { state: { record: {} } })
@@ -117,28 +119,61 @@ const Accounts = () => {
   const onebyoneDelete = (row) => {
     console.log('onebyoneDelete rec id', row)
 
-    axios.post(urlDelete + row)
-      .then((res) => {
-        console.log('api delete response', res);
-        fetchRecords();
+    RequestServer("post",urlDelete+row ,{}, null)
+    .then((res)=>{
+      if(res.success){
+        fetchRecords()
         setNotify({
-          isOpen: true,
-          message: res.data,
-          type: 'success'
+          isOpen:true,
+          message:res.data,
+          type:'success'
         })
-      })
-      .catch((error) => {
-        console.log('api delete error', error);
-        setNotify({
-          isOpen: true,
-          message: error.message,
-          type: 'error'
-        })
-      })
-    setConfirmDialog({
-      ...confirmDialog,
-      isOpen: false
+      }
+      else{
+        console.log(res,"error in then")
+          setNotify({
+            isOpen: true,
+            message: res.error.message,
+            type: 'error'
+          })
+      }
     })
+    .catch((error)=>{
+      console.log('api delete error', error);
+          setNotify({
+            isOpen: true,
+            message: error.message,
+            type: 'error'
+          })
+    })
+    .finally(()=>{
+      setConfirmDialog({
+        ...confirmDialog,
+        isOpen: false
+      })
+    })
+    // axios.post(urlDelete + row)
+    //   .then((res) => {
+    //     console.log('api delete response', res);
+    //     fetchRecords();
+    //     setNotify({
+    //       isOpen: true,
+    //       message: res.data,
+    //       type: 'success'
+    //     })
+    //   })
+    //   .catch((error) => {
+    //     console.log('api delete error', error);
+    //     setNotify({
+    //       isOpen: true,
+    //       message: error.message,
+    //       type: 'error'
+    //     })
+    //   })
+    // setConfirmDialog({
+    //   ...confirmDialog,
+    //   isOpen: false
+    // })
 
   };
 
@@ -409,10 +444,13 @@ const Accounts = () => {
         onClose={handleImportModalClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
+        sx={{backdropFilter:"blur(1px)"}}
       >
-        <Box sx={ModalStyle}>
+        <div className='modal'>
+        {/* <Box sx={ModalStyle}> */}
           <ModalFileUpload handleModal={handleImportModalClose} />
-        </Box>
+        {/* </Box> */}
+        </div>
       </Modal>
 
     </>

@@ -26,7 +26,7 @@ const InventoryDetailPage = ({ item }) => {
 
     useEffect(() => {
 
-        console.log(JSON.parse(localStorage.getItem('loggedInUser')), "loggedInUser")
+        console.log(JSON.parse(sessionStorage.getItem('loggedInUser')), "loggedInUser")
 
         console.log('passed record', location.state.record.item);
         setsingleInventory(location.state.record.item);
@@ -104,14 +104,14 @@ const InventoryDetailPage = ({ item }) => {
         if (showNew) {
             values.modifiedDate = dateSeconds;
             values.createdDate = dateSeconds;
-            values.createdBy = JSON.parse(localStorage.getItem('loggedInUser'))
-            values.modifiedBy = JSON.parse(localStorage.getItem('loggedInUser'))
+            values.createdBy = JSON.parse(sessionStorage.getItem('loggedInUser'))
+            values.modifiedBy = JSON.parse(sessionStorage.getItem('loggedInUser'))
         }
         else if (!showNew) {
             values.modifiedDate = dateSeconds;
             values.createdDate = createDateSec;
             values.createdBy = singleInventory.createdBy;
-            values.modifiedBy = JSON.parse(localStorage.getItem('loggedInUser'))
+            values.modifiedBy = JSON.parse(sessionStorage.getItem('loggedInUser'))
         }
 
         console.log('after change form submission value', values);

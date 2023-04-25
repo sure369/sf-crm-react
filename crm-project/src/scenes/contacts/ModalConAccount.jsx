@@ -81,8 +81,8 @@ const ModalConAccount = ({ item, handleModal }) => {
         let dateSeconds = new Date().getTime();
         let dobSec = new Date(values.dob).getTime()
 
-        values.createdBy = JSON.parse(localStorage.getItem('loggedInUser'))
-        values.modifiedBy = JSON.parse(localStorage.getItem('loggedInUser'))
+        values.createdBy = JSON.parse(sessionStorage.getItem('loggedInUser'))
+        values.modifiedBy = JSON.parse(sessionStorage.getItem('loggedInUser'))
         values.modifiedDate = dateSeconds;
         values.createdDate = dateSeconds;
         values.AccountId = account;

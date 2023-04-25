@@ -1,70 +1,79 @@
-import React, { useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { Grid, Button, DialogActions, Box, TextField, Autocomplete,MenuItem, Select} from "@mui/material";
-import { useParams, useNavigate } from "react-router-dom"
-import axios from 'axios'
+import {
+    Grid,
+    Button,
+    DialogActions,
+    Box,
+    TextField,
+    Autocomplete,
+    MenuItem,
+    Select,
+} from "@mui/material";
+import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
 // import "../formik/FormStyles.css"
-import {IndustryPickList, AccRatingPickList,AccTypePickList,AccCitiesPickList, AccCountryPickList} from '../../data/pickLists'
-import CustomizedSelectForFormik from '../formik/CustomizedSelectForFormik';
-import ToastNotification from '../toast/ToastNotification';
-import './Form.css'
-
+import {
+    IndustryPickList,
+    AccRatingPickList,
+    AccTypePickList,
+    AccCitiesPickList,
+    AccCountryPickList,
+} from "../../data/pickLists";
+import CustomizedSelectForFormik from "../formik/CustomizedSelectForFormik";
+import ToastNotification from "../toast/ToastNotification";
+import "./Form.css";
+import { RequestServer } from "../api/HttpReq";
 
 const url = `${process.env.REACT_APP_SERVER_URL}/UpsertAccount`;
-const fetchInventoriesbyName = `${process.env.REACT_APP_SERVER_URL}/InventoryName`;
-const getCountryPicklists= `${process.env.REACT_APP_SERVER_URL}/getpicklistcountry`;
-const getCityPicklists = `${process.env.REACT_APP_SERVER_URL}/getpickliststate?country=`;
+const fetchInventoriesbyName = `${process.env.REACT_APP_SERVER_URL}/InventoryName?ser`;
 
 const AccountDetailPage = ({ item }) => {
-
     const [singleAccount, setsingleAccount] = useState();
     const location = useLocation();
     const navigate = useNavigate();
-    const [showNew, setshowNew] = useState()
+    const [showNew, setshowNew] = useState();
     const [inventoriesRecord, setInventoriesRecord] = useState([]);
-  // notification
-    const[notify,setNotify]=useState({isOpen:false,message:'',type:''})
-   
-    //const city
-    const[countryPicklist,setCountriesPicklist]=useState([])
-    const[cityPicklist,setCitiesPicklist]=useState([])
+    // notification
+    const [notify, setNotify] = useState({
+        isOpen: false,
+        message: "",
+        type: "",
+    });
+
 
     useEffect(() => {
-        console.log('passed record', location.state.record.item);
+        console.log("passed record", location.state.record.item);
         setsingleAccount(location.state.record.item);
-        console.log('true', !location.state.record.item);
-        setshowNew(!location.state.record.item)
-        FetchInventoriesbyName('');
-        getPicklistNameForCountries();
-        if(location.state.record.item){
-            getPicklistNameForCities(location.state.record.item.billingCountry)
-        }
-    }, [])
+        console.log("true", !location.state.record.item);
+        setshowNew(!location.state.record.item);
+        FetchInventoriesbyName("");
+    }, []);
 
     const initialValues = {
-        accountName: '',
-        accountNumber: '',        
-        annualRevenue: '',
-        rating: '',
-        type: '',
-        phone: '',
-        industry: '',
-        billingAddress: '',
-        billingCountry: '',
-        billingCity: '',
+        accountName: "",
+        accountNumber: "",
+        annualRevenue: "",
+        rating: "",
+        type: "",
+        phone: "",
+        industry: "",
+        billingAddress: "",
+        billingCountry: "",
+        billingCity: "",
         billingCities: [],
-        createdBy: '',
-        modifiedBy: '',
-        createdDate:'',
-        modifiedDate: '',
-        InventoryId: '',
-    }
+        createdBy: "",
+        modifiedBy: "",
+        createdDate: "",
+        modifiedDate: "",
+        InventoryId: "",
+    };
 
     const savedValues = {
         accountName: singleAccount?.accountName ?? "",
-        accountNumber: singleAccount?.accountNumber ?? "",   
+        accountNumber: singleAccount?.accountNumber ?? "",
         annualRevenue: singleAccount?.annualRevenue ?? "",
         rating: singleAccount?.rating ?? "",
         type: singleAccount?.type ?? "",
@@ -74,16 +83,16 @@ const AccountDetailPage = ({ item }) => {
         billingCountry: singleAccount?.billingCountry ?? "",
         billingCity: singleAccount?.billingCity ?? "",
         // billingCities: cityPicklist?? "",
-        billingCities:singleAccount?.billingCities ?? "",
+        billingCities: singleAccount?.billingCities ?? "",
         createdBy: singleAccount?.createdBy.userFullName ?? "",
         modifiedBy: singleAccount?.modifiedBy.userFullName ?? "",
-        createdDate:  new Date(singleAccount?.createdDate).toLocaleString(),
+        createdDate: new Date(singleAccount?.createdDate).toLocaleString(),
         modifiedDate: new Date(singleAccount?.modifiedDate).toLocaleString(),
         _id: singleAccount?._id ?? "",
-        inventoryDetails:singleAccount?.inventoryDetails ?? "", 
+        inventoryDetails: singleAccount?.inventoryDetails ?? "",
         InventoryId: singleAccount?.InventoryId ?? "",
         InventoryName: singleAccount?.InventoryName ?? "",
-    }
+    };
 
     const getCities = (billingCountry) => {
         return new Promise((resolve, reject) => {
@@ -92,92 +101,86 @@ const AccountDetailPage = ({ item }) => {
         });
     };
 
-    console.log('getCities',getCities('India'))
-    const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
+    console.log("getCities", getCities("India"));
+    const phoneRegExp =
+        /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
     const validationSchema = Yup.object({
-        accountName: Yup
-            .string()
-            .required('Required')
-            .matches(/^[A-Za-z ]*$/, 'Numeric characters not accepted')
-            .max(30, 'lastName must be less than 30 characters'),
-        rating: Yup
-            .string()
-            .required('Required'),
-        phone: Yup
-            .string()
-            .matches(phoneRegExp, 'Phone number is not valid')
+        accountName: Yup.string()
+            .required("Required")
+            .matches(/^[A-Za-z ]*$/, "Numeric characters not accepted")
+            .max(30, "lastName must be less than 30 characters"),
+        rating: Yup.string().required("Required"),
+        phone: Yup.string()
+            .matches(phoneRegExp, "Phone number is not valid")
             .min(10, "Phone number must be 10 characters, its short")
             .max(10, "Phone number must be 10 characters,its long"),
-        annualRevenue:Yup
-            .string()
-            .matches(/^[0-9]+$/, "Must be only digits")
-    })
-
-    const getPicklistNameForCountries=()=>{
-        axios.post(getCountryPicklists)
-        .then((res)=>{
-            console.log('getCountryPicklists response',res)
-            console.log('dd',res.data)
-            setCountriesPicklist(res.data)
-
-        })
-        .catch((err)=>{
-            console.log(err)
-        })
-    }
-    const getPicklistNameForCities=(props)=>{
-        if(props){
-            console.log('inside',props)
-            axios.post(`${getCityPicklists}${props}&table=Account`)
-        .then((res)=>{
-            console.log('getPicklistNameForCities',res.data)
-            setCitiesPicklist(res.data)
-        })
-        .catch((err)=>{
-            console.log(err)
-        })
-        }
-        else{
-            console.log('outside',props)
-        }
-    }
+        annualRevenue: Yup.string().matches(/^[0-9]+$/, "Must be only digits"),
+    });
 
     const formSubmission = (values) => {
-   
-        console.log('form submission value',values);
-
+        console.log("form submission value", values);
 
         let dateSeconds = new Date().getTime();
-        let createDateSec = new Date(values.createdDate).getTime()
+        let createDateSec = new Date(values.createdDate).getTime();
 
-        if(showNew){
+        if (showNew) {
             values.modifiedDate = dateSeconds;
             values.createdDate = dateSeconds;
-            values.InventoryName=values.inventoryDetails.propertyName;
-            values.InventoryId =values.inventoryDetails.id;
-            values.createdBy = JSON.parse(localStorage.getItem('loggedInUser'))
-            values.modifiedBy = JSON.parse(localStorage.getItem('loggedInUser'))
+            values.createdBy = JSON.parse(sessionStorage.getItem("loggedInUser"));
+            values.modifiedBy = JSON.parse(sessionStorage.getItem("loggedInUser"));
 
-            if(values.InventoryId===''){
+            // if(values.inventoryDetails){
+            //     values.InventoryName = values.inventoryDetails.propertyName;
+            //     values.InventoryId = values.inventoryDetails.id;
+            // }
+            if (values.InventoryId === "") {
                 delete values.InventoryId;
             }
-        }
-        else if(!showNew){
+        } else if (!showNew) {
             values.modifiedDate = dateSeconds;
             values.createdDate = createDateSec;
-            values.InventoryName=values.inventoryDetails.propertyName;
-            values.InventoryId =values.inventoryDetails.id;
+            values.InventoryName = values.inventoryDetails.propertyName;
+            values.InventoryId = values.inventoryDetails.id;
             values.createdBy = singleAccount.createdBy;
-            values.modifiedBy = JSON.parse(localStorage.getItem('loggedInUser'))
+            values.modifiedBy = JSON.parse(sessionStorage.getItem("loggedInUser"));
 
-            if(values.InventoryId===''){
+            if (values.InventoryId === "") {
                 delete values.InventoryId;
             }
         }
-        
-        console.log('after change form submission value',values);
-        
+
+        console.log("after change form submission value", values);
+
+        // RequestServer("post", url, {}, values)
+        // .then((res) => {
+        //     console.log(res,"res from RequestServer")
+        //     if (res.success) {
+        //         setNotify({
+        //             isOpen: true,
+        //             message: res.data,
+        //             type: "success",
+        //         });
+        //         setTimeout(() => {
+        //             navigate(-1);
+        //         }, 2000);
+        //     } else {
+        //         console.log(res, "error in then");
+        //         setNotify({
+        //             isOpen: true,
+        //             message: res.error.message,
+        //             type: "error",
+        //         });
+        //     }
+        // })
+        // .catch((error)=>{
+        //     setNotify({
+        //                 isOpen:true,
+        //                 message:error.message,
+        //                 type:'error'
+        //               })
+        // })
+
         axios.post(url, values)
         .then((res) => {
             console.log('upsert record  response', res);
@@ -198,41 +201,41 @@ const AccountDetailPage = ({ item }) => {
                 type:'error'
               })
         })
-    }
+    };
 
     const FetchInventoriesbyName = (newInputValue) => {
-        axios.post(`${fetchInventoriesbyName}?searchKey=${newInputValue}`)
+        axios
+            .post(`${fetchInventoriesbyName}?searchKey=${newInputValue}`)
             .then((res) => {
-                console.log('res fetchInventoriesbyName', res.data)
-                if (typeof (res.data) === "object") {
-                    setInventoriesRecord(res.data)
+                console.log("res fetchInventoriesbyName", res.data);
+                if (typeof res.data === "object") {
+                    setInventoriesRecord(res.data);
                 }
             })
             .catch((error) => {
-                console.log('error fetchInventoriesbyName', error);
-            })
-    }
+                console.log("error fetchInventoriesbyName", error);
+            });
+    };
 
-    const handleFormClose =()=>{
-        navigate(-1)
-    }
-    const MenuItemhandleclick=(e)=>{
-        console.log(e)
-    }
+    const handleFormClose = () => {
+        navigate(-1);
+    };
+    const MenuItemhandleclick = (e) => {
+        console.log(e);
+    };
     return (
-
         <Grid item xs={12} style={{ margin: "20px" }}>
             <div style={{ textAlign: "center", marginBottom: "10px" }}>
-                {
-                    showNew ? <h2>New Account</h2> : <h2>Account Detail Page </h2>
-                }
+                {showNew ? <h2>New Account</h2> : <h2>Account Detail Page </h2>}
             </div>
             <div>
                 <Formik
                     enableReinitialize={true}
                     initialValues={showNew ? initialValues : savedValues}
                     validationSchema={validationSchema}
-                    onSubmit={(values) => { formSubmission(values) }}
+                    onSubmit={(values) => {
+                        formSubmission(values);
+                    }}
                 >
                     {(props) => {
                         const {
@@ -249,21 +252,30 @@ const AccountDetailPage = ({ item }) => {
 
                         return (
                             <>
-                                
-                                <ToastNotification notify={notify} setNotify={setNotify}/>
+                                <ToastNotification notify={notify} setNotify={setNotify} />
 
                                 <Form className="my-form">
                                     <Grid container spacing={2}>
                                         <Grid item xs={6} md={6}>
-                                            <label htmlFor="accountName">Account Name  <span className="text-danger">*</span></label>
-                                            <Field name="accountName" type="text" class="form-input" />
-                                            <div style={{ color: 'red' }}>
+                                            <label htmlFor="accountName">
+                                                Account Name <span className="text-danger">*</span>
+                                            </label>
+                                            <Field
+                                                name="accountName"
+                                                type="text"
+                                                class="form-input"
+                                            />
+                                            <div style={{ color: "red" }}>
                                                 <ErrorMessage name="accountName" />
                                             </div>
                                         </Grid>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="accountNumber">Account Number </label>
-                                            <Field name="accountNumber" type="number" class="form-input" />
+                                            <Field
+                                                name="accountNumber"
+                                                type="number"
+                                                class="form-input"
+                                            />
                                         </Grid>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="InventoryId">Inventory Name </label>
@@ -271,89 +283,107 @@ const AccountDetailPage = ({ item }) => {
                                                 name="InventoryId"
                                                 options={inventoriesRecord}
                                                 value={values.inventoryDetails}
-                                                getOptionLabel={option => option.propertyName || ''}
+                                                getOptionLabel={(option) => option.propertyName || ""}
                                                 // isOptionEqualToValue={(option, value) =>
                                                 //     option.id === value
                                                 // }
                                                 onChange={(e, value) => {
-
-                                                    if(!value){                                
-                                                        console.log('!value',value);
-                                                        setFieldValue("InventoryId",'')
-                                                        setFieldValue("inventoryDetails",'')
-                                                      }else{
-                                                        console.log('value',value);
-                                                        setFieldValue("InventoryId",value.id)
-                                                        setFieldValue("inventoryDetails",value)
-                                                      }
+                                                    if (!value) {
+                                                        console.log("!value", value);
+                                                        setFieldValue("InventoryId", "");
+                                                        setFieldValue("inventoryDetails", "");
+                                                        setFieldValue("InventoryId", "");
+                                                        setFieldValue("inventoryDetails", "");
+                                                    
+                                                    } else {
+                                                        console.log("value", value);
+                                                        setFieldValue("InventoryId", value.id);
+                                                        setFieldValue("inventoryDetails", value);                                                        
+                                                        setFieldValue("InventoryId", value.id);
+                                                        setFieldValue("inventoryDetails",value.propertyName);
+                                                    }
                                                 }}
                                                 onInputChange={(event, newInputValue) => {
-                                                    console.log('newInputValue', newInputValue);
+                                                    console.log("newInputValue", newInputValue);
                                                     if (newInputValue.length >= 3) {
                                                         FetchInventoriesbyName(newInputValue);
-                                                    }
-                                                    else if (newInputValue.length == 0) {
+                                                    } else if (newInputValue.length == 0) {
                                                         FetchInventoriesbyName(newInputValue);
                                                     }
                                                 }}
-                                                renderInput={params => (
-                                                    <Field component={TextField} {...params} name="InventoryId" />
+                                                renderInput={(params) => (
+                                                    <Field
+                                                        component={TextField}
+                                                        {...params}
+                                                        name="InventoryId"
+                                                    />
                                                 )}
                                             />
-
                                         </Grid>
 
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="annualRevenue">Annual Revenue</label>
-                                            <Field class="form-input" type="text" name="annualRevenue" />
-                                            <div style={{ color: 'red' }}>
+                                            <Field
+                                                class="form-input"
+                                                type="text"
+                                                name="annualRevenue"
+                                            />
+                                            <div style={{ color: "red" }}>
                                                 <ErrorMessage name="annualRevenue" />
                                             </div>
                                         </Grid>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="phone">Phone</label>
                                             <Field name="phone" type="phone" class="form-input" />
-                                            <div style={{ color: 'red' }}>
+                                            <div style={{ color: "red" }}>
                                                 <ErrorMessage name="phone" />
                                             </div>
                                         </Grid>
                                         <Grid item xs={6} md={6}>
-                                            <label htmlFor="rating"> Rating<span className="text-danger">*</span></label>
-                                           
-                                            <Field name="rating" component={CustomizedSelectForFormik}  className="form-customSelect">	
-                                            <MenuItem value=""><em>None</em></MenuItem>
-                                               {	
-                                                AccRatingPickList.map((i)=>{	
-                                                    return <MenuItem value={i.value}>{i.text}</MenuItem>	
-                                                })	
-                                               }	
-                                            </Field>	
-                                            <div style={{ color: 'red' }} >	
-                                                <ErrorMessage name="rating" />	
+                                            <label htmlFor="rating">
+                                                {" "}
+                                                Rating<span className="text-danger">*</span>
+                                            </label>
+
+                                            <Field
+                                                name="rating"
+                                                component={CustomizedSelectForFormik}
+                                                className="form-customSelect"
+                                            >
+                                                <MenuItem value="">
+                                                    <em>None</em>
+                                                </MenuItem>
+                                                {AccRatingPickList.map((i) => {
+                                                    return <MenuItem value={i.value}>{i.text}</MenuItem>;
+                                                })}
+                                            </Field>
+                                            <div style={{ color: "red" }}>
+                                                <ErrorMessage name="rating" />
                                             </div>
-                                              
                                         </Grid>
                                         <Grid item xs={6} md={6}>
-
                                             <label htmlFor="type">Type</label>
                                             <Field name="type" component={CustomizedSelectForFormik}>
-                                            <MenuItem value=""><em>None</em></MenuItem>
-                                              {
-                                                AccTypePickList.map((i)=>{
-                                                    return <MenuItem value={i.value}>{i.text}</MenuItem>	
-                                                })
-                                              }                                               
+                                                <MenuItem value="">
+                                                    <em>None</em>
+                                                </MenuItem>
+                                                {AccTypePickList.map((i) => {
+                                                    return <MenuItem value={i.value}>{i.text}</MenuItem>;
+                                                })}
                                             </Field>
                                         </Grid>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="industry">Industry</label>
-                                            <Field name="industry"  component={CustomizedSelectForFormik}>
-                                            <MenuItem value=""><em>None</em></MenuItem>
-                                              {
-                                                IndustryPickList.map((i)=>{
-                                                    return <MenuItem value={i.value}>{i.text}</MenuItem>	
-                                                })
-                                              }  
+                                            <Field
+                                                name="industry"
+                                                component={CustomizedSelectForFormik}
+                                            >
+                                                <MenuItem value="">
+                                                    <em>None</em>
+                                                </MenuItem>
+                                                {IndustryPickList.map((i) => {
+                                                    return <MenuItem value={i.value}>{i.text}</MenuItem>;
+                                                })}
                                             </Field>
                                         </Grid>
 
@@ -366,35 +396,35 @@ const AccountDetailPage = ({ item }) => {
                                                 component={CustomizedSelectForFormik}
                                                 value={values.billingCountry}
                                                 onChange={async (event) => {
-                                                    console.log('onchange',event.target.value)
+                                                    console.log("onchange", event.target.value);
                                                     // setFieldValue("billingCountry", event.target.value)
                                                     // // axios.post(getCityPicklists,{city:event.target.value,table:'Account'})
                                                     // axios.post(`${getCityPicklists}${event.target.value}&table=Account`)
                                                     // .then((res)=>{
                                                     //     console.log('get cities',res.data)
                                                     //     setCitiesPicklist(res.data)
-                                                       
+
                                                     // })
                                                     // .catch((error)=>{
                                                     //     console.log('error',error)
                                                     // })
                                                     const value = event.target.value;
                                                     const _billingCities = await getCities(value);
-                                                    console.log('billingCities',_billingCities);
+                                                    console.log("billingCities", _billingCities);
                                                     setFieldValue("billingCountry", value);
                                                     setFieldValue("billingCity", "");
                                                     setFieldValue("billingCities", _billingCities);
                                                 }}
                                             >
-                                                <MenuItem value=""><em>None</em></MenuItem>
-                                              {
-                                                AccCountryPickList.map((i)=>{
-                                                    return <MenuItem value={i.value}>{i.text}</MenuItem>
-                                                })
-                                              }  
+                                                <MenuItem value="">
+                                                    <em>None</em>
+                                                </MenuItem>
+                                                {AccCountryPickList.map((i) => {
+                                                    return <MenuItem value={i.value}>{i.text}</MenuItem>;
+                                                })}
                                             </Field>
                                         </Grid>
-                                        
+
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="billingCity">Billing City</label>
                                             <Field
@@ -403,15 +433,20 @@ const AccountDetailPage = ({ item }) => {
                                                 id="billingCity"
                                                 name="billingCity"
                                                 component={CustomizedSelectForFormik}
-                                        
                                             >
-                                                <MenuItem value=""><em>None</em></MenuItem>
-                                                { values.billingCities&&
-                                                   values.billingCities.map((r) => (                                                      
-                                                         <MenuItem key={r.value} value={r.value} onClick={(e)=>MenuItemhandleclick(e)}>{r.text}</MenuItem>
-                                                    )
-                                                        
-                                                    )}
+                                                <MenuItem value="">
+                                                    <em>None</em>
+                                                </MenuItem>
+                                                {values.billingCities &&
+                                                    values.billingCities.map((r) => (
+                                                        <MenuItem
+                                                            key={r.value}
+                                                            value={r.value}
+                                                            onClick={(e) => MenuItemhandleclick(e)}
+                                                        >
+                                                            {r.text}
+                                                        </MenuItem>
+                                                    ))}
                                                 {/* {values.billingCities &&
                                                     values.billingCities.map((r) => (                                                      
                                                          <MenuItem key={r.City} value={r.City}>{r.City}</MenuItem>
@@ -422,16 +457,25 @@ const AccountDetailPage = ({ item }) => {
 
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="billingAddress">Billing Address </label>
-                                            <Field name="billingAddress" type="textarea" class="form-input-textarea" style={{width:'100%'}} />
+                                            <Field
+                                                name="billingAddress"
+                                                type="textarea"
+                                                class="form-input-textarea"
+                                                style={{ width: "100%" }}
+                                            />
                                         </Grid>
 
                                         {!showNew && (
                                             <>
-                                            
-    <Grid container spacing={2} item xs={12} md={12} direction="row">
-
-
-                                              {/* <Grid item xs={6} md={6}>
+                                                <Grid
+                                                    container
+                                                    spacing={2}
+                                                    item
+                                                    xs={12}
+                                                    md={12}
+                                                    direction="row"
+                                                >
+                                                    {/* <Grid item xs={6} md={6}>
                                                     <label htmlFor="createdBy" >Created By</label>
                                                     <Field name='createdBy' type="text" class="form-input" disabled />
                                                 </Grid>
@@ -439,55 +483,84 @@ const AccountDetailPage = ({ item }) => {
                                                     <label htmlFor="modifiedBy" >Modified By</label>
                                                     <Field name='modifiedBy' type="text" class="form-input" disabled />
                                                 </Grid> */}
-                                                <Grid item xs={6} md={6}>                                                  
-                                                    <label htmlFor="createdDate" >Created By</label>
-                                                    <div style={{ overflowX: 'auto' }}>
-                                                    <Field  
-                                                            name='createdDate' type="text" class="form-input"
-                                                            value={values.createdBy +',  '+values.createdDate} 
-                                                            style={{ whiteSpace: 'nowrap' }} disabled 
-                                                    />
-                                                    </div>
-                                                </Grid>
+                                                    <Grid item xs={6} md={6}>
+                                                        <label htmlFor="createdDate">Created By</label>
+                                                        <div style={{ overflowX: "auto" }}>
+                                                            <Field
+                                                                name="createdDate"
+                                                                type="text"
+                                                                class="form-input"
+                                                                value={
+                                                                    values.createdBy + ",  " + values.createdDate
+                                                                }
+                                                                style={{ whiteSpace: "nowrap" }}
+                                                                disabled
+                                                            />
+                                                        </div>
+                                                    </Grid>
 
-                                                <Grid item xs={6} md={6}>
-                                                    <label htmlFor="modifiedDate">Modified By</label>
-                                                    <div style={{ overflowX: 'auto' }}>
-                                                    <Field 
-                                                            name='modifiedDate' type="text" class="form-input" 
-                                                            value={values.modifiedBy+',  '+values.modifiedDate} 
-                                                            style={{ whiteSpace: 'nowrap' }}  disabled 
-                                                    />
-                                                    </div>
-                                                </Grid>
+                                                    <Grid item xs={6} md={6}>
+                                                        <label htmlFor="modifiedDate">Modified By</label>
+                                                        <div style={{ overflowX: "auto" }}>
+                                                            <Field
+                                                                name="modifiedDate"
+                                                                type="text"
+                                                                class="form-input"
+                                                                value={
+                                                                    values.modifiedBy +
+                                                                    ",  " +
+                                                                    values.modifiedDate
+                                                                }
+                                                                style={{ whiteSpace: "nowrap" }}
+                                                                disabled
+                                                            />
+                                                        </div>
+                                                    </Grid>
                                                 </Grid>
                                             </>
                                         )}
                                     </Grid>
 
-                                    <div className='action-buttons'>
+                                    <div className="action-buttons">
                                         <DialogActions sx={{ justifyContent: "space-between" }}>
-                                            {
-                                                showNew ?
-                                                    <Button type='success' variant="contained" color="secondary" disabled={isSubmitting || !dirty} >Save</Button>
-                                                :
-                                                    <Button type='success' variant="contained" color="secondary" disabled={isSubmitting || !dirty}>Update</Button>
-                                            }
-                                            <Button type="reset" variant="contained" onClick={handleFormClose}  >Cancel</Button>
+                                            {showNew ? (
+                                                <Button
+                                                    type="success"
+                                                    variant="contained"
+                                                    color="secondary"
+                                                    disabled={isSubmitting || !dirty}
+                                                >
+                                                    Save
+                                                </Button>
+                                            ) : (
+                                                <Button
+                                                    type="success"
+                                                    variant="contained"
+                                                    color="secondary"
+                                                    disabled={isSubmitting || !dirty}
+                                                >
+                                                    Update
+                                                </Button>
+                                            )}
+                                            <Button
+                                                type="reset"
+                                                variant="contained"
+                                                onClick={handleFormClose}
+                                            >
+                                                Cancel
+                                            </Button>
                                         </DialogActions>
                                     </div>
                                 </Form>
                             </>
-                        )
+                        );
                     }}
                 </Formik>
             </div>
         </Grid>
-    )
-}
+    );
+};
 export default AccountDetailPage;
-
-
 
 // import React, { useEffect, useState } from 'react'
 // import { useLocation } from 'react-router-dom';
@@ -513,14 +586,14 @@ export default AccountDetailPage;
 //     const [inventoriesRecord, setInventoriesRecord] = useState([]);
 //   // notification
 //     const[notify,setNotify]=useState({isOpen:false,message:'',type:''})
-   
+
 //     useEffect(() => {
 //         console.log('passed record', location.state.record.item);
 //         setsingleAccount(location.state.record.item);
 //         console.log('true', !location.state.record.item);
 //         setshowNew(!location.state.record.item)
 //         FetchInventoriesbyName('');
-      
+
 //     }, [])
 
 //     const initialValues = [
@@ -562,7 +635,7 @@ export default AccountDetailPage;
 //         createdDate:  new Date(singleAccount?.createdDate).toLocaleString(),
 //         modifiedDate: new Date(singleAccount?.modifiedDate).toLocaleString(),
 //         _id: singleAccount?._id ?? "",
-//         inventoryDetails:singleAccount?.inventoryDetails ?? "", 
+//         inventoryDetails:singleAccount?.inventoryDetails ?? "",
 //     }
 
 //     const getCities = (billingCountry) => {
@@ -571,7 +644,6 @@ export default AccountDetailPage;
 //             resolve(AccCitiesPickList[billingCountry] || []);
 //         });
 //     };
-      
 
 //     console.log('getCities',getCities('India'))
 //     const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
@@ -596,9 +668,8 @@ export default AccountDetailPage;
 //     })
 
 //     const formSubmission = (values) => {
-   
-//         console.log('form submission value',values);
 
+//         console.log('form submission value',values);
 
 //         let dateSeconds = new Date().getTime();
 //         let createDateSec = new Date(values.createdDate).getTime()
@@ -617,9 +688,9 @@ export default AccountDetailPage;
 //                 delete values.InventoryId;
 //             }
 //         }
-        
+
 //         console.log('after change form submission value',values);
-        
+
 //         axios.post(url, values)
 //         .then((res) => {
 //             console.log('upsert record  response', res);
@@ -627,7 +698,7 @@ export default AccountDetailPage;
 //                 isOpen:true,
 //                 message:res.data,
 //                 type:'success'
-      
+
 //               })
 //             setTimeout(() => {
 //                  navigate(-1);
@@ -642,7 +713,6 @@ export default AccountDetailPage;
 //               })
 //         })
 
-        
 //     }
 
 //     const FetchInventoriesbyName = (newInputValue) => {
@@ -661,7 +731,7 @@ export default AccountDetailPage;
 //     const handleFormClose =()=>{
 //         navigate(-1)
 //     }
-    
+
 //     const fieldConfig =initialValues.reduce((acc,config)=>{
 //         return {...acc,[config.name]:''}
 //     })
@@ -700,7 +770,7 @@ export default AccountDetailPage;
 
 //                         return (
 //                             <>
-                                
+
 //                                 <ToastNotification notify={notify} setNotify={setNotify}/>
 
 //                                 <Form>
@@ -716,26 +786,25 @@ export default AccountDetailPage;
 //                                                     <Field type={item.type} name={item.name}/>
 //                                                 ) :
 //                                                 item.component =='CustomizedSelectForFormik' ?(
-                                                   
-//                                                     <Field name={item.name} component={CustomizedSelectForFormik}  className="form-customSelect">	
+
+//                                                     <Field name={item.name} component={CustomizedSelectForFormik}  className="form-customSelect">
 //                                                     <MenuItem value=""><em>None</em></MenuItem>
-//                                                        {	
-//                                                         item.options.map((i)=>{	
-//                                                             return <MenuItem value={i.value}>{i.text}</MenuItem>	
-//                                                         })	
-//                                                        }	
+//                                                        {
+//                                                         item.options.map((i)=>{
+//                                                             return <MenuItem value={i.value}>{i.text}</MenuItem>
+//                                                         })
+//                                                        }
 //                                                     </Field>
-                                                    
+
 //                                                 ):''
 //                                             }
 //                                             </div>
 //                                             </Grid>
 //                                         </Grid>
 
-
 //                                         ))
 //                                     }
-                                   
+
 //                                     {/* <Grid container spacing={2}>
 //                                         <Grid item xs={6} md={6}>
 //                                             <label htmlFor="accountName">Account Name  <span className="text-danger">*</span></label>
@@ -761,7 +830,7 @@ export default AccountDetailPage;
 //                                                 // }
 //                                                 onChange={(e, value) => {
 
-//                                                     if(!value){                                
+//                                                     if(!value){
 //                                                         console.log('!value',value);
 //                                                         setFieldValue("InventoryId",'')
 //                                                         setFieldValue("inventoryDetails",'')
@@ -803,19 +872,19 @@ export default AccountDetailPage;
 //                                         </Grid>
 //                                         <Grid item xs={6} md={6}>
 //                                             <label htmlFor="rating"> Rating<span className="text-danger">*</span></label>
-                                           
-//                                             <Field name="rating" component={CustomizedSelectForFormik}  className="form-customSelect">	
+
+//                                             <Field name="rating" component={CustomizedSelectForFormik}  className="form-customSelect">
 //                                             <MenuItem value=""><em>None</em></MenuItem>
-//                                                {	
-//                                                 AccRatingPickList.map((i)=>{	
-//                                                     return <MenuItem value={i.value}>{i.text}</MenuItem>	
-//                                                 })	
-//                                                }	
-//                                             </Field>	
-//                                             <div style={{ color: 'red' }} >	
-//                                                 <ErrorMessage name="rating" />	
+//                                                {
+//                                                 AccRatingPickList.map((i)=>{
+//                                                     return <MenuItem value={i.value}>{i.text}</MenuItem>
+//                                                 })
+//                                                }
+//                                             </Field>
+//                                             <div style={{ color: 'red' }} >
+//                                                 <ErrorMessage name="rating" />
 //                                             </div>
-                                              
+
 //                                         </Grid>
 //                                         <Grid item xs={6} md={6}>
 
@@ -824,9 +893,9 @@ export default AccountDetailPage;
 //                                             <MenuItem value=""><em>None</em></MenuItem>
 //                                               {
 //                                                 AccTypePickList.map((i)=>{
-//                                                     return <MenuItem value={i.value}>{i.text}</MenuItem>	
+//                                                     return <MenuItem value={i.value}>{i.text}</MenuItem>
 //                                                 })
-//                                               }                                               
+//                                               }
 //                                             </Field>
 //                                         </Grid>
 //                                         <Grid item xs={6} md={6}>
@@ -835,9 +904,9 @@ export default AccountDetailPage;
 //                                             <MenuItem value=""><em>None</em></MenuItem>
 //                                               {
 //                                                 IndustryPickList.map((i)=>{
-//                                                     return <MenuItem value={i.value}>{i.text}</MenuItem>	
+//                                                     return <MenuItem value={i.value}>{i.text}</MenuItem>
 //                                                 })
-//                                               }  
+//                                               }
 //                                             </Field>
 //                                         </Grid>
 
@@ -863,10 +932,10 @@ export default AccountDetailPage;
 //                                                 AccCountryPickList.map((i)=>{
 //                                                     return <MenuItem value={i.value}>{i.text}</MenuItem>
 //                                                 })
-//                                               }  
+//                                               }
 //                                             </Field>
 //                                         </Grid>
-                                        
+
 //                                         <Grid item xs={6} md={6}>
 //                                             <label htmlFor="billingCity">Billing City</label>
 //                                             <Field
@@ -879,10 +948,10 @@ export default AccountDetailPage;
 //                                             >
 //                                                 <MenuItem value=""><em>None</em></MenuItem>
 //                                                 {values.billingCities &&
-//                                                     values.billingCities.map((r) => (                                                      
+//                                                     values.billingCities.map((r) => (
 //                                                          <MenuItem key={r.value} value={r.value}>{r.text}</MenuItem>
 //                                                     )
-                                                        
+
 //                                                     )}
 //                                             </Field>
 //                                         </Grid>
@@ -891,10 +960,10 @@ export default AccountDetailPage;
 //                                             <label htmlFor="billingAddress">Billing Address </label>
 //                                             <Field name="billingAddress" type="text" class="form-input" />
 //                                         </Grid>
-                                        
+
 //                                         {!showNew && (
 //                                             <>
-//                                                 <Grid item xs={6} md={6}>                                                  
+//                                                 <Grid item xs={6} md={6}>
 //                                                     <label htmlFor="createdDate" >created Date</label>
 //                                                     <Field name='createdDate' type="text" class="form-input" disabled />
 //                                                 </Grid>
@@ -928,4 +997,3 @@ export default AccountDetailPage;
 //     )
 // }
 // export default AccountDetailPage;
-

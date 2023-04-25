@@ -6,9 +6,6 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 const  CustomizedRichTextField = ({ children, form, field,...props }) => {
 
-     console.log('form',form);
-     console.log('field',field);
-     console.log('props',props)
     
 
   const { name, value } = field;

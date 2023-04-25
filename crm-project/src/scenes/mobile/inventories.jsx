@@ -49,7 +49,7 @@ export const InventoryMobile = (props) => {
 
   const handleGoToDetails = (item) => {
     console.log("cardId", item);
-    // localStorage.setItem("selectedCard", cardId);
+    // sessionStorage.setItem("selectedCard", cardId);
     // navigate("/detailpage",{state:{name:item}});
     
     navigate("/inventoryDetailPage", {state:{record: {item}}})

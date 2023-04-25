@@ -4,7 +4,6 @@ import {  Box,  Button,  useTheme,  IconButton,  Pagination,  Tooltip,
 import {  DataGrid,  GridToolbar,  gridPageCountSelector,  gridPageSelector,
   useGridApiContext,  useGridSelector,} from "@mui/x-data-grid";
 import { tokens } from "../../theme";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -13,7 +12,7 @@ import DeleteConfirmDialog from "../toast/DeleteConfirmDialog";
 import ModalFileUpload from "../dataLoader/ModalFileUpload";
 import { OppIndexFilterPicklist } from "../../data/pickLists";
 import ExcelDownload from '../Excel';
-
+import { RequestServer } from "../api/HttpReq";
 
 const ModalStyle = {
   position: "absolute",
@@ -36,7 +35,7 @@ const Opportunities = () => {
   const navigate = useNavigate();
   const [records, setRecords] = useState([]);
   const [fetchLoading, setFetchLoading] = useState(true);
-  // notification
+  const [fetchError,setFetchError]=useState()
   const [notify, setNotify] = useState({
     isOpen: false,
     message: "",
@@ -63,22 +62,23 @@ const Opportunities = () => {
   }, []);
 
   const fetchRecords = () => {
-    axios
-      .post(urlOpportunity)
-      .then((res) => {
-        console.log("res Opportunity records test", res);
-        if (res.data.length > 0 && typeof res.data !== "string") {
-          setRecords(res.data);
-          setFetchLoading(false);
-        } else {
-          setRecords([]);
-          setFetchLoading(false);
-        }
-      })
-      .catch((error) => {
-        console.log("res Opportunity error", error);
-        setFetchLoading(false);
-      });
+    RequestServer("post",urlOpportunity,null,{})
+    .then((res)=>{
+      console.log(res,"index page res")
+      if(res.success){
+        setRecords(res.data)
+        setFetchError(null)
+        setFetchLoading(false)
+      }else{
+        setRecords([])
+        setFetchError(res.error.message)
+        setFetchLoading(false)
+      }
+    })
+    .catch((error)=>{
+      setFetchError(error.message)
+      setFetchLoading(false)
+    })
   };
 
   const handleAddRecord = () => {
@@ -119,29 +119,39 @@ const Opportunities = () => {
   const onebyoneDelete = (row) => {
     console.log("onebyoneDelete rec id", row);
 
-    axios
-      .post(urlDelete + row)
-      .then((res) => {
-        console.log("api delete res", res);
-        fetchRecords();
+    RequestServer("post",urlDelete+row)
+    .then((res)=>{
+      if(res.success){
+        fetchRecords()
+        setNotify({
+          isOpen:true,
+          message:res.data,
+          type:'success'
+        })
+      }
+      else{
+        console.log(res,"error in then")
         setNotify({
           isOpen: true,
-          message: res.data,
-          type: "success",
-        });
+          message: res.error.message,
+          type: 'error'
+        })
+      }
+    })
+    .catch((error)=>{
+      console.log('api delete error', error);
+          setNotify({
+            isOpen: true,
+            message: error.message,
+            type: 'error'
+          })
+    })
+    .finally(()=>{
+      setConfirmDialog({
+        ...confirmDialog,
+        isOpen: false
       })
-      .catch((error) => {
-        console.log("api delete error", error);
-        setNotify({
-          isOpen: true,
-          message: error.message,
-          type: "error",
-        });
-      });
-    setConfirmDialog({
-      ...confirmDialog,
-      isOpen: false,
-    });
+    })
   };
 
   const handleOppFilterChange = (e) => {

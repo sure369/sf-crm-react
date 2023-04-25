@@ -103,8 +103,8 @@ const OpportunityDetailPage = ({ item }) => {
         if (showNew) {
             values.modifiedDate = dateSeconds;
             values.createdDate = dateSeconds;
-            values.createdBy = JSON.parse(localStorage.getItem('loggedInUser'))
-            values.modifiedBy = JSON.parse(localStorage.getItem('loggedInUser'))
+            values.createdBy = JSON.parse(sessionStorage.getItem('loggedInUser'))
+            values.modifiedBy = JSON.parse(sessionStorage.getItem('loggedInUser'))
             if (values.closeDate) {
                 values.closeDate = closeDateSec;
             }
@@ -126,7 +126,7 @@ const OpportunityDetailPage = ({ item }) => {
             values.modifiedDate = dateSeconds;
             values.createdDate = createDateSec;
             values.createdBy = singleOpportunity.createdBy;
-            values.modifiedBy = JSON.parse(localStorage.getItem('loggedInUser'))
+            values.modifiedBy = JSON.parse(sessionStorage.getItem('loggedInUser'))
 
             if (values.closeDate) {
                 values.closeDate = closeDateSec;

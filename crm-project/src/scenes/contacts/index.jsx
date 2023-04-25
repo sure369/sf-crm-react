@@ -6,7 +6,6 @@ import {
   useGridApiContext, useGridSelector
 } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
-import Header from "../../components/Header";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -18,6 +17,7 @@ import DeleteConfirmDialog from '../toast/DeleteConfirmDialog';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import EmailIcon from '@mui/icons-material/Email';
 import ExcelDownload from '../Excel';
+import { RequestServer } from '../api/HttpReq';
 
 const Contacts = () => {
 
@@ -28,7 +28,10 @@ const Contacts = () => {
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
   const [records, setRecords] = useState([]);
+  const [fetchError,setFetchError]=useState()
   const [fetchLoading, setFetchLoading] = useState(true);
+  const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
+  const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subTitle: '' })
 
   //email,Whatsapp
   const [showEmail, setShowEmail] = useState(false)
@@ -37,10 +40,6 @@ const Contacts = () => {
   const [emailModalOpen, setEmailModalOpen] = useState(false)
   const [whatsAppModalOpen, setWhatsAppModalOpen] = useState(false)
 
-  // notification
-  const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
-  //dialog
-  const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subTitle: '' })
 
   useEffect(() => {
     fetchRecords();
@@ -48,25 +47,43 @@ const Contacts = () => {
   }, []);
 
   const fetchRecords = () => {
-    axios.post(urlContact)
-      .then(
-        (res) => {
-          console.log("res Contact records", res);
-
-          if (res.data.length > 0 && (typeof (res.data) !== 'string')) {
-            setRecords(res.data);
-            setFetchLoading(false)
-          }
-          else {
-            setRecords([]);
-            setFetchLoading(false)
-          }
-        }
-      )
-      .catch((error) => {
-        console.log('error', error);
+    RequestServer("post",urlContact,null,{})
+    .then((res)=>{
+      console.log(res,"index page res")
+      if(res.success){
+        setRecords(res.data)
+        setFetchError(null)
         setFetchLoading(false)
-      })
+      }
+      else{
+        setRecords([])
+        setFetchError(res.error.message)
+        setFetchLoading(false)
+      }
+    })
+    .catch((err)=>{
+      setFetchError(err.message)
+      setFetchLoading(false)
+    })
+    // axios.post(urlContact)
+    //   .then(
+    //     (res) => {
+    //       console.log("res Contact records", res);
+
+    //       if (res.data.length > 0 && (typeof (res.data) !== 'string')) {
+    //         setRecords(res.data);
+    //         setFetchLoading(false)
+    //       }
+    //       else {
+    //         setRecords([]);
+    //         setFetchLoading(false)
+    //       }
+    //     }
+    //   )
+    //   .catch((error) => {
+    //     console.log('error', error);
+    //     setFetchLoading(false)
+    //   })
   }
 
   const handleAddRecord = () => {
@@ -106,29 +123,62 @@ const Contacts = () => {
   const onebyoneDelete=(row)=>{
     console.log('one by on delete',row)
 
-    axios.post(urlDelete + row)
-    .then((res) => {
-      console.log('api delete response', res);
-      fetchRecords();
-      setNotify({
-        isOpen: true,
-        message: res.data,
-        type: 'success'
-      })
+    RequestServer("post",urlDelete+row)
+    .then((res)=>{
+      if(res.success){
+        fetchRecords()
+        setNotify({
+          isOpen:true,
+          message:res.data,
+          type:'success'
+        })
+      }
+      else{
+        console.log(res,"error in then")
+        setNotify({
+          isOpen: true,
+          message: res.error.message,
+          type: 'error'
+        })
+      }
     })
-    .catch((error) => {
+    .catch((error)=>{
       console.log('api delete error', error);
-      setNotify({
-        isOpen: true,
-        message: error.message,
-        type: 'error'
+          setNotify({
+            isOpen: true,
+            message: error.message,
+            type: 'error'
+          })
+    })
+    .finally(()=>{
+      setConfirmDialog({
+        ...confirmDialog,
+        isOpen: false
       })
     })
+    // axios.post(urlDelete + row)
+    // .then((res) => {
+    //   console.log('api delete response', res);
+    //   fetchRecords();
+    //   setNotify({
+    //     isOpen: true,
+    //     message: res.data,
+    //     type: 'success'
+    //   })
+    // })
+    // .catch((error) => {
+    //   console.log('api delete error', error);
+    //   setNotify({
+    //     isOpen: true,
+    //     message: error.message,
+    //     type: 'error'
+    //   })
+    // })
 
-    setConfirmDialog({
-      ...confirmDialog,
-      isOpen: false
-    })
+    // setConfirmDialog({
+    //   ...confirmDialog,
+    //   isOpen: false
+    // })
   }
 
  
@@ -395,6 +445,7 @@ const Contacts = () => {
         onClose={setEmailModalClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
+        sx={{backdropFilter:"blur(1px)"}}
       >
         <div className='modal'>
         {/* <Box sx={ModalBoxstyle}> */}
@@ -408,6 +459,7 @@ const Contacts = () => {
         onClose={setWhatAppModalClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
+        sx={{backdropFilter:"blur(1px)"}}
       >
          <div className='modal'>
         {/* <Box sx={ModalBoxstyle}> */}

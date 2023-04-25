@@ -1,10 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
-    Card, CardContent, Box, Button, Typography, Modal
-    , IconButton, Grid, Accordion, AccordionSummary, AccordionDetails, Pagination, Menu, MenuItem
+  Card, CardContent, Box, Button, Typography, Modal
+  , IconButton, Grid, Accordion, AccordionSummary, AccordionDetails, Pagination, Menu, MenuItem
 } from "@mui/material";
-import axios from 'axios'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ModalInventoryOpportunity from "../opportunities/ModalInventoryOpp";
@@ -12,272 +11,358 @@ import ToastNotification from "../toast/ToastNotification";
 import DeleteConfirmDialog from "../toast/DeleteConfirmDialog";
 import ModalInventoryAccount from "../accounts/ModalAccountInventory";
 import '../recordDetailPage/Form.css'
-
-const ModalStyle = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    // width: 600,
-    width:'fit-content',
-    height:'fit-content',
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-};
+import { RequestServer } from "../api/HttpReq";
 
 const InventoryRelatedItems = ({ item }) => {
 
   const opportunityDeleteURL = `${process.env.REACT_APP_SERVER_URL}/deleteOpportunity?code=`;
   const accountDeleteURL = `${process.env.REACT_APP_SERVER_URL}/deleteAccount?code=`;
-  const urlgetOpportunitiesbyInvid =`${process.env.REACT_APP_SERVER_URL}/getOpportunitiesbyInvid?searchId=`;
+  const urlgetOpportunitiesbyInvid = `${process.env.REACT_APP_SERVER_URL}/getOpportunitiesbyInvid?searchId=`;
   const urlgetAccountsbyInvid = `${process.env.REACT_APP_SERVER_URL}/getAccountbyInventory?searchId=`;
 
-    const navigate = useNavigate();
-    const location = useLocation();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-    const[inventoryRecordId,setInventoryRecordId]=useState()
-    const [realtedOpportunity, setRealtedOpportunity] = useState([]);
-    const [relatedAccount, setRelatedAccount] = useState([]);
+  const [inventoryRecordId, setInventoryRecordId] = useState()
+  const [realtedOpportunity, setRealtedOpportunity] = useState([]);
+  const [relatedAccount, setRelatedAccount] = useState([]);
 
-    const [opportunityModalOpen, setOpportunityModalOpen] = useState(false);
-    const [opportunityItemsPerPage, setOpportunityItemsPerPage] = useState(2);
-    const [opportunityPerPage, setOpportunityPerPage] = useState(1);
-    const [opportunityNoOfPages, setOpportunityNoOfPages] = useState(0);
+  const [opportunityModalOpen, setOpportunityModalOpen] = useState(false);
+  const [opportunityItemsPerPage, setOpportunityItemsPerPage] = useState(2);
+  const [opportunityPerPage, setOpportunityPerPage] = useState(1);
+  const [opportunityNoOfPages, setOpportunityNoOfPages] = useState(0);
 
-    const [accountModalOpen, setAccountModalOpen] = useState(false);
-    const [accountItemsPerPage, setAccountItemsPerPage] = useState(2);
-    const [accountPerPage, setAccountPerPage] = useState(1);
-    const [accountNoOfPages, setAccountNoOfPages] = useState(0);
+  const [accountModalOpen, setAccountModalOpen] = useState(false);
+  const [accountItemsPerPage, setAccountItemsPerPage] = useState(2);
+  const [accountPerPage, setAccountPerPage] = useState(1);
+  const [accountNoOfPages, setAccountNoOfPages] = useState(0);
 
-    
-    const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
-    const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subTitle: '' })
 
-    useEffect(() => {
-        console.log('related Inventories', location.state.record.item);
-      
-         setInventoryRecordId( location.state.record.item._id)
-         getOpportunitiesbyInvId(location.state.record.item._id)
-         getAccountsbyInvId(location.state.record.item._id)
-    }, [])
+  const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
+  const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subTitle: '' })
 
-    const getOpportunitiesbyInvId = (recId) => {
-        axios.post(urlgetOpportunitiesbyInvid + recId)
-            .then((res) => {
-                console.log('response getOpportunitiesbyInvId fetch', res);
-                if (res.data.length > 0) {
-                    setRealtedOpportunity(res.data);
-                    setOpportunityNoOfPages(Math.ceil(res.data.length / opportunityItemsPerPage));
-                    setOpportunityPerPage(1)
-                }
-                else {
-                  setRealtedOpportunity([]);
-                }
-            })
-            .catch((error) => {
-                console.log('error getTasksbyOppId fetch', error)
-            })
-    }
+  useEffect(() => {
+    console.log('related Inventories', location.state.record.item);
 
-    const getAccountsbyInvId = (InventoryId) => {
-      axios.post(urlgetAccountsbyInvid + InventoryId)
-        .then((res) => {
-          console.log('response getAccountsbyInvId fetch', res);
-          if (res.data.length > 0) {
-            setRelatedAccount(res.data);
-            setAccountNoOfPages(Math.ceil(res.data.length / accountItemsPerPage));
-            setAccountPerPage(1)
-          }
-          else {
-            setRelatedAccount([]);
-          }
-        })
-        .catch((error) => {
-          console.log('error task fetch', error)
-        })
-    }
-  
+    setInventoryRecordId(location.state.record.item._id)
+    getOpportunitiesbyInvId(location.state.record.item._id)
+    getAccountsbyInvId(location.state.record.item._id)
+  }, [])
 
-    const handleOpportunityCardEdit = (row) => {
-
-        console.log('selected record', row);
-        const item = row;
-         navigate(`/opportunityDetailPage/${item._id}`, { state: { record: { item } } })
-    };
-
-    const handleReqOpportunityCardDelete = (e,row) => {
-
-      e.stopPropagation();
-      console.log('inside handleTaskCardDelete fn')
-          setConfirmDialog({
-            isOpen:true,
-            title:`Are you sure to delete this Record ?`,
-            subTitle:"You can't undo this Operation",
-            onConfirm:()=>{onConfirmOpportunityCardDelete(row)}
-          })
+  const getOpportunitiesbyInvId = (recId) => {
+    RequestServer("post", urlgetOpportunitiesbyInvid + recId)
+      .then((res) => {
+        if (res.success) {
+          setRealtedOpportunity(res.data);
+          setOpportunityNoOfPages(Math.ceil(res.data.length / opportunityItemsPerPage));
+          setOpportunityPerPage(1)
+        }else{
+          setRealtedOpportunity([])
         }
+      })
+      .catch((err)=>{
+        console.log('error getOpportunitiesbyInvId fetch', err)
+      })
+    // axios.post(urlgetOpportunitiesbyInvid + recId)
+    //     .then((res) => {
+    //         console.log('response getOpportunitiesbyInvId fetch', res);
+    //         if (res.data.length > 0) {
+    //             setRealtedOpportunity(res.data);
+    //             setOpportunityNoOfPages(Math.ceil(res.data.length / opportunityItemsPerPage));
+    //             setOpportunityPerPage(1)
+    //         }
+    //         else {
+    //           setRealtedOpportunity([]);
+    //         }
+    //     })
+    //     .catch((error) => {
+    //         console.log('error getTasksbyOppId fetch', error)
+    //     })
+  }
 
-        const onConfirmOpportunityCardDelete=(row)=>{
-        console.log('req delete rec', row);
-        console.log('req delete rec id', row._id);
+  const getAccountsbyInvId = (InventoryId) => {
+    RequestServer("post", urlgetAccountsbyInvid + InventoryId)
+    .then((res) => {
+      if (res.success) {
+        setRelatedAccount(res.data);
+        setAccountNoOfPages(Math.ceil(res.data.length / accountItemsPerPage));
+        setAccountPerPage(1)
+      }else{
+        setRelatedAccount([])
+      }
+    })
+    .catch((err)=>{
+      console.log('error getAccountsbyInvId fetch', err)
+    })
+    // axios.post(urlgetAccountsbyInvid + InventoryId)
+    //   .then((res) => {
+    //     console.log('response getAccountsbyInvId fetch', res);
+    //     if (res.data.length > 0) {
+    //       setRelatedAccount(res.data);
+    //       setAccountNoOfPages(Math.ceil(res.data.length / accountItemsPerPage));
+    //       setAccountPerPage(1)
+    //     }
+    //     else {
+    //       setRelatedAccount([]);
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.log('error task fetch', error)
+    //   })
+  }
 
-        axios.post(opportunityDeleteURL + row._id)
-          .then((res) => {
-            console.log('api delete response', res);
-            setOppMenuOpen(false)
-            setNotify({
-              isOpen:true,
-              message:res.data,
-              type:'success'
-            })
-            setTimeout(()=>{
-              getOpportunitiesbyInvId(inventoryRecordId)
-            })
-          })
-          .catch((error) => {
-            console.log('api delete error', error);
-            setNotify({
-              isOpen:true,
-              message:error.message,
-              type:'error'
-            })
-          })
-          setConfirmDialog({
-            ...confirmDialog,
-            isOpen:false
-          })
-    };
 
-    const handleAccountCardEdit = (row) => {
-      console.log('selected record', row);
-      const item = row;
-      navigate(`/accountDetailPage/${item._id}`, { state: { record: { item } } })
-    };
+  const handleOpportunityCardEdit = (row) => {
 
-    
+    console.log('selected record', row);
+    const item = row;
+    navigate(`/opportunityDetailPage/${item._id}`, { state: { record: { item } } })
+  };
 
-  const handleReqAccountCardDelete = (e,row) => {
+  const handleReqOpportunityCardDelete = (e, row) => {
 
     e.stopPropagation();
     console.log('inside handleTaskCardDelete fn')
-        setConfirmDialog({
+    setConfirmDialog({
+      isOpen: true,
+      title: `Are you sure to delete this Record ?`,
+      subTitle: "You can't undo this Operation",
+      onConfirm: () => { onConfirmOpportunityCardDelete(row) }
+    })
+  }
+
+  const onConfirmOpportunityCardDelete = (row) => {
+    console.log('req delete rec id', row._id);
+
+    RequestServer("post",opportunityDeleteURL+row._id)
+    .then((res)=>{
+      if(res.success){
+        setOppMenuOpen(false)
+        getOpportunitiesbyInvId(inventoryRecordId)
+        setNotify({
           isOpen:true,
-          title:`Are you sure to delete this Record ?`,
-          subTitle:"You can't undo this Operation",
-          onConfirm:()=>{onConfirmAccountCardDelete(row)}
+          message:res.data,
+          type:'success'
         })
       }
-
-      const onConfirmAccountCardDelete=(row)=>{
-    console.log('req delete rec', row);
-    axios.post(accountDeleteURL+ row._id)
-      .then((res) => {
-        console.log('api delete response', res);
-       
+      else{
+        console.log(res,"error in then")
+        setOppMenuOpen(false)
+        getOpportunitiesbyInvId(inventoryRecordId)
         setNotify({
           isOpen: true,
-          message: res.data,
-          type: 'success'
-      })
-      setAccountMenuOpen(false)
-      setTimeout(()=>{
-        getAccountsbyInvId(inventoryRecordId)
-      })
-      })
-      .catch((error) => {
-        console.log('api delete error', error);
-        setNotify({
-          isOpen: true,
-          message: error.message,
+          message: res.error.message,
           type: 'error'
-      })
-      })
+        })
+      }
+    })
+    .catch((error)=>{
+      console.log('api delete error', error);
+          setNotify({
+            isOpen: true,
+            message: error.message,
+            type: 'error'
+          })
+    })
+    .finally(()=>{
       setConfirmDialog({
         ...confirmDialog,
-        isOpen:false
+        isOpen: false
       })
+    })
+
+    // axios.post(opportunityDeleteURL + row._id)
+    //   .then((res) => {
+    //     console.log('api delete response', res);
+    //     setOppMenuOpen(false)
+    //     setNotify({
+    //       isOpen: true,
+    //       message: res.data,
+    //       type: 'success'
+    //     })
+    //     setTimeout(() => {
+    //       getOpportunitiesbyInvId(inventoryRecordId)
+    //     })
+    //   })
+    //   .catch((error) => {
+    //     console.log('api delete error', error);
+    //     setNotify({
+    //       isOpen: true,
+    //       message: error.message,
+    //       type: 'error'
+    //     })
+    //   })
+    // setConfirmDialog({
+    //   ...confirmDialog,
+    //   isOpen: false
+    // })
+  };
+
+  const handleAccountCardEdit = (row) => {
+    console.log('selected record', row);
+    const item = row;
+    navigate(`/accountDetailPage/${item._id}`, { state: { record: { item } } })
   };
 
 
- 
+
+  const handleReqAccountCardDelete = (e, row) => {
+
+    e.stopPropagation();
+    console.log('inside handleTaskCardDelete fn')
+    setConfirmDialog({
+      isOpen: true,
+      title: `Are you sure to delete this Record ?`,
+      subTitle: "You can't undo this Operation",
+      onConfirm: () => { onConfirmAccountCardDelete(row) }
+    })
+  }
+
+  const onConfirmAccountCardDelete = (row) => {
+    console.log('req delete rec', row);
+    RequestServer("post",accountDeleteURL+row._id)
+    .then((res)=>{
+      if(res.success){
+        setAccountMenuOpen(false)
+        getAccountsbyInvId(inventoryRecordId)
+        setNotify({
+          isOpen:true,
+          message:res.data,
+          type:'success'
+        })
+      }
+      else{
+        console.log(res,"error in then")
+        setAccountMenuOpen(false)
+        getAccountsbyInvId(inventoryRecordId)
+        setNotify({
+          isOpen: true,
+          message: res.error.message,
+          type: 'error'
+        })
+      }
+    })
+    .catch((error)=>{
+      console.log('api delete error', error);
+          setNotify({
+            isOpen: true,
+            message: error.message,
+            type: 'error'
+          })
+    })
+    .finally(()=>{
+      setConfirmDialog({
+        ...confirmDialog,
+        isOpen: false
+      })
+    })
+    // axios.post(accountDeleteURL + row._id)
+    //   .then((res) => {
+    //     console.log('api delete response', res);
+
+    //     setNotify({
+    //       isOpen: true,
+    //       message: res.data,
+    //       type: 'success'
+    //     })
+    //     setAccountMenuOpen(false)
+    //     setTimeout(() => {
+    //       getAccountsbyInvId(inventoryRecordId)
+    //     })
+    //   })
+    //   .catch((error) => {
+    //     console.log('api delete error', error);
+    //     setNotify({
+    //       isOpen: true,
+    //       message: error.message,
+    //       type: 'error'
+    //     })
+    //   })
+    // setConfirmDialog({
+    //   ...confirmDialog,
+    //   isOpen: false
+    // })
+  };
+
+
+
   const handleChangeAccountPage = (event, value) => {
     setAccountPerPage(value);
   };
 
 
-  const handleChangeOpportunityPage=(event,value)=>{
+  const handleChangeOpportunityPage = (event, value) => {
     setOpportunityPerPage(value)
-   }
-    const handleOpportunityModalOpen =()=>{
-      setOpportunityModalOpen(true);
-    }
-    
-    const handleOpportunityModalClose =()=>{
-      setOpportunityModalOpen(false);
-      getOpportunitiesbyInvId(inventoryRecordId)
-      getAccountsbyInvId(inventoryRecordId)
-    }
-    const handleAccountModalOpen =()=>{
-      setAccountModalOpen(true)
-    }
-    const handleAccountModalClose =()=>{
-      setAccountModalOpen(false)
-      getOpportunitiesbyInvId(inventoryRecordId)
-      getAccountsbyInvId(inventoryRecordId)
-    }
+  }
+  const handleOpportunityModalOpen = () => {
+    setOpportunityModalOpen(true);
+  }
 
-    // Task menu dropdown strart 
-    const [oppAnchorEl, setOppAnchorEl] = useState(null);
-    const [oppMenuSelectRec, setOppMenuSelectRec] = useState()
-    const [oppMenuOpen, setOppMenuOpen] = useState();
+  const handleOpportunityModalClose = () => {
+    setOpportunityModalOpen(false);
+    getOpportunitiesbyInvId(inventoryRecordId)
+    getAccountsbyInvId(inventoryRecordId)
+  }
+  const handleAccountModalOpen = () => {
+    setAccountModalOpen(true)
+  }
+  const handleAccountModalClose = () => {
+    setAccountModalOpen(false)
+    getOpportunitiesbyInvId(inventoryRecordId)
+    getAccountsbyInvId(inventoryRecordId)
+  }
 
-    const handleOpportunityMoreMenuClick = (item, event) => {
-      setOppMenuSelectRec(item)
-      setOppAnchorEl(event.currentTarget);
-      setOppMenuOpen(true)
+  // Task menu dropdown strart 
+  const [oppAnchorEl, setOppAnchorEl] = useState(null);
+  const [oppMenuSelectRec, setOppMenuSelectRec] = useState()
+  const [oppMenuOpen, setOppMenuOpen] = useState();
 
-    };
-    const handleOpportunityMoreMenuClose = () => {
-      setOppAnchorEl(null);
-        setOppMenuOpen(false)
-        setAccountAnchorEl(null);
-        setAccountMenuOpen(false)
-    };
-    // menu dropdown end
+  const handleOpportunityMoreMenuClick = (item, event) => {
+    setOppMenuSelectRec(item)
+    setOppAnchorEl(event.currentTarget);
+    setOppMenuOpen(true)
 
-    // Account menu dropdown strart //menu pass rec
-    const [accountAnchorEl, setAccountAnchorEl] = useState(null);
-    const [accountMenuSelectRec, setAccountMenuSelectRec] = useState()
-    const [accountMenuOpen, setAccountMenuOpen] = useState();
+  };
+  const handleOpportunityMoreMenuClose = () => {
+    setOppAnchorEl(null);
+    setOppMenuOpen(false)
+    setAccountAnchorEl(null);
+    setAccountMenuOpen(false)
+  };
+  // menu dropdown end
 
-    const handleAccountMoreMenuClick = (item, event) => {
-        console.log('handle OPP MoreMenu Click  item', item)
+  // Account menu dropdown strart //menu pass rec
+  const [accountAnchorEl, setAccountAnchorEl] = useState(null);
+  const [accountMenuSelectRec, setAccountMenuSelectRec] = useState()
+  const [accountMenuOpen, setAccountMenuOpen] = useState();
 
-        setAccountMenuSelectRec(item)
-        setAccountAnchorEl(event.currentTarget);
-        setAccountMenuOpen(true)
+  const handleAccountMoreMenuClick = (item, event) => {
+    console.log('handle OPP MoreMenu Click  item', item)
 
-    };
-    const handleAccountMoreMenuClose = () => {
-      setAccountMenuSelectRec()  
-      setAccountAnchorEl(null);
-      setAccountMenuOpen(false)
-       
-    };
-    // menu dropdown end
+    setAccountMenuSelectRec(item)
+    setAccountAnchorEl(event.currentTarget);
+    setAccountMenuOpen(true)
 
-    return (
-        <>
- <ToastNotification notify={notify} setNotify={setNotify} />
- <DeleteConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog}  moreModalClose={handleOpportunityMoreMenuClose}/>
+  };
+  const handleAccountMoreMenuClose = () => {
+    setAccountMenuSelectRec()
+    setAccountAnchorEl(null);
+    setAccountMenuOpen(false)
 
-            <div style={{ textAlign: "center", marginBottom: "10px" }}>
+  };
+  // menu dropdown end
 
-                <h2> Related Items</h2>
+  return (
+    <>
+      <ToastNotification notify={notify} setNotify={setNotify} />
+      <DeleteConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog} moreModalClose={handleOpportunityMoreMenuClose} />
 
-            </div>
-            <Accordion>
+      <div style={{ textAlign: "center", marginBottom: "10px" }}>
+
+        <h2> Related Items</h2>
+
+      </div>
+      <Accordion>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
@@ -295,15 +380,15 @@ const InventoryRelatedItems = ({ item }) => {
               {
 
                 realtedOpportunity.length > 0 ?
-                realtedOpportunity
+                  realtedOpportunity
                     .slice((opportunityPerPage - 1) * opportunityItemsPerPage, opportunityPerPage * opportunityItemsPerPage)
                     .map((item) => {
-                      
-                      let   starDateConvert 
-                      if(item.closeDate){
+
+                      let starDateConvert
+                      if (item.closeDate) {
                         starDateConvert = new Date(item.closeDate).getUTCFullYear()
-                        + '-' +  ('0'+ (new Date(item.closeDate).getUTCMonth() + 1)).slice(-2) 
-                        + '-' + ('0'+ ( new Date(item.closeDate).getUTCDate())).slice(-2)  ||''
+                          + '-' + ('0' + (new Date(item.closeDate).getUTCMonth() + 1)).slice(-2)
+                          + '-' + ('0' + (new Date(item.closeDate).getUTCDate())).slice(-2) || ''
                       }
 
                       return (
@@ -337,7 +422,7 @@ const InventoryRelatedItems = ({ item }) => {
                                       }}
                                     >
                                       <MenuItem onClick={() => handleOpportunityCardEdit(oppMenuSelectRec)}>Edit</MenuItem>
-                                      <MenuItem onClick={(e) => handleReqOpportunityCardDelete(e,oppMenuSelectRec)}>Delete</MenuItem>
+                                      <MenuItem onClick={(e) => handleReqOpportunityCardDelete(e, oppMenuSelectRec)}>Delete</MenuItem>
                                     </Menu>
                                   </IconButton>
                                 </Grid>
@@ -387,8 +472,8 @@ const InventoryRelatedItems = ({ item }) => {
             <Card dense compoent="span" >
 
               {
-                    relatedAccount.length > 0 ?
-                    relatedAccount
+                relatedAccount.length > 0 ?
+                  relatedAccount
                     .slice((accountPerPage - 1) * accountItemsPerPage, accountPerPage * accountItemsPerPage)
                     .map((item) => {
                       return (
@@ -420,7 +505,7 @@ const InventoryRelatedItems = ({ item }) => {
                                       }}
                                     >
                                       <MenuItem onClick={() => handleAccountCardEdit(accountMenuSelectRec)}>Edit</MenuItem>
-                                      <MenuItem onClick={(e) => handleReqAccountCardDelete(e,accountMenuSelectRec)}>Delete</MenuItem>
+                                      <MenuItem onClick={(e) => handleReqAccountCardDelete(e, accountMenuSelectRec)}>Delete</MenuItem>
                                     </Menu>
                                   </IconButton>
                                 </Grid>
@@ -461,10 +546,10 @@ const InventoryRelatedItems = ({ item }) => {
         aria-describedby="modal-modal-description"
         sx={{ backdropFilter: "blur(1px)" }}
       >
-         <div className="modal">
-        {/* <Box sx={ModalStyle}> */}
+        <div className="modal">
+          {/* <Box sx={ModalStyle}> */}
           <ModalInventoryOpportunity handleModal={handleOpportunityModalClose} />
-        {/* </Box> */}
+          {/* </Box> */}
         </div>
       </Modal>
 
@@ -476,15 +561,15 @@ const InventoryRelatedItems = ({ item }) => {
         sx={{ backdropFilter: "blur(1px)" }}
       >
         <div className="modal">
-        {/* <Box sx={ModalStyle}> */}
+          {/* <Box sx={ModalStyle}> */}
           <ModalInventoryAccount handleModal={handleAccountModalClose} />
-        {/* </Box> */}
+          {/* </Box> */}
         </div>
       </Modal>
 
 
-        </>
-    )
+    </>
+  )
 
 }
 export default InventoryRelatedItems

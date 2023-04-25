@@ -34,7 +34,7 @@ function AppNavbar() {
   const [selected, setSelected] = useState("Inventories");
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const loggedInUserData= JSON.parse(localStorage.getItem('loggedInUser'))
+  const loggedInUserData= JSON.parse(sessionStorage.getItem('loggedInUser'))
 
   console.log(loggedInUserData,"loggedInUserData")
 
@@ -55,14 +55,14 @@ function AppNavbar() {
   const handleCloseUserMenu = () => {
     console.log("handleCloseUserMenu")
     setAnchorElUser(null);
-    // localStorage.removeItem('token')
-    // localStorage.setItem('authenticated',false)
+    // sessionStorage.removeItem('token')
+    // sessionStorage.setItem('authenticated',false)
     // navigate('/')
   };
 
   const handleUserLogout = () => {
     console.log("handleUserLogout")
-    localStorage.removeItem('token')
+    sessionStorage.removeItem('token')
     navigate('/')
   }
 
@@ -307,14 +307,14 @@ export default AppNavbar;
 //   const handleCloseUserMenu = () => {
 //     console.log("handleCloseUserMenu")
 //     setAnchorElUser(null);
-//     // localStorage.removeItem('token')
-//     // localStorage.setItem('authenticated',false)
+//     // sessionStorage.removeItem('token')
+//     // sessionStorage.setItem('authenticated',false)
 //     // navigate('/')
 //   };
 
 //   const handleUserLogout = () => {
 //     console.log("handleUserLogout")
-//     localStorage.removeItem('token')
+//     sessionStorage.removeItem('token')
 //     navigate('/')
 //   }
 

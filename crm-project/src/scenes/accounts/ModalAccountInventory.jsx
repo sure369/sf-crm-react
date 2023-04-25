@@ -85,8 +85,8 @@ const ModalInventoryAccount = ({ item,handleModal }) => {
         let dateSeconds = new Date().getTime();
         let createDateSec = new Date(values.createdDate).getTime()
 
-        values.createdBy = JSON.parse(localStorage.getItem('loggedInUser'))
-        values.modifiedBy = JSON.parse(localStorage.getItem('loggedInUser'))
+        values.createdBy = JSON.parse(sessionStorage.getItem('loggedInUser'))
+        values.modifiedBy = JSON.parse(sessionStorage.getItem('loggedInUser'))
         values.modifiedDate = dateSeconds;
         values.createdDate = dateSeconds;
         values.InventoryId=inventoryParentRecord._id;           

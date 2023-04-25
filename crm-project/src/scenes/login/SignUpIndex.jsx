@@ -66,7 +66,7 @@ export default function SignUpIndex() {
         // if(values.userName ===users.userName && values.password === users.password)
         // {
         //      console.log('if')
-        //      // localStorage.setItem("authenticated", true);
+        //      // sessionStorage.setItem("authenticated", true);
         //     // navigate("/accounts");
         // }
         // else{

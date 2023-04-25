@@ -125,8 +125,8 @@ const ContactDetailPage = ({ item }) => {
             values.modifiedDate = dateSeconds;
             values.createdDate = dateSeconds;
             values.fullName = values.firstName + ' ' + values.lastName;
-            values.createdBy = JSON.parse(localStorage.getItem('loggedInUser'))
-            values.modifiedBy = JSON.parse(localStorage.getItem('loggedInUser'))
+            values.createdBy = JSON.parse(sessionStorage.getItem('loggedInUser'))
+            values.modifiedBy = JSON.parse(sessionStorage.getItem('loggedInUser'))
 
             if (values.dob) {
                 values.dob = dobSec;
@@ -141,7 +141,7 @@ const ContactDetailPage = ({ item }) => {
             values.createdDate = createDateSec
             values.fullName = values.firstName + ' ' + values.lastName;
             values.createdBy = singleContact.createdBy;
-            values.modifiedBy = JSON.parse(localStorage.getItem('loggedInUser'))
+            values.modifiedBy = JSON.parse(sessionStorage.getItem('loggedInUser'))
 
             if (values.dob) {
                 values.dob = dobSec;

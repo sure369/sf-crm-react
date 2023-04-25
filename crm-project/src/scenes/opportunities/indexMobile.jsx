@@ -5,11 +5,11 @@ import {
 } from "@mui/material";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
-import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import ToastNotification from '../toast/ToastNotification';
 import DeleteConfirmDialog from '../toast/DeleteConfirmDialog';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { RequestServer } from '../api/HttpReq';
 
 const OpportunitiesMobile = () => {
 
@@ -21,6 +21,7 @@ const OpportunitiesMobile = () => {
   const navigate = useNavigate();
   const [records, setRecords] = useState([]);
   const [fetchLoading, setFetchLoading] = useState(true);
+  const [fetchError,setFetchError]=useState()
   // notification
   const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
   //dialog
@@ -36,30 +37,29 @@ const OpportunitiesMobile = () => {
 
   useEffect(() => {
     fetchRecords();
-
   }, []
   );
 
   const fetchRecords = () => {
-    axios.post(urlOpportunity)
-      .then(
-        (res) => {
-          console.log("res Opportunity records test", res);
-          if (res.data.length > 0 && (typeof (res.data) !== 'string')) {
-            setRecords(res.data);
-            setFetchLoading(false)
-            setNoOfPages(Math.ceil(res.data.length / itemsPerPage));
-          }
-          else {
-            setRecords([]);
-            setFetchLoading(false)
-          };
-        }
-      )
-      .catch((error) => {
-        console.log('res Opportunity error', error);
+    RequestServer("post",urlOpportunity,null,{})
+    .then((res)=>{
+      console.log(res,"index page res")
+      if(res.success){
+        setRecords(res.data)
         setFetchLoading(false)
-      })
+        setFetchError(null)
+        setNoOfPages(Math.ceil(res.data.length / itemsPerPage));
+      }
+      else{
+        setRecords([])
+        setFetchError(res.error.message)
+        setFetchLoading(false)
+      }
+    })
+    .catch((err)=>{
+      setFetchError(err.message)
+      setFetchLoading(false)
+    })
   }
 
   const handleAddRecord = () => {
@@ -97,29 +97,40 @@ const OpportunitiesMobile = () => {
   const onebyoneDelete = (row) => {
     console.log('onebyoneDelete rec id', row)
 
-    axios.post(urlDelete + row)
-      .then((res) => {
-        console.log('api delete res', res);
-        fetchRecords();
+    RequestServer("post",urlDelete+row ,{}, null)
+    .then((res)=>{
+      if(res.success){
+        fetchRecords()
         setNotify({
-          isOpen: true,
-          message: res.data,
-          type: 'success'
+          isOpen:true,
+          message:res.data,
+          type:'success'
         })
         setMenuOpen(false)
-        fetchRecords()
+      }
+      else{
+        console.log(res,"error in then")
+          setNotify({
+            isOpen: true,
+            message: res.error.message,
+            type: 'error'
+          })
+          setMenuOpen(false)
+      }
+    })
+    .catch((error)=>{
+      console.log('api delete error', error);
+          setNotify({
+            isOpen: true,
+            message: error.message,
+            type: 'error'
+          })
+    })
+    .finally(()=>{
+      setConfirmDialog({
+        ...confirmDialog,
+        isOpen: false
       })
-      .catch((error) => {
-        console.log('api delete error', error);
-        setNotify({
-          isOpen: true,
-          message: error.message,
-          type: 'error'
-        })
-      })
-    setConfirmDialog({
-      ...confirmDialog,
-      isOpen: false
     })
   };
   const handleChangePage = (event, value) => {

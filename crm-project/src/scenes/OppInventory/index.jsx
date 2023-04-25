@@ -5,7 +5,7 @@ import { DataGrid, GridToolbar,
   useGridApiContext,useGridSelector} from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
-import axios from 'axios';
+import { RequestServer } from '../api/HttpReq';
 import {  useNavigate } from "react-router-dom";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -22,6 +22,7 @@ const OppInventoryJunction = () => {
   const navigate = useNavigate();
   const[records,setRecords] = useState([]);
   const[fetchLoading,setFetchLoading]=useState(true);
+  const[fetchError,setFetchError]=useState()
   // notification
   const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
   //dialog
@@ -35,24 +36,42 @@ const OppInventoryJunction = () => {
   );
 
   const fetchRecords=()=>{
-    axios.post(urlOpportunityInventory)
-    .then(
-      (res) => {
-        console.log("res Jn Inventory Opportunity records", res);
-          if(res.data.length>0  && (typeof(res.data) !=='string')){
-            setRecords(res.data);
-            setFetchLoading(false)
-          }
-          else{  
-            setRecords([]);
-            setFetchLoading(false)
-          };        
+    RequestServer("post",urlOpportunityInventory,null,{})
+    .then((res)=>{
+      console.log(res,"index page res")
+      if(res.success){
+        setRecords(res.data)
+        setFetchError(null)
+        setFetchLoading(false)
       }
-    )
-    .catch((error)=> {
-      console.log('res Jn Inventory Opportunity error',error);
+      else{
+        setRecords([])
+        setFetchError(res.error.message)
+        setFetchLoading(false)
+      }
+    })
+    .catch((err)=>{
+      setFetchError(err.message)
       setFetchLoading(false)
     })
+    // axios.post(urlOpportunityInventory)
+    // .then(
+    //   (res) => {
+    //     console.log("res Jn Inventory Opportunity records", res);
+    //       if(res.data.length>0  && (typeof(res.data) !=='string')){
+    //         setRecords(res.data);
+    //         setFetchLoading(false)
+    //       }
+    //       else{  
+    //         setRecords([]);
+    //         setFetchLoading(false)
+    //       };        
+    //   }
+    // )
+    // .catch((error)=> {
+    //   console.log('res Jn Inventory Opportunity error',error);
+    //   setFetchLoading(false)
+    // })
   }
 
   const handleAddRecord = () => {    
@@ -83,24 +102,42 @@ const OppInventoryJunction = () => {
       isOpen: false
     })
 
-    axios.post(urlDelete+row._id)
+    
+    RequestServer("post",urlDelete+row._id)
     .then((res)=>{
-        console.log('api delete res',res); 
-        fetchRecords();
-       setNotify({
-          isOpen: true,
-          message: res.data,
-          type: 'success'
+      if(res.success){
+        fetchRecords()
+        setNotify({
+          isOpen:true,
+          message:res.data,
+          type:'success'
         })
-    })
-    .catch((error)=> {
-        console.log('api delete error',error);
+      }
+      else{
+        console.log(res,"error in then")
         setNotify({
           isOpen: true,
-          message: error.message,
+          message: res.error.message,
           type: 'error'
         })
+      }
+    })
+    .catch((error)=>{
+      console.log('api delete error', error);
+          setNotify({
+            isOpen: true,
+            message: error.message,
+            type: 'error'
+          })
+    })
+    .finally(()=>{
+      setConfirmDialog({
+        ...confirmDialog,
+        isOpen: false
       })
+    })
+
+
   };
 
   function CustomPagination() {
