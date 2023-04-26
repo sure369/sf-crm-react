@@ -42,8 +42,9 @@ const ModalOppTask = ({ item, handleModal }) => {
         description: '',
         attachments: null,
         object: '',
-        OpportunityId: '',
-        createdbyId: '',
+        OpportunityId: '',        
+        createdBy: '',
+        modifiedBy: '',
         createdDate: '',
         modifiedDate: '',
     }
@@ -70,6 +71,9 @@ const ModalOppTask = ({ item, handleModal }) => {
         let StartDateSec = new Date(values.StartDate).getTime()
         let EndDateSec = new Date(values.EndDate).getTime()
 
+        
+        values.createdBy = JSON.parse(sessionStorage.getItem('loggedInUser'))
+        values.modifiedBy = JSON.parse(sessionStorage.getItem('loggedInUser'))
         values.modifiedDate = dateSeconds;
         values.createdDate = dateSeconds;
         values.OpportunityId = Opportunity;
