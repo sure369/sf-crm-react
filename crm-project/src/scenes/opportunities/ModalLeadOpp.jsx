@@ -47,7 +47,8 @@ const ModalLeadOpportunity = ({ item, handleModal }) => {
         closeDate: '',
         stage: '',
         description: '',
-        createdbyId: '',
+        createdBy: '',
+        modifiedBy: '',
         createdDate: '',
         modifiedDate: '',
         inventoryDetails: '',
@@ -75,6 +76,8 @@ const ModalLeadOpportunity = ({ item, handleModal }) => {
         values.LeadId = leadParentRecord._id;
         values.modifiedDate = dateSeconds;
         values.createdDate = dateSeconds;
+        values.createdBy = JSON.parse(sessionStorage.getItem('loggedInUser'))
+        values.modifiedBy = JSON.parse(sessionStorage.getItem('loggedInUser'))
         values.leadDetails = {
             leadName: leadParentRecord.fullName,
             id: leadParentRecord._id

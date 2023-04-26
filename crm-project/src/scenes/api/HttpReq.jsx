@@ -6,7 +6,7 @@ export const RequestServer = (method,endpoint,headers,payload)=>{
 
         headers = headers||{};
         headers.token = token;
-
+        headers['Content-Type'] = 'application/json';
         return  axios({
             method : method,
             url: endpoint,

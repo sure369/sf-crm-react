@@ -151,8 +151,8 @@ const AccountDetailPage = ({ item }) => {
         }
 
         console.log("after change form submission value", values);
-
-        // RequestServer("post", url, {}, values)
+        // const payload = values;
+        // RequestServer("post", url, {}, payload)
         // .then((res) => {
         //     console.log(res,"res from RequestServer")
         //     if (res.success) {

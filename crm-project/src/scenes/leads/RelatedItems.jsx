@@ -86,7 +86,7 @@ const LeadRelatedItems = ({ item }) => {
   }
 
   const getOpportunitybyLeadId = (leadsId) => {
-    RequestServer("post", urlTaskbyLeadId + leadsId, null, {})
+    RequestServer("post", urlOppbyLeadId + leadsId, null, {})
     .then((res) => {
       if (res.success) {
         setRelatedOpportunity(res.data);

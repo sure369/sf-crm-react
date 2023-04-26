@@ -361,11 +361,11 @@ const Leads = () => {
           fontWeight="bold"
           sx={{ m: "0 0 5px 0" }}
         >
-          Leads
+          Enquiries
         </Typography>
         <Box display="flex" justifyContent="space-between">
           <Typography variant="h5" color={colors.greenAccent[400]}>
-            List Of Leads
+            List Of Enquiries
           </Typography>
 
           <div
