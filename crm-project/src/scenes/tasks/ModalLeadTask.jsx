@@ -45,7 +45,8 @@ const ModalTask = ({ item, handleModal }) => {
         attachments: null,
         object: '',
         LeadId: '',
-        createdbyId: '',
+        createdBy: '',
+        modifiedBy: '',
         createdDate: '',
         modifiedDate: '',
     }
@@ -71,6 +72,8 @@ const ModalTask = ({ item, handleModal }) => {
         let StartDateSec = new Date(values.StartDate).getTime()
         let EndDateSec = new Date(values.EndDate).getTime()
 
+        values.createdBy = JSON.parse(sessionStorage.getItem('loggedInUser'))
+        values.modifiedBy = JSON.parse(sessionStorage.getItem('loggedInUser'))
         values.modifiedDate = dateSeconds;
         values.createdDate = dateSeconds;
         values.LeadId = lead;
