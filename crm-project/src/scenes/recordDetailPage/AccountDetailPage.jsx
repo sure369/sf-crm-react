@@ -2,26 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import {
-    Grid,
-    Button,
-    DialogActions,
-    Box,
-    TextField,
-    Autocomplete,
-    MenuItem,
-    Select,
-} from "@mui/material";
+import {Grid,Button,DialogActions,TextField,
+    Autocomplete, MenuItem,Select,} from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 // import "../formik/FormStyles.css"
-import {
-    IndustryPickList,
-    AccRatingPickList,
-    AccTypePickList,
-    AccCitiesPickList,
-    AccCountryPickList,
-} from "../../data/pickLists";
+import {IndustryPickList,AccRatingPickList,AccTypePickList,
+    AccCitiesPickList,AccCountryPickList } from "../../data/pickLists";
 import CustomizedSelectForFormik from "../formik/CustomizedSelectForFormik";
 import ToastNotification from "../toast/ToastNotification";
 import "./Form.css";
@@ -37,11 +24,7 @@ const AccountDetailPage = ({ item }) => {
     const [showNew, setshowNew] = useState();
     const [inventoriesRecord, setInventoriesRecord] = useState([]);
     // notification
-    const [notify, setNotify] = useState({
-        isOpen: false,
-        message: "",
-        type: "",
-    });
+    const [notify, setNotify] = useState({isOpen: false,message: "",type: "",});
 
 
     useEffect(() => {
@@ -182,25 +165,25 @@ const AccountDetailPage = ({ item }) => {
         // })
 
         axios.post(url, values)
-        .then((res) => {
-            console.log('upsert record  response', res);
-            setNotify({
-                isOpen:true,
-                message:res.data,
-                type:'success'
-              })
-            setTimeout(() => {
-                 navigate(-1);
-            }, 2000)
-        })
-        .catch((error) => {
-            console.log('upsert record  error', error);
-            setNotify({
-                isOpen:true,
-                message:error.message,
-                type:'error'
-              })
-        })
+            .then((res) => {
+                console.log('upsert record  response', res);
+                setNotify({
+                    isOpen: true,
+                    message: res.data,
+                    type: 'success'
+                })
+                setTimeout(() => {
+                    navigate(-1);
+                }, 2000)
+            })
+            .catch((error) => {
+                console.log('upsert record  error', error);
+                setNotify({
+                    isOpen: true,
+                    message: error.message,
+                    type: 'error'
+                })
+            })
     };
 
     const FetchInventoriesbyName = (newInputValue) => {
@@ -294,13 +277,13 @@ const AccountDetailPage = ({ item }) => {
                                                         setFieldValue("inventoryDetails", "");
                                                         setFieldValue("InventoryId", "");
                                                         setFieldValue("inventoryDetails", "");
-                                                    
+
                                                     } else {
                                                         console.log("value", value);
                                                         setFieldValue("InventoryId", value.id);
-                                                        setFieldValue("inventoryDetails", value);                                                        
+                                                        setFieldValue("inventoryDetails", value);
                                                         setFieldValue("InventoryId", value.id);
-                                                        setFieldValue("inventoryDetails",value.propertyName);
+                                                        setFieldValue("inventoryDetails", value.propertyName);
                                                     }
                                                 }}
                                                 onInputChange={(event, newInputValue) => {
@@ -459,7 +442,7 @@ const AccountDetailPage = ({ item }) => {
                                             <label htmlFor="billingAddress">Billing Address </label>
                                             <Field
                                                 name="billingAddress"
-                                                type="textarea"
+                                                as="textarea"
                                                 class="form-input-textarea"
                                                 style={{ width: "100%" }}
                                             />

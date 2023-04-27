@@ -9,6 +9,9 @@ import { Link, NavLink, useNavigate } from "react-router-dom"
 import mainLogo from '../assets/user image.png';
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 import './AppNavbar.css'
+import { RequestServer } from '../api/HttpReq';
+
+const logouturl=`${process.env.REACT_APP_SERVER_URL}/signout`
 
 const pages = [
   { title: 'Inventories', toNav: '/inventories' },
@@ -61,8 +64,21 @@ function AppNavbar() {
 
   const handleUserLogout = () => {
     console.log("handleUserLogout")
-    sessionStorage.removeItem('token')
-    navigate('/')
+    RequestServer("post",logouturl,{},null)
+    .then((res)=>{
+      if(res.success){
+        console.log(res.data,"then if")
+         sessionStorage.removeItem('token')
+          navigate('/')
+      }else{
+        console.log(res.error.message,"then else")
+      }
+    })
+    .catch((err)=>{
+      console.log(err.message,"catch error")
+        })
+
+   
   }
 
   const handleMenuItemClick = (title) => {
