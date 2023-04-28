@@ -15,6 +15,8 @@ import {
   Paper,
   Alert,
   AlertTitle,
+  Divider,
+  Tooltip,
 } from "@mui/material";
 import axios from "axios";
 import "../formik/FormStyles.css";
@@ -22,6 +24,7 @@ import ArticleIcon from "@mui/icons-material/Article";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ToastNotification from "../toast/ToastNotification";
+import "../recordDetailPage/Form.css";
 
 const UpsertUrl = `${process.env.REACT_APP_SERVER_URL}/uploadfile`;
 const urlFiles = `${process.env.REACT_APP_SERVER_URL}/files`;
@@ -69,7 +72,6 @@ const FileUploadUpdated = () => {
     files: [],
   };
 
-
   const handleFileInputChange = (event) => {
     const files = Array.from(event.target.files);
     setSelectedFiles(files);
@@ -92,7 +94,7 @@ const FileUploadUpdated = () => {
         // setFileUploadResponse(old => [...old, res.data]);
         console.log("res data is :", res.data);
         console.log("uploaded files : ", fileUploadRes);
-
+        setSelectedFiles([]);
         setNotify({
           isOpen: true,
           message: "Uploaded Successfully",
@@ -134,6 +136,8 @@ const FileUploadUpdated = () => {
       });
   };
 
+  const handleClearInput = () => {};
+
   return (
     <>
       <ToastNotification notify={notify} setNotify={setNotify} />
@@ -154,38 +158,59 @@ const FileUploadUpdated = () => {
           <Paper
             elevation={16}
             sx={{
-              height: "180px",
+              height: "250px",
               width: "500px",
               display: "flex",
               flexWrap: "wrap",
-              flexDirection: "row",
+              flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
+              borderRadius: "12px",
             }}
           >
-            <input
-              id="null"
-              type="file"
-              multiple
-              onChange={handleFileInputChange}
-            />
+            {/* <div className="drop-container"> */}
+            <label for="images" class="input-drop-container">
+              <input
+                accept=".jpeg, .pdf, .png, .csv, .xlsx, .doc, "
+                style={{ cursor: "pointer" }}
+                id="null"
+                type="file"
+                multiple
+                onChange={handleFileInputChange}
+              />
+              {selectedFiles.length > 0 && (
+                <>
+                  <Button
+                    sx={{ marginTop: "10px" }}
+                    type="success"
+                    variant="contained"
+                    color="secondary"
+                    onClick={handleUploadButtonClick}
+                  >
+                    Upload
+                  </Button>
+                  <Button
+                    sx={{ marginTop: "10px" }}
+                    variant="outlined"
+                    color="secondary"
+                    onClick={handleClearInput}
+                  >
+                    Clear
+                  </Button>
+                </>
+              )}
+            </label>
+            {/* </div> */}
 
-            <Button
-              type="success"
-              variant="contained"
-              color="secondary"
-              onClick={handleUploadButtonClick}
-            >
-              Upload
-            </Button>
             <Grid
+              marginTop="12px"
               height="50px"
               container
               direction="row"
               justifyContent="center"
             >
-              <Grid item xs={8}>
-                <Accordion>
+              <Grid item xs={9}>
+                <Accordion style={{ borderRadius: "10px" }}>
                   <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls="panel1a-content"
@@ -198,34 +223,45 @@ const FileUploadUpdated = () => {
                       sx={{
                         width: "100%",
                         maxWidth: 360,
-                        bgcolor: "#D7ECFF",
+                        bgcolor: "#e5e5ff",
                         position: "relative",
                         overflow: "auto",
-                        maxHeight: 300,
+                        borderRadius: "8px",
+                        maxHeight: 240,
                         "& ul": { padding: 0 },
                       }}
                       subheader={<ListItem />}
                     >
                       {filesList.map((item, index) => (
-                        <ListItem sx={{ maxHeight: "200px" }}>
-                          {index + 1}
-                          <ListItemButton
-                            onClick={() => handleRowClick(item.fileUrl)}
-                          >
-                            <ListItemIcon>
-                              <ArticleIcon />
-                            </ListItemIcon>
-                            <ListItemText
-                              sx={{ wordBreak: "break-all" }}
-                              primary={item.originalname}
-                              title={item.originalname}
-                            ></ListItemText>
-                          </ListItemButton>
-                          <DeleteIcon
-                            sx={{ cursor: "pointer" }}
-                            onClick={() => handleOnRowDelete(item)}
-                          />
-                        </ListItem>
+                        <>
+                          <ListItem sx={{ maxHeight: "200px" }}>
+                            {index + 1}
+
+                            <ListItemButton
+                              onClick={() => handleRowClick(item.fileUrl)}
+                            >
+                              <ListItemIcon>
+                                <ArticleIcon />
+                              </ListItemIcon>
+                              <Tooltip
+                                arrow
+                                placement="bottom"
+                                title={item.originalname}
+                              >
+                                <ListItemText
+                                  sx={{ wordBreak: "break-all" }}
+                                  primary={item.originalname}
+                                ></ListItemText>
+                              </Tooltip>
+                            </ListItemButton>
+
+                            <DeleteIcon
+                              sx={{ cursor: "pointer" }}
+                              onClick={() => handleOnRowDelete(item)}
+                            />
+                          </ListItem>
+                          <Divider component="li" />
+                        </>
                       ))}
                     </List>
                   </AccordionDetails>
@@ -239,5 +275,3 @@ const FileUploadUpdated = () => {
   );
 };
 export default FileUploadUpdated;
-
-

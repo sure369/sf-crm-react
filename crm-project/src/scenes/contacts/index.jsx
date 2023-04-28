@@ -1,26 +1,37 @@
-import React, { useState, useEffect } from 'react';
-import { Box, Button, IconButton, Typography, Modal, useTheme, Pagination, Tooltip } from "@mui/material";
+import React, { useState, useEffect } from "react";
 import {
-  DataGrid, GridToolbar,
-  gridPageCountSelector, gridPageSelector,
-  useGridApiContext, useGridSelector
+  Box,
+  Button,
+  IconButton,
+  Typography,
+  Modal,
+  useTheme,
+  Pagination,
+  Tooltip,
+} from "@mui/material";
+import {
+  DataGrid,
+  GridToolbar,
+  gridPageCountSelector,
+  gridPageSelector,
+  useGridApiContext,
+  useGridSelector,
 } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
-import axios from 'axios';
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import EmailModalPage from '../recordDetailPage/EmailModalPage';
-import WhatAppModalPage from '../recordDetailPage/WhatsAppModalPage';
-import ToastNotification from '../toast/ToastNotification';
-import DeleteConfirmDialog from '../toast/DeleteConfirmDialog';
-import WhatsAppIcon from '@mui/icons-material/WhatsApp';
-import EmailIcon from '@mui/icons-material/Email';
-import ExcelDownload from '../Excel';
-import { RequestServer } from '../api/HttpReq';
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import EmailModalPage from "../recordDetailPage/EmailModalPage";
+import WhatAppModalPage from "../recordDetailPage/WhatsAppModalPage";
+import ToastNotification from "../toast/ToastNotification";
+import DeleteConfirmDialog from "../toast/DeleteConfirmDialog";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import EmailIcon from "@mui/icons-material/Email";
+import ExcelDownload from "../Excel";
+import { RequestServer } from "../api/HttpReq";
 
 const Contacts = () => {
-
   const urlContact = `${process.env.REACT_APP_SERVER_URL}/contacts`;
   const urlDelete = `${process.env.REACT_APP_SERVER_URL}/deleteContact?code=`;
 
@@ -28,43 +39,48 @@ const Contacts = () => {
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
   const [records, setRecords] = useState([]);
-  const [fetchError,setFetchError]=useState()
+  const [fetchError, setFetchError] = useState();
   const [fetchLoading, setFetchLoading] = useState(true);
-  const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
-  const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subTitle: '' })
+  const [notify, setNotify] = useState({
+    isOpen: false,
+    message: "",
+    type: "",
+  });
+  const [confirmDialog, setConfirmDialog] = useState({
+    isOpen: false,
+    title: "",
+    subTitle: "",
+  });
 
   //email,Whatsapp
-  const [showEmail, setShowEmail] = useState(false)
-  const [selectedRecordIds, setSelectedRecordIds] = useState()
-  const [selectedRecordDatas, setSelectedRecordDatas] = useState()
-  const [emailModalOpen, setEmailModalOpen] = useState(false)
-  const [whatsAppModalOpen, setWhatsAppModalOpen] = useState(false)
-
+  const [showEmail, setShowEmail] = useState(false);
+  const [selectedRecordIds, setSelectedRecordIds] = useState();
+  const [selectedRecordDatas, setSelectedRecordDatas] = useState();
+  const [emailModalOpen, setEmailModalOpen] = useState(false);
+  const [whatsAppModalOpen, setWhatsAppModalOpen] = useState(false);
 
   useEffect(() => {
     fetchRecords();
-
   }, []);
 
   const fetchRecords = () => {
-    RequestServer("post",urlContact,null,{})
-    .then((res)=>{
-      console.log(res,"index page res")
-      if(res.success){
-        setRecords(res.data)
-        setFetchError(null)
-        setFetchLoading(false)
-      }
-      else{
-        setRecords([])
-        setFetchError(res.error.message)
-        setFetchLoading(false)
-      }
-    })
-    .catch((err)=>{
-      setFetchError(err.message)
-      setFetchLoading(false)
-    })
+    RequestServer("post", urlContact, null, {})
+      .then((res) => {
+        console.log(res, "index page res");
+        if (res.success) {
+          setRecords(res.data);
+          setFetchError(null);
+          setFetchLoading(false);
+        } else {
+          setRecords([]);
+          setFetchError(res.error.message);
+          setFetchLoading(false);
+        }
+      })
+      .catch((err) => {
+        setFetchError(err.message);
+        setFetchLoading(false);
+      });
     // axios.post(urlContact)
     //   .then(
     //     (res) => {
@@ -84,78 +100,77 @@ const Contacts = () => {
     //     console.log('error', error);
     //     setFetchLoading(false)
     //   })
-  }
+  };
 
   const handleAddRecord = () => {
-    navigate("/new-contacts", { state: { record: {} } })
+    navigate("/new-contacts", { state: { record: {} } });
   };
 
   const handleOnCellClick = (e) => {
-    console.log('selected record', e);
+    console.log("selected record", e);
     const item = e.row;
-    navigate(`/contactDetailPage/${item._id}`, { state: { record: { item } } })
+    navigate(`/contactDetailPage/${item._id}`, { state: { record: { item } } });
   };
-
 
   const onHandleDelete = (e, row) => {
     e.stopPropagation();
-    console.log('req delete rec', row);
+    console.log("req delete rec", row);
 
     setConfirmDialog({
       isOpen: true,
       title: `Are you sure to delete this Record ?`,
       subTitle: "You can't undo this Operation",
-      onConfirm: () => { onConfirmDeleteRecord(row) }
-    })
-  }
+      onConfirm: () => {
+        onConfirmDeleteRecord(row);
+      },
+    });
+  };
 
   const onConfirmDeleteRecord = (row) => {
-    if(row.length){
-      row.forEach(element => {
-        onebyoneDelete(element)
+    if (row.length) {
+      row.forEach((element) => {
+        onebyoneDelete(element);
       });
+    } else {
+      onebyoneDelete(row._id);
     }
-   else{
-    onebyoneDelete(row._id)
-   }
-  }
+  };
 
-  const onebyoneDelete=(row)=>{
-    console.log('one by on delete',row)
+  const onebyoneDelete = (row) => {
+    console.log("one by on delete", row);
 
-    RequestServer("post",urlDelete+row)
-    .then((res)=>{
-      if(res.success){
-        fetchRecords()
-        setNotify({
-          isOpen:true,
-          message:res.data,
-          type:'success'
-        })
-      }
-      else{
-        console.log(res,"error in then")
-        setNotify({
-          isOpen: true,
-          message: res.error.message,
-          type: 'error'
-        })
-      }
-    })
-    .catch((error)=>{
-      console.log('api delete error', error);
+    RequestServer("post", urlDelete + row)
+      .then((res) => {
+        if (res.success) {
+          fetchRecords();
           setNotify({
             isOpen: true,
-            message: error.message,
-            type: 'error'
-          })
-    })
-    .finally(()=>{
-      setConfirmDialog({
-        ...confirmDialog,
-        isOpen: false
+            message: res.data,
+            type: "success",
+          });
+        } else {
+          console.log(res, "error in then");
+          setNotify({
+            isOpen: true,
+            message: res.error.message,
+            type: "error",
+          });
+        }
       })
-    })
+      .catch((error) => {
+        console.log("api delete error", error);
+        setNotify({
+          isOpen: true,
+          message: error.message,
+          type: "error",
+        });
+      })
+      .finally(() => {
+        setConfirmDialog({
+          ...confirmDialog,
+          isOpen: false,
+        });
+      });
     // axios.post(urlDelete + row)
     // .then((res) => {
     //   console.log('api delete response', res);
@@ -179,9 +194,7 @@ const Contacts = () => {
     //   ...confirmDialog,
     //   isOpen: false
     // })
-  }
-
- 
+  };
 
   function CustomPagination() {
     const apiRef = useGridApiContext();
@@ -199,94 +212,113 @@ const Contacts = () => {
   }
 
   const handlesendEmail = () => {
-    console.log('inside email')
-    console.log('selectedRecordIds', selectedRecordIds);
-    setEmailModalOpen(true)
-  }
+    console.log("inside email");
+    console.log("selectedRecordIds", selectedRecordIds);
+    setEmailModalOpen(true);
+  };
 
   const setEmailModalClose = () => {
-    setEmailModalOpen(false)
-  }
+    setEmailModalOpen(false);
+  };
 
   const handlesendWhatsapp = () => {
-    console.log('inside whats app')
-    console.log('selectedRecordIds', selectedRecordIds);
-    setWhatsAppModalOpen(true)
-  }
+    console.log("inside whats app");
+    console.log("selectedRecordIds", selectedRecordIds);
+    setWhatsAppModalOpen(true);
+  };
 
   const setWhatAppModalClose = () => {
-    setWhatsAppModalOpen(false)
-  }
-
+    setWhatsAppModalOpen(false);
+  };
 
   const columns = [
     {
-      field: "lastName", headerName: "Last Name",
-      headerAlign: 'center', align: 'center', flex: 1,
+      field: "lastName",
+      headerName: "Last Name",
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
     },
     {
-      field: "accountName", headerName: "Account Name",
-      headerAlign: 'center', align: 'center', flex: 1,
-      renderCell: (params) => {      
-        if(params.row.accountDetails){
-          return <div className="rowitem">
-           {params.row.accountDetails.accountName}
+      field: "accountName",
+      headerName: "Account Name",
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
+      renderCell: (params) => {
+        if (params.row.accountDetails) {
+          return (
+            <div className="rowitem">
+              {params.row.accountDetails.accountName}
             </div>
-        }
-        else{
-          return <div className="rowitem">
-             {null}
-           </div>
+          );
+        } else {
+          return <div className="rowitem">{null}</div>;
         }
       },
     },
     {
-      field: "phone", headerName: "Phone",
-      headerAlign: 'center', align: 'center', flex: 1,
+      field: "phone",
+      headerName: "Phone",
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
     },
     {
-      field: "leadSource", headerName: "Lead Source",
-      headerAlign: 'center', align: 'center', flex: 1,
+      field: "leadSource",
+      headerName: "Lead Source",
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
     },
     {
-      field: "email", headerName: "Email",
-      headerAlign: 'center', align: 'center', flex: 1,
+      field: "email",
+      headerName: "Email",
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
     },
     {
-      field: 'actions', headerName: 'Actions', width: 400,
-      headerAlign: 'center', align: 'center', flex: 1,
+      field: "actions",
+      headerName: "Actions",
+      width: 400,
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
       renderCell: (params) => {
         return (
           <>
-            {
-              !showEmail ?
-                <>
-                  {/* <IconButton onClick={(e) => handleOnCellClick(e, params.row)} style={{ padding: '20px', color: '#0080FF' }} >
+            {!showEmail ? (
+              <>
+                {/* <IconButton onClick={(e) => handleOnCellClick(e, params.row)} style={{ padding: '20px', color: '#0080FF' }} >
                     <EditIcon  />
                   </IconButton> */}
-                  <IconButton onClick={(e) => onHandleDelete(e, params.row)} style={{ padding: '20px', color: '#FF3333' }} >
-                    <DeleteIcon  />
-                  </IconButton>
-                </>
-                : ''
-            }
-
+                <IconButton
+                  onClick={(e) => onHandleDelete(e, params.row)}
+                  style={{ padding: "20px", color: "#FF3333" }}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </>
+            ) : (
+              ""
+            )}
           </>
         );
-      }
-    }
+      },
+    },
   ];
-
 
   return (
     <>
-
       <ToastNotification notify={notify} setNotify={setNotify} />
-      <DeleteConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog} />
-
+      <DeleteConfirmDialog
+        confirmDialog={confirmDialog}
+        setConfirmDialog={setConfirmDialog}
+      />
 
       <Box m="20px">
-         <Typography
+        <Typography
           variant="h2"
           color={colors.grey[100]}
           fontWeight="bold"
@@ -299,41 +331,55 @@ const Contacts = () => {
             List Of Contacts
           </Typography>
 
-
           <div
             style={{
               display: "flex",
-              width: "250px",
+              width: "200px",
               justifyContent: "space-evenly",
-              height:'30px',
+              height: "30px",
             }}
           >
-
-{showEmail ? (
+            {showEmail ? (
               <>
-                <Tooltip title="Delete Selected">
-                  <IconButton>
-                    <DeleteIcon
-                      sx={{ color: "#FF3333" }}
-                      onClick={(e) => onHandleDelete(e, selectedRecordIds)}
-                    />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Email">
-                      <IconButton> <EmailIcon sx={{ color: '#DB4437' }} onClick={handlesendEmail} /> </IconButton>
-                    </Tooltip>
+                <div
+                  style={{
+                    width: "180px",
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    gap: "15px",
+                  }}
+                >
+                  <Tooltip title="Delete Selected">
+                    <IconButton>
+                      <DeleteIcon
+                        sx={{ color: "#FF3333" }}
+                        onClick={(e) => onHandleDelete(e, selectedRecordIds)}
+                      />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Email">
+                    <IconButton>
+                      {" "}
+                      <EmailIcon
+                        sx={{ color: "#DB4437" }}
+                        onClick={handlesendEmail}
+                      />{" "}
+                    </IconButton>
+                  </Tooltip>
+                </div>
               </>
             ) : (
-            <>
+              <>
+                <Button
+                  variant="contained"
+                  color="info"
+                  onClick={handleAddRecord}
+                >
+                  New
+                </Button>
 
-            <Button variant="contained" color="info" onClick={handleAddRecord}>
-              New
-            </Button>
-
-                      <ExcelDownload data={records} filename={`OpportunityRecords`}/>
-                     
-                
-            </>
+                <ExcelDownload data={records} filename={`OpportunityRecords`} />
+              </>
             )}
           </div>
         </Box>
@@ -354,10 +400,10 @@ const Contacts = () => {
               backgroundColor: colors.blueAccent[700],
               borderBottom: "none",
             },
-            "& .MuiDataGrid-columnHeaderTitle": { 
-              fontWeight: 'bold !important',
-              overflow: 'visible !important'
-           },
+            "& .MuiDataGrid-columnHeaderTitle": {
+              fontWeight: "bold !important",
+              overflow: "visible !important",
+            },
             "& .MuiDataGrid-virtualScroller": {
               // backgroundColor: colors.primary[400],
             },
@@ -371,20 +417,20 @@ const Contacts = () => {
             },
             "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
               color: `${colors.grey[100]} !important`,
-            }, 
+            },
             "& .MuiDataGrid-row:hover": {
               backgroundColor: "#CECEF0",
-              cursor:'pointer'
-            },                     
-            "& .C-MuiDataGrid-row-even":{
+              cursor: "pointer",
+            },
+            "& .C-MuiDataGrid-row-even": {
               backgroundColor: "#D7ECFF",
-            }, 
-            "& .C-MuiDataGrid-row-odd":{
+            },
+            "& .C-MuiDataGrid-row-odd": {
               backgroundColor: "#F0F8FF",
             },
           }}
         >
-           {/* <div className='btn-test'>
+          {/* <div className='btn-test'>
               {
                 showEmail ?
                   <>
@@ -419,21 +465,23 @@ const Contacts = () => {
             }}
             loading={fetchLoading}
             getRowClassName={(params) =>
-              params.indexRelativeToCurrentPage % 2 === 0 ? 'C-MuiDataGrid-row-even' : 'C-MuiDataGrid-row-odd'
+              params.indexRelativeToCurrentPage % 2 === 0
+                ? "C-MuiDataGrid-row-even"
+                : "C-MuiDataGrid-row-odd"
             }
             checkboxSelection
             disableSelectionOnClick
             onSelectionModelChange={(ids) => {
               var size = Object.keys(ids).length;
-              size > 0 ? setShowEmail(true) : setShowEmail(false)
-              console.log('checkbox selection ids', ids);
-              setSelectedRecordIds(ids)
+              size > 0 ? setShowEmail(true) : setShowEmail(false);
+              console.log("checkbox selection ids", ids);
+              setSelectedRecordIds(ids);
               const selectedIDs = new Set(ids);
               const selectedRowRecords = records.filter((row) =>
                 selectedIDs.has(row._id.toString())
               );
-              setSelectedRecordDatas(selectedRowRecords)
-              console.log('selectedRowRecords', selectedRowRecords)
+              setSelectedRecordDatas(selectedRowRecords);
+              console.log("selectedRowRecords", selectedRowRecords);
             }}
             onRowClick={(e) => handleOnCellClick(e)}
           />
@@ -445,12 +493,16 @@ const Contacts = () => {
         onClose={setEmailModalClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
-        sx={{backdropFilter:"blur(1px)"}}
+        sx={{ backdropFilter: "blur(1px)" }}
       >
-        <div className='modal'>
-        {/* <Box sx={ModalBoxstyle}> */}
-          <EmailModalPage data={selectedRecordDatas} handleModal={setEmailModalClose} bulkMail={true} />
-        {/* </Box> */}
+        <div className="modal">
+          {/* <Box sx={ModalBoxstyle}> */}
+          <EmailModalPage
+            data={selectedRecordDatas}
+            handleModal={setEmailModalClose}
+            bulkMail={true}
+          />
+          {/* </Box> */}
         </div>
       </Modal>
 
@@ -459,22 +511,23 @@ const Contacts = () => {
         onClose={setWhatAppModalClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
-        sx={{backdropFilter:"blur(1px)"}}
+        sx={{ backdropFilter: "blur(1px)" }}
       >
-         <div className='modal'>
-        {/* <Box sx={ModalBoxstyle}> */}
-          <WhatAppModalPage data={selectedRecordDatas} handleModal={setWhatAppModalClose} bulkMail={true} />
-        {/* </Box> */}
+        <div className="modal">
+          {/* <Box sx={ModalBoxstyle}> */}
+          <WhatAppModalPage
+            data={selectedRecordDatas}
+            handleModal={setWhatAppModalClose}
+            bulkMail={true}
+          />
+          {/* </Box> */}
         </div>
       </Modal>
-
     </>
   );
-}
+};
 
 export default Contacts;
-
-
 
 // const onConfirmDeleteRecord = (row) => {
 //   console.log('onConfirmDeleteRecord row', (row.length))
@@ -526,5 +579,4 @@ export default Contacts;
 //     isOpen: false
 //   })
 
-  
 // }

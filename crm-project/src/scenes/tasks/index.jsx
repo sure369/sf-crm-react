@@ -1,21 +1,31 @@
-import React, { useState, useEffect } from 'react';
-import { Box, Button, useTheme, IconButton, Typography, Pagination, Tooltip } from "@mui/material";
+import React, { useState, useEffect } from "react";
 import {
-  DataGrid, GridToolbar,
-  gridPageCountSelector, gridPageSelector,
-  useGridApiContext, useGridSelector
+  Box,
+  Button,
+  useTheme,
+  IconButton,
+  Typography,
+  Pagination,
+  Tooltip,
+} from "@mui/material";
+import {
+  DataGrid,
+  GridToolbar,
+  gridPageCountSelector,
+  gridPageSelector,
+  useGridApiContext,
+  useGridSelector,
 } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import { useNavigate } from "react-router-dom";
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import ToastNotification from '../toast/ToastNotification';
-import DeleteConfirmDialog from '../toast/DeleteConfirmDialog';
-import ExcelDownload from '../Excel';
-import { RequestServer } from '../api/HttpReq';
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import ToastNotification from "../toast/ToastNotification";
+import DeleteConfirmDialog from "../toast/DeleteConfirmDialog";
+import ExcelDownload from "../Excel";
+import { RequestServer } from "../api/HttpReq";
 
 const Task = () => {
-
   const urlDelete = `${process.env.REACT_APP_SERVER_URL}/deleteTask?code=`;
   const urlTask = `${process.env.REACT_APP_SERVER_URL}/Task`;
 
@@ -24,41 +34,46 @@ const Task = () => {
   const navigate = useNavigate();
   const [records, setRecords] = useState([]);
   const [fetchLoading, setFetchLoading] = useState(true);
-  const [fetchError,setFetchError]=useState()
+  const [fetchError, setFetchError] = useState();
   // notification
-  const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
+  const [notify, setNotify] = useState({
+    isOpen: false,
+    message: "",
+    type: "",
+  });
   //dialog
-  const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subTitle: '' })
+  const [confirmDialog, setConfirmDialog] = useState({
+    isOpen: false,
+    title: "",
+    subTitle: "",
+  });
 
-  const [showDelete, setShowDelete] = useState(false)
-  const [selectedRecordIds, setSelectedRecordIds] = useState()
-  const [selectedRecordDatas, setSelectedRecordDatas] = useState()
+  const [showDelete, setShowDelete] = useState(false);
+  const [selectedRecordIds, setSelectedRecordIds] = useState();
+  const [selectedRecordDatas, setSelectedRecordDatas] = useState();
 
   useEffect(() => {
     fetchRecords();
-
-  }, []
-  );
+  }, []);
 
   const fetchRecords = () => {
-    RequestServer("post",urlTask,null,{})
-    .then((res)=>{
-      console.log(res,"index page res")
-      if(res.success){
-        setRecords(res.data)
-        setFetchError(null)
-        setFetchLoading(false)
-      }
-      else{
-        setRecords([])
-        setFetchError(res.error.message)
-        setFetchLoading(false)
-      }
-    })
-    .catch((err)=>{
-      setFetchError(err.message)
-      setFetchLoading(false)
-    })
+    RequestServer("post", urlTask, null, {})
+      .then((res) => {
+        console.log(res, "index page res");
+        if (res.success) {
+          setRecords(res.data);
+          setFetchError(null);
+          setFetchLoading(false);
+        } else {
+          setRecords([]);
+          setFetchError(res.error.message);
+          setFetchLoading(false);
+        }
+      })
+      .catch((err) => {
+        setFetchError(err.message);
+        setFetchLoading(false);
+      });
     // console.log('urlTask', urlTask);
     // axios.post(urlTask)
     //   .then(
@@ -79,76 +94,76 @@ const Task = () => {
     //     console.log('res task error', error);
     //     setFetchLoading(false)
     //   })
-  }
+  };
   const handleAddRecord = () => {
-    navigate("/new-task", { state: { record: {} } })
+    navigate("/new-task", { state: { record: {} } });
   };
 
   const handleOnCellClick = (e) => {
-    console.log('selected record', e);
+    console.log("selected record", e);
     const item = e.row;
-    navigate(`/taskDetailPage/${item._id}`, { state: { record: { item } } })
+    navigate(`/taskDetailPage/${item._id}`, { state: { record: { item } } });
   };
 
   const onHandleDelete = (e, row) => {
     e.stopPropagation();
-    console.log('req delete rec', row);
+    console.log("req delete rec", row);
     setConfirmDialog({
       isOpen: true,
       title: `Are you sure to delete this Record ?`,
       subTitle: "You can't undo this Operation",
-      onConfirm: () => { onConfirmDeleteRecord(row) }
-    })
-  }
+      onConfirm: () => {
+        onConfirmDeleteRecord(row);
+      },
+    });
+  };
 
   const onConfirmDeleteRecord = (row) => {
     if (row.length) {
-      console.log('if row', row);
-      row.forEach(element => {
-        onebyoneDelete(element)
+      console.log("if row", row);
+      row.forEach((element) => {
+        onebyoneDelete(element);
       });
+    } else {
+      console.log("else", row._id);
+      onebyoneDelete(row._id);
     }
-    else {
-      console.log('else', row._id);
-      onebyoneDelete(row._id)
-    }
-  }
+  };
 
   const onebyoneDelete = (row) => {
-    console.log('onebyoneDelete rec id', row)
-    RequestServer("post",urlDelete+row)
-    .then((res)=>{
-      if(res.success){
-        fetchRecords()
-        setNotify({
-          isOpen:true,
-          message:res.data,
-          type:'success'
-        })
-      }
-      else{
-        console.log(res,"error in then")
-        setNotify({
-          isOpen: true,
-          message: res.error.message,
-          type: 'error'
-        })
-      }
-    })
-    .catch((error)=>{
-      console.log('api delete error', error);
+    console.log("onebyoneDelete rec id", row);
+    RequestServer("post", urlDelete + row)
+      .then((res) => {
+        if (res.success) {
+          fetchRecords();
           setNotify({
             isOpen: true,
-            message: error.message,
-            type: 'error'
-          })
-    })
-    .finally(()=>{
-      setConfirmDialog({
-        ...confirmDialog,
-        isOpen: false
+            message: res.data,
+            type: "success",
+          });
+        } else {
+          console.log(res, "error in then");
+          setNotify({
+            isOpen: true,
+            message: res.error.message,
+            type: "error",
+          });
+        }
       })
-    })
+      .catch((error) => {
+        console.log("api delete error", error);
+        setNotify({
+          isOpen: true,
+          message: error.message,
+          type: "error",
+        });
+      })
+      .finally(() => {
+        setConfirmDialog({
+          ...confirmDialog,
+          isOpen: false,
+        });
+      });
 
     // axios.post(urlDelete + row)
     //   .then((res) => {
@@ -172,7 +187,6 @@ const Task = () => {
     //   ...confirmDialog,
     //   isOpen: false
     // })
-
   };
 
   function CustomPagination() {
@@ -192,69 +206,83 @@ const Task = () => {
 
   const columns = [
     {
-      field: "subject", headerName: "Subject",
-      headerAlign: 'center', align: 'center', flex: 1,
+      field: "subject",
+      headerName: "Subject",
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
     },
     {
-      field: "realatedTo", headerName: "Realated To",
-      headerAlign: 'center', align: 'center', flex: 1,
+      field: "realatedTo",
+      headerName: "Realated To",
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
       renderCell: (params) => {
-        if (params.row.object === 'Account') {
-          return <div className="rowitem">
-            {params.row.accountDetails.accountName}
-          </div>
-        }
-        else if (params.row.object === 'Lead') {
-
-          return <div className="rowitem">
-            {params.row.leadDetails.leadName}
-          </div>
-        } else if (params.row.object === 'Opportunity') {
-          return <div className="rowitem">
-            {params.row.opportunityDetails.opportunityName}
-          </div>
+        if (params.row.object === "Account") {
+          return (
+            <div className="rowitem">
+              {params.row.accountDetails.accountName}
+            </div>
+          );
+        } else if (params.row.object === "Lead") {
+          return (
+            <div className="rowitem">{params.row.leadDetails.leadName}</div>
+          );
+        } else if (params.row.object === "Opportunity") {
+          return (
+            <div className="rowitem">
+              {params.row.opportunityDetails.opportunityName}
+            </div>
+          );
         } else {
-          <div className="rowitem">
-            {null}
-          </div>
+          <div className="rowitem">{null}</div>;
         }
       },
-
     },
     {
-      field: "object", headerName: "Object",
-      headerAlign: 'center', align: 'center', flex: 1,
+      field: "object",
+      headerName: "Object",
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
     },
 
     {
-      field: 'actions', headerName: 'Actions',
-      headerAlign: 'center', align: 'center', width: 400, flex: 1,
+      field: "actions",
+      headerName: "Actions",
+      headerAlign: "center",
+      align: "center",
+      width: 400,
+      flex: 1,
       renderCell: (params) => {
         return (
           <>
-            {
-              !showDelete ?
-                <>
-                  {/* <IconButton style={{ padding: '20px', color: '#0080FF' }}>
+            {!showDelete ? (
+              <>
+                {/* <IconButton style={{ padding: '20px', color: '#0080FF' }}>
                     <EditIcon onClick={(e) => handleOnCellClick(e, params.row)} />
                   </IconButton> */}
-                  <IconButton style={{ padding: '20px', color: '#FF3333' }}>
-                    <DeleteIcon onClick={(e) => onHandleDelete(e, params.row)} />
-                  </IconButton>
-                </>
-                : ''
-            }
+                <IconButton style={{ padding: "20px", color: "#FF3333" }}>
+                  <DeleteIcon onClick={(e) => onHandleDelete(e, params.row)} />
+                </IconButton>
+              </>
+            ) : (
+              ""
+            )}
           </>
-        )
-      }
-    }
+        );
+      },
+    },
   ];
 
   return (
     <>
       <ToastNotification notify={notify} setNotify={setNotify} />
-      <DeleteConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog} />
-
+      <DeleteConfirmDialog
+        confirmDialog={confirmDialog}
+        setConfirmDialog={setConfirmDialog}
+      />
 
       <Box m="20px">
         <Typography
@@ -272,26 +300,37 @@ const Task = () => {
           <div
             style={{
               display: "flex",
-              width: "250px",
+              width: "200px",
               justifyContent: "space-evenly",
-              height: '30px',
+              height: "30px",
             }}
           >
-
             {showDelete ? (
               <>
-                <Tooltip title="Delete Selected">
-                  <IconButton>
-                    <DeleteIcon
-                      sx={{ color: "#FF3333" }}
-                      onClick={(e) => onHandleDelete(e, selectedRecordIds)}
-                    />
-                  </IconButton>
-                </Tooltip>
+                <div
+                  style={{
+                    width: "180px",
+                    display: "flex",
+                    justifyContent: "flex-end",
+                  }}
+                >
+                  <Tooltip title="Delete Selected">
+                    <IconButton>
+                      <DeleteIcon
+                        sx={{ color: "#FF3333" }}
+                        onClick={(e) => onHandleDelete(e, selectedRecordIds)}
+                      />
+                    </IconButton>
+                  </Tooltip>
+                </div>
               </>
             ) : (
               <>
-                <Button variant="contained" color="info" onClick={handleAddRecord}>
+                <Button
+                  variant="contained"
+                  color="info"
+                  onClick={handleAddRecord}
+                >
                   New
                 </Button>
                 <ExcelDownload data={records} filename={`EventLogRecords`} />
@@ -318,8 +357,8 @@ const Task = () => {
               borderBottom: "none",
             },
             "& .MuiDataGrid-columnHeaderTitle": {
-              fontWeight: 'bold !important',
-              overflow: 'visible !important'
+              fontWeight: "bold !important",
+              overflow: "visible !important",
             },
             "& .MuiDataGrid-virtualScroller": {
               // backgroundColor: colors.primary[400],
@@ -337,7 +376,7 @@ const Task = () => {
             },
             "& .MuiDataGrid-row:hover": {
               backgroundColor: "#CECEF0",
-              cursor: 'pointer',
+              cursor: "pointer",
             },
             "& .C-MuiDataGrid-row-even": {
               backgroundColor: "#D7ECFF",
@@ -374,26 +413,28 @@ const Task = () => {
             }}
             loading={fetchLoading}
             getRowClassName={(params) =>
-              params.indexRelativeToCurrentPage % 2 === 0 ? 'C-MuiDataGrid-row-even' : 'C-MuiDataGrid-row-odd'
+              params.indexRelativeToCurrentPage % 2 === 0
+                ? "C-MuiDataGrid-row-even"
+                : "C-MuiDataGrid-row-odd"
             }
             checkboxSelection
             disableSelectionOnClick
             onSelectionModelChange={(ids) => {
               var size = Object.keys(ids).length;
-              size > 0 ? setShowDelete(true) : setShowDelete(false)
-              console.log('checkbox selection ids', ids);
-              setSelectedRecordIds(ids)
+              size > 0 ? setShowDelete(true) : setShowDelete(false);
+              console.log("checkbox selection ids", ids);
+              setSelectedRecordIds(ids);
               const selectedIDs = new Set(ids);
               const selectedRowRecords = records.filter((row) =>
                 selectedIDs.has(row._id.toString())
               );
-              setSelectedRecordDatas(selectedRowRecords)
+              setSelectedRecordDatas(selectedRowRecords);
             }}
             onRowClick={(e) => handleOnCellClick(e)}
           />
         </Box>
       </Box>
     </>
-  )
-}
+  );
+};
 export default Task;

@@ -263,6 +263,7 @@ const Leads = () => {
   const handleLeadFilterChange = (e) => {
     const value = e.target.value;
     const label = e.target.name;
+    setFilterMonth(value);
     console.log(`${urlSearchLead}${label}=${value}`);
     if (e.target.value === null) {
       fetchRecords();
@@ -270,6 +271,8 @@ const Leads = () => {
       RequestServer("post", `${urlSearchLead}${label}=${value}`)
         .then((res) => {
           console.log("Searched Month ", res);
+          const filteredMonth = res.data;
+          console.log("filter month is: ", filteredMonth);
           if (res.success) {
             setFilteredRecord(res.data);
           }
@@ -365,7 +368,7 @@ const Leads = () => {
         </Typography>
         <Box display="flex" justifyContent="space-between">
           <Typography variant="h5" color={colors.greenAccent[400]}>
-            List Of Enquiries
+            <strong>List Of {filterMonth} Enquiries</strong>
           </Typography>
 
           <div
@@ -378,25 +381,34 @@ const Leads = () => {
           >
             {showDelete ? (
               <>
-                <Tooltip title="Email">
-                  <IconButton>
-                    <EmailIcon
-                      sx={{ color: "#DB4437" }}
-                      onClick={handlesendEmail}
-                    />{" "}
-                  </IconButton>
-                </Tooltip>
-                {/* <Tooltip title="Whatsapp">
+                <div
+                  style={{
+                    width: "350px",
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    gap: "15px",
+                  }}
+                >
+                  <Tooltip title="Email">
+                    <IconButton>
+                      <EmailIcon
+                        sx={{ color: "#DB4437" }}
+                        onClick={handlesendEmail}
+                      />{" "}
+                    </IconButton>
+                  </Tooltip>
+                  {/* <Tooltip title="Whatsapp">
                     <IconButton> <WhatsAppIcon sx={{ color: '#34A853' }} onClick={handlesendWhatsapp} /> </IconButton>
                   </Tooltip> */}
-                <Tooltip title="Delete Selected">
-                  <IconButton>
-                    <DeleteIcon
-                      sx={{ color: "#FF3333" }}
-                      onClick={(e) => onHandleDelete(e, selectedRecordIds)}
-                    />
-                  </IconButton>
-                </Tooltip>
+                  <Tooltip title="Delete Selected">
+                    <IconButton>
+                      <DeleteIcon
+                        sx={{ color: "#FF3333" }}
+                        onClick={(e) => onHandleDelete(e, selectedRecordIds)}
+                      />
+                    </IconButton>
+                  </Tooltip>
+                </div>
               </>
             ) : (
               <>
@@ -528,6 +540,10 @@ const Leads = () => {
           </div> */}
 
           <DataGrid
+            sx={{
+              boxShadow:
+                "rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px",
+            }}
             rows={filteredRecord}
             columns={columns}
             getRowId={(row) => row._id}
@@ -568,9 +584,9 @@ const Leads = () => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={ModalStyle}>
+        <div className="modal">
           <ModalFileUpload handleModal={handleImportModalClose} />
-        </Box>
+        </div>
       </Modal>
 
       <Modal
@@ -579,13 +595,13 @@ const Leads = () => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={ModalStyle}>
+        <div className="modal">
           <EmailModalPage
             data={selectedRecordDatas}
             handleModal={setEmailModalClose}
             bulkMail={true}
           />
-        </Box>
+        </div>
       </Modal>
 
       <Modal
