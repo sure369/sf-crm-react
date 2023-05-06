@@ -1,20 +1,11 @@
 import React, { useState, useEffect } from "react";
 import {
-  Box,
-  Button,
-  useTheme,
-  IconButton,
-  Typography,
-  Pagination,
-  Tooltip,
+  Box, Button, useTheme, IconButton,
+  Pagination, Tooltip, Grid, Modal, Typography,
 } from "@mui/material";
 import {
-  DataGrid,
-  GridToolbar,
-  gridPageCountSelector,
-  gridPageSelector,
-  useGridApiContext,
-  useGridSelector,
+  DataGrid, GridToolbar, gridPageCountSelector,
+  gridPageSelector, useGridApiContext, useGridSelector,
 } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import { useNavigate } from "react-router-dom";
@@ -24,10 +15,11 @@ import ToastNotification from "../toast/ToastNotification";
 import DeleteConfirmDialog from "../toast/DeleteConfirmDialog";
 import ExcelDownload from "../Excel";
 import { RequestServer } from "../api/HttpReq";
+import '../indexCSS/muiBoxStyles.css'
 
 const Task = () => {
-  const urlDelete = `${process.env.REACT_APP_SERVER_URL}/deleteTask?code=`;
-  const urlTask = `${process.env.REACT_APP_SERVER_URL}/Task`;
+  const urlDelete = `/deleteTask?code=`;
+  const urlTask = `/Task`;
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -35,18 +27,8 @@ const Task = () => {
   const [records, setRecords] = useState([]);
   const [fetchLoading, setFetchLoading] = useState(true);
   const [fetchError, setFetchError] = useState();
-  // notification
-  const [notify, setNotify] = useState({
-    isOpen: false,
-    message: "",
-    type: "",
-  });
-  //dialog
-  const [confirmDialog, setConfirmDialog] = useState({
-    isOpen: false,
-    title: "",
-    subTitle: "",
-  });
+  const [notify, setNotify] = useState({ isOpen: false, message: "", type: "", });
+  const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: "", subTitle: "", });
 
   const [showDelete, setShowDelete] = useState(false);
   const [selectedRecordIds, setSelectedRecordIds] = useState();
@@ -57,7 +39,7 @@ const Task = () => {
   }, []);
 
   const fetchRecords = () => {
-    RequestServer("post", urlTask, null, {})
+    RequestServer(urlTask)
       .then((res) => {
         console.log(res, "index page res");
         if (res.success) {
@@ -73,27 +55,7 @@ const Task = () => {
       .catch((err) => {
         setFetchError(err.message);
         setFetchLoading(false);
-      });
-    // console.log('urlTask', urlTask);
-    // axios.post(urlTask)
-    //   .then(
-    //     (res) => {
-    //       console.log("res task records", res);
-
-    //       if (res.data.length > 0 && (typeof (res.data) !== 'string')) {
-    //         setRecords(res.data);
-    //         setFetchLoading(false)
-    //       }
-    //       else {
-    //         setRecords([]);
-    //         setFetchLoading(false)
-    //       }
-    //     }
-    //   )
-    //   .catch((error) => {
-    //     console.log('res task error', error);
-    //     setFetchLoading(false)
-    //   })
+      })
   };
   const handleAddRecord = () => {
     navigate("/new-task", { state: { record: {} } });
@@ -132,7 +94,7 @@ const Task = () => {
 
   const onebyoneDelete = (row) => {
     console.log("onebyoneDelete rec id", row);
-    RequestServer("post", urlDelete + row)
+    RequestServer(urlDelete + row)
       .then((res) => {
         if (res.success) {
           fetchRecords();
@@ -163,30 +125,7 @@ const Task = () => {
           ...confirmDialog,
           isOpen: false,
         });
-      });
-
-    // axios.post(urlDelete + row)
-    //   .then((res) => {
-    //     console.log('api delete response', res);
-    //     fetchRecords();
-    //     setNotify({
-    //       isOpen: true,
-    //       message: res.data,
-    //       type: 'success'
-    //     })
-    //   })
-    //   .catch((error) => {
-    //     console.log('api delete error', error);
-    //     setNotify({
-    //       isOpen: true,
-    //       message: error.message,
-    //       type: 'error'
-    //     })
-    //   })
-    // setConfirmDialog({
-    //   ...confirmDialog,
-    //   isOpen: false
-    // })
+      })
   };
 
   function CustomPagination() {
@@ -206,18 +145,12 @@ const Task = () => {
 
   const columns = [
     {
-      field: "subject",
-      headerName: "Subject",
-      headerAlign: "center",
-      align: "center",
-      flex: 1,
+      field: "subject",headerName: "Subject",
+      headerAlign: "center",align: "center",flex: 1,
     },
     {
-      field: "realatedTo",
-      headerName: "Realated To",
-      headerAlign: "center",
-      align: "center",
-      flex: 1,
+      field: "realatedTo",headerName: "Realated To",
+      headerAlign: "center",align: "center",flex: 1,
       renderCell: (params) => {
         if (params.row.object === "Account") {
           return (
@@ -241,20 +174,14 @@ const Task = () => {
       },
     },
     {
-      field: "object",
-      headerName: "Object",
-      headerAlign: "center",
-      align: "center",
-      flex: 1,
+      field: "object",headerName: "Object",
+      headerAlign: "center",align: "center",flex: 1,
     },
 
     {
-      field: "actions",
-      headerName: "Actions",
-      headerAlign: "center",
-      align: "center",
-      width: 400,
-      flex: 1,
+      field: "actions",headerName: "Actions",
+      headerAlign: "center",align: "center",
+      width: 400, flex: 1,
       renderCell: (params) => {
         return (
           <>
@@ -291,11 +218,11 @@ const Task = () => {
           fontWeight="bold"
           sx={{ m: "0 0 5px 0" }}
         >
-          Event Log
+          Task
         </Typography>
         <Box display="flex" justifyContent="space-between">
           <Typography variant="h5" color={colors.greenAccent[400]}>
-            List Of Event Logs
+            List Of Task
           </Typography>
           <div
             style={{
@@ -342,64 +269,8 @@ const Task = () => {
         <Box
           m="15px 0 0 0"
           height="380px"
-          sx={{
-            "& .MuiDataGrid-root": {
-              border: "none",
-            },
-            "& .MuiDataGrid-cell": {
-              borderBottom: "none",
-            },
-            "& .name-column--cell": {
-              color: colors.greenAccent[300],
-            },
-            "& .MuiDataGrid-columnHeaders": {
-              backgroundColor: colors.blueAccent[700],
-              borderBottom: "none",
-            },
-            "& .MuiDataGrid-columnHeaderTitle": {
-              fontWeight: "bold !important",
-              overflow: "visible !important",
-            },
-            "& .MuiDataGrid-virtualScroller": {
-              // backgroundColor: colors.primary[400],
-            },
-            "& .MuiDataGrid-footerContainer": {
-              borderBottom: "none",
-              // borderBottomStyle:{{sx:r}},
-              backgroundColor: colors.blueAccent[700],
-            },
-            "& .MuiCheckbox-root": {
-              color: `${colors.greenAccent[200]} !important`,
-            },
-            "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-              color: `${colors.grey[100]} !important`,
-            },
-            "& .MuiDataGrid-row:hover": {
-              backgroundColor: "#CECEF0",
-              cursor: "pointer",
-            },
-            "& .C-MuiDataGrid-row-even": {
-              backgroundColor: "#D7ECFF",
-            },
-            "& .C-MuiDataGrid-row-odd": {
-              backgroundColor: "#F0F8FF",
-            },
-          }}
+          className="my-mui-styles"
         >
-          {/* <div className='btn-test'>
-            {
-              showDelete ?
-                <>
-                  <Tooltip title="Delete Selected">
-                    <IconButton> <DeleteIcon sx={{ color: '#FF3333' }} onClick={(e) => onHandleDelete(e, selectedRecordIds)} /> </IconButton>
-                  </Tooltip>
-                </>
-                :
-                <Button variant="contained" color="info" onClick={handleAddRecord}>
-                  New
-                </Button>
-            }
-          </div> */}
 
           <DataGrid
             rows={records}

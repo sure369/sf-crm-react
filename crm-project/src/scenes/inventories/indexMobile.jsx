@@ -13,8 +13,8 @@ import { RequestServer } from '../api/HttpReq';
 
 const InventoriesMobile = () => {
 
-  const urlDelete = `${process.env.REACT_APP_SERVER_URL}/deleteInventory?code=`;
-  const urlInventory = `${process.env.REACT_APP_SERVER_URL}/inventories`;
+  const urlDelete = `/deleteInventory?code=`;
+  const urlInventory = `/inventories`;
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -22,9 +22,7 @@ const InventoriesMobile = () => {
   const [records, setRecords] = useState([]);
   const [fetchLoading, setFetchLoading] = useState(true);
   const [fetchError,setFetchError]=useState()
-  // notification
   const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
-  //dialog
   const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subTitle: '' })
 
   const [showDelete, setShowDelete] = useState(false)
@@ -44,7 +42,7 @@ const InventoriesMobile = () => {
 
   const fetchRecords = () => {
 
-    RequestServer("post",urlInventory,null,{})
+    RequestServer(urlInventory)
     .then((res)=>{
       console.log(res,"api res index page")
       if(res.success){
@@ -63,26 +61,6 @@ const InventoriesMobile = () => {
       setFetchError(err.message)
       setFetchLoading(false)
     })
-
-    // axios.post(urlInventory)
-    //   .then(
-    //     (res) => {
-    //       console.log("res Inventory records", res);
-    //       if (res.data.length > 0 && (typeof (res.data) !== 'string')) {
-    //         setRecords(res.data);
-    //         setFetchLoading(false)
-    //         setNoOfPages(Math.ceil(res.data.length / itemsPerPage));
-    //       }
-    //       else {
-    //         setRecords([]);
-    //         setFetchLoading(false)
-    //       }
-    //     }
-    //   )
-    //   .catch((error) => {
-    //     console.log('res Inventory error', error);
-    //     setFetchLoading(false)
-    //   })
   }
 
   const handleAddRecord = () => {
@@ -123,7 +101,7 @@ const InventoriesMobile = () => {
 
     console.log('one by one Delete row', row)
 
-    RequestServer("post",urlDelete+row,{},null)
+    RequestServer(urlDelete + row)
     .then((res)=>{
       if(res.success){
         fetchRecords()

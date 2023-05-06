@@ -13,8 +13,8 @@ import { RequestServer } from '../api/HttpReq';
 
 const LeadsMobile = () => {
 
-  const urlLead = `${process.env.REACT_APP_SERVER_URL}/leads`;
-  const urlDelete = `${process.env.REACT_APP_SERVER_URL}/deleteLead?code=`;
+  const urlLead = `/leads`;
+  const urlDelete = `/deleteLead?code=`;
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -40,7 +40,7 @@ const LeadsMobile = () => {
   }, []);
 
   const fetchRecords = () => {
-    RequestServer("post",urlLead,null,{})
+    RequestServer(urlLead)
     .then((res)=>{
       console.log(res,"index page res")
       if(res.success){
@@ -59,25 +59,6 @@ const LeadsMobile = () => {
       setFetchError(err.message)
       setFetchLoading(false)
     })
-    // axios.post(urlLead)
-    //   .then(
-    //     (res) => {
-    //       console.log("res Lead records", res);
-    //       if (res.data.length > 0 && (typeof (res.data) !== 'string')) {
-    //         setRecords(res.data);
-    //         setFetchLoading(false)
-    //         setNoOfPages(Math.ceil(res.data.length / itemsPerPage));
-    //       }
-    //       else {
-    //         setRecords([]);
-    //         setFetchLoading(false)
-    //       }
-    //     }
-    //   )
-    //   .catch((error) => {
-    //     console.log('res Lead error', error);
-    //     setFetchLoading(false)
-    //   })
   }
   const handleAddRecord = () => {
     navigate("/new-leads", { state: { record: {} } })
@@ -115,7 +96,7 @@ const LeadsMobile = () => {
 
   const onebyoneDelete = (row) => {
     console.log('onebyoneDelete rec id', row)
-    RequestServer("post",urlDelete+row ,{}, null)
+    RequestServer(urlDelete + row)
     .then((res)=>{
       if(res.success){
         fetchRecords()
@@ -150,31 +131,6 @@ const LeadsMobile = () => {
         isOpen: false
       })
     })
-
-    // axios.post(urlDelete + row)
-    //   .then((res) => {
-    //     console.log('api delete response', res);
-    //     fetchRecords();
-    //     setNotify({
-    //       isOpen: true,
-    //       message: res.data,
-    //       type: 'success'
-    //     })
-    //     setMenuOpen(false)
-    //     fetchRecords()
-    //   })
-    //   .catch((error) => {
-    //     console.log('api delete error', error);
-    //     setNotify({
-    //       isOpen: true,
-    //       message: error.message,
-    //       type: 'error'
-    //     })
-    //   })
-    // setConfirmDialog({
-    //   ...confirmDialog,
-    //   isOpen: false
-    // })
   };
   const handleChangePage = (event, value) => {
     setPage(value);

@@ -34,7 +34,7 @@ const pages = [
   { title: "Accounts", toNav: "/accounts" },
   { title: "Contacts", toNav: "/contacts" },
   { title: "Opportunities", toNav: "/opportunities" },
-  { title: "Event Log", toNav: "/task" },
+  { title: "Task", toNav: "/task" },
   { title: "Users", toNav: "/users" },
   // { title: 'Data Loader', toNav: '/dataLoader' },
   { title: "File Upload", toNav: "/file" },

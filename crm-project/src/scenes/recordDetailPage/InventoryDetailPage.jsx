@@ -4,13 +4,12 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Grid, Button, DialogActions, MenuItem } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom"
-import axios from 'axios'
-// import "../formik/FormStyles.css"
 import ToastNotification from '../toast/ToastNotification';
 import { InvCitiesPickList, InvCountryPickList, InvStatusPicklist, InvTypePicklist } from '../../data/pickLists';
 import CustomizedSelectForFormik from '../formik/CustomizedSelectForFormik';
 import './Form.css'
-
+import { RequestServer } from '../api/HttpReq';
+import { InventoryInitialValues,InventorySavedValues } from '../formik/IntialValues/formValues';
 
 const url = `${process.env.REACT_APP_SERVER_URL}/UpsertInventory`;
 
@@ -33,43 +32,8 @@ const InventoryDetailPage = ({ item }) => {
         setshowNew(!location.state.record.item)
     }, [])
 
-
-    const initialValues = {
-        projectName: '',
-        propertyName: '',
-        propertyUnitNumber: '',
-        type: '',
-        tower: '',
-        country: '',
-        city: '',
-        propertyCities: [],
-        floor: '',
-        status: '',
-        totalArea: '',
-        createdBy: '',
-        modifiedBy: '',
-        createdDate: '',
-        modifiedDate: '',
-    }
-
-    const savedValues = {
-        projectName: singleInventory?.projectName ?? "",
-        propertyName: singleInventory?.propertyName ?? "",
-        propertyUnitNumber: singleInventory?.propertyUnitNumber ?? "",
-        type: singleInventory?.type ?? "",
-        tower: singleInventory?.tower ?? "",
-        country: singleInventory?.country ?? "",
-        city: singleInventory?.city ?? "",
-        propertyCities: singleInventory?.propertyCities ?? "",
-        floor: singleInventory?.floor ?? "",
-        status: singleInventory?.status ?? "",
-        totalArea: singleInventory?.totalArea ?? "",
-        createdBy: singleInventory?.createdBy.userFullName ?? "",
-        modifiedBy: singleInventory?.modifiedBy.userFullName ?? "",
-        createdDate: new Date(singleInventory?.createdDate).toLocaleString(),
-        modifiedDate: new Date(singleInventory?.modifiedDate).toLocaleString(),
-        _id: singleInventory?._id ?? "",
-    }
+    const initialValues=InventoryInitialValues;
+    const savedValues =InventorySavedValues(singleInventory)
 
     const getCities = (country) => {
         return new Promise((resolve, reject) => {
@@ -116,26 +80,36 @@ const InventoryDetailPage = ({ item }) => {
 
         console.log('after change form submission value', values);
 
-        axios.post(url, values)
-            .then((res) => {
-                console.log('upsert record  response', res);
+        RequestServer(url, values)
+            .then((res) => {                
+            console.log(res,"res from RequestServer")
+                if (res.success) {
+                    setNotify({
+                        isOpen: true,
+                        message: res.data,
+                        type: "success",
+                    });               
+                } else {
+                    console.log(res, "error in then");
+                    setNotify({
+                        isOpen: true,
+                        message: res.error.message,
+                        type: "error",
+                    });
+                }
+            })
+            .catch((error)=>{
                 setNotify({
-                    isOpen: true,
-                    message: res.data,
-                    type: 'success'
-                })
+                            isOpen:true,
+                            message:error.message,
+                            type:'error'
+                          })
+            })
+            .finally(()=>{
                 setTimeout(() => {
                     navigate(-1);
-                }, 2000)
-            })
-            .catch((error) => {
-                console.log('upsert record  error', error);
-                setNotify({
-                    isOpen: true,
-                    message: error.message,
-                    type: 'error'
-                })
-            })
+                }, 2000);
+            })   
     }
 
     const handleFormClose = () => {
@@ -157,15 +131,7 @@ const InventoryDetailPage = ({ item }) => {
                     onSubmit={(values) => { formSubmission(values) }}
                 >
                     {(props) => {
-                        const {
-                            values,
-                            dirty,
-                            isSubmitting,
-                            handleChange,
-                            handleSubmit,
-                            handleReset,
-                            setFieldValue,
-                        } = props;
+                        const {values,dirty, isSubmitting, handleChange,handleSubmit,handleReset,setFieldValue,errors,touched,} = props;
 
                         return (
                             <>

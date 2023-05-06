@@ -19,8 +19,8 @@ import { RequestServer } from '../api/HttpReq';
 
 const ContactsMobile = () => {
 
-  const urlContact = `${process.env.REACT_APP_SERVER_URL}/contacts`;
-  const urlDelete = `${process.env.REACT_APP_SERVER_URL}/deleteContact?code=`;
+  const urlContact = `/contacts`;
+  const urlDelete = `/deleteContact?code=`;
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -48,7 +48,7 @@ const ContactsMobile = () => {
   }, []);
 
   const fetchRecords = () => {
-    RequestServer("post",urlContact,null,{})
+    RequestServer(urlContact)
     .then((res)=>{
       console.log(res,"index page res")
       if(res.success){
@@ -67,25 +67,6 @@ const ContactsMobile = () => {
       setFetchError(err.message)
       setFetchLoading(false)
     })
-    // axios.post(urlContact)
-    //   .then(
-    //     (res) => {
-    //       console.log("res Contact records", res);
-    //       if (res.data.length > 0 && (typeof (res.data) !== 'string')) {
-    //         setRecords(res.data);
-    //         setFetchLoading(false)
-    //         setNoOfPages(Math.ceil(res.data.length / itemsPerPage));
-    //       }
-    //       else {
-    //         setRecords([]);
-    //         setFetchLoading(false)
-    //       }
-    //     }
-    //   )
-    //   .catch((error) => {
-    //     console.log('error', error);
-    //     setFetchLoading(false)
-    //   })
   }
 
   const handleAddRecord = () => {
@@ -125,7 +106,7 @@ const ContactsMobile = () => {
   const onebyoneDelete = (row) => {
     console.log('one by on delete', row)
 
-    RequestServer("post",urlDelete+row ,{}, null)
+    RequestServer(urlDelete + row )
     .then((res)=>{
       if(res.success){
         fetchRecords()
@@ -160,29 +141,6 @@ const ContactsMobile = () => {
         isOpen: false
       })
     })
-    // axios.post(urlDelete + row)
-    //   .then((res) => {
-    //     console.log('api delete response', res);
-    //     setNotify({
-    //       isOpen: true,
-    //       message: res.data,
-    //       type: 'success'
-    //     })
-    //     setMenuOpen(false)
-    //     fetchRecords()
-    //   })
-    //   .catch((error) => {
-    //     console.log('api delete error', error);
-    //     setNotify({
-    //       isOpen: true,
-    //       message: error.message,
-    //       type: 'error'
-    //     })
-    //   })
-    // setConfirmDialog({
-    //   ...confirmDialog,
-    //   isOpen: false
-    // })
   }
 
   const handlesendEmail = () => {
@@ -261,7 +219,7 @@ const ContactsMobile = () => {
                         <Grid container spacing={2}>
                           <Grid item xs={10} md={10}>
                             <div>Name : {item.fullName} </div>
-                            <div>Account Name :{item.accountDetails.accountName} </div>
+                            <div>Account Name :{item.accountDetails?.accountName || ""} </div>
                             <div>Phone : {item.phone} </div>
                             <div>Email : {item.email} </div>
                           </Grid>
@@ -332,9 +290,7 @@ const ContactsMobile = () => {
         sx={{backdropFilter:"blur(1px)"}}
       >
         <div className='modal'>
-        {/* <Box sx={ModalBoxstyle}> */}
           <EmailModalPage data={selectedRecordDatas} handleModal={setEmailModalClose} bulkMail={true} />
-        {/* </Box> */}
         </div>
       </Modal>
 

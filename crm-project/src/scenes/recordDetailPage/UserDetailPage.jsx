@@ -13,11 +13,12 @@ import ToastNotification from '../toast/ToastNotification';
 import CustomizedSelectForFormik from '../formik/CustomizedSelectForFormik';
 import { UserAccessPicklist, UserRolePicklist } from '../../data/pickLists';
 import './Form.css'
+import { RequestServer } from '../api/HttpReq';
+import { UserInitialValues,UserSavedValues } from '../formik/IntialValues/formValues';
 
-
-const url = `${process.env.REACT_APP_SERVER_URL}/UpsertUser`;
-const fetchUsersbyName = `${process.env.REACT_APP_SERVER_URL}/usersbyName`
-const urlSendEmailbulk = `${process.env.REACT_APP_SERVER_URL}/bulkemail`
+const url = `/UpsertUser`;
+const fetchUsersbyName = `/usersbyName`
+const urlSendEmailbulk = `/bulkemail`
 
 const UserDetailPage = ({ item }) => {
 
@@ -32,38 +33,41 @@ const UserDetailPage = ({ item }) => {
         console.log('passed record', location.state.record.item);
         setsingleUser(location.state.record.item);
         setshowNew(!location.state.record.item)
-        FetchUsersbyName('')
+        // FetchUsersbyName('')
     }, [])
 
-    const initialValues = {
-        firstName: '',
-        lastName: '',
-        fullName: '',
-        userName: '',
-        email: '',
-        phone: '',
-        role: '',
-        access: '',
-        createdbyId: '',
-        createdDate: '',
-        modifiedDate: '',
-    }
+    const initialValues=UserInitialValues
+    const savedValues=UserSavedValues(singleUser)
 
-    const savedValues = {
-        firstName: singleUser?.firstName ?? "",
-        lastName: singleUser?.lastName ?? "",
-        fullName: singleUser?.fullName ?? "",
-        userName: singleUser?.userName ?? "",
-        email: singleUser?.email ?? "",
-        phone: singleUser?.phone ?? "",
-        role: singleUser?.role ?? "",
-        access: singleUser?.access ?? "",
-        password:singleUser?.password ?? "",
-        createdbyId: singleUser?.createdbyId ?? "",
-        createdDate:  new Date(singleUser?.createdDate).toLocaleString(),
-        modifiedDate: new Date(singleUser?.modifiedDate).toLocaleDateString(),
-        _id: singleUser?._id ?? "",
-    }
+    // const initialValues = {
+    //     firstName: '',
+    //     lastName: '',
+    //     fullName: '',
+    //     userName: '',
+    //     email: '',
+    //     phone: '',
+    //     role: '',
+    //     access: '',
+    //     createdbyId: '',
+    //     createdDate: '',
+    //     modifiedDate: '',
+    // }
+
+    // const savedValues = {
+    //     firstName: singleUser?.firstName ?? "",
+    //     lastName: singleUser?.lastName ?? "",
+    //     fullName: singleUser?.fullName ?? "",
+    //     userName: singleUser?.userName ?? "",
+    //     email: singleUser?.email ?? "",
+    //     phone: singleUser?.phone ?? "",
+    //     role: singleUser?.role ?? "",
+    //     access: singleUser?.access ?? "",
+    //     password:singleUser?.password ?? "",
+    //     createdbyId: singleUser?.createdbyId ?? "",
+    //     createdDate:  new Date(singleUser?.createdDate).toLocaleString(),
+    //     modifiedDate: new Date(singleUser?.modifiedDate).toLocaleDateString(),
+    //     _id: singleUser?._id ?? "",
+    // }
 
     const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
 
@@ -85,12 +89,12 @@ const UserDetailPage = ({ item }) => {
             // .string()
             // .email('invalid Format')
             // .required('Required'),
-        role: Yup
-            .string()
-            .required('Required'),
-        access: Yup
-            .string()
-            .required('Required'),
+        // role: Yup
+        //     .string()
+        //     .required('Required'),
+        // access: Yup
+        //     .string()
+        //     .required('Required'),
     })
 
     const sendInviteEmail=(values)=>{
@@ -114,22 +118,23 @@ const UserDetailPage = ({ item }) => {
         }
         console.log(obj,"sendInviteEmail")
 
-        axios.post(urlSendEmailbulk,obj)
+        RequestServer(urlSendEmailbulk,obj)
         .then((res)=>{
             console.log("eamil res",res.data)
-            if(res.data){
-                setNotify({
-                    isOpen: true,
-                    message: res.data,
-                    type: 'success'
-                })
-            }else{
+            if(res.success){
                 setNotify({
                     isOpen: true,
                     message: "Mail sent Succesfully",
                     type: 'success'
                 })
             }
+            else{
+                setNotify({
+                    isOpen: true,
+                    message: res.error.message,
+                    type: 'error'
+                })
+            }            
         })
         .catch((error) => {
             console.log('email send error', error);
@@ -160,21 +165,25 @@ const UserDetailPage = ({ item }) => {
         }
         console.log('after change form submission value', values);
 
-        axios.post(url, values)
+        RequestServer(url, values)
             .then((res) => {
                 console.log('upsert record  response', res);
-                setNotify({
-                    isOpen: true,
-                    message: res.data.content,
-                    type: res.data.status
-                })
-                if(showNew){
-                    sendInviteEmail(values)
+                if(res.success){
+                    setNotify({
+                        isOpen: true,
+                        message: res.data.content,
+                        type: "success"
+                    })
+                    if(showNew){
+                        sendInviteEmail(values)
+                    }
+                }else{
+                    setNotify({
+                        isOpen: true,
+                        message: res.error.message,
+                        type: "error"
+                    })
                 }
-                setTimeout(() => {
-                    navigate(-1);
-                }, 4000)
-
             })
             .catch((error) => {
                 console.log('upsert record  error', error);
@@ -184,26 +193,31 @@ const UserDetailPage = ({ item }) => {
                     type: 'error'
                 })
             })
+            .finally(()=>{
+                setTimeout(()=>{
+                    navigate(-1)
+                },2000)
+            })
     }
 
     const handleFormClose = () => {
         navigate(-1)
     }
 
-    const FetchUsersbyName = (inputValue) => {
-        console.log('inside FetchLeadsbyName fn');
-        console.log('newInputValue', inputValue)
-        axios.post(`${fetchUsersbyName}?searchKey=${inputValue}`)
-            .then((res) => {
-                console.log('res fetchLeadsbyName', res.data)
-                if (typeof (res.data) === "object") {
-                    setUsersRecord(res.data)
-                }
-            })
-            .catch((error) => {
-                console.log('error fetchLeadsbyName', error);
-            })
-    }
+    // const FetchUsersbyName = (inputValue) => {
+    //     console.log('inside FetchLeadsbyName fn');
+    //     console.log('newInputValue', inputValue)
+    //     RequestServer(`${fetchUsersbyName}?searchKey=${inputValue}`)
+    //         .then((res) => {
+    //             console.log('res fetchLeadsbyName', res.data)
+    //             if (typeof (res.data) === "object") {
+    //                 setUsersRecord(res.data)
+    //             }
+    //         })
+    //         .catch((error) => {
+    //             console.log('error fetchLeadsbyName', error);
+    //         })
+    // }
 
     return (
         <Grid item xs={12} style={{ margin: "20px" }}>
@@ -220,15 +234,7 @@ const UserDetailPage = ({ item }) => {
                     onSubmit={(values) => { formSubmission(values) }}
                 >
                     {(props) => {
-                        const {
-                            values,
-                            dirty,
-                            isSubmitting,
-                            handleChange,
-                            handleSubmit,
-                            handleReset,
-                            setFieldValue,
-                        } = props;
+                        const { values, dirty, isSubmitting, handleChange, handleSubmit, handleReset, setFieldValue, errors, touched, } = props;
 
                         return (
                             <>
@@ -271,6 +277,7 @@ const UserDetailPage = ({ item }) => {
                                                 <ErrorMessage name="userName" />
                                             </div>
                                         </Grid>
+
 
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="role">Role <span className="text-danger">*</span> </label>
@@ -388,7 +395,7 @@ export default UserDetailPage;
 // import "../formik/FormStyles.css"
 // import Notification from '../toast/Notification';
 
-// const url = `${process.env.REACT_APP_SERVER_URL}/UpsertUser`;
+// const url = `/UpsertUser`;
 
 // const UserDetailPage = ({ item }) => {
 
@@ -480,7 +487,7 @@ export default UserDetailPage;
 //         }
 //         console.log('after change form submission value', values);
 
-//         axios.post(url, values)
+//         RequestServer(url, values)
 //             .then((res) => {
 //                 console.log('upsert record  response', res);
 //                 setNotify({

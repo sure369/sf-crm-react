@@ -1,20 +1,11 @@
 import React, { useState, useEffect } from "react";
 import {
-  Box,
-  Button,
-  IconButton,
-  useTheme,
-  Typography,
-  Pagination,
-  Tooltip,
+  Box, Button, useTheme, IconButton,
+  Pagination, Tooltip, Grid, Modal, Typography,
 } from "@mui/material";
 import {
-  DataGrid,
-  GridToolbar,
-  gridPageCountSelector,
-  gridPageSelector,
-  useGridApiContext,
-  useGridSelector,
+  DataGrid, GridToolbar, gridPageCountSelector,
+  gridPageSelector, useGridApiContext, useGridSelector,
 } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import { useNavigate } from "react-router-dom";
@@ -24,10 +15,12 @@ import ToastNotification from "../toast/ToastNotification";
 import DeleteConfirmDialog from "../toast/DeleteConfirmDialog";
 import ExcelDownload from "../Excel";
 import { RequestServer } from "../api/HttpReq";
+import '../indexCSS/muiBoxStyles.css'
+
 
 const Users = () => {
-  const urlDelete = `${process.env.REACT_APP_SERVER_URL}/delete?code=`;
-  const urlUsers = `${process.env.REACT_APP_SERVER_URL}/Users`;
+  const urlDelete = `/delete?code=`;
+  const urlUsers = `/Users`;
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -35,19 +28,8 @@ const Users = () => {
   const [records, setRecords] = useState([]);
   const [fetchError, setFetchError] = useState();
   const [fetchLoading, setFetchLoading] = useState(true);
-  // notification
-  const [notify, setNotify] = useState({
-    isOpen: false,
-    message: "",
-    type: "",
-  });
-  //dialog
-  const [confirmDialog, setConfirmDialog] = useState({
-    isOpen: false,
-    title: "",
-    subTitle: "",
-  });
-
+  const [notify, setNotify] = useState({ isOpen: false, message: "", type: "", });
+  const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: "", subTitle: "", });
   const [showDelete, setShowDelete] = useState(false);
   const [selectedRecordIds, setSelectedRecordIds] = useState();
   const [selectedRecordDatas, setSelectedRecordDatas] = useState();
@@ -57,7 +39,7 @@ const Users = () => {
   }, []);
 
   const fetchRecords = () => {
-    RequestServer("post", urlUsers, null, {})
+    RequestServer(urlUsers)
       .then((res) => {
         console.log(res, "index page res");
         if (res.success) {
@@ -74,24 +56,6 @@ const Users = () => {
         setFetchError(err.message);
         setFetchLoading(false);
       });
-    // axios.post(urlUsers)
-    //   .then(
-    //     (res) => {
-    //       console.log("res users records", res);
-    //       if (res.data.length > 0 && (typeof (res.data) !== 'string')) {
-    //         setRecords(res.data);
-    //         setFetchLoading(false)
-    //       }
-    //       else {
-    //         setRecords([]);
-    //         setFetchLoading(false)
-    //       }
-    //     }
-    //   )
-    //   .catch((error) => {
-    //     console.log('res users error', error);
-    //     setFetchLoading(false)
-    //   })
   };
 
   const handleAddRecord = () => {
@@ -130,7 +94,7 @@ const Users = () => {
   const onebyoneDelete = (row) => {
     console.log("onebyoneDelete rec id", row);
 
-    RequestServer("post", urlDelete + row)
+    RequestServer(urlDelete + row)
       .then((res) => {
         if (res.success) {
           fetchRecords();
@@ -162,29 +126,6 @@ const Users = () => {
           isOpen: false,
         });
       });
-
-    // axios.post(urlDelete + row)
-    //   .then((res) => {
-    //     console.log('api delete response', res);
-    //     fetchRecords();
-    //     setNotify({
-    //       isOpen: true,
-    //       message: res.data,
-    //       type: 'success'
-    //     })
-    //   })
-    //   .catch((error) => {
-    //     console.log('api delete error', error);
-    //     setNotify({
-    //       isOpen: true,
-    //       message: error.message,
-    //       type: 'error'
-    //     })
-    //   })
-    // setConfirmDialog({
-    //   ...confirmDialog,
-    //   isOpen: false
-    // })
   };
 
   function CustomPagination() {
@@ -204,47 +145,29 @@ const Users = () => {
 
   const columns = [
     {
-      field: "firstName",
-      headerName: "First Name",
-      headerAlign: "center",
-      align: "center",
-      flex: 1,
+      field: "firstName",headerName: "First Name",
+      headerAlign: "center",align: "center",flex: 1,
     },
     {
-      field: "lastName",
-      headerName: "Last Name",
-      headerAlign: "center",
-      align: "center",
-      flex: 1,
+      field: "lastName",headerName: "Last Name",
+      headerAlign: "center",align: "center",flex: 1,
     },
     {
-      field: "email",
-      headerName: "Email",
-      headerAlign: "center",
-      align: "center",
-      flex: 1,
+      field: "email",headerName: "Email",
+      headerAlign: "center",align: "center",flex: 1,
     },
     {
-      field: "role",
-      headerName: "Role",
-      headerAlign: "center",
-      align: "center",
-      flex: 1,
+      field: "role",headerName: "Role",
+      headerAlign: "center",align: "center",flex: 1,
     },
     {
-      field: "access",
-      headerName: "Access",
-      headerAlign: "center",
-      align: "center",
-      flex: 1,
+      field: "access", headerName: "Access",
+      headerAlign: "center",align: "center",flex: 1,
     },
     {
-      field: "actions",
-      headerName: "Actions",
-      width: 400,
-      headerAlign: "center",
-      align: "center",
-      flex: 1,
+      field: "actions",headerName: "Actions",      
+      headerAlign: "center",align: "center",
+      flex: 1,width: 400,
       renderCell: (params) => {
         return (
           <>
@@ -341,62 +264,8 @@ const Users = () => {
           <Box
             m="15px 0 0 0"
             height="380px"
-            sx={{
-              "& .MuiDataGrid-root": {
-                border: "none",
-              },
-              "& .MuiDataGrid-cell": {
-                borderBottom: "none",
-              },
-              "& .name-column--cell": {
-                color: colors.greenAccent[300],
-              },
-              "& .MuiDataGrid-columnHeaders": {
-                backgroundColor: colors.blueAccent[700],
-                borderBottom: "none",
-              },
-              "& .MuiDataGrid-columnHeaderTitle": {
-                fontWeight: "bold !important",
-                overflow: "visible !important",
-              },
-              "& .MuiDataGrid-virtualScroller": {
-                // backgroundColor: colors.primary[400],
-              },
-              "& .MuiDataGrid-footerContainer": {
-                borderBottom: "none",
-                backgroundColor: colors.blueAccent[700],
-              },
-              "& .MuiCheckbox-root": {
-                color: `${colors.greenAccent[200]} !important`,
-              },
-              "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-                color: `${colors.grey[100]} !important`,
-              },
-              "& .MuiDataGrid-row:hover": {
-                backgroundColor: "#CECEF0",
-              },
-              "& .C-MuiDataGrid-row-even": {
-                backgroundColor: "#D7ECFF",
-              },
-              "& .C-MuiDataGrid-row-odd": {
-                backgroundColor: "#F0F8FF",
-              },
-            }}
+            className="my-mui-styles"
           >
-            {/* <div className='btn-test'>
-          {
-              showDelete ? 
-              <>
-              <Tooltip title="Delete Selected">
-                  <IconButton> <DeleteIcon sx={{ color: '#FF3333' }} onClick={(e) => onHandleDelete(e,selectedRecordIds)} /> </IconButton>
-              </Tooltip>
-              </>
-              :
-              <Button variant="contained" color="info" onClick={handleAddRecord}>
-                New
-              </Button>
-            }
-          </div> */}
 
             <DataGrid
               rows={records}

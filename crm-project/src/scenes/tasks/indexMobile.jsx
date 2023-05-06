@@ -14,8 +14,8 @@ import { RequestServer } from '../api/HttpReq';
 
 const TaskMobile = () => {
 
-  const urlDelete = `${process.env.REACT_APP_SERVER_URL}/deleteTask?code=`;
-  const urlTask = `${process.env.REACT_APP_SERVER_URL}/Task`;
+  const urlDelete = `/deleteTask?code=`;
+  const urlTask = `/Task`;
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -43,7 +43,7 @@ const TaskMobile = () => {
   );
 
   const fetchRecords = () => {
-    RequestServer("post",urlTask,null,{})
+    RequestServer(urlTask)
     .then((res)=>{
       console.log(res,"index page res")
       if(res.success){
@@ -62,27 +62,6 @@ const TaskMobile = () => {
       setFetchError(err.message)
       setFetchLoading(false)
     })
-
-    // axios.post(urlTask)
-    //   .then(
-    //     (res) => {
-    //       console.log("res task records", res);
-
-    //       if (res.data.length > 0 && (typeof (res.data) !== 'string')) {
-    //         setRecords(res.data);
-    //         setFetchLoading(false)
-    //         setNoOfPages(Math.ceil(res.data.length / itemsPerPage));
-    //       }
-    //       else {
-    //         setRecords([]);
-    //         setFetchLoading(false)
-    //       }
-    //     }
-    //   )
-    //   .catch((error) => {
-    //     console.log('res task error', error);
-    //     setFetchLoading(false)
-    //   })
   }
   const handleAddRecord = () => {
     navigate("/new-task", { state: { record: {} } })
@@ -121,7 +100,7 @@ const TaskMobile = () => {
   const onebyoneDelete = (row) => {
     console.log('onebyoneDelete rec id', row)
 
-    RequestServer("post",urlDelete+row ,{}, null)
+    RequestServer(urlDelete + row )
     .then((res)=>{
       if(res.success){
         fetchRecords()
@@ -156,31 +135,6 @@ const TaskMobile = () => {
         isOpen: false
       })
     })
-
-    // axios.post(urlDelete + row)
-    //   .then((res) => {
-    //     console.log('api delete response', res);
-    //     setNotify({
-    //       isOpen: true,
-    //       message: res.data,
-    //       type: 'success'
-    //     })
-    //     setMenuOpen(false)
-    //     fetchRecords()
-    //   })
-    //   .catch((error) => {
-    //     console.log('api delete error', error);
-    //     setNotify({
-    //       isOpen: true,
-    //       message: error.message,
-    //       type: 'error'
-    //     })
-    //   })
-    //    setConfirmDialog({
-    //   ...confirmDialog,
-    //   isOpen: false
-    // })
-
   };
 
   const handleChangePage = (event, value) => {

@@ -1,0 +1,16 @@
+.flex-container-buttons {
+    display: flex;
+    width: 250px;
+    justify-content: space-evenly;
+    height: 30px;
+  }
+  
+  .flex-container-buttons > div {
+    width: 230px;
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .tooltip-delete-button {
+    color: #ff3333;
+  }

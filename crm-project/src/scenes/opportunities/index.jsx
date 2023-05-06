@@ -1,22 +1,11 @@
 import React, { useState, useEffect } from "react";
 import {
-  Box,
-  Button,
-  useTheme,
-  IconButton,
-  Pagination,
-  Tooltip,
-  Typography,
-  Grid,
-  Modal,
+  Box, Button, useTheme, IconButton,
+  Pagination, Tooltip, Grid, Modal, Typography,
 } from "@mui/material";
 import {
-  DataGrid,
-  GridToolbar,
-  gridPageCountSelector,
-  gridPageSelector,
-  useGridApiContext,
-  useGridSelector,
+  DataGrid, GridToolbar, gridPageCountSelector,
+  gridPageSelector, useGridApiContext, useGridSelector,
 } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import { useNavigate } from "react-router-dom";
@@ -28,22 +17,12 @@ import ModalFileUpload from "../dataLoader/ModalFileUpload";
 import { OppIndexFilterPicklist } from "../../data/pickLists";
 import ExcelDownload from "../Excel";
 import { RequestServer } from "../api/HttpReq";
-
-const ModalStyle = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 600,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-};
+import '../indexCSS/muiBoxStyles.css'
 
 const Opportunities = () => {
-  const urlOpportunity = `${process.env.REACT_APP_SERVER_URL}/opportunities`;
-  const urlFilterOpportunity = `${process.env.REACT_APP_SERVER_URL}/opportunitiesFilter?code=`;
-  const urlDelete = `${process.env.REACT_APP_SERVER_URL}/deleteOpportunity?code=`;
+  const urlOpportunity = `/opportunities`;
+  const urlFilterOpportunity = `/opportunitiesFilter?code=`;
+  const urlDelete = `/deleteOpportunity?code=`;
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -51,17 +30,8 @@ const Opportunities = () => {
   const [records, setRecords] = useState([]);
   const [fetchLoading, setFetchLoading] = useState(true);
   const [fetchError, setFetchError] = useState();
-  const [notify, setNotify] = useState({
-    isOpen: false,
-    message: "",
-    type: "",
-  });
-  //dialog
-  const [confirmDialog, setConfirmDialog] = useState({
-    isOpen: false,
-    title: "",
-    subTitle: "",
-  });
+  const [notify, setNotify] = useState({isOpen: false, message: "",type: "",});
+  const [confirmDialog, setConfirmDialog] = useState({isOpen: false,title: "",subTitle: "",});
 
   const [showDelete, setShowDelete] = useState(false);
   const [selectedRecordIds, setSelectedRecordIds] = useState();
@@ -73,11 +43,11 @@ const Opportunities = () => {
 
   useEffect(() => {
     fetchRecords();
-    // filterRecords();
+
   }, []);
 
   const fetchRecords = () => {
-    RequestServer("post", urlOpportunity, null, {})
+    RequestServer(urlOpportunity)
       .then((res) => {
         console.log(res, "index page res");
         if (res.success) {
@@ -134,7 +104,7 @@ const Opportunities = () => {
   const onebyoneDelete = (row) => {
     console.log("onebyoneDelete rec id", row);
 
-    RequestServer("post", urlDelete + row)
+    RequestServer(urlDelete + row)
       .then((res) => {
         if (res.success) {
           fetchRecords();
@@ -373,18 +343,12 @@ const Opportunities = () => {
 
   const columns = [
     {
-      field: "opportunityName",
-      headerName: "Opportunity Name",
-      headerAlign: "center",
-      align: "center",
-      flex: 1,
+      field: "opportunityName",headerName: "Opportunity Name",
+      headerAlign: "center",align: "center",flex: 1,
     },
     {
-      field: "propertyName",
-      headerName: "Inventory Name",
-      headerAlign: "center",
-      align: "center",
-      flex: 1,
+      field: "propertyName",headerName: "Inventory Name",
+      headerAlign: "center", align: "center",flex: 1,
       renderCell: (params) => {
         if (params.row.Inventorydetails.length > 0) {
           return (
@@ -395,25 +359,15 @@ const Opportunities = () => {
         } else {
           return <div className="rowitem">{null}</div>;
         }
-
-        // return <div className="rowitem">
-        //   {params.row.Propertydetails[0].propertyName}
-        // </div>;
       },
     },
     {
-      field: "type",
-      headerName: "Type",
-      headerAlign: "center",
-      align: "center",
-      flex: 1,
+      field: "type", headerName: "Type",
+      headerAlign: "center",align: "center",flex: 1,
     },
     {
-      field: "amount",
-      headerName: "Opportunity Amount",
-      headerAlign: "center",
-      align: "center",
-      flex: 1,
+      field: "amount", headerName: "Opportunity Amount",
+      headerAlign: "center",align: "center", flex: 1,
       renderCell: (params) => {
         const formatCurrency = new Intl.NumberFormat("en-US", {
           style: "currency",
@@ -423,19 +377,13 @@ const Opportunities = () => {
       },
     },
     {
-      field: "stage",
-      headerName: "Stage",
-      headerAlign: "center",
-      align: "center",
-      flex: 1,
+      field: "stage", headerName: "Stage",
+      headerAlign: "center",align: "center",flex: 1,
     },
     {
-      field: "actions",
-      headerName: "Actions",
-      headerAlign: "center",
-      align: "center",
-      flex: 1,
-      width: 400,
+      field: "actions",headerName: "Actions",
+      headerAlign: "center",align: "center",
+      flex: 1,width: 400,
       renderCell: (params) => {
         return (
           <>
@@ -463,10 +411,7 @@ const Opportunities = () => {
   return (
     <>
       <ToastNotification notify={notify} setNotify={setNotify} />
-      <DeleteConfirmDialog
-        confirmDialog={confirmDialog}
-        setConfirmDialog={setConfirmDialog}
-      />
+      <DeleteConfirmDialog confirmDialog={confirmDialog}setConfirmDialog={setConfirmDialog}/>
 
       <Box m="20px">
         <Typography
@@ -536,113 +481,9 @@ const Opportunities = () => {
         <Box
           m="15px 0 0 0"
           height="380px"
-          sx={{
-            "& .MuiDataGrid-root": {
-              border: "none",
-            },
-            "& .MuiDataGrid-cell": {
-              borderBottom: "none",
-            },
-            "& .name-column--cell": {
-              color: colors.greenAccent[300],
-            },
-            "& .MuiDataGrid-columnHeaders": {
-              backgroundColor: colors.blueAccent[700],
-              borderBottom: "none",
-            },
-            "& .MuiDataGrid-columnHeaderTitle": {
-              fontWeight: "bold !important",
-              overflow: "visible !important",
-            },
-            "& .MuiDataGrid-virtualScroller": {
-              // backgroundColor: colors.primary[400],
-            },
-            "& .MuiDataGrid-footerContainer": {
-              borderBottom: "none",
-              backgroundColor: colors.blueAccent[700],
-            },
-            "& .MuiCheckbox-root": {
-              color: `${colors.greenAccent[200]} !important`,
-            },
-            "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-              color: `${colors.grey[100]} !important`,
-            },
-            "& .MuiDataGrid-row:hover": {
-              backgroundColor: "#CECEF0",
-              cursor: "pointer",
-            },
-            "& .C-MuiDataGrid-row-even": {
-              backgroundColor: "#D7ECFF",
-            },
-            "& .C-MuiDataGrid-row-odd": {
-              backgroundColor: "#F0F8FF",
-            },
-          }}
+          className="my-mui-styles"           
         >
-          {/* <div className="btn-test">
-            {showDelete ? (
-              <>
-                <Tooltip title="Delete Selected">
-                  <IconButton>
-                    {" "}
-                    <DeleteIcon
-                      sx={{ color: "#FF3333" }}
-                      onClick={(e) => onHandleDelete(e, selectedRecordIds)}
-                    />{" "}
-                  </IconButton>
-                </Tooltip>
-              </>
-            ) : (
-              <>
-                <Box display="flex" justifyContent="space-between">
-                  <Grid container spacing={2}>
-                   <Grid item xs={6}>
-                   <FormControl sx={{mr:1 , boxSizing:'small'}}> 
-                  <InputLabel id="demo-simple-select-label">Select Opportunity</InputLabel>
-                  <Select 
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={filterOpportunity}
-                    label='Select Opportunity'
-                     style={{ width: 150 }}
-                    SelectDisplayProps={{ style: { paddingTop: 8, paddingBottom: 8 } }}
-                    onChange={handleOppFilterChange}
-                  >
-             
-                  {	
-                    OppIndexFilterPicklist.map((i)=>{	
-                        return <MenuItem  value={i.value}>{i.text}</MenuItem>	
-                    })	
-                  }
-                  </Select>
-                  </FormControl>
-                  </Grid> 
-                    <Grid item xs={6}>
-                      <Button
-                        variant="contained"
-                        color="secondary"
-                        onClick={handleImportModalOpen}
-                        sx={{ color: "white" }}
-                      >
-                        Import
-                      </Button>
-                    </Grid>
-
-                    <Grid item xs={6}>
-                      <Button
-                        variant="contained"
-                        color="info"
-                        onClick={handleAddRecord}
-                      >
-                        New
-                      </Button>
-                    </Grid>
-                  </Grid>
-                </Box>
-              </>
-            )}
-          </div> */}
-
+          
           <DataGrid
             rows={filteredRecords.length > 0 ? filteredRecords : records}
             columns={columns}

@@ -14,12 +14,13 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import CustomizedSelectDisableForFormik from "../formik/CustomizedSelectDisableForFormik";
 import './Form.css'
+import { TaskInitialValues, TaskSavedValues } from "../formik/IntialValues/formValues";
+import { RequestServer } from "../api/HttpReq";
 
-
-const UpsertUrl = `${process.env.REACT_APP_SERVER_URL}/UpsertTask`;
-const fetchAccountUrl = `${process.env.REACT_APP_SERVER_URL}/accountsname`;
-const fetchLeadUrl = `${process.env.REACT_APP_SERVER_URL}/LeadsbyName`;
-const fetchOpportunityUrl = `${process.env.REACT_APP_SERVER_URL}/opportunitiesbyName`;
+const UpsertUrl = `/UpsertTask`;
+const fetchAccountUrl = `/accountsname`;
+const fetchLeadUrl = `/LeadsbyName`;
+const fetchOpportunityUrl = `/opportunitiesbyName`;
 
 const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
 
@@ -47,56 +48,11 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
             console.log('inside condition')
             callEvent(location.state.record.item.object)
             setAutoCompleteReadOnly(true)
-        }
-        
+        }        
     }, [])
 
-    const initialValues = {
-        subject: '',
-        relatedTo: '',
-        assignedTo: '',
-        StartDate: '',
-        EndDate: '',
-        description: '',
-        attachments: null,
-        object: '',
-        AccountId: '',
-        LeadId: '',
-        OpportunityId: '',
-        createdBy: '',
-        modifiedBy: '',
-        createdDate: '',
-        modifiedDate: '',
-    }
-
-    const savedValues = {
-        subject: singleTask?.subject ?? "",
-        relatedto: singleTask?.relatedto ?? "",
-        assignedTo: singleTask?.assignedTo ?? "",
-        description: singleTask?.description ?? "",
-        attachments: singleTask?.attachments ?? "",
-        object: singleTask?.object ?? "",
-        AccountId: singleTask?.AccountId ?? "",
-        LeadId: singleTask?.LeadId ?? "",
-        OpportunityId: singleTask?.OpportunityId ?? "",
-        createdBy: singleTask?.createdBy.userFullName ?? "",
-        modifiedBy: singleTask?.modifiedBy.userFullName ?? "",
-        createdDate: new Date(singleTask?.createdDate).toLocaleString(),
-        modifiedDate: new Date(singleTask?.modifiedDate).toLocaleString(),
-        _id: singleTask?._id ?? "",
-        StartDate:new Date(singleTask?.StartDate),
-        EndDate:new Date(singleTask?.EndDate),
-        // StartDate:new Date(singleTask?.StartDate).getUTCFullYear()
-        // + '-' +  ('0'+ (new Date(singleTask?.StartDate).getUTCMonth() + 1)).slice(-2) 
-        // + '-' + ('0'+ ( new Date(singleTask?.StartDate).getUTCDate())).slice(-2) ||'',
-        // EndDate:  new Date(singleTask?.EndDate).getUTCFullYear()
-        // + '-' +  ('0'+ (new Date(singleTask?.EndDate).getUTCMonth() + 1)).slice(-2) 
-        // + '-' + ('0'+ ( new Date(singleTask?.EndDate).getUTCDate())).slice(-2) ||'',
-
-        accountDetails:singleTask?.accountDetails ??"",
-        leadDetails:singleTask?.leadDetails ??"",
-        opportunityDetails:singleTask?.opportunityDetails ??"",
-    }
+    const initialValues=TaskInitialValues
+    const savedValues=TaskSavedValues(singleTask)
 
     const validationSchema = Yup.object({
         subject: Yup
@@ -196,17 +152,22 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
         }
         console.log('after change form submission value', values);
 
-            await axios.post(UpsertUrl, values)
+            await RequestServer(UpsertUrl, values)
                 .then((res) => {
                     console.log('task form Submission  response', res);
+                   if(res.success){
                     setNotify({
                         isOpen: true,
                         message: res.data,
                         type: 'success'
                     })
-                    setTimeout(() => {
-                        navigate(-1);
-                    }, 2000)
+                   }else{
+                    setNotify({
+                        isOpen: true,
+                        message: res.error.message,
+                        type: 'error'
+                    })
+                   }                  
                 })
                 .catch((error) => {
                     console.log('task form Submission  error', error);
@@ -215,6 +176,11 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
                         message: error.message,
                         type: 'error'
                     })
+                })
+                .finally(()=>{
+                    setTimeout(() => {
+                        navigate(-1);
+                    }, 2000)
                 })
         }
 
@@ -238,12 +204,16 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
         console.log('passed url', url)
         console.log('new Input  value', newInputValue)
 
-        axios.post(`${url}?searchKey=${newInputValue}`)
+        RequestServer(`${url}?searchKey=${newInputValue}`)
             .then((res) => {
                 console.log('res Fetch Objects byName', res.data)
+               if(res.success){
                 if (typeof (res.data) === "object") {
                     setRelatedRecNames(res.data)
+                }else{
+                    setRelatedRecNames([])
                 }
+               }                
             })
             .catch((error) => {
                 console.log('error fetchAccountsbyName', error);
@@ -268,16 +238,8 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
                 validationSchema={validationSchema}
                 onSubmit={(values, { resetForm }) => formSubmission(values, { resetForm })}
             >
-                {(props) => {
-                    const {
-                        values,
-                        dirty,
-                        isSubmitting,
-                        handleChange,
-                        handleSubmit,
-                        handleReset,
-                        setFieldValue,
-                    } = props;
+                 {(props) => {
+                        const {values,dirty, isSubmitting, handleChange,handleSubmit,handleReset,setFieldValue,errors,touched,} = props;
 
                     return (
                         <>
@@ -286,7 +248,7 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
                                 <Grid container spacing={2}>
                                     <Grid item xs={6} md={6}>
                                         <label htmlFor="subject">Subject  <span className="text-danger">*</span></label>
-                                        <Field name="subject" component={CustomizedSelectForFormik}  className="form-customSelect">
+                                        <Field name="subject" component={CustomizedSelectForFormik} >
                                         <MenuItem value=""><em>None</em></MenuItem>
                                          {
                                                         TaskSubjectPicklist.map((i)=>{
@@ -377,7 +339,7 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
                                     </Grid>
                                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                                     <Grid item xs={6} md={6}>
-                                    <label htmlFor="StartDate">Start Date </label> <br/>
+                                    <label htmlFor="StartDate">Start Date & Time</label> <br/>
                                     <DateTimePicker 
                                      name="StartDate"
                                         value={values.StartDate}
@@ -388,7 +350,7 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
                                      />
                                     </Grid>
                                     <Grid item xs={6} md={6}>
-                                        <label htmlFor="EndDate">End Date   </label> <br/>
+                                        <label htmlFor="EndDate">End Date & Time  </label> <br/>
                                         <DateTimePicker
                                                 renderInput={(params) => <TextField {...params} style={{width:'100%'}} error={false}/>}
                                                 value={values.EndDate}

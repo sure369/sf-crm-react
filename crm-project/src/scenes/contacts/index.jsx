@@ -1,21 +1,11 @@
 import React, { useState, useEffect } from "react";
 import {
-  Box,
-  Button,
-  IconButton,
-  Typography,
-  Modal,
-  useTheme,
-  Pagination,
-  Tooltip,
+  Box, Button, useTheme, IconButton,
+  Pagination, Tooltip, Grid, Modal, Typography,
 } from "@mui/material";
 import {
-  DataGrid,
-  GridToolbar,
-  gridPageCountSelector,
-  gridPageSelector,
-  useGridApiContext,
-  useGridSelector,
+  DataGrid, GridToolbar, gridPageCountSelector,
+  gridPageSelector, useGridApiContext, useGridSelector,
 } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import axios from "axios";
@@ -30,10 +20,11 @@ import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import EmailIcon from "@mui/icons-material/Email";
 import ExcelDownload from "../Excel";
 import { RequestServer } from "../api/HttpReq";
+import '../indexCSS/muiBoxStyles.css'
 
 const Contacts = () => {
-  const urlContact = `${process.env.REACT_APP_SERVER_URL}/contacts`;
-  const urlDelete = `${process.env.REACT_APP_SERVER_URL}/deleteContact?code=`;
+  const urlContact = `/contacts`;
+  const urlDelete = `/deleteContact?code=`;
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -41,16 +32,8 @@ const Contacts = () => {
   const [records, setRecords] = useState([]);
   const [fetchError, setFetchError] = useState();
   const [fetchLoading, setFetchLoading] = useState(true);
-  const [notify, setNotify] = useState({
-    isOpen: false,
-    message: "",
-    type: "",
-  });
-  const [confirmDialog, setConfirmDialog] = useState({
-    isOpen: false,
-    title: "",
-    subTitle: "",
-  });
+  const [notify, setNotify] = useState({isOpen: false,message: "",type: "",});
+  const [confirmDialog, setConfirmDialog] = useState({isOpen: false, title: "",subTitle: "",});
 
   //email,Whatsapp
   const [showEmail, setShowEmail] = useState(false);
@@ -64,7 +47,7 @@ const Contacts = () => {
   }, []);
 
   const fetchRecords = () => {
-    RequestServer("post", urlContact, null, {})
+    RequestServer(urlContact)
       .then((res) => {
         console.log(res, "index page res");
         if (res.success) {
@@ -81,25 +64,6 @@ const Contacts = () => {
         setFetchError(err.message);
         setFetchLoading(false);
       });
-    // axios.post(urlContact)
-    //   .then(
-    //     (res) => {
-    //       console.log("res Contact records", res);
-
-    //       if (res.data.length > 0 && (typeof (res.data) !== 'string')) {
-    //         setRecords(res.data);
-    //         setFetchLoading(false)
-    //       }
-    //       else {
-    //         setRecords([]);
-    //         setFetchLoading(false)
-    //       }
-    //     }
-    //   )
-    //   .catch((error) => {
-    //     console.log('error', error);
-    //     setFetchLoading(false)
-    //   })
   };
 
   const handleAddRecord = () => {
@@ -139,7 +103,7 @@ const Contacts = () => {
   const onebyoneDelete = (row) => {
     console.log("one by on delete", row);
 
-    RequestServer("post", urlDelete + row)
+    RequestServer(urlDelete + row)
       .then((res) => {
         if (res.success) {
           fetchRecords();
@@ -171,29 +135,6 @@ const Contacts = () => {
           isOpen: false,
         });
       });
-    // axios.post(urlDelete + row)
-    // .then((res) => {
-    //   console.log('api delete response', res);
-    //   fetchRecords();
-    //   setNotify({
-    //     isOpen: true,
-    //     message: res.data,
-    //     type: 'success'
-    //   })
-    // })
-    // .catch((error) => {
-    //   console.log('api delete error', error);
-    //   setNotify({
-    //     isOpen: true,
-    //     message: error.message,
-    //     type: 'error'
-    //   })
-    // })
-
-    // setConfirmDialog({
-    //   ...confirmDialog,
-    //   isOpen: false
-    // })
   };
 
   function CustomPagination() {
@@ -233,18 +174,12 @@ const Contacts = () => {
 
   const columns = [
     {
-      field: "lastName",
-      headerName: "Last Name",
-      headerAlign: "center",
-      align: "center",
-      flex: 1,
+      field: "lastName",headerName: "Last Name",
+      headerAlign: "center", align: "center",flex: 1,
     },
     {
-      field: "accountName",
-      headerName: "Account Name",
-      headerAlign: "center",
-      align: "center",
-      flex: 1,
+      field: "accountName", headerName: "Account Name",
+      headerAlign: "center",align: "center",flex: 1,
       renderCell: (params) => {
         if (params.row.accountDetails) {
           return (
@@ -258,33 +193,21 @@ const Contacts = () => {
       },
     },
     {
-      field: "phone",
-      headerName: "Phone",
-      headerAlign: "center",
-      align: "center",
-      flex: 1,
+      field: "phone",headerName: "Phone",
+      headerAlign: "center",align: "center",flex: 1,
     },
     {
-      field: "leadSource",
-      headerName: "Lead Source",
-      headerAlign: "center",
-      align: "center",
-      flex: 1,
+      field: "leadSource",headerName: "Lead Source",
+      headerAlign: "center",align: "center",flex: 1,
     },
     {
-      field: "email",
-      headerName: "Email",
-      headerAlign: "center",
-      align: "center",
-      flex: 1,
+      field: "email",headerName: "Email",
+      headerAlign: "center",align: "center",flex: 1,
     },
     {
-      field: "actions",
-      headerName: "Actions",
-      width: 400,
-      headerAlign: "center",
-      align: "center",
-      flex: 1,
+      field: "actions",headerName: "Actions",     
+      headerAlign: "center",align: "center",
+      flex: 1, width: 400,
       renderCell: (params) => {
         return (
           <>
@@ -359,7 +282,6 @@ const Contacts = () => {
                   </Tooltip>
                   <Tooltip title="Email">
                     <IconButton>
-                      {" "}
                       <EmailIcon
                         sx={{ color: "#DB4437" }}
                         onClick={handlesendEmail}
@@ -385,73 +307,9 @@ const Contacts = () => {
         </Box>
         <Box
           m="15px 0 0 0"
-          height="380px"
-          sx={{
-            "& .MuiDataGrid-root": {
-              border: "none",
-            },
-            "& .MuiDataGrid-cell": {
-              borderBottom: "none",
-            },
-            "& .name-column--cell": {
-              color: colors.greenAccent[300],
-            },
-            "& .MuiDataGrid-columnHeaders": {
-              backgroundColor: colors.blueAccent[700],
-              borderBottom: "none",
-            },
-            "& .MuiDataGrid-columnHeaderTitle": {
-              fontWeight: "bold !important",
-              overflow: "visible !important",
-            },
-            "& .MuiDataGrid-virtualScroller": {
-              // backgroundColor: colors.primary[400],
-            },
-            "& .MuiDataGrid-footerContainer": {
-              // borderTop: "none",
-              backgroundColor: colors.blueAccent[700],
-              borderBottom: "none",
-            },
-            "& .MuiCheckbox-root": {
-              color: `${colors.greenAccent[200]} !important`,
-            },
-            "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-              color: `${colors.grey[100]} !important`,
-            },
-            "& .MuiDataGrid-row:hover": {
-              backgroundColor: "#CECEF0",
-              cursor: "pointer",
-            },
-            "& .C-MuiDataGrid-row-even": {
-              backgroundColor: "#D7ECFF",
-            },
-            "& .C-MuiDataGrid-row-odd": {
-              backgroundColor: "#F0F8FF",
-            },
-          }}
-        >
-          {/* <div className='btn-test'>
-              {
-                showEmail ?
-                  <>
-                    <Tooltip title="Email">
-                      <IconButton> <EmailIcon sx={{ color: '#DB4437' }} onClick={handlesendEmail} /> </IconButton>
-                    </Tooltip>
-                    //  <Tooltip title="Whatsapp">
-                    //   <IconButton> <WhatsAppIcon sx={{ color: '#34A853' }} onClick={handlesendWhatsapp} /> </IconButton>
-                    // </Tooltip> 
-                    <Tooltip title="Delete Selected">
-                      <IconButton> <DeleteIcon sx={{ color: '#FF3333' }} onClick={(e) => onHandleDelete(e,selectedRecordIds)} /> </IconButton>
-                    </Tooltip>
-                  </>
-                   :
-                  <Button  variant="contained" color="info" onClick={handleAddRecord} >
-                    New
-                  </Button>
-                  
-                  
-              }
-              </div> */}
+          height="380px"          
+          className="my-mui-styles"
+        >         
 
           <DataGrid
             rows={records}
@@ -496,13 +354,11 @@ const Contacts = () => {
         sx={{ backdropFilter: "blur(1px)" }}
       >
         <div className="modal">
-          {/* <Box sx={ModalBoxstyle}> */}
           <EmailModalPage
             data={selectedRecordDatas}
             handleModal={setEmailModalClose}
             bulkMail={true}
           />
-          {/* </Box> */}
         </div>
       </Modal>
 
@@ -514,13 +370,11 @@ const Contacts = () => {
         sx={{ backdropFilter: "blur(1px)" }}
       >
         <div className="modal">
-          {/* <Box sx={ModalBoxstyle}> */}
           <WhatAppModalPage
             data={selectedRecordDatas}
             handleModal={setWhatAppModalClose}
             bulkMail={true}
           />
-          {/* </Box> */}
         </div>
       </Modal>
     </>

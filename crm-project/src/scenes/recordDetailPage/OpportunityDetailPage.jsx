@@ -5,7 +5,6 @@ import * as Yup from "yup";
 import { Grid, Button, Forminput, DialogActions, TextField, Autocomplete, MenuItem ,Chip } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom"
 import axios from 'axios'
-// import "../formik/FormStyles.css"
 import ToastNotification from '../toast/ToastNotification';
 import { LeadSourcePickList, OppStagePicklist, OppTypePicklist } from '../../data/pickLists';
 import CustomizedSelectForFormik from '../formik/CustomizedSelectForFormik';
@@ -13,12 +12,12 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import './Form.css'
+import { RequestServer } from '../api/HttpReq';
+import { OpportunityInitialValues,OpportunitySavedValues } from '../formik/IntialValues/formValues';
 
-
-
-const url = `${process.env.REACT_APP_SERVER_URL}/UpsertOpportunity`;
-const fetchLeadsbyName = `${process.env.REACT_APP_SERVER_URL}/LeadsbyName`;
-const fetchInventoriesbyName = `${process.env.REACT_APP_SERVER_URL}/InventoryName`;
+const url = `/UpsertOpportunity`;
+const fetchLeadsbyName = `/LeadsbyName?searchKey=`;
+const fetchInventoriesbyName = `/InventoryName?searchKey=`;
 
 
 const OpportunityDetailPage = ({ item }) => {
@@ -41,45 +40,10 @@ const OpportunityDetailPage = ({ item }) => {
 
     }, [])
 
+    const initialValues= OpportunityInitialValues;
+    const savedValues=OpportunitySavedValues(singleOpportunity)
 
 
-
-    const initialValues = {
-        LeadId: '',
-        InventoryId: '',
-        opportunityName: '',
-        type: '',
-        leadSource: '',
-        amount: '',
-        closeDate: '',
-        stage: '',
-        description: '',
-        createdBy: '',
-        modifiedBy: '',
-        createdDate: '',
-        modifiedDate: '',
-    }
-
-    const savedValues = {
-        LeadId: singleOpportunity?.LeadId ?? "",
-        InventoryId: singleOpportunity?.InventoryId ?? "",
-        opportunityName: singleOpportunity?.opportunityName ?? "",
-        type: singleOpportunity?.type ?? "",
-        leadSource: singleOpportunity?.leadSource ?? "",
-        amount: singleOpportunity?.amount ?? "",
-        closeDate: new Date(singleOpportunity?.closeDate).getUTCFullYear()
-            + '-' + ('0' + (new Date(singleOpportunity?.closeDate).getUTCMonth() + 1)).slice(-2)
-            + '-' + ('0' + (new Date(singleOpportunity?.closeDate).getUTCDate() + 1)).slice(-2) || '',
-        stage: singleOpportunity?.stage ?? "",
-        description: singleOpportunity?.description ?? "",
-        createdBy: singleOpportunity?.createdBy.userFullName ?? "",
-        modifiedBy: singleOpportunity?.modifiedBy.userFullName ?? "",
-        createdDate: new Date(singleOpportunity?.createdDate).toLocaleString(),
-        modifiedDate: new Date(singleOpportunity?.modifiedDate).toLocaleString(),
-        _id: singleOpportunity?._id ?? "",
-        inventoryDetails: singleOpportunity?.inventoryDetails ?? "",
-        leadDetails: singleOpportunity?.leadDetails ?? "",
-    }
     const validationSchema = Yup.object({
         opportunityName: Yup
             .string()
@@ -89,8 +53,6 @@ const OpportunityDetailPage = ({ item }) => {
             .required('Required')
             .matches(/^[0-9]+$/, "Must be only digits"),
         // amount: Yup.number().required('Amount is required').positive('Amount must be positive').integer('Amount must be an integer'),
-
-
     })
 
     const formSubmission = (values) => {
@@ -148,36 +110,50 @@ const OpportunityDetailPage = ({ item }) => {
         }
         console.log('after change form submission value', values);
 
-        axios.post(url, values)
+        RequestServer(url, values)
             .then((res) => {
-                console.log('post response', res);
+                console.log(res,"res from RequestServer")
+                if (res.success) {
+                    setNotify({
+                        isOpen: true,
+                        message: res.data,
+                        type: "success",
+                    });               
+                } else {
+                    console.log(res, "error in then");
+                    setNotify({
+                        isOpen: true,
+                        message: res.error.message,
+                        type: "error",
+                    });
+                }
+            })
+            .catch((error)=>{
                 setNotify({
-                    isOpen: true,
-                    message: res.data,
-                    type: 'success'
-                })
+                            isOpen:true,
+                            message:error.message,
+                            type:'error'
+                          })
+            })
+            .finally(()=>{
                 setTimeout(() => {
                     navigate(-1);
-                }, 2000)
-            })
-            .catch((error) => {
-                console.log('error', error);
-                setNotify({
-                    isOpen: true,
-                    message: error.message,
-                    type: 'error'
-                })
-            })
+                }, 2000);
+            })     
     }
 
     const FetchLeadsbyName = (newInputValue) => {
-        console.log('inside FetchLeadsbyName fn');
+      
         console.log('newInputValue', newInputValue)
-        axios.post(`${fetchLeadsbyName}?searchKey=${newInputValue}`)
+        RequestServer(fetchLeadsbyName + newInputValue)
             .then((res) => {
                 console.log('res fetchLeadsbyName', res.data)
-                if (typeof (res.data) === "object") {
-                    setLeadsRecords(res.data)
+                if (res.success) {
+                    if (typeof (res.data) === "object") {
+                        setLeadsRecords(res.data)
+                    }
+                } else {
+                    setLeadsRecords([])
                 }
             })
             .catch((error) => {
@@ -186,12 +162,17 @@ const OpportunityDetailPage = ({ item }) => {
     }
 
     const FetchInventoriesbyName = (newInputValue) => {
-        axios.post(`${fetchInventoriesbyName}?searchKey=${newInputValue}`)
+        RequestServer(fetchInventoriesbyName + newInputValue)
             .then((res) => {
                 console.log('res fetch Inventoriesby Name', res.data)
-                if (typeof (res.data) === "object") {
-                    setInventoriesRecord(res.data)
-                }
+               
+                if (res.success) {
+                    if (typeof (res.data) === "object") {
+                        setInventoriesRecord(res.data)
+                    }
+                } else {
+                    setInventoriesRecord([])
+                }                 
             })
             .catch((error) => {
                 console.log('error fetchInventoriesbyName', error);
@@ -217,16 +198,8 @@ const OpportunityDetailPage = ({ item }) => {
                     validationSchema={validationSchema}
                     onSubmit={(values, { resetForm }) => { formSubmission(values) }}
                 >
-                    {(props) => {
-                        const {
-                            values,
-                            dirty,
-                            isSubmitting,
-                            handleChange,
-                            handleSubmit,
-                            handleReset,
-                            setFieldValue,
-                        } = props;
+                     {(props) => {
+                        const {values,dirty, isSubmitting, handleChange,handleSubmit,handleReset,setFieldValue,errors,touched,} = props;
 
                         return (
                             <>
@@ -248,18 +221,19 @@ const OpportunityDetailPage = ({ item }) => {
                                                 options={inventoriesRecord}
                                                 value={values.inventoryDetails}
                                                 getOptionLabel={option => option.propertyName || ''}
-                                                //  isOptionEqualToValue = {(option,value)=>
-                                                //           option.propertyName === value
-                                                //   }
+                                                
                                                 onChange={(e, value) => {
                                                     if (!value) {
                                                         console.log('!value', value);
                                                         setFieldValue("InventoryId", '')
                                                         setFieldValue("inventoryDetails", '')
+                                                        setFieldValue("InventoryName",'')
                                                     } else {
                                                         console.log('value', value);
                                                         setFieldValue("InventoryId", value.id)
                                                         setFieldValue("inventoryDetails", value)
+                                                        setFieldValue("InventoryName",value.propertyName)
+                                                  
                                                     }
                                                 }}
                                                 onInputChange={(event, newInputValue) => {
@@ -298,13 +272,14 @@ const OpportunityDetailPage = ({ item }) => {
                                                     if (!value) {
                                                         console.log('!value', value);
                                                         setFieldValue("LeadId", '')
+                                                        setFieldValue("LeadName", '')
                                                         setFieldValue("leadDetails", '')
                                                     } else {
                                                         console.log('value', value);
                                                         setFieldValue("LeadId", value.id)
+                                                        setFieldValue("LeadName", value.leadName)
                                                         setFieldValue("leadDetails", value)
                                                     }
-
                                                 }}
                                                 onInputChange={(event, newInputValue) => {
                                                     console.log('newInputValue', newInputValue);
@@ -322,7 +297,7 @@ const OpportunityDetailPage = ({ item }) => {
                                         </Grid>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="stage">Opportunity Stage</label>
-                                            <Field name="stage" component={CustomizedSelectForFormik} className="form-customSelect">
+                                            <Field name="stage" component={CustomizedSelectForFormik} >
                                                 <MenuItem value=""><em>None</em></MenuItem>
                                                 {
                                                     OppStagePicklist.map((i) => {
@@ -333,7 +308,7 @@ const OpportunityDetailPage = ({ item }) => {
                                         </Grid>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="type">Type</label>
-                                            <Field name="type" component={CustomizedSelectForFormik} className="form-customSelect">
+                                            <Field name="type" component={CustomizedSelectForFormik}>
                                                 <MenuItem value=""><em>None</em></MenuItem>
                                                 {
                                                     OppTypePicklist.map((i) => {
@@ -344,7 +319,7 @@ const OpportunityDetailPage = ({ item }) => {
                                         </Grid>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="leadSource"> Lead Source</label>
-                                            <Field name="leadSource" component={CustomizedSelectForFormik} className="form-customSelect" >
+                                            <Field name="leadSource" component={CustomizedSelectForFormik} >
                                                 <MenuItem value=""><em>None</em></MenuItem>
                                                 {
                                                     LeadSourcePickList.map((i) => {

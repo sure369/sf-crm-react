@@ -24,6 +24,7 @@ import FileUploadUpdated from "../fileUpload/FileUpdated";
 import PageNotFound from "../Errors/PageNotFound";
 import DashboardIndex from "../dashboard";
 import HomePage from "../home";
+import PermissiionSetForm from "../recordDetailPage/PermissionSetForm";
 
 function LoginLayoutIndex() {
   return (
@@ -59,7 +60,7 @@ function LoginLayoutIndex() {
         />
 
         <Route path="/file" element={<FileUploadUpdated />} />
-        <Route path="/test" element={<DashboardIndex />} />
+        <Route path="/test" element={<PermissiionSetForm />} />
         <Route path="/Home" element={<HomePage />} />
         <Route path="*" element={<PageNotFound />} />
 

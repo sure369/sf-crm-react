@@ -20,10 +20,11 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import './Form.css'
+import { ContactInitialValues,ContactSavedValues } from '../formik/IntialValues/formValues';
+import { RequestServer } from '../api/HttpReq';
 
-
-const url = `${process.env.REACT_APP_SERVER_URL}/UpsertContact`;
-const fetchAccountsbyName = `${process.env.REACT_APP_SERVER_URL}/accountsname`;
+const urlUpsert = `/UpsertContact`;
+const fetchAccountsbyName = `/accountsname?searchKey=`;
 
 const ContactDetailPage = ({ item }) => {
 
@@ -44,63 +45,22 @@ const ContactDetailPage = ({ item }) => {
 
     }, [])
 
+    const initialValues= ContactInitialValues
+    const savedValues= ContactSavedValues(singleContact)
 
-
-    const initialValues = {
-        AccountId: "",
-        salutation: '',
-        firstName: '',
-        lastName: '',
-        fullName: '',
-        dob: '',
-        phone: '',
-        department: '',
-        leadSource: '',
-        email: '',
-        fullAddress: '',
-        description: '',
-        createdBy: '',
-        modifiedBy:'',
-        createdDate: '',
-        modifiedDate: '',
-    }
-
-    const savedValues = {
-        AccountId: singleContact?.AccountId ?? "",
-        salutation: singleContact?.salutation ?? "",
-        firstName: singleContact?.firstName ?? "",
-        lastName: singleContact?.lastName ?? "",
-        fullName: singleContact?.fullName ?? "",
-        phone: singleContact?.phone ?? "",
-        dob: new Date(singleContact?.dob).getUTCFullYear()
-            + '-' + ('0' + (new Date(singleContact?.dob).getUTCMonth() + 1)).slice(-2)
-            + '-' + ('0' + (new Date(singleContact?.dob).getUTCDate()+1)).slice(-2) || '',
-
-        department: singleContact?.department ?? "",
-        leadSource: singleContact?.leadSource ?? "",
-        email: singleContact?.email ?? "",
-        fullAddress: singleContact?.fullAddress ?? "",
-        description: singleContact?.description ?? "",
-        createdBy: singleContact?.createdBy.userFullName ?? "",
-        modifiedBy: singleContact?.modifiedBy.userFullName ?? "",
-        createdDate: new Date(singleContact?.createdDate).toLocaleString(),
-        modifiedDate: new Date(singleContact?.modifiedDate).toLocaleString(),
-        _id: singleContact?._id ?? "",
-        accountDetails: singleContact?.accountDetails ?? "",
-    }
     const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
 
     const validationSchema = Yup.object({
         firstName: Yup
             .string()
-            .matches(/^[A-Za-z ]*$/, 'Numeric characters not accepted')
-            .max(15, 'lastName must be less than 15 characters'),
+            // .matches(/^[A-Za-z ]*$/, 'Numeric characters not accepted')
+            .max(30, 'lastName must be less than 15 characters'),
         lastName: Yup
             .string()
             .required('Required')
-            .matches(/^[A-Za-z ]*$/, 'Numeric characters not accepted')
+            // .matches(/^[A-Za-z ]*$/, 'Numeric characters not accepted')
             .min(3, 'lastName must be more than 3 characters')
-            .max(15, 'lastName must be less than 15 characters'),
+            .max(30, 'lastName must be less than 15 characters'),
         phone: Yup
             .string()
             .matches(phoneRegExp, 'Phone number is not valid')
@@ -152,18 +112,14 @@ const ContactDetailPage = ({ item }) => {
         }
         console.log('after change form submission value', values);
 
-        axios.post(url, values)
+        RequestServer(urlUpsert, values)
             .then((res) => {
                 console.log('upsert record  response', res);
                 setNotify({
                     isOpen: true,
                     message: res.data,
                     type: 'success'
-                })
-                setTimeout(() => {
-                    navigate(-1);
-                }, 2000)
-
+                })               
             })
             .catch((error) => {
                 console.log('upsert record error', error);
@@ -173,20 +129,30 @@ const ContactDetailPage = ({ item }) => {
                     type: 'error'
                 })
             })
+            .finally(()=>{
+                setTimeout(() => {
+                    navigate(-1);
+                }, 2000)
+            })
     }
 
     const FetchAccountsbyName = (newInputValue) => {
 
-        axios.post(`${fetchAccountsbyName}?searchKey=${newInputValue}`)
-            .then((res) => {
-                console.log('res fetchAccountsbyName', res.data)
-                if (typeof (res.data) === "object") {
+        RequestServer(fetchAccountsbyName + newInputValue)
+        .then((res)=>{
+            if(res.success){
+                if(typeof(res.data)!=='string'){
                     setAccNames(res.data)
-                }
-            })
-            .catch((error) => {
-                console.log('error fetchAccountsbyName', error);
-            })
+                }else{
+                    setAccNames([])
+                }                
+            }else{
+                console.log("status error",res.error.message)
+            }
+        })
+        .catch((error)=>{
+            console.log("error fetchInventoriesbyName",error)
+        })
     }
     const handleFormClose = () => {
         navigate(-1)
@@ -240,15 +206,7 @@ const ContactDetailPage = ({ item }) => {
                         onSubmit={(values) => { formSubmission(values) }}
                     >
                         {(props) => {
-                            const {
-                                values,
-                                dirty,
-                                isSubmitting,
-                                handleChange,
-                                handleSubmit,
-                                handleReset,
-                                setFieldValue,
-                            } = props;
+                        const {values,dirty, isSubmitting, handleChange,handleSubmit,handleReset,setFieldValue,errors,touched,} = props;
 
                             return (
                                 <>
@@ -395,7 +353,7 @@ const ContactDetailPage = ({ item }) => {
                                                     <Grid item xs={6} md={6}>
                                                         <label htmlFor="modifiedDate" >Modified By</label>
                                                         <Field name='modifiedDate' type="text" class="form-input" disabled
-                                                          value={values.createdBy +',  '+values.createdDate}  />
+                                                          value={values.modifiedBy +',  '+values.modifiedDate}  />
                                                     </Grid>
                                                     </Grid>
                                                 </>
@@ -427,10 +385,8 @@ const ContactDetailPage = ({ item }) => {
                 aria-describedby="modal-modal-description"
                 sx={{ backdropFilter: "blur(1px)"}}
            >
-                {/* <Box sx={ModalStyle}> */}
                 <div className='modal'>
                     <EmailModalPage data={singleContact} handleModal={setEmailModalClose} bulkMail={false} />
-                {/* </Box> */}
                 </div>
             </Modal>
             <Modal

@@ -8,9 +8,10 @@ import axios from 'axios'
 import ToastNotification from "../toast/ToastNotification";
 import { convert } from "html-to-text";
 import CustomizedRichTextField from "../formik/CustomizedRichTextField";
- import '../recordDetailPage/Form.css'
+import '../recordDetailPage/Form.css'
+import { RequestServer } from "../api/HttpReq";
 
-const urlSendEmailbulk = `${process.env.REACT_APP_SERVER_URL}/bulkemail`
+const urlSendEmailbulk = `/bulkemail`
 
 const EmailModalPage = ({ data, handleModal, bulkMail }) => {
 
@@ -55,12 +56,6 @@ const EmailModalPage = ({ data, handleModal, bulkMail }) => {
 
         const convertText = convert(values.htmlBody, HTMLbodyOptions);
         console.log('convertText',convertText)
-//         var p= values.htmlBody
-//         var parser = new DOMParser();
-// var htmlDoc = parser.parseFromString(p, 'text/html');
-// console.log('html body',htmlDoc.body.getElementsByTagName("P")[0].innerText);
-
-
 
         let mergeBody = `Hai ${element.fullName},`+ '\n'+"\n"+ convertText
 
@@ -71,26 +66,22 @@ const EmailModalPage = ({ data, handleModal, bulkMail }) => {
         // formData.append('recordsData', JSON.stringify(element));
         formData.append('file', values.attachments);
 
-        axios.post(urlSendEmailbulk, formData)
+        RequestServer(urlSendEmailbulk, formData)
             .then((res) => {
                 console.log('email send res', res)
-                if(res.data){
-                    setNotify({
-                        isOpen: true,
-                        message: res.data,
-                        type: 'success'
-                    })
-                }else{
+                if(res.success){
                     setNotify({
                         isOpen: true,
                         message: "Mail sent Succesfully",
                         type: 'success'
                     })
-                }
-               
-                setTimeout(() => {
-                    handleModal(false)
-                }, 2000)
+                }else{
+                    setNotify({
+                        isOpen: true,
+                        message: res.error.message,
+                        type: 'error'
+                    })
+                }                   
             })
             .catch((error) => {
                 console.log('email send error', error);
@@ -99,6 +90,11 @@ const EmailModalPage = ({ data, handleModal, bulkMail }) => {
                     message: error.message,
                     type: 'error'
                 })
+            })
+            .finally(()=>{
+                setTimeout(() => {
+                    handleModal(false)
+                }, 2000)
             })
        
     }
