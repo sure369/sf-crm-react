@@ -6,8 +6,6 @@ import {
     Grid, Button, FormControl, Stack, Alert, DialogActions,
     Autocomplete, TextField ,MenuItem
 } from "@mui/material";
-import axios from 'axios'
-// import "../formik/FormStyles.css"
 import ToastNotification from "../toast/ToastNotification";
 import { LeadSourcePickList, NameSalutionPickList} from '../../data/pickLists'
 import CustomizedSelectForFormik from '../formik/CustomizedSelectForFormik';
@@ -15,8 +13,10 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import '../recordDetailPage/Form.css'
+import { RequestServer } from "../api/HttpReq";
+import { ContactInitialValues } from "../formik/IntialValues/formValues";
 
-const UpsertUrl = `${process.env.REACT_APP_SERVER_URL}/UpsertContact`;
+const UpsertUrl = `/UpsertContact`;
 
 const ModalConAccount = ({ item, handleModal }) => {
 
@@ -32,24 +32,8 @@ const ModalConAccount = ({ item, handleModal }) => {
 
     }, [])
 
-    const initialValues = {
-        AccountId: "",
-        salutation: '',
-        firstName: '',
-        lastName: '',
-        fullName: '',
-        dob: '',
-        phone: '',
-        department: '',
-        leadSource: '',
-        email: '',
-        fullAddress: '',
-        description: '',
-        createdBy: '',
-        modifiedBy: '',
-        createdDate: '',
-        modifiedDate: '',
-    }
+    const initialValues=ContactInitialValues;
+
     const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
 
     const validationSchema = Yup.object({
@@ -95,18 +79,23 @@ const ModalConAccount = ({ item, handleModal }) => {
             values.dob = dobSec;
         }
 
-        await axios.post(UpsertUrl, values)
+        await RequestServer(UpsertUrl, values)
 
             .then((res) => {
                 console.log('task form Submission  response', res);
+               if(res.success){
                 setNotify({
                     isOpen:true,
                     message:res.data,
                     type:'success'
                   })
-                setTimeout(() => {
-                    handleModal()
-                }, 1000)
+               }else{
+                setNotify({
+                    isOpen:true,
+                    message:res.error.message,
+                    type:'error'
+                  })
+               }
             })
             .catch((error) => {
                 console.log('task form Submission  error', error);
@@ -115,6 +104,11 @@ const ModalConAccount = ({ item, handleModal }) => {
                     message:error.message,
                     type:'error'          
                   })
+            })
+            .finally(()=>{               
+                setTimeout(() => {
+                    handleModal()
+                }, 1000)
             })
     }
 
@@ -130,12 +124,8 @@ const ModalConAccount = ({ item, handleModal }) => {
                 validationSchema={validationSchema}
                 onSubmit={(values, { resetForm }) => formSubmission(values, { resetForm })}
             >
-                {(props) => {
-                    const { 
-                            values,isValid,dirty,
-                            isSubmitting,handleChange,
-                            handleSubmit,handleReset,setFieldValue,
-                        } = props;
+                 {(props) => {
+                        const {values,dirty, isSubmitting, handleChange,handleSubmit,handleReset,setFieldValue,errors,touched,} = props;
 
                     return (
                         <>
@@ -176,8 +166,6 @@ const ModalConAccount = ({ item, handleModal }) => {
                                                 </div>
                                             </Grid>
                                             <Grid item xs={6} md={6}>
-                                                {/* <label htmlFor="dob">Date of Birth</label>
-                                                <Field name="dob" type="date" class="form-input" /> */}
                                                 <label htmlFor="dob">Date of Birth</label><br />
                                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                     <DatePicker
@@ -220,7 +208,7 @@ const ModalConAccount = ({ item, handleModal }) => {
                                 <div className='action-buttons'>
                                     <DialogActions sx={{ justifyContent: "space-between" }}>
 
-                                        <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Save</Button>
+                                        <Button type='success' variant="contained" color="secondary" disabled={isSubmitting || !dirty}>Save</Button>
 
                                         <Button type="reset" variant="contained" onClick={(e) => handleModal(false)} >Cancel</Button>
 

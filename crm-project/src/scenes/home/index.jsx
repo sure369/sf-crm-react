@@ -5,7 +5,7 @@ import { Bar } from "react-chartjs-2";
 import "./home.css";
 
 function HomePage() {
-  const urlOpportunity = `${process.env.REACT_APP_SERVER_URL}/opportunities`;
+  const urlOpportunity = `/opportunities`;
 
   const [records, setRecords] = useState([]);
 
@@ -14,12 +14,17 @@ function HomePage() {
   }, []);
 
   const fetchRecords = () => {
-    RequestServer("post", urlOpportunity, null, {})
+    RequestServer( urlOpportunity)
       .then((res) => {
-        console.log(res, "Dashboard index page res");
-        console.log("Dashboard Opportunity Data", res.data);
-        setRecords(res.data);
-        console.log("closedate is ", records.closeDate);
+        if(res.success){
+          console.log(res, "Dashboard index page res");
+          console.log("Dashboard Opportunity Data", res.data);
+          setRecords(res.data);
+          console.log("closedate is ", records.closeDate);
+        }else{
+          console.log("then error",res.error.message)
+          setRecords([])
+        }
       })
       .catch((error) => {
         console.log("Dashboard Opportunity Error is :", error);

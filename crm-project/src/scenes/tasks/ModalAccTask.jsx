@@ -6,8 +6,6 @@ import {
     Grid, Button, FormControl, Stack, Alert, DialogActions,
     Autocomplete, TextField, MenuItem
 } from "@mui/material";
-import axios from 'axios'
-// import "../formik/FormStyles.css"
 import { TaskSubjectPicklist } from "../../data/pickLists";
 import CustomizedSelectForFormik from '../formik/CustomizedSelectForFormik';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -15,9 +13,11 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import ToastNotification from '../toast/ToastNotification';
 import '../recordDetailPage/Form.css'
+import { RequestServer } from '../api/HttpReq';
+import { TaskInitialValues } from '../formik/IntialValues/formValues';
 
 
-const UpsertUrl = `${process.env.REACT_APP_SERVER_URL}/UpsertTask`;
+const UpsertUrl = `/UpsertTask`;
 
 const ModalAccTask = ({ item, handleModal }) => {
 
@@ -33,21 +33,7 @@ const ModalAccTask = ({ item, handleModal }) => {
 
     }, [])
 
-    const initialValues = {
-        subject: '',
-        realatedTo: '',
-        assignedTo: '',
-        StartDate: '',
-        EndDate: '',
-        description: '',
-        attachments: null,
-        object: '',
-        AccountId: '',
-        createdBy: '',
-        modifiedBy: '',
-        createdDate: '',
-        modifiedDate: '',
-    }
+    const initialValues = TaskInitialValues
 
     const validationSchema = Yup.object({
         subject: Yup
@@ -65,7 +51,7 @@ const ModalAccTask = ({ item, handleModal }) => {
 
     const formSubmission = async (values, { resetForm }) => {
         console.log('inside form Submission', values);
-        let account = taskParentRecord._id;
+
         let dateSeconds = new Date().getTime();
         let StartDateSec = new Date(values.StartDate).getTime()
         let EndDateSec = new Date(values.EndDate).getTime()
@@ -74,7 +60,7 @@ const ModalAccTask = ({ item, handleModal }) => {
         values.modifiedBy = JSON.parse(sessionStorage.getItem('loggedInUser'))
         values.modifiedDate = dateSeconds;
         values.createdDate = dateSeconds;
-        values.AccountId = account;
+        values.AccountId =  taskParentRecord._id;
         values.object = 'Account'
         values.accountDetails = {
             accountName: taskParentRecord.accountName,
@@ -89,17 +75,22 @@ const ModalAccTask = ({ item, handleModal }) => {
             values.EndDate = EndDateSec
         }
 
-        await axios.post(UpsertUrl, values)
+        await RequestServer(UpsertUrl, values)
             .then((res) => {
                 console.log('task form Submission  response', res);
-                setNotify({
-                    isOpen: true,
-                    message: res.data,
-                    type: 'success'
-                })
-                setTimeout(() => {
-                    handleModal()
-                }, 1000)
+                if(res.success){
+                    setNotify({
+                        isOpen: true,
+                        message: res.data,
+                        type: 'success'
+                    })
+                }else{
+                    setNotify({
+                        isOpen: true,
+                        message: res.error.message,
+                        type: 'error'
+                    })
+                }
             })
             .catch((error) => {
                 console.log('task form Submission  error', error);
@@ -108,6 +99,8 @@ const ModalAccTask = ({ item, handleModal }) => {
                     message: error.message,
                     type: 'error'
                 })
+            })
+            .finally(()=>{
                 setTimeout(() => {
                     handleModal()
                 }, 2000)
@@ -127,15 +120,7 @@ const ModalAccTask = ({ item, handleModal }) => {
                 onSubmit={(values, { resetForm }) => formSubmission(values, { resetForm })}
             >
                 {(props) => {
-                    const {
-                        values,
-                        dirty,
-                        isSubmitting,
-                        handleChange,
-                        handleSubmit,
-                        handleReset,
-                        setFieldValue,
-                    } = props;
+                        const {values,dirty, isSubmitting, handleChange,handleSubmit,handleReset,setFieldValue,errors,touched,} = props;
 
                     return (
                         <>
@@ -204,7 +189,7 @@ const ModalAccTask = ({ item, handleModal }) => {
                                 </Grid>
                                 <div className='action-buttons'>
                                     <DialogActions sx={{ justifyContent: "space-between" }}>
-                                        <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Save</Button>
+                                        <Button type='success' variant="contained" color="secondary" disabled={isSubmitting || !dirty}>Save</Button>
                                         <Button type="reset" variant="contained" onClick={(e) => handleModal(false)} >Cancel</Button>
                                     </DialogActions>
                                 </div>

@@ -18,10 +18,10 @@ import { RequestServer } from "../api/HttpReq";
 
 const LeadRelatedItems = ({ item }) => {
 
-  const taskDeleteURL = `${process.env.REACT_APP_SERVER_URL}/deleteTask?code=`;
-  const opportunityDeleteURL = `${process.env.REACT_APP_SERVER_URL}/deleteOpportunity?code=`;
-  const urlTaskbyLeadId = `${process.env.REACT_APP_SERVER_URL}/getTaskbyLeadId?searchId=`;
-  const urlOppbyLeadId = `${process.env.REACT_APP_SERVER_URL}/getLeadsbyOppid?searchId=`;
+  const taskDeleteURL = `/deleteTask?code=`;
+  const opportunityDeleteURL = `/deleteOpportunity?code=`;
+  const urlTaskbyLeadId = `/getTaskbyLeadId?searchId=`;
+  const urlOppbyLeadId = `/getLeadsbyOppid?searchId=`;
  
   const navigate = useNavigate();
   const location = useLocation();
@@ -54,7 +54,7 @@ const LeadRelatedItems = ({ item }) => {
   const getTasksbyLeadId = (leadsId) => {
 
     console.log('lead id', leadsId);
-    RequestServer("post", urlTaskbyLeadId + leadsId, null, {})
+    RequestServer(urlTaskbyLeadId + leadsId)
       .then((res) => {
         if (res.success) {
           setRelatedTask(res.data);
@@ -67,26 +67,10 @@ const LeadRelatedItems = ({ item }) => {
       .catch((err)=>{
         console.log('error task fetch', err)
       })
-
-    // axios.post(urlTask + leadsId)
-    //   .then((res) => {
-    //     console.log('response task fetch', res.data);
-    //     if (res.data.length > 0) {
-    //       setRelatedTask(res.data);
-    //       setTaskNoOfPages(Math.ceil(res.data.length / taskItemsPerPage));
-    //       setTaskPerPage(1)
-    //     }
-    //     else {
-    //       setRelatedTask([]);
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.log('error task fetch', error)
-    //   })
   }
 
   const getOpportunitybyLeadId = (leadsId) => {
-    RequestServer("post", urlOppbyLeadId + leadsId, null, {})
+    RequestServer(urlOppbyLeadId + leadsId)
     .then((res) => {
       if (res.success) {
         setRelatedOpportunity(res.data);
@@ -99,21 +83,6 @@ const LeadRelatedItems = ({ item }) => {
     .catch((err)=>{
       console.log('error opportunity fetch', err)
     })
-    // axios.post(urlOppbyLeadId + leadsId)
-    //   .then((res) => {
-    //     console.log('response opportunity fetch', res.data);
-    //     if (res.data.length > 0) {
-    //       setRelatedOpportunity(res.data);
-    //       setOpportunityNoOfPages(Math.ceil(res.data.length / opportunityItemsPerPage));
-    //       setOpportunityPerPage(1)
-    //     }
-    //     else {
-    //       setRelatedOpportunity([]);
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.log('error opportunity fetch', error)
-    //   })
   }
 
   const handleTaskModalOpen = () => {
@@ -151,7 +120,7 @@ const LeadRelatedItems = ({ item }) => {
 
   const onConfirmTaskCardDelete = (row) => {
     console.log('req delete rec', row);
-    RequestServer("post",taskDeleteURL+row._id)
+    RequestServer(taskDeleteURL+row._id)
     .then((res)=>{
       if(res.success){        
         getTasksbyLeadId(leadRecordId)
@@ -187,33 +156,6 @@ const LeadRelatedItems = ({ item }) => {
         isOpen: false
       })
     })
-    // axios.post(taskDeleteURL + row._id)
-    //   .then((res) => {
-    //     console.log('api delete response', res);
-    //     console.log('inside delete response leadRecordId', leadRecordId)
-    //     setNotify({
-    //       isOpen: true,
-    //       message: res.data,
-    //       type: 'success'
-    //     })
-    //     setMenuOpen(false)
-    //     setTimeout(
-    //       getTasksbyLeadId(leadRecordId)
-    //     )
-    //   }
-    //   )
-    //   .catch((error) => {
-    //     console.log('api delete error', error);
-    //     setNotify({
-    //       isOpen: true,
-    //       message: error.message,
-    //       type: 'error'
-    //     })
-    //   })
-    // setConfirmDialog({
-    //   ...confirmDialog,
-    //   isOpen: false
-    // })
   };
 
   const handleOpportunityCardEdit = (row) => {
@@ -238,7 +180,7 @@ const LeadRelatedItems = ({ item }) => {
   const onConfirmOpportunityCardDelete = (row) => {
 
     console.log('req opp delete rec', row)
-    RequestServer("post",opportunityDeleteURL+row._id)
+    RequestServer(opportunityDeleteURL+row._id)
     .then((res)=>{
       if(res.success){        
         getOpportunitybyLeadId(leadRecordId)
@@ -274,33 +216,6 @@ const LeadRelatedItems = ({ item }) => {
         isOpen: false
       })
     })
-    // axios.post(opportunityDeleteURL + row._id)
-    //   .then((res) => {
-    //     console.log('api delete response', res);
-    //     console.log('inside delete response leadRecordId', leadRecordId)
-
-    //     setNotify({
-    //       isOpen: true,
-    //       message: res.data,
-    //       type: 'success'
-    //     })
-    //     setOppMenuOpen(false)
-    //     setTimeout(() => {
-    //       getOpportunitybyLeadId(leadRecordId)
-    //     })
-    //   })
-    //   .catch((error) => {
-    //     console.log('api delete error', error);
-    //     setNotify({
-    //       isOpen: true,
-    //       message: error.message,
-    //       type: 'error'
-    //     })
-    //   })
-    // setConfirmDialog({
-    //   ...confirmDialog,
-    //   isOpen: false
-    // })
 
   }
 

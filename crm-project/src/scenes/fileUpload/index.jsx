@@ -11,9 +11,7 @@ import "../formik/FormStyles.css"
 import Iframe from 'react-iframe'
 
 import ToastNotification from "../toast/ToastNotification";
-// import download from 'downloadjs';
-// import { saveAs } from 'file-saver'
-// import fileDownload from "js-file-download";
+
 
 const UpsertUrl = `${process.env.REACT_APP_SERVER_URL}/uploadfile`; 
 const urlFiles =`${process.env.REACT_APP_SERVER_URL}/files`

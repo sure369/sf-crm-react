@@ -21,10 +21,10 @@ import { RequestServer } from "../api/HttpReq";
 
 const AccountRelatedItems = ({ item }) => {
 
-  const taskDeleteURL = `${process.env.REACT_APP_SERVER_URL}/deleteTask?code=`;
-  const urlgetTaskbyAccountId = `${process.env.REACT_APP_SERVER_URL}/getTaskbyAccountId?searchId=`;
-  const urlgetContactbyAccountId=`${process.env.REACT_APP_SERVER_URL}/getContactsbyAccountId?searchId=`;
-  const contactDeleteURL=`${process.env.REACT_APP_SERVER_URL}/deleteContact?code=`;
+  const taskDeleteURL = `/deleteTask?code=`;
+  const urlgetTaskbyAccountId = `/getTaskbyAccountId?searchId=`;
+  const urlgetContactbyAccountId=`/getContactsbyAccountId?searchId=`;
+  const contactDeleteURL=`/deleteContact?code=`;
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -57,7 +57,7 @@ const AccountRelatedItems = ({ item }) => {
   
     console.log('inside getTasks record Id', accId);
 
-    RequestServer("post",urlgetTaskbyAccountId + accId,null,{})
+    RequestServer(urlgetTaskbyAccountId + accId)
     .then((res)=>{
       if(res.success){
         setRelatedTask(res.data);
@@ -70,28 +70,12 @@ const AccountRelatedItems = ({ item }) => {
     .catch((err)=>{
       console.log('error task fetch', err)
     })
-
-    // axios.post(urlgetTaskbyAccountId + accId)
-    //   .then((res) => {
-    //     console.log('response getTasks fetch', res);
-    //     if (res.data.length > 0) {
-    //       setRelatedTask(res.data);
-    //       setTaskNoOfPages(Math.ceil(res.data.length / taskItemsPerPage));
-    //       setTaskPerPage(1)
-    //     }
-    //     else {
-    //       setRelatedTask([]);
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.log('error task fetch', error)
-    //   })
   }
 
   const getContactsbyAccountId=(accId)=>{
     console.log('inside getContacts record Id', accId);
 
-    RequestServer("post",urlgetContactbyAccountId + accId,null,{})
+    RequestServer(urlgetContactbyAccountId + accId)
     .then((res)=>{
       if(res.success){
         setRelatedContact(res.data);
@@ -104,22 +88,6 @@ const AccountRelatedItems = ({ item }) => {
     .catch((err)=>{
       console.log('error task fetch', err)
     })
-
-    // axios.post(urlgetContactbyAccountId + accId)
-    //   .then((res) => {
-    //     console.log('response getContacts fetch', res);
-    //     if (res.data.length > 0) {
-    //       setRelatedContact(res.data);
-    //       setContactNoOfPages(Math.ceil(res.data.length / contactItemsPerPage));
-    //       setContactPerPage(1)
-    //     }
-    //     else {
-    //       setRelatedContact([]);
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.log('error task fetch', error)
-    //   })
   }
 
   const handletaskModalOpen = () => {
@@ -158,7 +126,7 @@ const AccountRelatedItems = ({ item }) => {
     const  onConfirmContactCardDelete =(row)=>{
     console.log('req delete rec', row);
 
-    RequestServer("post",contactDeleteURL+row._id)
+    RequestServer(contactDeleteURL + row._id)
     .then((res)=>{
       if(res.success){
         
@@ -176,8 +144,7 @@ const AccountRelatedItems = ({ item }) => {
           isOpen: true,
           message: res.error.message,
           type: 'error'
-        })
-        
+        })        
         getContactsbyAccountId(accountRecordId)
         setMenuOpen(false)
       }
@@ -196,33 +163,6 @@ const AccountRelatedItems = ({ item }) => {
         isOpen: false
       })
     })
-
-    // axios.post(contactDeleteURL+ row._id)
-    //   .then((res) => {
-    //     console.log('api delete response', res);
-    //     getContactsbyAccountId(accountRecordId)
-    //     setNotify({
-    //       isOpen: true,
-    //       message: res.data,
-    //       type: 'success'
-    //   })
-    //   setMenuOpen(false)
-    //   setTimeout(
-    //     getContactsbyAccountId(accountRecordId)
-    //   )
-    //   })
-    //   .catch((error) => {
-    //     console.log('api delete error', error);
-    //     setNotify({
-    //       isOpen: true,
-    //       message: error.message,
-    //       type: 'error'
-    //   })
-    //   })
-    //   setConfirmDialog({
-    //     ...confirmDialog,
-    //     isOpen:false
-    //   })
   };
  
   const handleTaskCardEdit = (row) => {
@@ -243,7 +183,7 @@ console.log('inside handleTaskCardDelete fn')
   }
   const onConfirmTaskCardDelete=(row)=>{
     console.log('req delete rec', row);
-    RequestServer("post",taskDeleteURL+row._id ,{}, null)
+    RequestServer(taskDeleteURL+row._id)
     .then((res)=>{
       if(res.success){
         getTasksbyAccountId(accountRecordId)
@@ -279,32 +219,6 @@ console.log('inside handleTaskCardDelete fn')
         isOpen: false
       })
     })
-    // axios.post(taskDeleteURL+ row._id)
-    //   .then((res) => {
-    //     console.log('api delete response', res);
-    //     getTasksbyAccountId(accountRecordId)
-    //     setNotify({
-    //       isOpen: true,
-    //       message: res.data,
-    //       type: 'success'
-    //   })
-    //   setMenuOpen(false)
-    //   })
-    //   .catch((error) => {
-    //     console.log('api delete error', error);
-    //     setNotify({
-    //       isOpen: true,
-    //       message: error.message,
-    //       type: 'error'
-    //   })
-    //   setTimeout(
-    //     getTasksbyAccountId(accountRecordId)
-    //   )
-    //   })
-    //   setConfirmDialog({
-    //     ...confirmDialog,
-    //     isOpen:false
-    //   })
   };
 
   const handleChangeTaskPage = (event, value) => {

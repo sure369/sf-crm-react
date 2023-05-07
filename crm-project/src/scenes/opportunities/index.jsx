@@ -299,24 +299,7 @@ const Opportunities = () => {
 
     console.log(records, "allRecords");
 
-    // axios.post(urlFilterOpportunity+e.target.value)
-    // .then(
-    //   (res) => {
-    //     console.log("res filter Opp", res);
-    //     if (res.data.length > 0 && (typeof (res.data) !== 'string')) {
-    //       setRecords(res.data);
-    //       setFetchLoading(false)
-    //     }
-    //     else {
-    //       setRecords([]);
-    //       setFetchLoading(false)
-    //     };
-    //   }
-    // )
-    // .catch((error) => {
-    //   console.log('filter Opportunity error', error);
-    //   setFetchLoading(false)
-    // })
+    //
   };
 
   const handleImportModalOpen = () => {

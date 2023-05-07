@@ -9,7 +9,6 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useParams, useNavigate } from "react-router-dom"
-import axios from 'axios'
 // import "../formik/FormStyles.css"
 import ToastNotification from '../toast/ToastNotification';
 import CustomizedSelectForFormik from '../formik/CustomizedSelectForFormik';
@@ -18,8 +17,8 @@ import './Form.css'
 import { PermissionSavedValues, PermissionSetInitialValues } from '../formik/IntialValues/formValues';
 
 
-const url = `${process.env.REACT_APP_SERVER_URL}/upsertPermission`;
-const urlgetUsersByName = `${process.env.REACT_APP_SERVER_URL}/getUsers`;
+const url = `/upsertPermission`;
+const urlgetUsersByName = `/getUsers`;
 
 const PermissiionSetForm = ({ item }) => {
 

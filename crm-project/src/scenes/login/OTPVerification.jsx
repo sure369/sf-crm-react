@@ -4,12 +4,12 @@ import {
     Grid, Button, DialogActions, InputAdornment, IconButton,
     Box, Paper, Avatar, Typography, TextField
 } from "@mui/material";
-import axios from 'axios'
 import '../recordDetailPage/Form.css'
 import Cdlogo from '../assets/cdlogo.jpg';
 import OtpInput from 'react-otp-input';
+import { RequestServer } from "../api/HttpReq";
 
-const generateotpUrl = `${process.env.REACT_APP_SERVER_URL}/generateOTP`
+const generateotpUrl = `/generateOTP`
 
 export default function OTPVerification() {
     const paperStyle = { padding: 20, height: '100%', width: 280, margin: "20px auto" }
@@ -49,33 +49,15 @@ export default function OTPVerification() {
        return handleSendEmailId()
     },[])
 
-    // useEffect(() => {
-    //     console.log('ddd')
-    //     const interval = setInterval(() => {
-    //       if (seconds > 0) {
-    //         setSeconds(seconds - 1);
-    //       }
-      
-    //       if (seconds === 0) {
-    //         if (minutes === 0) {
-    //           clearInterval(interval);
-    //         } else {
-    //           setSeconds(59);
-    //           setMinutes(minutes - 1);
-    //         }
-    //       }
-    //     }, 1000);
-      
-    //     return () => {
-    //       clearInterval(interval);
-    //     };
-    //   }, [seconds]);
-
     const handleSendEmailId = () => {
-        axios.post(generateotpUrl, { emailId: location.state.record.item.email })
+        RequestServer(generateotpUrl, { emailId: location.state.record.item.email })
             .then((res) => {
                 console.log(res.data, "otp email res")
-                
+                if(res.success){
+                    console.log("res success",res)
+                }else{
+                    console.log("res then error",res.error.message)
+                }                
             })
             .catch((err) => {
                 console.log(err, "otp email error")
@@ -83,7 +65,7 @@ export default function OTPVerification() {
     }
 
     const handleSendOtp =()=>{
-        axios.post(generateotpUrl, {otp: otp})
+        RequestServer(generateotpUrl, {otp: otp})
         .then((res) => {
             console.log(res.data, "otp RES")
             if(res.data.status==='success'){
@@ -136,15 +118,6 @@ export default function OTPVerification() {
                     
                     renderInput={(props) => <input {...props} />}
                 />
-{/* <div>
-{seconds > 0 || minutes > 0 ? (
-        <p>Time Remaining: {minutes < 10 ? `0${minutes}` : minutes}:
-          {seconds < 10 ? `0${seconds}` : seconds}
-        </p>
-      ) : (
-        <p>Didn't recieve code?</p>
-      )}
-    </div> */}
 
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <Button onClick={handleResendOtp} disabled={isResendOtpClicked || seconds>0 || minutes>0 } 

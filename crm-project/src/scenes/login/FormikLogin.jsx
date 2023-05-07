@@ -3,13 +3,12 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Grid, Button, DialogActions, InputAdornment, IconButton, TextField} from "@mui/material";
-import axios from 'axios'
 import '../recordDetailPage/Form.css'
 import ToastNotification from "../toast/ToastNotification";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
-const urlLogin = `${process.env.REACT_APP_SERVER_URL}/login`
+const urlLogin = `/login`
 
 const FormikLogin = () => {
 

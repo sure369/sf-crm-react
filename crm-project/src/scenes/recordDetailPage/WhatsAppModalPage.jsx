@@ -3,8 +3,6 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Grid, Button, DialogActions } from "@mui/material";
-import axios from 'axios'
-// import "../formik/FormStyles.css"
 import ToastNotification from '../toast/ToastNotification';
 import '../recordDetailPage/Form.css'
 import { RequestServer } from "../api/HttpReq";

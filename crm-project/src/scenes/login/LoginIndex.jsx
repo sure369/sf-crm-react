@@ -3,11 +3,13 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useLocation, useNavigate,Link, Navigate } from 'react-router-dom';
 import { Grid, Button, DialogActions, InputAdornment, IconButton, Paper,Avatar,Typography,TextField, colors} from "@mui/material";
-import axios from 'axios'
 import '../recordDetailPage/Form.css'
 import Cdlogo from '../assets/cdlogo.jpg';
+import {RequestServer} from '../api/HttpReq'
+import { LoginInitialValue } from "../formik/IntialValues/formValues";
 
-const loginUrl = `${process.env.REACT_APP_SERVER_URL}/signin`;
+
+const loginUrl = `/signin`;
 
 // const loginUrl ='http://localhost:80/api/signin';
 
@@ -31,10 +33,7 @@ export default function LoginIndex({onAuthentication}) {
 
     const navigate=useNavigate()
 
-    const initialValues = {
-        userName: '',
-        password: '',
-    }
+    const initialValues = LoginInitialValue
 
     const validationSchema = Yup.object({
         userName: Yup
@@ -50,7 +49,7 @@ export default function LoginIndex({onAuthentication}) {
     })
     const formSubmission = async (values, { resetForm }) => {
         console.log('inside form Submission', values);
-        axios.post(loginUrl,values)
+        RequestServer(loginUrl,values)
         .then((res)=>{
             console.log(res.data,"login api res")
             res.data.status ==='success' ?setSignInCredential(true) :setSignInCredential(false)
@@ -149,10 +148,6 @@ export default function LoginIndex({onAuthentication}) {
                 to="/forgot-password"> 
                         Forgot password ?
                 </Typography>
-                {/* <Typography component={Link} 
-                to="/sign-up"> 
-                        Sign Up
-                </Typography> */}
                 </div>
             </Paper>
         </Grid>

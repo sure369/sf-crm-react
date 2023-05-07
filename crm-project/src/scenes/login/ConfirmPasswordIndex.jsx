@@ -3,12 +3,12 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useLocation, useNavigate, Link, Navigate } from 'react-router-dom';
 import { Grid, Button, DialogActions, InputAdornment, IconButton, Paper, Avatar, Typography, TextField } from "@mui/material";
-import axios from 'axios'
 import '../recordDetailPage/Form.css'
 import Cdlogo from '../assets/cdlogo.jpg';
 import ToastNotification from "../toast/ToastNotification";
+import {RequestServer} from '../api/HttpReq'
 
-const singupUrl = `${process.env.REACT_APP_SERVER_URL}/UpsertUser`
+const singupUrl = `/UpsertUser`
 
 export default function ConfirmPasswordIndex({ item }) {
 
@@ -68,7 +68,7 @@ export default function ConfirmPasswordIndex({ item }) {
 
         console.log('after ', values);
 
-        axios.post(singupUrl, values)
+        RequestServer(singupUrl, values)
             .then((res) => {
                 console.log(res.data, "UpsertUser response")
                 setNotify({

@@ -5,7 +5,6 @@ import * as Yup from "yup";
 import {Grid,Button,DialogActions,TextField,
   Autocomplete, MenuItem,Select,} from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
 import ToastNotification from "../toast/ToastNotification";
 import {NameSalutionPickList,LeadSourcePickList,IndustryPickList,LeadStatusPicklist,LeadsDemoPicklist,LeadMonthPicklist,} from "../../data/pickLists";
 import CustomizedSelectForFormik from "../formik/CustomizedSelectForFormik";

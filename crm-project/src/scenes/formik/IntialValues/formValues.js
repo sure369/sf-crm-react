@@ -15,29 +15,30 @@ export const AccountInitialValues = {
   createdDate: "",
   modifiedDate: "",
   InventoryId: "",
+  inventoryDetails: "",
 };
 
 export const AccountSavedValues = (singleAccount) => {
   return {
     accountName: singleAccount?.accountName ?? "",
-        accountNumber: singleAccount?.accountNumber ?? "",
-        annualRevenue: singleAccount?.annualRevenue ?? "",
-        rating: singleAccount?.rating ?? "",
-        type: singleAccount?.type ?? "",
-        phone: singleAccount?.phone ?? "",
-        industry: singleAccount?.industry ?? "",
-        billingAddress: singleAccount?.billingAddress ?? "",
-        billingCountry: singleAccount?.billingCountry ?? "",
-        billingCity: singleAccount?.billingCity ?? "",
-        billingCities: singleAccount?.billingCities ?? "",
-        createdBy: singleAccount?.createdBy.userFullName ?? "",
-        modifiedBy: singleAccount?.modifiedBy.userFullName ?? "",
-        createdDate: new Date(singleAccount?.createdDate).toLocaleString(),
-        modifiedDate: new Date(singleAccount?.modifiedDate).toLocaleString(),
-        _id: singleAccount?._id ?? "",
-        inventoryDetails: singleAccount?.inventoryDetails ?? "",
-        InventoryId: singleAccount?.InventoryId ?? "",
-        InventoryName: singleAccount?.InventoryName ?? "",
+    accountNumber: singleAccount?.accountNumber ?? "",
+    annualRevenue: singleAccount?.annualRevenue ?? "",
+    rating: singleAccount?.rating ?? "",
+    type: singleAccount?.type ?? "",
+    phone: singleAccount?.phone ?? "",
+    industry: singleAccount?.industry ?? "",
+    billingAddress: singleAccount?.billingAddress ?? "",
+    billingCountry: singleAccount?.billingCountry ?? "",
+    billingCity: singleAccount?.billingCity ?? "",
+    billingCities: singleAccount?.billingCities ?? "",
+    createdBy: singleAccount?.createdBy.userFullName ?? "",
+    modifiedBy: singleAccount?.modifiedBy.userFullName ?? "",
+    createdDate: new Date(singleAccount?.createdDate).toLocaleString(),
+    modifiedDate: new Date(singleAccount?.modifiedDate).toLocaleString(),
+    _id: singleAccount?._id ?? "",
+    inventoryDetails: singleAccount?.inventoryDetails ?? "",
+    InventoryId: singleAccount?.InventoryId ?? "",
+    InventoryName: singleAccount?.InventoryName ?? "",
   };
 };
 
@@ -63,26 +64,29 @@ export const ContactInitialValues = {
 export const ContactSavedValues = (singleContact) => {
   return {
     AccountId: singleContact?.AccountId ?? "",
-        salutation: singleContact?.salutation ?? "",
-        firstName: singleContact?.firstName ?? "",
-        lastName: singleContact?.lastName ?? "",
-        fullName: singleContact?.fullName ?? "",
-        phone: singleContact?.phone ?? "",
-        dob: new Date(singleContact?.dob).getUTCFullYear()
-            + '-' + ('0' + (new Date(singleContact?.dob).getUTCMonth() + 1)).slice(-2)
-            + '-' + ('0' + (new Date(singleContact?.dob).getUTCDate()+1)).slice(-2) || '',
+    salutation: singleContact?.salutation ?? "",
+    firstName: singleContact?.firstName ?? "",
+    lastName: singleContact?.lastName ?? "",
+    fullName: singleContact?.fullName ?? "",
+    phone: singleContact?.phone ?? "",
+    dob:
+      new Date(singleContact?.dob).getUTCFullYear() +
+        "-" +
+        ("0" + (new Date(singleContact?.dob).getUTCMonth() + 1)).slice(-2) +
+        "-" +
+        ("0" + (new Date(singleContact?.dob).getUTCDate() + 1)).slice(-2) || "",
 
-        department: singleContact?.department ?? "",
-        leadSource: singleContact?.leadSource ?? "",
-        email: singleContact?.email ?? "",
-        fullAddress: singleContact?.fullAddress ?? "",
-        description: singleContact?.description ?? "",
-        createdBy: singleContact?.createdBy.userFullName ?? "",
-        modifiedBy: singleContact?.modifiedBy.userFullName ?? "",
-        createdDate: new Date(singleContact?.createdDate).toLocaleString(),
-        modifiedDate: new Date(singleContact?.modifiedDate).toLocaleString(),
-        _id: singleContact?._id ?? "",
-        accountDetails: singleContact?.accountDetails ?? "",
+    department: singleContact?.department ?? "",
+    leadSource: singleContact?.leadSource ?? "",
+    email: singleContact?.email ?? "",
+    fullAddress: singleContact?.fullAddress ?? "",
+    description: singleContact?.description ?? "",
+    createdBy: singleContact?.createdBy.userFullName ?? "",
+    modifiedBy: singleContact?.modifiedBy.userFullName ?? "",
+    createdDate: new Date(singleContact?.createdDate).toLocaleString(),
+    modifiedDate: new Date(singleContact?.modifiedDate).toLocaleString(),
+    _id: singleContact?._id ?? "",
+    accountDetails: singleContact?.accountDetails ?? "",
   };
 };
 
@@ -94,21 +98,21 @@ export const EmailInitialValues = {
 };
 
 export const InventoryInitialValues = {
-  projectName: '',
-  propertyName: '',
-  propertyUnitNumber: '',
-  type: '',
-  tower: '',
-  country: '',
-  city: '',
+  projectName: "",
+  propertyName: "",
+  propertyUnitNumber: "",
+  type: "",
+  tower: "",
+  country: "",
+  city: "",
   propertyCities: [],
-  floor: '',
-  status: '',
-  totalArea: '',
-  createdBy: '',
-  modifiedBy: '',
-  createdDate: '',
-  modifiedDate: '',
+  floor: "",
+  status: "",
+  totalArea: "",
+  createdBy: "",
+  modifiedBy: "",
+  createdDate: "",
+  modifiedDate: "",
 };
 
 export const InventorySavedValues = (singleInventory) => {
@@ -129,29 +133,29 @@ export const InventorySavedValues = (singleInventory) => {
     createdDate: new Date(singleInventory?.createdDate).toLocaleString(),
     modifiedDate: new Date(singleInventory?.modifiedDate).toLocaleString(),
     _id: singleInventory?._id ?? "",
-  }
-}
+  };
+};
 
 export const LeadInitialValues = {
-    fullName: "",
-    companyName: "",
-    designation: "",
-    phone: "",
-    leadSource: "",
-    industry: "",
-    leadStatus: "",
-    email: "",
-    linkedinProfile: "",
-    location: "",
-    appointmentDate: "",
-    demo: "",
-    month: "",
-    remarks: "",
-    primaryPhone: "",
-    secondaryPhone: "",
-    createdbyId: "",
-    createdDate: "",
-    modifiedDate: "",
+  fullName: "",
+  companyName: "",
+  designation: "",
+  phone: "",
+  leadSource: "",
+  industry: "",
+  leadStatus: "",
+  email: "",
+  linkedinProfile: "",
+  location: "",
+  appointmentDate: "",
+  demo: "",
+  month: "",
+  remarks: "",
+  primaryPhone: "",
+  secondaryPhone: "",
+  createdbyId: "",
+  createdDate: "",
+  modifiedDate: "",
 };
 
 export const LeadSavedValues = (singleLead) => {
@@ -188,19 +192,21 @@ export const LeadSavedValues = (singleLead) => {
 };
 
 export const OpportunityInitialValues = {
-  LeadId: '',
-  InventoryId: '',
-  opportunityName: '',
-  type: '',
-  leadSource: '',
-  amount: '',
-  closeDate: '',
-  stage: '',
-  description: '',
-  createdBy: '',
-  modifiedBy: '',
-  createdDate: '',
-  modifiedDate: '',
+  LeadId: "",
+  InventoryId: "",
+  opportunityName: "",
+  type: "",
+  leadSource: "",
+  amount: "",
+  closeDate: "",
+  stage: "",
+  description: "",
+  createdBy: "",
+  modifiedBy: "",
+  createdDate: "",
+  modifiedDate: "",
+  inventoryDetails: "",
+  leadDetails: "",
 };
 
 export const OpportunitySavedValues = (singleOpportunity) => {
@@ -211,9 +217,17 @@ export const OpportunitySavedValues = (singleOpportunity) => {
     type: singleOpportunity?.type ?? "",
     leadSource: singleOpportunity?.leadSource ?? "",
     amount: singleOpportunity?.amount ?? "",
-    closeDate: new Date(singleOpportunity?.closeDate).getUTCFullYear()
-        + '-' + ('0' + (new Date(singleOpportunity?.closeDate).getUTCMonth() + 1)).slice(-2)
-        + '-' + ('0' + (new Date(singleOpportunity?.closeDate).getUTCDate() + 1)).slice(-2) || '',
+    closeDate:
+      new Date(singleOpportunity?.closeDate).getUTCFullYear() +
+        "-" +
+        (
+          "0" +
+          (new Date(singleOpportunity?.closeDate).getUTCMonth() + 1)
+        ).slice(-2) +
+        "-" +
+        ("0" + (new Date(singleOpportunity?.closeDate).getUTCDate() + 1)).slice(
+          -2
+        ) || "",
     stage: singleOpportunity?.stage ?? "",
     description: singleOpportunity?.description ?? "",
     createdBy: singleOpportunity?.createdBy.userFullName ?? "",
@@ -227,21 +241,21 @@ export const OpportunitySavedValues = (singleOpportunity) => {
 };
 
 export const TaskInitialValues = {
-  subject: '',
-  relatedTo: '',
-  assignedTo: '',
-  StartDate: '',
-  EndDate: '',
-  description: '',
+  subject: "",
+  relatedTo: "",
+  assignedTo: "",
+  StartDate: "",
+  EndDate: "",
+  description: "",
   attachments: null,
-  object: '',
-  AccountId: '',
-  LeadId: '',
-  OpportunityId: '',
-  createdBy: '',
-  modifiedBy: '',
-  createdDate: '',
-  modifiedDate: '',
+  object: "",
+  AccountId: "",
+  LeadId: "",
+  OpportunityId: "",
+  createdBy: "",
+  modifiedBy: "",
+  createdDate: "",
+  modifiedDate: "",
 };
 
 export const TaskSavedValues = (singleTask) => {
@@ -260,18 +274,18 @@ export const TaskSavedValues = (singleTask) => {
     createdDate: new Date(singleTask?.createdDate).toLocaleString(),
     modifiedDate: new Date(singleTask?.modifiedDate).toLocaleString(),
     _id: singleTask?._id ?? "",
-    StartDate:new Date(singleTask?.StartDate),
-    EndDate:new Date(singleTask?.EndDate),
-    accountDetails:singleTask?.accountDetails ??"",
-    leadDetails:singleTask?.leadDetails ??"",
-    opportunityDetails:singleTask?.opportunityDetails ??"",
+    StartDate: new Date(singleTask?.StartDate),
+    EndDate: new Date(singleTask?.EndDate),
+    accountDetails: singleTask?.accountDetails ?? "",
+    leadDetails: singleTask?.leadDetails ?? "",
+    opportunityDetails: singleTask?.opportunityDetails ?? "",
   };
 };
 
 export const UserInitialValues = {
   firstName: "",
   lastName: "",
-  fullName:"",
+  fullName: "",
   userName: "",
   email: "",
   phone: "",
@@ -292,10 +306,10 @@ export const UserSavedValues = (singleUser) => {
     email: singleUser?.email ?? "",
     phone: singleUser?.phone ?? "",
     departmentName: singleUser?.departmentName ?? "",
-     createdDate: new Date(singleUser?.createdDate).toLocaleString(),
+    createdDate: new Date(singleUser?.createdDate).toLocaleString(),
     modifiedDate: new Date(singleUser?.modifiedDate).toLocaleString(),
     _id: singleUser?._id ?? "",
-    roleDetails: singleUser?.roleDetails??"",
+    roleDetails: singleUser?.roleDetails ?? "",
     createdBy: singleUser?.createdBy.userFullName ?? "",
     modifiedBy: singleUser?.modifiedBy.userFullName ?? "",
   };
@@ -451,10 +465,22 @@ export const PermissionSavedValues = (singlePermission) => {
   };
 };
 
-
 export const WhatsappInitialValues = {
-  subject: '',
-  recordsData: '',
-  attachments: ''
-
+  subject: "",
+  recordsData: "",
+  attachments: "",
 }
+
+export const SignUpInitialValue = {
+  userName: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+  fullName: "",
+  phone: "",
+};
+
+export const LoginInitialValue = {
+  userName: "",
+  password: "",
+};

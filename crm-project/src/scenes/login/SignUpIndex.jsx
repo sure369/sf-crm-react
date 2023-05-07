@@ -3,11 +3,12 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useLocation, useNavigate, Link, Navigate } from 'react-router-dom';
 import { Grid, Button, DialogActions, InputAdornment, IconButton, Paper, Avatar, Typography, TextField } from "@mui/material";
-import axios from 'axios'
 import '../recordDetailPage/Form.css'
 import Cdlogo from '../assets/cdlogo.jpg';
+import {RequestServer} from '../api/HttpReq'
+import { SignUpInitialValue } from "../formik/IntialValues/formValues";
 
-const singupUrl = `${process.env.REACT_APP_SERVER_URL}/signup`
+const singupUrl = `/signup`
 
 export default function SignUpIndex() {
 
@@ -20,14 +21,8 @@ export default function SignUpIndex() {
   
     const navigate = useNavigate()
 
-    const initialValues = {
-        userName: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-        fullName:'',
-        phone:'',
-    }
+    const initialValues = SignUpInitialValue;
+
     const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
 
     const validationSchema = Yup.object({
@@ -59,19 +54,18 @@ export default function SignUpIndex() {
 
         console.log('after ', values);
 
-        axios.post(singupUrl, values)
+        RequestServer(singupUrl, values)
             .then((res) => {
                 console.log(res.data, "sign up response")
+                if(res.success){
+                    console.log(res.data,"success")
+                }else{
+                    console.log(res.error.message,"res error")
+                }                
             })
-        // if(values.userName ===users.userName && values.password === users.password)
-        // {
-        //      console.log('if')
-        //      // sessionStorage.setItem("authenticated", true);
-        //     // navigate("/accounts");
-        // }
-        // else{
-        //     console.log('else')
-        // }
+            .catch((err)=>{
+                console.log(err,"error")
+            })
 
     }
     return (

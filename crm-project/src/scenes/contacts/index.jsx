@@ -8,7 +8,6 @@ import {
   gridPageSelector, useGridApiContext, useGridSelector,
 } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -382,55 +381,3 @@ const Contacts = () => {
 };
 
 export default Contacts;
-
-// const onConfirmDeleteRecord = (row) => {
-//   console.log('onConfirmDeleteRecord row', (row.length))
-
-//   if(row.length){
-//     row.forEach(element => {
-//    axios.post(urlDelete + element)
-//     .then((res) => {
-//       console.log('api delete response', res);
-//       fetchRecords();
-//       setNotify({
-//         isOpen: true,
-//         message: res.data,
-//         type: 'success'
-//       })
-//     })
-//     .catch((error) => {
-//       console.log('api delete error', error);
-//       setNotify({
-//         isOpen: true,
-//         message: error.message,
-//         type: 'error'
-//       })
-//     })
-//     });
-//   }
-//  else{
-//   axios.post(urlDelete + row._id)
-//     .then((res) => {
-//       console.log('api delete response', res);
-//       fetchRecords();
-//       setNotify({
-//         isOpen: true,
-//         message: res.data,
-//         type: 'success'
-//       })
-//     })
-//     .catch((error) => {
-//       console.log('api delete error', error);
-//       setNotify({
-//         isOpen: true,
-//         message: error.message,
-//         type: 'error'
-//       })
-//     })
-//  }
-//   setConfirmDialog({
-//     ...confirmDialog,
-//     isOpen: false
-//   })
-
-// }

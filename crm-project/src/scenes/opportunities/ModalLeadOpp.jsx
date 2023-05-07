@@ -7,8 +7,6 @@ import {
     MenuItem, TextField, Autocomplete
 } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom"
-import axios from 'axios'
-// import "../formik/FormStyles.css"
 import ToastNotification from '../toast/ToastNotification';
 import { LeadSourcePickList, OppStagePicklist, OppTypePicklist } from '../../data/pickLists';
 import CustomizedSelectForFormik from '../formik/CustomizedSelectForFormik';
@@ -16,9 +14,11 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import '../recordDetailPage/Form.css'
+import { RequestServer } from '../api/HttpReq';
+import { OpportunityInitialValues } from '../formik/IntialValues/formValues';
 
-const url = `${process.env.REACT_APP_SERVER_URL}/UpsertOpportunity`;
-const fetchInventoriesbyName = `${process.env.REACT_APP_SERVER_URL}/InventoryName`;
+const url = `/UpsertOpportunity`;
+const fetchInventoriesbyName = `/InventoryName?searchKey=`;
 
 
 const ModalLeadOpportunity = ({ item, handleModal }) => {
@@ -36,23 +36,8 @@ const ModalLeadOpportunity = ({ item, handleModal }) => {
         FetchInventoriesbyName('')
     }, [])
 
+    const initialValues= OpportunityInitialValues;
 
-    const initialValues = {
-        LeadId: '',
-        InventoryId: '',
-        opportunityName: '',
-        type: '',
-        leadSource: '',
-        amount: '',
-        closeDate: '',
-        stage: '',
-        description: '',
-        createdBy: '',
-        modifiedBy: '',
-        createdDate: '',
-        modifiedDate: '',
-        inventoryDetails: '',
-    }
 
     const validationSchema = Yup.object({
         opportunityName: Yup
@@ -71,7 +56,6 @@ const ModalLeadOpportunity = ({ item, handleModal }) => {
         let dateSeconds = new Date().getTime();
         let createDateSec = new Date(values.createdDate).getTime()
         let closeDateSec = new Date(values.closeDate).getTime()
-
 
         values.LeadId = leadParentRecord._id;
         values.modifiedDate = dateSeconds;
@@ -94,17 +78,22 @@ const ModalLeadOpportunity = ({ item, handleModal }) => {
 
         console.log('after change form submission value', values);
 
-        axios.post(url, values)
+        RequestServer(url, values)
             .then((res) => {
                 console.log('post response', res);
-                setNotify({
-                    isOpen: true,
-                    message: res.data,
-                    type: 'success'
-                })
-                setTimeout(() => {
-                    handleModal()
-                }, 1000)
+                if(res.success){
+                    setNotify({
+                        isOpen: true,
+                        message: res.data,
+                        type: 'success'
+                    })
+                }else{
+                    setNotify({
+                        isOpen: true,
+                        message: res.error.message,
+                        type: 'error'
+                    })
+                } 
             })
             .catch((error) => {
                 console.log('error', error);
@@ -113,6 +102,8 @@ const ModalLeadOpportunity = ({ item, handleModal }) => {
                     message: error.message,
                     type: 'error'
                 })
+            })
+            .finally(()=>{                
                 setTimeout(() => {
                     handleModal()
                 }, 1000)
@@ -120,11 +111,15 @@ const ModalLeadOpportunity = ({ item, handleModal }) => {
     }
 
     const FetchInventoriesbyName = (newInputValue) => {
-        axios.post(`${fetchInventoriesbyName}?searchKey=${newInputValue}`)
+        RequestServer(fetchInventoriesbyName + newInputValue)
             .then((res) => {
                 console.log('res fetch Inventoriesby Name', res.data)
-                if (typeof (res.data) === "object") {
-                    setInventoriesRecord(res.data)
+                if(res.success){
+                    if (typeof (res.data) === "object") {
+                        setInventoriesRecord(res.data)
+                    }
+                }else{
+                    setInventoriesRecord([])
                 }
             })
             .catch((error) => {
@@ -145,15 +140,7 @@ const ModalLeadOpportunity = ({ item, handleModal }) => {
                     onSubmit={(values, { resetForm }) => { formSubmission(values) }}
                 >
                     {(props) => {
-                        const {
-                            values,
-                            dirty,
-                            isSubmitting,
-                            handleChange,
-                            handleSubmit,
-                            handleReset,
-                            setFieldValue,
-                        } = props;
+                        const {values,dirty, isSubmitting, handleChange,handleSubmit,handleReset,setFieldValue,errors,touched,} = props;
 
                         return (
                             <>
@@ -181,11 +168,13 @@ const ModalLeadOpportunity = ({ item, handleModal }) => {
                                                     if (!value) {
                                                         console.log('!value', value);
                                                         setFieldValue("InventoryId", '')
-                                                        setFieldValue("inventoryDetails", '')
+                                                        setFieldValue("inventoryDetails", '')                                                        
+                                                        setFieldValue("InventoryName",'')
                                                     } else {
                                                         console.log('value', value);
                                                         setFieldValue("InventoryId", value.id)
                                                         setFieldValue("inventoryDetails", value)
+                                                        setFieldValue("InventoryName",value.propertyName)
                                                     }
                                                 }}
                                                 onInputChange={(event, newInputValue) => {
@@ -263,7 +252,7 @@ const ModalLeadOpportunity = ({ item, handleModal }) => {
                                     <div className='action-buttons'>
                                         <DialogActions sx={{ justifyContent: "space-between" }}>
 
-                                            <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Save</Button>
+                                            <Button type='success' variant="contained" color="secondary" disabled={isSubmitting ||!dirty}>Save</Button>
 
                                             <Button type="reset" variant="contained" onClick={handleModal}  >Cancel</Button>
                                         </DialogActions>

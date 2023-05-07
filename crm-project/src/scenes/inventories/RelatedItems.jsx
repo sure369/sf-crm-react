@@ -15,10 +15,10 @@ import { RequestServer } from "../api/HttpReq";
 
 const InventoryRelatedItems = ({ item }) => {
 
-  const opportunityDeleteURL = `${process.env.REACT_APP_SERVER_URL}/deleteOpportunity?code=`;
-  const accountDeleteURL = `${process.env.REACT_APP_SERVER_URL}/deleteAccount?code=`;
-  const urlgetOpportunitiesbyInvid = `${process.env.REACT_APP_SERVER_URL}/getOpportunitiesbyInvid?searchId=`;
-  const urlgetAccountsbyInvid = `${process.env.REACT_APP_SERVER_URL}/getAccountbyInventory?searchId=`;
+  const opportunityDeleteURL = `/deleteOpportunity?code=`;
+  const accountDeleteURL = `/deleteAccount?code=`;
+  const urlgetOpportunitiesbyInvid = `/getOpportunitiesbyInvid?searchId=`;
+  const urlgetAccountsbyInvid = `/getAccountbyInventory?searchId=`;
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -50,7 +50,7 @@ const InventoryRelatedItems = ({ item }) => {
   }, [])
 
   const getOpportunitiesbyInvId = (recId) => {
-    RequestServer("post", urlgetOpportunitiesbyInvid + recId)
+    RequestServer(urlgetOpportunitiesbyInvid + recId)
       .then((res) => {
         if (res.success) {
           setRealtedOpportunity(res.data);
@@ -63,25 +63,10 @@ const InventoryRelatedItems = ({ item }) => {
       .catch((err)=>{
         console.log('error getOpportunitiesbyInvId fetch', err)
       })
-    // axios.post(urlgetOpportunitiesbyInvid + recId)
-    //     .then((res) => {
-    //         console.log('response getOpportunitiesbyInvId fetch', res);
-    //         if (res.data.length > 0) {
-    //             setRealtedOpportunity(res.data);
-    //             setOpportunityNoOfPages(Math.ceil(res.data.length / opportunityItemsPerPage));
-    //             setOpportunityPerPage(1)
-    //         }
-    //         else {
-    //           setRealtedOpportunity([]);
-    //         }
-    //     })
-    //     .catch((error) => {
-    //         console.log('error getTasksbyOppId fetch', error)
-    //     })
   }
 
   const getAccountsbyInvId = (InventoryId) => {
-    RequestServer("post", urlgetAccountsbyInvid + InventoryId)
+    RequestServer(urlgetAccountsbyInvid + InventoryId)
     .then((res) => {
       if (res.success) {
         setRelatedAccount(res.data);
@@ -94,21 +79,6 @@ const InventoryRelatedItems = ({ item }) => {
     .catch((err)=>{
       console.log('error getAccountsbyInvId fetch', err)
     })
-    // axios.post(urlgetAccountsbyInvid + InventoryId)
-    //   .then((res) => {
-    //     console.log('response getAccountsbyInvId fetch', res);
-    //     if (res.data.length > 0) {
-    //       setRelatedAccount(res.data);
-    //       setAccountNoOfPages(Math.ceil(res.data.length / accountItemsPerPage));
-    //       setAccountPerPage(1)
-    //     }
-    //     else {
-    //       setRelatedAccount([]);
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.log('error task fetch', error)
-    //   })
   }
 
 
@@ -134,7 +104,7 @@ const InventoryRelatedItems = ({ item }) => {
   const onConfirmOpportunityCardDelete = (row) => {
     console.log('req delete rec id', row._id);
 
-    RequestServer("post",opportunityDeleteURL+row._id)
+    RequestServer(opportunityDeleteURL+row._id)
     .then((res)=>{
       if(res.success){
         setOppMenuOpen(false)
@@ -170,32 +140,6 @@ const InventoryRelatedItems = ({ item }) => {
         isOpen: false
       })
     })
-
-    // axios.post(opportunityDeleteURL + row._id)
-    //   .then((res) => {
-    //     console.log('api delete response', res);
-    //     setOppMenuOpen(false)
-    //     setNotify({
-    //       isOpen: true,
-    //       message: res.data,
-    //       type: 'success'
-    //     })
-    //     setTimeout(() => {
-    //       getOpportunitiesbyInvId(inventoryRecordId)
-    //     })
-    //   })
-    //   .catch((error) => {
-    //     console.log('api delete error', error);
-    //     setNotify({
-    //       isOpen: true,
-    //       message: error.message,
-    //       type: 'error'
-    //     })
-    //   })
-    // setConfirmDialog({
-    //   ...confirmDialog,
-    //   isOpen: false
-    // })
   };
 
   const handleAccountCardEdit = (row) => {
@@ -220,7 +164,7 @@ const InventoryRelatedItems = ({ item }) => {
 
   const onConfirmAccountCardDelete = (row) => {
     console.log('req delete rec', row);
-    RequestServer("post",accountDeleteURL+row._id)
+    RequestServer(accountDeleteURL+row._id)
     .then((res)=>{
       if(res.success){
         setAccountMenuOpen(false)
@@ -256,32 +200,6 @@ const InventoryRelatedItems = ({ item }) => {
         isOpen: false
       })
     })
-    // axios.post(accountDeleteURL + row._id)
-    //   .then((res) => {
-    //     console.log('api delete response', res);
-
-    //     setNotify({
-    //       isOpen: true,
-    //       message: res.data,
-    //       type: 'success'
-    //     })
-    //     setAccountMenuOpen(false)
-    //     setTimeout(() => {
-    //       getAccountsbyInvId(inventoryRecordId)
-    //     })
-    //   })
-    //   .catch((error) => {
-    //     console.log('api delete error', error);
-    //     setNotify({
-    //       isOpen: true,
-    //       message: error.message,
-    //       type: 'error'
-    //     })
-    //   })
-    // setConfirmDialog({
-    //   ...confirmDialog,
-    //   isOpen: false
-    // })
   };
 
 

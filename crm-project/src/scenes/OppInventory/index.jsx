@@ -54,24 +54,6 @@ const OppInventoryJunction = () => {
       setFetchError(err.message)
       setFetchLoading(false)
     })
-    // axios.post(urlOpportunityInventory)
-    // .then(
-    //   (res) => {
-    //     console.log("res Jn Inventory Opportunity records", res);
-    //       if(res.data.length>0  && (typeof(res.data) !=='string')){
-    //         setRecords(res.data);
-    //         setFetchLoading(false)
-    //       }
-    //       else{  
-    //         setRecords([]);
-    //         setFetchLoading(false)
-    //       };        
-    //   }
-    // )
-    // .catch((error)=> {
-    //   console.log('res Jn Inventory Opportunity error',error);
-    //   setFetchLoading(false)
-    // })
   }
 
   const handleAddRecord = () => {    

@@ -25,7 +25,7 @@ import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 import "./AppNavbar.css";
 import { RequestServer } from "../api/HttpReq";
 
-const logouturl = `${process.env.REACT_APP_SERVER_URL}/signout`;
+const logouturl = `/signout`;
 
 const pages = [
   { title: "Home", toNav: "/Home" },
@@ -36,11 +36,9 @@ const pages = [
   { title: "Opportunities", toNav: "/opportunities" },
   { title: "Task", toNav: "/task" },
   { title: "Users", toNav: "/users" },
-  // { title: 'Data Loader', toNav: '/dataLoader' },
   { title: "File Upload", toNav: "/file" },
-
-  { title: "Test", toNav: "/test" },
-
+  // { title: 'Data Loader', toNav: '/dataLoader' },
+  // { title: "Test", toNav: "/test" },
   // { title: 'Junction Object', toNav: '/oppInventory' },
 ];
 
@@ -80,7 +78,7 @@ function AppNavbar() {
 
   const handleUserLogout = () => {
     console.log("handleUserLogout");
-    RequestServer("post", logouturl, {}, null)
+    RequestServer( logouturl)
       .then((res) => {
         if (res.success) {
           console.log(res.data, "then if");

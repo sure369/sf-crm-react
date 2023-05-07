@@ -6,7 +6,6 @@ import {
 } from "@mui/material";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
-import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import EmailModalPage from '../recordDetailPage/EmailModalPage';
 import WhatAppModalPage from '../recordDetailPage/WhatsAppModalPage';

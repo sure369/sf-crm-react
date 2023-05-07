@@ -4,15 +4,15 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Grid, Button, Forminput, DialogActions, MenuItem } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom"
-import axios from 'axios'
-// import "../formik/FormStyles.css"
 import ToastNotification from '../toast/ToastNotification';
 import {IndustryPickList, AccRatingPickList,AccTypePickList,AccCitiesPickList, AccCountryPickList} from '../../data/pickLists'
 import CustomizedSelectForFormik from '../formik/CustomizedSelectForFormik';
 import '../recordDetailPage/Form.css'
+import { RequestServer } from '../api/HttpReq';
+import { AccountInitialValues } from '../formik/IntialValues/formValues';
 
 
-const url = `${process.env.REACT_APP_SERVER_URL}/UpsertAccount`;
+const url = `/UpsertAccount`;
 
 
 const ModalInventoryAccount = ({ item,handleModal }) => {
@@ -28,26 +28,7 @@ const ModalInventoryAccount = ({ item,handleModal }) => {
         setInventoryParentRecord(location.state.record.item);      
     }, [])
 
-    const initialValues = {
-        accountName: '',
-        accountNumber: '',
-        InventoryId: '',
-        annualRevenue: '',
-        rating: '',
-        type: '',
-        phone: '',
-        industry: '',
-        billingAddress: '',
-        billingCountry: '',
-        billingCity: '',
-        billingCities: [],
-        createdBy: '',
-        modifiedBy: '',
-        createdDate:'',
-        modifiedDate: '',
-        inventoryDetails:'',
-    }
-
+    const initialValues =AccountInitialValues
 
     const getCities = (billingCountry) => {
         return new Promise((resolve, reject) => {
@@ -97,18 +78,23 @@ const ModalInventoryAccount = ({ item,handleModal }) => {
        
         console.log('after change form submission value',values);
         
-        axios.post(url, values)
+        RequestServer(url, values)
         .then((res) => {
             console.log('upsert record  response', res);
-            setNotify({
-                isOpen:true,
-                message:res.data,
-                type:'success'
-      
-              })
-            setTimeout(() => {
-                handleModal();
-            }, 1000)
+            if(res.success){
+                setNotify({
+                    isOpen:true,
+                    message:res.data,
+                    type:'success'
+          
+                  })
+            }else{
+                setNotify({
+                    isOpen:true,
+                    message:res.error.message,
+                    type:'error'          
+                  })
+            }
         })
         .catch((error) => {
             console.log('upsert record  error', error);
@@ -116,8 +102,10 @@ const ModalInventoryAccount = ({ item,handleModal }) => {
                 isOpen:true,
                 message:error.message,
                 type:'error'
-              })
-              setTimeout(() => {
+              })              
+        })
+        .finally(()=>{
+            setTimeout(() => {
                 handleModal();
             }, 1000)
         })
@@ -136,16 +124,8 @@ const ModalInventoryAccount = ({ item,handleModal }) => {
                     validationSchema={validationSchema}
                     onSubmit={(values) => { formSubmission(values) }}
                 >
-                    {(props) => {
-                        const {
-                            values,
-                            dirty,
-                            isSubmitting,
-                            handleChange,
-                            handleSubmit,
-                            handleReset,
-                            setFieldValue,
-                        } = props;
+                      {(props) => {
+                        const {values,dirty, isSubmitting, handleChange,handleSubmit,handleReset,setFieldValue,errors,touched,} = props;
 
                         return (
                             <>
@@ -273,7 +253,7 @@ const ModalInventoryAccount = ({ item,handleModal }) => {
                                     <div className='action-buttons'>
                                         <DialogActions sx={{ justifyContent: "space-between" }}>
 
-                                            <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Save</Button>
+                                            <Button type='success' variant="contained" color="secondary" disabled={isSubmitting || !dirty }>Save</Button>
 
                                             <Button type="reset" variant="contained" onClick={handleModal}  >Cancel</Button>
                                         </DialogActions>

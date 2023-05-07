@@ -9,8 +9,9 @@ import axios from 'axios'
 // import "../formik/FormStyles.css"
 import '../recordDetailPage/Form.css'
 import PreviewDataload from "./PreviewUpsert";
+import { RequestServer } from "../api/HttpReq";
 
-const generatePreview =`${process.env.REACT_APP_SERVER_URL}/generatePreview`;
+const generatePreview =`/generatePreview`;
 
 const ModalFileUpload = ({ item, handleModal }) => {
 
@@ -32,22 +33,6 @@ const ModalFileUpload = ({ item, handleModal }) => {
         object: Yup
             .string()
             .required('Required'),
-        
-        // file:Yup.mixed()
-        // .required('Required')
-        //         .test(
-        //             "fileSize",
-        //             "File is too large",
-        //             value => !value || (value && value.size <= FILE_SIZE)
-        //         )
-        //         .test(
-        //             "fileFormat",
-        //             "Unsupported Format",
-        //             value => !value || (value => value && SUPPORTED_FORMATS.includes(value.type))
-        //         )
-                        
-       
-
     })
     
     const fileSendValue =(obj,files)=>{
@@ -55,15 +40,18 @@ const ModalFileUpload = ({ item, handleModal }) => {
         let formData = new FormData();
         formData.append('file',files)
         console.log('modified formData',formData);
-         axios.post(generatePreview, formData)
+        RequestServer(generatePreview, formData)
     
             .then((res) => {
-                console.log(' Submission  response', res.data);   
-                setUplodedData(res.data) 
-
+                console.log('file Submission  response', res.data);
+                if(res.success){
+                    setUplodedData(res.data) 
+                } else{
+                    console.log("file then error",res.error.message)
+                } 
             })
             .catch((error) => {
-                console.log('task form Submission  error', error);
+                console.log('file form Submission  error', error);
             })
     }
 
@@ -94,17 +82,8 @@ const ModalFileUpload = ({ item, handleModal }) => {
                validationSchema={validationSchema}
                 onSubmit={(values, { resetForm }) => formSubmission(values, { resetForm })}
             >
-                {(props) => {
-                    const {
-                        values,
-                        dirty,
-                        isSubmitting,
-                        handleChange,
-                        handleSubmit,
-                        handleReset,
-                        setFieldValue,
-                    } = props;
-
+                 {(props) => {
+                        const {values,dirty, isSubmitting, handleChange,handleSubmit,handleReset,setFieldValue,errors,touched,} = props;
                    
                     return (
                         <>
