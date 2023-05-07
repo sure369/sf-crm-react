@@ -11,7 +11,8 @@ import '../recordDetailPage/Form.css'
 import PreviewDataload from "./PreviewUpsert";
 import { RequestServer } from "../api/HttpReq";
 
-const generatePreview =`/generatePreview`;
+const generatePreview =`http://localhost:8080/api/generatePreview`;
+ const generatePreviewReq =`/generatePreview`;
 
 const ModalFileUpload = ({ item, handleModal }) => {
 
@@ -40,11 +41,11 @@ const ModalFileUpload = ({ item, handleModal }) => {
         let formData = new FormData();
         formData.append('file',files)
         console.log('modified formData',formData);
-        RequestServer(generatePreview, formData)
-    
+        axios.post(generatePreview, formData)
+        // RequestServer(generatePreview, formData)
             .then((res) => {
                 console.log('file Submission  response', res.data);
-                if(res.success){
+                if(res.status===200){
                     setUplodedData(res.data) 
                 } else{
                     console.log("file then error",res.error.message)

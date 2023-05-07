@@ -23,6 +23,7 @@ function PreviewUpsert({  data ,file,ModalClose,obj}) {
     useEffect(()=>{
 
       console.log(data,"data")
+      console.log("file",file)
       
       if(!obj){
  if(window.location.href.includes('opportunities')){
@@ -66,7 +67,8 @@ function PreviewUpsert({  data ,file,ModalClose,obj}) {
                   type: 'success'
                 })
              setTimeout(()=>{
-              //  window.location.reload();      
+               window.location.reload();  
+            // handleModal()    
              },2000)
                     
             })
