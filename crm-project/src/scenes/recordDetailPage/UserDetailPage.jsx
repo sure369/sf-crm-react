@@ -101,7 +101,7 @@ const UserDetailPage = ({ item }) => {
             emailId:`${values.email}`,
             subject:'Welcome to CloudDesk CRM',
             htmlBody: ` Dear ${values.fullName}, `+'\n'+'\n'+
-            `Welcome to Clouddesk CRM you can access.`  +'\n'+'\n'+
+            `Welcome to Clouddesk CRM.`  +'\n'+'\n'+
 
             `Your UserName is ${values.userName}` +'\n'+'\n'+
             
@@ -116,7 +116,13 @@ const UserDetailPage = ({ item }) => {
         }
         console.log(obj,"sendInviteEmail")
 
-        RequestServer(urlSendEmailbulk,obj)
+        let formData = new FormData();
+        formData.append('subject', obj.subject);
+        formData.append('htmlBody', obj.htmlBody);
+        formData.append('emailId',obj.emailId)
+        // formData.append('file', values.attachments);
+
+        RequestServer(urlSendEmailbulk,formData)
         .then((res)=>{
             console.log("eamil res",res.data)
             if(res.success){
@@ -155,11 +161,16 @@ const UserDetailPage = ({ item }) => {
             values.modifiedDate = dateSeconds;
             values.createdDate = dateSeconds;
             values.fullName = values.firstName + ' ' + values.lastName;
+            values.createdBy = JSON.parse(sessionStorage.getItem('loggedInUser'))
+            values.modifiedBy = JSON.parse(sessionStorage.getItem('loggedInUser'))
         }
         else if (!showNew) {
             values.modifiedDate = dateSeconds;
             values.createdDate = createDateSec;
             values.fullName = values.firstName + ' ' + values.lastName;
+            
+            values.createdBy = JSON.parse(sessionStorage.getItem('loggedInUser'))
+            values.modifiedBy = JSON.parse(sessionStorage.getItem('loggedInUser'))
         }
         console.log('after change form submission value', values);
 
@@ -175,6 +186,7 @@ const UserDetailPage = ({ item }) => {
                     if(showNew){
                         sendInviteEmail(values)
                     }
+                    // sendInviteEmail(values)
                 }else{
                     setNotify({
                         isOpen: true,
@@ -349,13 +361,15 @@ const UserDetailPage = ({ item }) => {
                                         {!showNew && (
                                             <>
                                                 <Grid item xs={6} md={6}>
-                                                    <label htmlFor="createdDate" >Created Date</label>
-                                                    <Field name='createdDate' type="text" class="form-input" disabled />
+                                                    <label htmlFor="createdDate" >Created By</label>
+                                                    <Field name='createdDate' type="text" class="form-input" disabled
+                                                     value={values.createdBy +',  '+values.createdDate} />
                                                 </Grid>
 
                                                 <Grid item xs={6} md={6}>
-                                                    <label htmlFor="modifiedDate" >Modified Date</label>
-                                                    <Field name='modifiedDate' type="text" class="form-input" disabled />
+                                                    <label htmlFor="modifiedDate" >Modified By</label>
+                                                    <Field name='modifiedDate' type="text" class="form-input" disabled
+                                                     value={values.modifiedBy +',  '+values.modifiedDate} />
                                                 </Grid>
                                             </>
                                         )}

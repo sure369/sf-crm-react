@@ -1,6 +1,4 @@
-
-
-.chart-box{
+/* .chart-box{
     margin: 5px;
     padding: 20px;
     background-color: rgb(196, 239, 255);
@@ -15,6 +13,49 @@
 
     display: flex;
     gap: 5px;
+    overflow: hidden;
 
     
 }
+
+.count-bar-chart{
+    max-height: 360px;
+    box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px;
+    background-color: #FFFDFA;
+} */
+
+ /* .chart-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    overflow: hidden;
+    max-width: 1200px;
+  }
+  
+  .chart-container {
+    width: 50%;
+    padding: 10px;
+  }
+   */
+
+   .chart-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    max-width: 1200px;
+  }
+  
+  .chart-container {
+    width: 50%;
+    padding: 10px;
+    overflow: hidden;
+  }
+  
+  .count-bar-chart canvas {
+    max-height: 300px;
+  }
+  

@@ -106,24 +106,35 @@ function AppNavbar() {
     <AppBar position="sticky" sx={{ backgroundColor: "#5C5CFF" }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <Typography
-            variant="h1"
-            noWrap
-            component="a"
-            href="/"
-            sx={{
-              mr: 2,
-              display: { xs: "none", md: "flex" },
-              fontFamily: "Times New Roman",
-              letterSpacing: ".2rem",
-              color: "inherit",
-              textDecoration: "none",
-              textShadow: "3px 3px 3px silver",
-            }}
-          >
-            Clouddesk
-          </Typography>
+        <Box className="CRM-Title-Box">
+            <Typography
+              className="CRM-Title"
+              variant="h2"
+              noWrap
+              component="a"
+              href="/"
+              sx={{
+                mr: 2,
+                display: { xs: "none", md: "flex" },
+                letterSpacing: ".1rem",
 
+                textDecoration: "none",
+              }}
+            >
+              CLOUDDESK
+            </Typography>
+            <Typography
+              className="CRM-Title"
+              sx={{
+                display: { xs: "none", md: "flex" },
+                fontFamily: "Cambria",
+                letterSpacing: ".1rem",
+                marginLeft: "75px",
+              }}
+            >
+              CRM
+            </Typography>
+          </Box>
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"
@@ -178,18 +189,19 @@ function AppNavbar() {
             href=""
             sx={{
               mr: 2,
-              display: { xs: "flex", md: "none" },
+              display: { xs: 'flex', md: 'none' },
               flexGrow: 1,
-              fontFamily: "monospace",
               fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
-              textShadow: "3px 3px 3px silver",
+              letterSpacing: '.3rem',
+              color: 'inherit',
+              textDecoration: 'none',
+              fontFamily: 'sans-serif',
+              textshadow: "0 0 4px silver",
             }}
           >
             Clouddesk
           </Typography>
+		  
           <Box
             sx={{
               flexGrow: 1,

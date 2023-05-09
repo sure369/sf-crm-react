@@ -35,6 +35,8 @@ const Task = () => {
   const [selectedRecordDatas, setSelectedRecordDatas] = useState();
 
   useEffect(() => {
+    
+
     fetchRecords();
   }, []);
 
