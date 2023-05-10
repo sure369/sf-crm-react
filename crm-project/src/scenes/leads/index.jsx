@@ -1,12 +1,26 @@
 import React, { useState, useEffect } from "react";
 import {
-  useTheme, Box, Button, IconButton, Pagination,
-  Tooltip, Grid, Modal, Typography,
-  MenuItem, FormControl, InputLabel, Select,
+  useTheme,
+  Box,
+  Button,
+  IconButton,
+  Pagination,
+  Tooltip,
+  Grid,
+  Modal,
+  Typography,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Select,
 } from "@mui/material";
 import {
-  DataGrid, GridToolbar, gridPageCountSelector,
-  gridPageSelector, useGridApiContext, useGridSelector,
+  DataGrid,
+  GridToolbar,
+  gridPageCountSelector,
+  gridPageSelector,
+  useGridApiContext,
+  useGridSelector,
 } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import { useNavigate } from "react-router-dom";
@@ -23,8 +37,7 @@ import ExcelDownload from "../Excel";
 import { RequestServer } from "../api/HttpReq";
 import "../recordDetailPage/Form.css";
 import { LeadMonthPicklist } from "../../data/pickLists";
-import '../indexCSS/muiBoxStyles.css'
-
+import "../indexCSS/muiBoxStyles.css";
 
 const Leads = () => {
   const urlLead = `/leads`;
@@ -39,8 +52,16 @@ const Leads = () => {
   const [fetchError, setFetchError] = useState();
   const [fetchLoading, setFetchLoading] = useState(true);
 
-  const [notify, setNotify] = useState({ isOpen: false, message: "", type: "", });
-  const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: "", subTitle: "", });
+  const [notify, setNotify] = useState({
+    isOpen: false,
+    message: "",
+    type: "",
+  });
+  const [confirmDialog, setConfirmDialog] = useState({
+    isOpen: false,
+    title: "",
+    subTitle: "",
+  });
 
   const [showDelete, setShowDelete] = useState(false);
   const [selectedRecordIds, setSelectedRecordIds] = useState();
@@ -74,7 +95,7 @@ const Leads = () => {
       .catch((err) => {
         setFetchError(err.message);
         setFetchLoading(false);
-      })
+      });
   };
   const handleAddRecord = () => {
     navigate("/new-leads", { state: { record: {} } });
@@ -144,7 +165,7 @@ const Leads = () => {
           ...confirmDialog,
           isOpen: false,
         });
-      })
+      });
   };
 
   const handleImportModalOpen = () => {
@@ -196,13 +217,13 @@ const Leads = () => {
     if (e.target.value === null) {
       fetchRecords();
     } else {
-      RequestServer(urlSearchLead + label + '=' + value)
+      RequestServer(urlSearchLead + label + "=" + value)
         .then((res) => {
           console.log("Searched Month res ", res);
           if (res.success) {
             setFilteredRecord(res.data);
           } else {
-            fetchRecords()
+            fetchRecords();
           }
         })
         .catch((err) => {
@@ -212,29 +233,47 @@ const Leads = () => {
   };
   const columns = [
     {
-      field: "fullName", headerName: "Full Name",
-      headerAlign: "center", align: "center", flex: 1,
+      field: "fullName",
+      headerName: "Full Name",
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
     },
     {
-      field: "leadSource", headerName: "Lead Source",
-      headerAlign: "center", align: "center", flex: 1,
+      field: "leadSource",
+      headerName: "Lead Source",
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
     },
     {
-      field: "industry", headerName: "Industry",
-      headerAlign: "center", align: "center", flex: 1,
+      field: "industry",
+      headerName: "Industry",
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
     },
     {
-      field: "leadStatus", headerName: "Lead Status",
-      headerAlign: "center", align: "center", flex: 1,
+      field: "leadStatus",
+      headerName: "Lead Status",
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
     },
     {
-      field: "email", headerName: "Email",
-      headerAlign: "center", align: "center", flex: 1,
+      field: "email",
+      headerName: "Email",
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
     },
     {
-      field: "actions", headerName: "Actions",
-      headerAlign: "center", align: "center",
-      width: 400, flex: 1,
+      field: "actions",
+      headerName: "Actions",
+      headerAlign: "center",
+      align: "center",
+      width: 400,
+      flex: 1,
       renderCell: (params) => {
         return (
           <>
@@ -322,7 +361,7 @@ const Leads = () => {
               </>
             ) : (
               <>
-                <FormControl sx={{ mr: 1, bottom: "15px" }}>
+                <FormControl sx={{ mr: 1, bottom: "8px" }} size="small">
                   <InputLabel id="demo-simple-select-label">
                     <b> Select Lead Month </b>
                   </InputLabel>
@@ -368,12 +407,7 @@ const Leads = () => {
             )}
           </div>
         </Box>
-        <Box
-          m="15px 0 0 0"
-          height="380px"
-          className="my-mui-styles"
-        >
-
+        <Box m="15px 0 0 0" height="380px" className="my-mui-styles">
           <DataGrid
             sx={{
               boxShadow:

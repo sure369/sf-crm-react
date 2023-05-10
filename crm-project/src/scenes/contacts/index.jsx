@@ -1,11 +1,22 @@
 import React, { useState, useEffect } from "react";
 import {
-  Box, Button, useTheme, IconButton,
-  Pagination, Tooltip, Grid, Modal, Typography,
+  Box,
+  Button,
+  useTheme,
+  IconButton,
+  Pagination,
+  Tooltip,
+  Grid,
+  Modal,
+  Typography,
 } from "@mui/material";
 import {
-  DataGrid, GridToolbar, gridPageCountSelector,
-  gridPageSelector, useGridApiContext, useGridSelector,
+  DataGrid,
+  GridToolbar,
+  gridPageCountSelector,
+  gridPageSelector,
+  useGridApiContext,
+  useGridSelector,
 } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import { useNavigate } from "react-router-dom";
@@ -19,7 +30,7 @@ import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import EmailIcon from "@mui/icons-material/Email";
 import ExcelDownload from "../Excel";
 import { RequestServer } from "../api/HttpReq";
-import '../indexCSS/muiBoxStyles.css'
+import "../indexCSS/muiBoxStyles.css";
 
 const Contacts = () => {
   const urlContact = `/contacts`;
@@ -31,8 +42,16 @@ const Contacts = () => {
   const [records, setRecords] = useState([]);
   const [fetchError, setFetchError] = useState();
   const [fetchLoading, setFetchLoading] = useState(true);
-  const [notify, setNotify] = useState({isOpen: false,message: "",type: "",});
-  const [confirmDialog, setConfirmDialog] = useState({isOpen: false, title: "",subTitle: "",});
+  const [notify, setNotify] = useState({
+    isOpen: false,
+    message: "",
+    type: "",
+  });
+  const [confirmDialog, setConfirmDialog] = useState({
+    isOpen: false,
+    title: "",
+    subTitle: "",
+  });
 
   //email,Whatsapp
   const [showEmail, setShowEmail] = useState(false);
@@ -173,12 +192,18 @@ const Contacts = () => {
 
   const columns = [
     {
-      field: "lastName",headerName: "Last Name",
-      headerAlign: "center", align: "center",flex: 1,
+      field: "lastName",
+      headerName: "Last Name",
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
     },
     {
-      field: "accountName", headerName: "Account Name",
-      headerAlign: "center",align: "center",flex: 1,
+      field: "accountName",
+      headerName: "Account Name",
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
       renderCell: (params) => {
         if (params.row.accountDetails) {
           return (
@@ -192,21 +217,33 @@ const Contacts = () => {
       },
     },
     {
-      field: "phone",headerName: "Phone",
-      headerAlign: "center",align: "center",flex: 1,
+      field: "phone",
+      headerName: "Phone",
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
     },
     {
-      field: "leadSource",headerName: "Lead Source",
-      headerAlign: "center",align: "center",flex: 1,
+      field: "leadSource",
+      headerName: "Lead Source",
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
     },
     {
-      field: "email",headerName: "Email",
-      headerAlign: "center",align: "center",flex: 1,
+      field: "email",
+      headerName: "Email",
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
     },
     {
-      field: "actions",headerName: "Actions",     
-      headerAlign: "center",align: "center",
-      flex: 1, width: 400,
+      field: "actions",
+      headerName: "Actions",
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
+      width: 400,
       renderCell: (params) => {
         return (
           <>
@@ -304,13 +341,12 @@ const Contacts = () => {
             )}
           </div>
         </Box>
-        <Box
-          m="15px 0 0 0"
-          height="380px"          
-          className="my-mui-styles"
-        >         
-
+        <Box m="15px 0 0 0" height="380px" className="my-mui-styles">
           <DataGrid
+            sx={{
+              boxShadow:
+                "rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px",
+            }}
             rows={records}
             columns={columns}
             getRowId={(row) => row._id}

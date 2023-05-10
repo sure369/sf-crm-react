@@ -1,11 +1,22 @@
 import React, { useState, useEffect } from "react";
 import {
-  Box, Button, useTheme, IconButton,
-  Pagination, Tooltip, Grid, Modal, Typography,
+  Box,
+  Button,
+  useTheme,
+  IconButton,
+  Pagination,
+  Tooltip,
+  Grid,
+  Modal,
+  Typography,
 } from "@mui/material";
 import {
-  DataGrid, GridToolbar, gridPageCountSelector,
-  gridPageSelector, useGridApiContext, useGridSelector,
+  DataGrid,
+  GridToolbar,
+  gridPageCountSelector,
+  gridPageSelector,
+  useGridApiContext,
+  useGridSelector,
 } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import { useNavigate } from "react-router-dom";
@@ -17,7 +28,7 @@ import ModalFileUpload from "../dataLoader/ModalFileUpload";
 import { OppIndexFilterPicklist } from "../../data/pickLists";
 import ExcelDownload from "../Excel";
 import { RequestServer } from "../api/HttpReq";
-import '../indexCSS/muiBoxStyles.css'
+import "../indexCSS/muiBoxStyles.css";
 
 const Opportunities = () => {
   const urlOpportunity = `/opportunities`;
@@ -30,8 +41,16 @@ const Opportunities = () => {
   const [records, setRecords] = useState([]);
   const [fetchLoading, setFetchLoading] = useState(true);
   const [fetchError, setFetchError] = useState();
-  const [notify, setNotify] = useState({isOpen: false, message: "",type: "",});
-  const [confirmDialog, setConfirmDialog] = useState({isOpen: false,title: "",subTitle: "",});
+  const [notify, setNotify] = useState({
+    isOpen: false,
+    message: "",
+    type: "",
+  });
+  const [confirmDialog, setConfirmDialog] = useState({
+    isOpen: false,
+    title: "",
+    subTitle: "",
+  });
 
   const [showDelete, setShowDelete] = useState(false);
   const [selectedRecordIds, setSelectedRecordIds] = useState();
@@ -43,7 +62,6 @@ const Opportunities = () => {
 
   useEffect(() => {
     fetchRecords();
-
   }, []);
 
   const fetchRecords = () => {
@@ -326,12 +344,18 @@ const Opportunities = () => {
 
   const columns = [
     {
-      field: "opportunityName",headerName: "Opportunity Name",
-      headerAlign: "center",align: "center",flex: 1,
+      field: "opportunityName",
+      headerName: "Opportunity Name",
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
     },
     {
-      field: "propertyName",headerName: "Inventory Name",
-      headerAlign: "center", align: "center",flex: 1,
+      field: "propertyName",
+      headerName: "Inventory Name",
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
       renderCell: (params) => {
         if (params.row.Inventorydetails.length > 0) {
           return (
@@ -345,12 +369,18 @@ const Opportunities = () => {
       },
     },
     {
-      field: "type", headerName: "Type",
-      headerAlign: "center",align: "center",flex: 1,
+      field: "type",
+      headerName: "Type",
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
     },
     {
-      field: "amount", headerName: "Opportunity Amount",
-      headerAlign: "center",align: "center", flex: 1,
+      field: "amount",
+      headerName: "Opportunity Amount",
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
       renderCell: (params) => {
         const formatCurrency = new Intl.NumberFormat("en-US", {
           style: "currency",
@@ -360,13 +390,19 @@ const Opportunities = () => {
       },
     },
     {
-      field: "stage", headerName: "Stage",
-      headerAlign: "center",align: "center",flex: 1,
+      field: "stage",
+      headerName: "Stage",
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
     },
     {
-      field: "actions",headerName: "Actions",
-      headerAlign: "center",align: "center",
-      flex: 1,width: 400,
+      field: "actions",
+      headerName: "Actions",
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
+      width: 400,
       renderCell: (params) => {
         return (
           <>
@@ -394,7 +430,10 @@ const Opportunities = () => {
   return (
     <>
       <ToastNotification notify={notify} setNotify={setNotify} />
-      <DeleteConfirmDialog confirmDialog={confirmDialog}setConfirmDialog={setConfirmDialog}/>
+      <DeleteConfirmDialog
+        confirmDialog={confirmDialog}
+        setConfirmDialog={setConfirmDialog}
+      />
 
       <Box m="20px">
         <Typography
@@ -461,13 +500,12 @@ const Opportunities = () => {
           </div>
         </Box>
 
-        <Box
-          m="15px 0 0 0"
-          height="380px"
-          className="my-mui-styles"           
-        >
-          
+        <Box m="15px 0 0 0" height="380px" className="my-mui-styles">
           <DataGrid
+            sx={{
+              boxShadow:
+                "rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px",
+            }}
             rows={filteredRecords.length > 0 ? filteredRecords : records}
             columns={columns}
             getRowId={(row) => row._id}

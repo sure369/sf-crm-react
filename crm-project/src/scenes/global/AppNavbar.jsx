@@ -24,8 +24,53 @@ import mainLogo from "../assets/user image.png";
 import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 import "./AppNavbar.css";
 import { RequestServer } from "../api/HttpReq";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import { styled, alpha } from "@mui/material/styles";
 
 const logouturl = `/signout`;
+
+const StyledMenu = styled((props) => (
+  <Menu
+    elevation={0}
+    anchorOrigin={{
+      vertical: "bottom",
+      horizontal: "right",
+    }}
+    transformOrigin={{
+      vertical: "top",
+      horizontal: "right",
+    }}
+    {...props}
+  />
+))(({ theme }) => ({
+  "& .MuiPaper-root": {
+    borderRadius: 8,
+    marginTop: theme.spacing(1),
+    minWidth: 180,
+    color:
+      theme.palette.mode === "light"
+        ? "rgb(55, 65, 81)"
+        : theme.palette.grey[300],
+    boxShadow:
+      "rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px",
+    "& .MuiMenu-list": {
+      padding: "4px 0",
+    },
+    "& .MuiMenuItem-root": {
+      "& .MuiSvgIcon-root": {
+        fontSize: 18,
+        color: theme.palette.text.secondary,
+        marginRight: theme.spacing(1.5),
+      },
+      "&:active": {
+        backgroundColor: alpha(
+          theme.palette.primary.main,
+          theme.palette.action.selectedOpacity
+        ),
+      },
+    },
+  },
+}));
 
 const pages = [
   { title: "Home", toNav: "/Home" },
@@ -47,8 +92,10 @@ const settings = ["Logout"];
 function AppNavbar() {
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
-  const [selected, setSelected] = useState("Inventories");
+  const [selected, setSelected] = useState("Home");
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
 
   const loggedInUserData = JSON.parse(sessionStorage.getItem("loggedInUser"));
 
@@ -78,7 +125,7 @@ function AppNavbar() {
 
   const handleUserLogout = () => {
     console.log("handleUserLogout");
-    RequestServer( logouturl)
+    RequestServer(logouturl)
       .then((res) => {
         if (res.success) {
           console.log(res.data, "then if");
@@ -96,7 +143,24 @@ function AppNavbar() {
   const handleMenuItemClick = (title) => {
     setSelected(title);
     handleCloseNavMenu();
+    handleClose();
   };
+
+  const handleMoreClick = (event) => {
+    console.log("inside handle more Click ");
+    setAnchorEl(event.currentTarget);
+    let selectedElem = document.getElementById("selected");
+    selectedElem.classList.add("selected-app-menuItem");
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+    let selectedElem = document.getElementById("selected");
+    selectedElem.classList.remove("selected-app-menuItem");
+  };
+
+  const visiblePages = pages.slice(0, 6);
+  const hiddenPages = pages.slice(6);
 
   console.log(window.location.href, "ggg");
 
@@ -106,7 +170,7 @@ function AppNavbar() {
     <AppBar position="sticky" sx={{ backgroundColor: "#5C5CFF" }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-        <Box className="CRM-Title-Box">
+          <Box className="CRM-Title-Box">
             <Typography
               className="CRM-Title"
               variant="h2"
@@ -169,7 +233,11 @@ function AppNavbar() {
                   key={page.title}
                   onClick={() => handleMenuItemClick(page.title)}
                   active={selected === page.title}
-                  sx={selected === page.title ? { bgcolor: "#243665" } : {}}
+                  sx={
+                    selected === page.title
+                      ? { bgcolor: "#BAD8FF", borderRadius: "5px" }
+                      : {}
+                  }
                 >
                   <Link
                     to={page.toNav}
@@ -189,19 +257,19 @@ function AppNavbar() {
             href=""
             sx={{
               mr: 2,
-              display: { xs: 'flex', md: 'none' },
+              display: { xs: "flex", md: "none" },
               flexGrow: 1,
               fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-              fontFamily: 'sans-serif',
+              letterSpacing: ".3rem",
+              color: "inherit",
+              textDecoration: "none",
+              fontFamily: "sans-serif",
               textshadow: "0 0 4px silver",
             }}
           >
             Clouddesk
           </Typography>
-		  
+
           <Box
             sx={{
               flexGrow: 1,
@@ -209,7 +277,7 @@ function AppNavbar() {
               justifyContent: "space-evenly",
             }}
           >
-            {pages.map((page, index) => (
+            {visiblePages.map((page, index) => (
               <MenuItem
                 key={page.title}
                 onClick={() => handleMenuItemClick(page.title)}
@@ -229,7 +297,47 @@ function AppNavbar() {
                 </Link>
               </MenuItem>
             ))}
+
+            <MenuItem
+              id="selected"
+              onClick={handleMoreClick}
+              className="app-nav-css"
+            >
+              More
+              <ArrowDropDownIcon />
+            </MenuItem>
           </Box>
+
+          <StyledMenu
+            id="demo-customized-menu"
+            MenuListProps={{
+              "aria-labelledby": "demo-customized-button",
+            }}
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+          >
+            {hiddenPages.map((item) => (
+              <MenuItem
+                onClick={() => handleMenuItemClick(item.title)}
+                key={item.title}
+                active={selected === item.title}
+                sx={
+                  selected === item.title
+                    ? { bgcolor: "#BAD8FF", borderRadius: "5px" }
+                    : {}
+                }
+              >
+                {/* {item.title} */}
+                <Link
+                  to={item.toNav}
+                  style={{ textDecoration: "none", color: "unset" }}
+                >
+                  <Typography>{item.title}</Typography>
+                </Link>
+              </MenuItem>
+            ))}
+          </StyledMenu>
 
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">

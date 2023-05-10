@@ -1,11 +1,22 @@
 import React, { useState, useEffect } from "react";
 import {
-  Box, Button, useTheme, IconButton,
-  Pagination, Tooltip, Grid, Modal, Typography,
+  Box,
+  Button,
+  useTheme,
+  IconButton,
+  Pagination,
+  Tooltip,
+  Grid,
+  Modal,
+  Typography,
 } from "@mui/material";
 import {
-  DataGrid, GridToolbar, gridPageCountSelector,
-  gridPageSelector, useGridApiContext, useGridSelector,
+  DataGrid,
+  GridToolbar,
+  gridPageCountSelector,
+  gridPageSelector,
+  useGridApiContext,
+  useGridSelector,
 } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import { useNavigate } from "react-router-dom";
@@ -16,10 +27,9 @@ import DeleteConfirmDialog from "../toast/DeleteConfirmDialog";
 import ModalFileUpload from "../dataLoader/ModalFileUpload";
 import ExcelDownload from "../Excel";
 import { RequestServer } from "../api/HttpReq";
-import '../indexCSS/muiBoxStyles.css'
-import {useFetchRecords} from '../customHooks/useFetchRecords'
+import "../indexCSS/muiBoxStyles.css";
+import { useFetchRecords } from "../customHooks/useFetchRecords";
 import ApiError from "../Errors/APIError";
-
 
 const Accounts = () => {
   const urlDelete = `/deleteAccount?code=`;
@@ -31,8 +41,16 @@ const Accounts = () => {
   const [records, setRecords] = useState([]);
   const [fetchError, setFetchError] = useState({});
   const [fetchLoading, setFetchLoading] = useState(true);
-  const [notify, setNotify] = useState({ isOpen: false, message: "", type: "", });
-  const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: "", subTitle: "", });
+  const [notify, setNotify] = useState({
+    isOpen: false,
+    message: "",
+    type: "",
+  });
+  const [confirmDialog, setConfirmDialog] = useState({
+    isOpen: false,
+    title: "",
+    subTitle: "",
+  });
   const [showDelete, setShowDelete] = useState(false);
   const [selectedRecordIds, setSelectedRecordIds] = useState();
   const [selectedRecordDatas, setSelectedRecordDatas] = useState();
@@ -160,20 +178,32 @@ const Accounts = () => {
 
   const columns = [
     {
-      field: "accountName", headerName: "Name",
-      headerAlign: "center", align: "center", flex: 1,
+      field: "accountName",
+      headerName: "Name",
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
     },
     {
-      field: "phone", headerName: "Phone",
-      headerAlign: "center", align: "center", flex: 1,
+      field: "phone",
+      headerName: "Phone",
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
     },
     {
-      field: "billingCity", headerName: "City",
-      headerAlign: "center", align: "center", flex: 1,
+      field: "billingCity",
+      headerName: "City",
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
     },
     {
-      field: "annualRevenue", headerName: "Annual Revenue",
-      headerAlign: "center", align: "center", flex: 1,
+      field: "annualRevenue",
+      headerName: "Annual Revenue",
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
       renderCell: (params) => {
         const formatCurrency = new Intl.NumberFormat("en-US", {
           style: "currency",
@@ -189,13 +219,19 @@ const Accounts = () => {
       },
     },
     {
-      field: "industry", headerName: "Industry",
-      headerAlign: "center", align: "center", flex: 1,
+      field: "industry",
+      headerName: "Industry",
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
     },
     {
-      field: "actions", headerName: "Actions",
-      headerAlign: "center", align: "center",
-      width: 400, flex: 1,
+      field: "actions",
+      headerName: "Actions",
+      headerAlign: "center",
+      align: "center",
+      width: 400,
+      flex: 1,
       renderCell: (params) => {
         return (
           <>
@@ -230,8 +266,10 @@ const Accounts = () => {
 
       <Box m="20px">
         <Typography
-          variant="h2" color={colors.grey[100]}
-          fontWeight="bold" sx={{ m: "0 0 5px 0" }}
+          variant="h2"
+          color={colors.grey[100]}
+          fontWeight="bold"
+          sx={{ m: "0 0 5px 0" }}
         >
           Accounts
         </Typography>
@@ -291,52 +329,49 @@ const Accounts = () => {
             )}
           </div>
         </Box>
-        {
-          fetchError ? (
-            <Grid item xs={12}>
-              <ApiError error={fetchError} />
-            </Grid>
-          ) :
-        
-        <Box
-          m="15px 0 0 0"
-          height="380px"
-          className="my-mui-styles"
-        >
-
-          <DataGrid
-            rows={records}
-            columns={columns}
-            getRowId={(row) => row._id}
-            pageSize={7}
-            rowsPerPageOptions={[7]}
-            components={{
-              // Toolbar: GridToolbar,
-              Pagination: CustomPagination,
-            }}
-            loading={fetchLoading}
-            getRowClassName={(params) =>
-              params.indexRelativeToCurrentPage % 2 === 0
-                ? "C-MuiDataGrid-row-even"
-                : "C-MuiDataGrid-row-odd"
-            }
-            checkboxSelection
-            disableSelectionOnClick
-            onSelectionModelChange={(ids) => {
-              var size = Object.keys(ids).length;
-              size > 0 ? setShowDelete(true) : setShowDelete(false);
-              console.log("checkbox selection ids", ids);
-              setSelectedRecordIds(ids);
-              const selectedIDs = new Set(ids);
-              const selectedRowRecords = records.filter((row) =>
-                selectedIDs.has(row._id.toString())
-              );
-              setSelectedRecordDatas(selectedRowRecords);
-            }}
-            onRowClick={(e) => handleOnCellClick(e)}
-          />
-        </Box>
-        }
+        {fetchError ? (
+          <Grid item xs={12}>
+            <ApiError error={fetchError} />
+          </Grid>
+        ) : (
+          <Box m="15px 0 0 0" height="380px" className="my-mui-styles">
+            <DataGrid
+              sx={{
+                boxShadow:
+                  "rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px",
+              }}
+              rows={records}
+              columns={columns}
+              getRowId={(row) => row._id}
+              pageSize={7}
+              rowsPerPageOptions={[7]}
+              components={{
+                // Toolbar: GridToolbar,
+                Pagination: CustomPagination,
+              }}
+              loading={fetchLoading}
+              getRowClassName={(params) =>
+                params.indexRelativeToCurrentPage % 2 === 0
+                  ? "C-MuiDataGrid-row-even"
+                  : "C-MuiDataGrid-row-odd"
+              }
+              checkboxSelection
+              disableSelectionOnClick
+              onSelectionModelChange={(ids) => {
+                var size = Object.keys(ids).length;
+                size > 0 ? setShowDelete(true) : setShowDelete(false);
+                console.log("checkbox selection ids", ids);
+                setSelectedRecordIds(ids);
+                const selectedIDs = new Set(ids);
+                const selectedRowRecords = records.filter((row) =>
+                  selectedIDs.has(row._id.toString())
+                );
+                setSelectedRecordDatas(selectedRowRecords);
+              }}
+              onRowClick={(e) => handleOnCellClick(e)}
+            />
+          </Box>
+        )}
       </Box>
 
       <Modal
@@ -654,7 +689,7 @@ export default Accounts;
 //               <ApiError error={fetchError} />
 //             </Grid>
 //           ) :
-        
+
 //         <Box
 //           m="15px 0 0 0"
 //           height="380px"
@@ -713,4 +748,3 @@ export default Accounts;
 // // };
 
 // export default Accounts;
-

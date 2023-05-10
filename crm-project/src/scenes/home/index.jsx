@@ -14,7 +14,7 @@ import { Bar, Doughnut, Line, Pie, PolarArea, Radar } from "react-chartjs-2";
 import "./home.css";
 
 function DashboardIndex() {
-  const urlOpportunity = `${process.env.REACT_APP_SERVER_URL}/opportunities`;
+  const urlOpportunity = `/opportunities`;
 
   const filterOptions = [
     { label: "Filter A", value: "FilterA" },
@@ -33,11 +33,15 @@ function DashboardIndex() {
 
   const fetchRecords = () => {
     if (selectedFilterOption.length > 1) {
-      RequestServer("post", urlOpportunity, null, {})
+      RequestServer(urlOpportunity)
         .then((res) => {
           console.log(res, "Dashboard index page res");
           console.log("Dashboard Opportunity Data", res.data);
-          setRecords(res.data);
+          if (res.success) {
+            setRecords(res.data);
+          } else {
+            setRecords([]);
+          }
           console.log("closedate is ", records.closeDate);
         })
         .catch((error) => {
@@ -149,8 +153,8 @@ function DashboardIndex() {
   // console.log("Barcounts Value is :", Object.values(Barcounts));
 
   const opportunityType = records.reduce((acc, obj) => {
-    console.log(" opportunityType acc is :", acc);
-    console.log("opportunityType obj is", obj);
+    // console.log(" opportunityType acc is :", acc);
+    // console.log("opportunityType obj is", obj);
     const key = obj.stage;
 
     // console.log("Key is :", key.length);
@@ -177,6 +181,8 @@ function DashboardIndex() {
   const groupedData1 = sortedRecords
     .filter((obj) => obj.stage === "Closed Won")
     .reduce((acc, curr) => {
+      console.log("acc is :", acc);
+      console.log("curr is :", curr);
       const closeDate = new Date(curr.closeDate);
       const monthYear = closeDate.toLocaleString("en-US", {
         month: "short",
@@ -328,7 +334,9 @@ function DashboardIndex() {
               </FormControl>
             </div>*/}
             <br />
-            <Pie className="pie-chart" data={BarChartData} />
+            {BarChartData && (
+              <Doughnut className="pie-chart" data={BarChartData} />
+            )}
             {/* </Paper> */}
           </Grid>
 
@@ -345,15 +353,18 @@ function DashboardIndex() {
               Monthly Total Amount
             </Typography>
             <br />
-            <Bar
-              className="count-bar-chart"
-              options={options}
-              data={StackedBarChartData}
-            />
+            {StackedBarChartData && (
+              <Bar
+                className="count-bar-chart"
+                options={options}
+                data={StackedBarChartData}
+              />
+            )}
+
             {/* </Paper> */}
           </Grid>
 
-          <Grid item xs={7}>
+          <Grid item xs={5}>
             {/* <Paper elevation={12} className="chart-box"> */}
             {/* <Typography
               variant="h3"
@@ -363,14 +374,14 @@ function DashboardIndex() {
                 textShadow: "3px 3px 4px silver",
               }}
             >
-              Total Amount And No Of Opportunities
+              Inventory Types
             </Typography>
             <br />
-            <Line className="count-bar-chart" data={StackedBarChartData} /> */}
+            <Bar className="pie-chart" data={DoughnutChartData} /> */}
             {/* </Paper> */}
           </Grid>
 
-          <Grid item xs={5}>
+          <Grid item xs={7}>
             {/* <Paper elevation={12} className="chart-box"> */}
             {/* <Typography
               variant="h3"

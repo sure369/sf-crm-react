@@ -20,18 +20,18 @@ import FlexInventories from "../Flex/FlexInventory";
 import FlexLeads from "../Flex/FlexLeads";
 import FlexOpportunities from "../Flex/FlexOpportunities";
 import FlexTasks from "../Flex/FlexTasks";
-import FileUploadUpdated from "../fileUpload/FileUpdated";
 import PageNotFound from "../Errors/PageNotFound";
 import DashboardIndex from "../dashboard";
 import HomePage from "../home";
 import PermissiionSetForm from "../recordDetailPage/PermissionSetForm";
+import FileUpload from "../fileUpload/FileUpload";
 
 function LoginLayoutIndex() {
   return (
     <>
       <AppNavbar />
       <Routes>
-        <Route path="/" exact element={<ResponsiveInventories />} />
+        <Route path="/" exact element={<HomePage />} />
         <Route path="/accounts" element={<ResponsiveAccounts />} />
         <Route path="/contacts" element={<ResponsiveContacts />} />
         <Route path="/opportunities" element={<ResponsiveOpportunities />} />
@@ -59,7 +59,7 @@ function LoginLayoutIndex() {
           element={<FlexOpportunities />}
         />
 
-        <Route path="/file" element={<FileUploadUpdated />} />
+        <Route path="/file" element={<FileUpload />} />
         <Route path="/test" element={<PermissiionSetForm />} />
         <Route path="/Home" element={<HomePage />} />
         <Route path="*" element={<PageNotFound />} />

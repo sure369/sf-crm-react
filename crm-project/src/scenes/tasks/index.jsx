@@ -1,11 +1,22 @@
 import React, { useState, useEffect } from "react";
 import {
-  Box, Button, useTheme, IconButton,
-  Pagination, Tooltip, Grid, Modal, Typography,
+  Box,
+  Button,
+  useTheme,
+  IconButton,
+  Pagination,
+  Tooltip,
+  Grid,
+  Modal,
+  Typography,
 } from "@mui/material";
 import {
-  DataGrid, GridToolbar, gridPageCountSelector,
-  gridPageSelector, useGridApiContext, useGridSelector,
+  DataGrid,
+  GridToolbar,
+  gridPageCountSelector,
+  gridPageSelector,
+  useGridApiContext,
+  useGridSelector,
 } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import { useNavigate } from "react-router-dom";
@@ -15,7 +26,7 @@ import ToastNotification from "../toast/ToastNotification";
 import DeleteConfirmDialog from "../toast/DeleteConfirmDialog";
 import ExcelDownload from "../Excel";
 import { RequestServer } from "../api/HttpReq";
-import '../indexCSS/muiBoxStyles.css'
+import "../indexCSS/muiBoxStyles.css";
 
 const Task = () => {
   const urlDelete = `/deleteTask?code=`;
@@ -27,16 +38,22 @@ const Task = () => {
   const [records, setRecords] = useState([]);
   const [fetchLoading, setFetchLoading] = useState(true);
   const [fetchError, setFetchError] = useState();
-  const [notify, setNotify] = useState({ isOpen: false, message: "", type: "", });
-  const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: "", subTitle: "", });
+  const [notify, setNotify] = useState({
+    isOpen: false,
+    message: "",
+    type: "",
+  });
+  const [confirmDialog, setConfirmDialog] = useState({
+    isOpen: false,
+    title: "",
+    subTitle: "",
+  });
 
   const [showDelete, setShowDelete] = useState(false);
   const [selectedRecordIds, setSelectedRecordIds] = useState();
   const [selectedRecordDatas, setSelectedRecordDatas] = useState();
 
   useEffect(() => {
-    
-
     fetchRecords();
   }, []);
 
@@ -57,7 +74,7 @@ const Task = () => {
       .catch((err) => {
         setFetchError(err.message);
         setFetchLoading(false);
-      })
+      });
   };
   const handleAddRecord = () => {
     navigate("/new-task", { state: { record: {} } });
@@ -127,7 +144,7 @@ const Task = () => {
           ...confirmDialog,
           isOpen: false,
         });
-      })
+      });
   };
 
   function CustomPagination() {
@@ -147,12 +164,18 @@ const Task = () => {
 
   const columns = [
     {
-      field: "subject",headerName: "Subject",
-      headerAlign: "center",align: "center",flex: 1,
+      field: "subject",
+      headerName: "Subject",
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
     },
     {
-      field: "realatedTo",headerName: "Realated To",
-      headerAlign: "center",align: "center",flex: 1,
+      field: "realatedTo",
+      headerName: "Realated To",
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
       renderCell: (params) => {
         if (params.row.object === "Account") {
           return (
@@ -176,14 +199,20 @@ const Task = () => {
       },
     },
     {
-      field: "object",headerName: "Object",
-      headerAlign: "center",align: "center",flex: 1,
+      field: "object",
+      headerName: "Object",
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
     },
 
     {
-      field: "actions",headerName: "Actions",
-      headerAlign: "center",align: "center",
-      width: 400, flex: 1,
+      field: "actions",
+      headerName: "Actions",
+      headerAlign: "center",
+      align: "center",
+      width: 400,
+      flex: 1,
       renderCell: (params) => {
         return (
           <>
@@ -268,13 +297,12 @@ const Task = () => {
           </div>
         </Box>
 
-        <Box
-          m="15px 0 0 0"
-          height="380px"
-          className="my-mui-styles"
-        >
-
+        <Box m="15px 0 0 0" height="380px" className="my-mui-styles">
           <DataGrid
+            sx={{
+              boxShadow:
+                "rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px",
+            }}
             rows={records}
             columns={columns}
             getRowId={(row) => row._id}

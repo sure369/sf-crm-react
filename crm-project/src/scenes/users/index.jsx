@@ -1,11 +1,22 @@
 import React, { useState, useEffect } from "react";
 import {
-  Box, Button, useTheme, IconButton,
-  Pagination, Tooltip, Grid, Modal, Typography,
+  Box,
+  Button,
+  useTheme,
+  IconButton,
+  Pagination,
+  Tooltip,
+  Grid,
+  Modal,
+  Typography,
 } from "@mui/material";
 import {
-  DataGrid, GridToolbar, gridPageCountSelector,
-  gridPageSelector, useGridApiContext, useGridSelector,
+  DataGrid,
+  GridToolbar,
+  gridPageCountSelector,
+  gridPageSelector,
+  useGridApiContext,
+  useGridSelector,
 } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import { useNavigate } from "react-router-dom";
@@ -15,8 +26,7 @@ import ToastNotification from "../toast/ToastNotification";
 import DeleteConfirmDialog from "../toast/DeleteConfirmDialog";
 import ExcelDownload from "../Excel";
 import { RequestServer } from "../api/HttpReq";
-import '../indexCSS/muiBoxStyles.css'
-
+import "../indexCSS/muiBoxStyles.css";
 
 const Users = () => {
   const urlDelete = `/delete?code=`;
@@ -28,8 +38,16 @@ const Users = () => {
   const [records, setRecords] = useState([]);
   const [fetchError, setFetchError] = useState();
   const [fetchLoading, setFetchLoading] = useState(true);
-  const [notify, setNotify] = useState({ isOpen: false, message: "", type: "", });
-  const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: "", subTitle: "", });
+  const [notify, setNotify] = useState({
+    isOpen: false,
+    message: "",
+    type: "",
+  });
+  const [confirmDialog, setConfirmDialog] = useState({
+    isOpen: false,
+    title: "",
+    subTitle: "",
+  });
   const [showDelete, setShowDelete] = useState(false);
   const [selectedRecordIds, setSelectedRecordIds] = useState();
   const [selectedRecordDatas, setSelectedRecordDatas] = useState();
@@ -145,29 +163,47 @@ const Users = () => {
 
   const columns = [
     {
-      field: "firstName",headerName: "First Name",
-      headerAlign: "center",align: "center",flex: 1,
+      field: "firstName",
+      headerName: "First Name",
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
     },
     {
-      field: "lastName",headerName: "Last Name",
-      headerAlign: "center",align: "center",flex: 1,
+      field: "lastName",
+      headerName: "Last Name",
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
     },
     {
-      field: "email",headerName: "Email",
-      headerAlign: "center",align: "center",flex: 1,
+      field: "email",
+      headerName: "Email",
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
     },
     {
-      field: "role",headerName: "Role",
-      headerAlign: "center",align: "center",flex: 1,
+      field: "role",
+      headerName: "Role",
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
     },
     {
-      field: "access", headerName: "Access",
-      headerAlign: "center",align: "center",flex: 1,
+      field: "access",
+      headerName: "Access",
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
     },
     {
-      field: "actions",headerName: "Actions",      
-      headerAlign: "center",align: "center",
-      flex: 1,width: 400,
+      field: "actions",
+      headerName: "Actions",
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
+      width: 400,
       renderCell: (params) => {
         return (
           <>
@@ -261,13 +297,12 @@ const Users = () => {
             </div>
           </Box>
 
-          <Box
-            m="15px 0 0 0"
-            height="380px"
-            className="my-mui-styles"
-          >
-
+          <Box m="15px 0 0 0" height="380px" className="my-mui-styles">
             <DataGrid
+              sx={{
+                boxShadow:
+                  "rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px",
+              }}
               rows={records}
               columns={columns}
               getRowId={(row) => row._id}

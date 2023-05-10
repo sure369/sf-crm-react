@@ -30,8 +30,9 @@ const UpsertUrl = `${process.env.REACT_APP_SERVER_URL}/uploadfile`;
 const urlFiles = `${process.env.REACT_APP_SERVER_URL}/files`;
 const deleteUrl = `${process.env.REACT_APP_SERVER_URL}/deletefile?code=`;
 
-const FileUploadUpdated = () => {
+const FileUpload = () => {
   const [filesList, setFileList] = useState([]);
+  // const [hoveredFile, setHoveredFile] = useState(null);
   const [notify, setNotify] = useState({
     isOpen: false,
     message: "",
@@ -136,11 +137,31 @@ const FileUploadUpdated = () => {
       });
   };
 
-  const handleClearInput = () => {};
+  const handleClearInput = () => {
+    console.log("inside handleClearInput");
+    setSelectedFiles([]);
+    document.getElementById("null").value = "";
+  };
+
+  // const handleMouseOver = (file) => {
+  //   setHoveredFile(file);
+  // };
+
+  // const handleMouseOut = () => {
+  //   setHoveredFile(null);
+  // };
 
   return (
     <>
       <ToastNotification notify={notify} setNotify={setNotify} />
+      {/* {hoveredFile && (
+        <img
+          height={200}
+          width={200}
+          src={hoveredFile.fileUrl} // or use a different URL depending on file type
+          alt={hoveredFile.name}
+        />
+      )} */}
       <Box
         sx={{
           height: "500px",
@@ -170,7 +191,17 @@ const FileUploadUpdated = () => {
           >
             {/* <div className="drop-container"> */}
             <label for="images" class="input-drop-container">
+              <b
+                style={{
+                  marginRight: "180px",
+                  marginBottom: "5px",
+                }}
+              >
+                File Upload
+              </b>
+
               <input
+                className="file-upload-input"
                 accept=".jpeg, .pdf, .png, .csv, .xlsx, .doc, "
                 style={{ cursor: "pointer" }}
                 id="null"
@@ -180,23 +211,35 @@ const FileUploadUpdated = () => {
               />
               {selectedFiles.length > 0 && (
                 <>
-                  <Button
-                    sx={{ marginTop: "10px" }}
-                    type="success"
-                    variant="contained"
-                    color="secondary"
-                    onClick={handleUploadButtonClick}
+                  <Box
+                    sx={{
+                      display: "flex",
+                      width: "150px",
+                      justifyContent: "space-between",
+                    }}
                   >
-                    Upload
-                  </Button>
-                  <Button
-                    sx={{ marginTop: "10px" }}
-                    variant="outlined"
-                    color="secondary"
-                    onClick={handleClearInput}
-                  >
-                    Clear
-                  </Button>
+                    <Button
+                      sx={{ marginTop: "10px" }}
+                      type="success"
+                      variant="contained"
+                      color="secondary"
+                      onClick={handleUploadButtonClick}
+                    >
+                      Upload
+                    </Button>
+                    <Button
+                      type="reset"
+                      variant="outlined"
+                      sx={{
+                        marginTop: "10px",
+                        color: "black",
+                        backgroundColor: "whitesmoke",
+                      }}
+                      onClick={() => handleClearInput(selectedFiles)}
+                    >
+                      Clear
+                    </Button>
+                  </Box>
                 </>
               )}
             </label>
@@ -223,7 +266,7 @@ const FileUploadUpdated = () => {
                       sx={{
                         width: "100%",
                         maxWidth: 360,
-                        bgcolor: "#e5e5ff",
+                        bgcolor: "#eeeeff",
                         position: "relative",
                         overflow: "auto",
                         borderRadius: "8px",
@@ -249,6 +292,8 @@ const FileUploadUpdated = () => {
                                 title={item.originalname}
                               >
                                 <ListItemText
+                                  // onMouseOver={() => handleMouseOver(item)}
+                                  // onMouseOut={handleMouseOut}
                                   sx={{ wordBreak: "break-all" }}
                                   primary={item.originalname}
                                 ></ListItemText>
@@ -274,4 +319,4 @@ const FileUploadUpdated = () => {
     </>
   );
 };
-export default FileUploadUpdated;
+export default FileUpload;
