@@ -17,6 +17,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  ListItemButton,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Link, NavLink, useNavigate } from "react-router-dom";
@@ -26,6 +27,7 @@ import "./AppNavbar.css";
 import { RequestServer } from "../api/HttpReq";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { styled, alpha } from "@mui/material/styles";
+import { PaletteTwoTone } from "@mui/icons-material";
 
 const logouturl = `/signout`;
 
@@ -87,6 +89,17 @@ const pages = [
   // { title: 'Junction Object', toNav: '/oppInventory' },
 ];
 
+const colors = [
+  { label: "Default", color: "#5C5CFF" },
+  { label: "Purple", color: "purple" },
+  { label: "CornBlue", color: "cornflowerblue" },
+  { label: "Grey", color: "grey" },
+  { label: "Gold Green", color: "#ADB73D" },
+  { label: "Light Gold", color: "#D5D57D" },
+  { label: "Orange", color: "#F3BA5B" },
+  { label: "Blue Grey", color: "#507C85" },
+];
+
 const settings = ["Logout"];
 
 function AppNavbar() {
@@ -96,6 +109,10 @@ function AppNavbar() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+  const [selectedColor, setSelectedColor] = useState("#5C5CFF");
+
+  const [anchorElPallete, setAnchorElPallete] = useState(null);
+  const PalleteOpen = Boolean(anchorElPallete);
 
   const loggedInUserData = JSON.parse(sessionStorage.getItem("loggedInUser"));
 
@@ -140,10 +157,11 @@ function AppNavbar() {
       });
   };
 
-  const handleMenuItemClick = (title) => {
-    setSelected(title);
+  const handleMenuItemClick = (item) => {
+    setSelected(item.title);
     handleCloseNavMenu();
     handleClose();
+    navigate(`${item.toNav}`);
   };
 
   const handleMoreClick = (event) => {
@@ -157,6 +175,20 @@ function AppNavbar() {
     setAnchorEl(null);
     let selectedElem = document.getElementById("selected");
     selectedElem.classList.remove("selected-app-menuItem");
+    setAnchorElPallete(null);
+  };
+
+  const handlePaletteClick = (event) => {
+    setAnchorElPallete(event.currentTarget);
+  };
+
+  const handleColorChange = (colorName) => {
+    console.log("color name is ", colorName);
+    setSelectedColor(colorName);
+  };
+
+  const navBarStyle = {
+    backgroundColor: selectedColor,
   };
 
   const visiblePages = pages.slice(0, 6);
@@ -167,7 +199,7 @@ function AppNavbar() {
   return (
     // 5C5CFF
     // fixed //static //sticky
-    <AppBar position="sticky" sx={{ backgroundColor: "#5C5CFF" }}>
+    <AppBar id="navBar" position="sticky" sx={{ backgroundColor: navBarStyle }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Box className="CRM-Title-Box">
@@ -231,7 +263,7 @@ function AppNavbar() {
               {pages.map((page, index) => (
                 <MenuItem
                   key={page.title}
-                  onClick={() => handleMenuItemClick(page.title)}
+                  onClick={() => handleMenuItemClick(page)}
                   active={selected === page.title}
                   sx={
                     selected === page.title
@@ -239,12 +271,12 @@ function AppNavbar() {
                       : {}
                   }
                 >
-                  <Link
+                  {/* <Link
                     to={page.toNav}
                     style={{ textDecoration: "none", color: "unset" }}
-                  >
-                    <Typography>{page.title} </Typography>
-                  </Link>
+                  > */}
+                  <Typography>{page.title} </Typography>
+                  {/* </Link> */}
                 </MenuItem>
               ))}
             </Menu>
@@ -280,7 +312,7 @@ function AppNavbar() {
             {visiblePages.map((page, index) => (
               <MenuItem
                 key={page.title}
-                onClick={() => handleMenuItemClick(page.title)}
+                onClick={() => handleMenuItemClick(page)}
                 active={selected === page.title}
                 sx={{ borderRadius: "5px" }}
                 className={
@@ -289,12 +321,12 @@ function AppNavbar() {
                     : "app-nav-css"
                 }
               >
-                <Link
+                {/* <Link
                   to={page.toNav}
                   style={{ textDecoration: "none", color: "unset" }}
-                >
-                  <Typography>{page.title} </Typography>
-                </Link>
+                > */}
+                <Typography variant="h6">{page.title} </Typography>
+                {/* </Link> */}
               </MenuItem>
             ))}
 
@@ -306,7 +338,27 @@ function AppNavbar() {
               More
               <ArrowDropDownIcon />
             </MenuItem>
+
+            {/* <IconButton onClick={handlePaletteClick}>
+              <PaletteTwoTone />
+            </IconButton> */}
           </Box>
+
+          {/* <StyledMenu
+            id="demo-customized-menu"
+            MenuListProps={{
+              "aria-labelledby": "demo-customized-button",
+            }}
+            anchorEl={anchorElPallete}
+            open={PalleteOpen}
+            onClose={handleClose}
+          >
+            {colors.map((item) => (
+              <ListItemButton onClick={() => handleColorChange(item.color)}>
+                {item.label}
+              </ListItemButton>
+            ))}
+          </StyledMenu> */}
 
           <StyledMenu
             id="demo-customized-menu"
@@ -318,8 +370,8 @@ function AppNavbar() {
             onClose={handleClose}
           >
             {hiddenPages.map((item) => (
-              <MenuItem
-                onClick={() => handleMenuItemClick(item.title)}
+              <ListItemButton
+                onClick={() => handleMenuItemClick(item)}
                 key={item.title}
                 active={selected === item.title}
                 sx={
@@ -329,13 +381,13 @@ function AppNavbar() {
                 }
               >
                 {/* {item.title} */}
-                <Link
+                {/* <Link
                   to={item.toNav}
                   style={{ textDecoration: "none", color: "unset" }}
-                >
-                  <Typography>{item.title}</Typography>
-                </Link>
-              </MenuItem>
+                > */}
+                <Typography>{item.title}</Typography>
+                {/* </Link> */}
+              </ListItemButton>
             ))}
           </StyledMenu>
 

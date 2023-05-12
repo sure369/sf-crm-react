@@ -144,7 +144,7 @@
   /* Media query for smaller screens */
   @media (max-width: 768px) {
     .modal {
-      width: 80%;
+      width: 90%;
       box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
     }
   }
@@ -152,7 +152,7 @@
   /* Media query for even smaller screens */
   @media (max-width: 480px) {
     .modal {
-      width: 80%;
+      width: 85%;
       box-shadow: none;
     }
   }
@@ -182,9 +182,9 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: center   ;
+    justify-content: flex-start   ;
     align-items: center;
-    height: 160px;
+    height: 120px;
     padding: 20px;
     width: fit-content;
     background-color: #eeeeff;
@@ -231,6 +231,15 @@
     margin-left: 3px; */
     
   }
+
+  .modal-box{
+
+    padding: 30px;
+    height: 300px;
+    width: 600px;
+  }
+
+
 
 
 

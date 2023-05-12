@@ -13,6 +13,8 @@ import { RequestServer } from "../api/HttpReq";
 import { Bar, Doughnut, Line, Pie, PolarArea, Radar } from "react-chartjs-2";
 import "./home.css";
 
+import useViewport from "../../utility/useViewPort";
+
 function DashboardIndex() {
   const urlOpportunity = `/opportunities`;
 
@@ -22,11 +24,17 @@ function DashboardIndex() {
     { label: "Filter C", value: "FilterC" },
   ];
 
+  const { width, breakpoint } = useViewport();
+
+  console.log(width, "sc size width");
+  console.log(breakpoint, "sc size breakpoint");
+
   const [records, setRecords] = useState([]);
   const [selectedFilterOption, setSelectedFilterOption] = useState(
     filterOptions[0].value
   );
-
+  // const [mobileView, setMobileView] = useState(null);
+  console.log();
   useEffect(() => {
     fetchRecords();
   }, []);
@@ -49,6 +57,10 @@ function DashboardIndex() {
         });
     }
   };
+
+  const width1 = window.innerWidth;
+  const mobileWidth = width1 < 1000;
+  const mobileView = width < breakpoint ? 12 : 6;
 
   // const groupedData = records.reduce((acc, obj) => {
   //   const key = `${obj.stage}-${obj.amount}-${new Date(
@@ -297,7 +309,7 @@ function DashboardIndex() {
     <>
       <Box className="box-container">
         <Grid container spacing={2}>
-          <Grid item xs={5}>
+          <Grid item xs={mobileView} sm={6}>
             {/* <Paper elevation={12} className="chart-box"> */}
             <Typography
               variant="h3"
@@ -340,7 +352,7 @@ function DashboardIndex() {
             {/* </Paper> */}
           </Grid>
 
-          <Grid item xs={7}>
+          <Grid item xs={mobileView} sm={6}>
             {/* <Paper elevation={12} className="chart-box"> */}
             <Typography
               variant="h3"
@@ -355,8 +367,8 @@ function DashboardIndex() {
             <br />
             {StackedBarChartData && (
               <Bar
-                className="count-bar-chart"
-                options={options}
+                style={{ height: "360px" }}
+                className="pie-chart"
                 data={StackedBarChartData}
               />
             )}

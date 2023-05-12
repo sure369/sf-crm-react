@@ -17,6 +17,7 @@ import {
   AlertTitle,
   Divider,
   Tooltip,
+  Modal,
 } from "@mui/material";
 import axios from "axios";
 import "../formik/FormStyles.css";
@@ -25,6 +26,10 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ToastNotification from "../toast/ToastNotification";
 import "../recordDetailPage/Form.css";
+import FileUploadIcon from "@mui/icons-material/FileUpload";
+import ClearAllIcon from "@mui/icons-material/ClearAll";
+import FileOpenIcon from "@mui/icons-material/FileOpen";
+import { useMediaQuery } from "react-responsive";
 
 const UpsertUrl = `${process.env.REACT_APP_SERVER_URL}/uploadfile`;
 const urlFiles = `${process.env.REACT_APP_SERVER_URL}/files`;
@@ -32,7 +37,7 @@ const deleteUrl = `${process.env.REACT_APP_SERVER_URL}/deletefile?code=`;
 
 const FileUpload = () => {
   const [filesList, setFileList] = useState([]);
-  // const [hoveredFile, setHoveredFile] = useState(null);
+
   const [notify, setNotify] = useState({
     isOpen: false,
     message: "",
@@ -43,15 +48,23 @@ const FileUpload = () => {
   const [fileUploadRes, setFileUploadResponse] = useState();
   console.log("fileUploadRes", fileUploadRes);
 
+  const [open, setOpen] = useState(false);
+
   const [selectedFiles, setSelectedFiles] = useState([]);
   useEffect(() => {
     getFilesList();
     console.log("fileUploadRes", fileUploadRes);
   }, []);
 
+  const isDesktopOrLaptop = useMediaQuery({
+    query: "(min-width: 1224px)",
+  });
+  const isBigScreen = useMediaQuery({ query: "(min-width: 1824px)" });
+  const isTabletOrMobile = useMediaQuery({ query: "(max-width: 1124px)" });
+  const isPortrait = useMediaQuery({ query: "(orientation: portrait)" });
+  const isRetina = useMediaQuery({ query: "(min-resolution: 2dppx)" });
+
   const getFilesList = async () => {
-    // const {data} =await axios.get(urlFiles)
-    // setFileList(data);
     await axios
       .post(urlFiles)
 
@@ -102,7 +115,7 @@ const FileUpload = () => {
           type: "success",
         });
         // setSelectedFiles(null);
-        document.getElementById("null").value = "";
+        document.getElementById("images").value = "";
         getFilesList();
       })
       .catch((error) => {
@@ -140,16 +153,16 @@ const FileUpload = () => {
   const handleClearInput = () => {
     console.log("inside handleClearInput");
     setSelectedFiles([]);
-    document.getElementById("null").value = "";
+    document.getElementById("images").value = "";
   };
 
-  // const handleMouseOver = (file) => {
-  //   setHoveredFile(file);
-  // };
+  const handleFilesOpen = () => {
+    setOpen(true);
+  };
 
-  // const handleMouseOut = () => {
-  //   setHoveredFile(null);
-  // };
+  const handleFileClose = () => {
+    setOpen(false);
+  };
 
   return (
     <>
@@ -162,6 +175,7 @@ const FileUpload = () => {
           alt={hoveredFile.name}
         />
       )} */}
+
       <Box
         sx={{
           height: "500px",
@@ -191,30 +205,40 @@ const FileUpload = () => {
           >
             {/* <div className="drop-container"> */}
             <label for="images" class="input-drop-container">
-              <b
+              <span
                 style={{
                   marginRight: "180px",
                   marginBottom: "5px",
                 }}
               >
                 File Upload
-              </b>
+              </span>
 
               <input
                 className="file-upload-input"
                 accept=".jpeg, .pdf, .png, .csv, .xlsx, .doc, "
                 style={{ cursor: "pointer" }}
-                id="null"
+                id="images"
                 type="file"
                 multiple
                 onChange={handleFileInputChange}
               />
+            </label>
+            {/* </div> */}
+
+            <Grid
+              marginTop="12px"
+              height="50px"
+              container
+              direction="row"
+              justifyContent="center"
+            >
               {selectedFiles.length > 0 && (
                 <>
                   <Box
                     sx={{
                       display: "flex",
-                      width: "150px",
+                      width: "200px",
                       justifyContent: "space-between",
                     }}
                   >
@@ -224,6 +248,7 @@ const FileUpload = () => {
                       variant="contained"
                       color="secondary"
                       onClick={handleUploadButtonClick}
+                      startIcon={<FileUploadIcon />}
                     >
                       Upload
                     </Button>
@@ -236,23 +261,106 @@ const FileUpload = () => {
                         backgroundColor: "whitesmoke",
                       }}
                       onClick={() => handleClearInput(selectedFiles)}
+                      startIcon={<ClearAllIcon />}
                     >
                       Clear
                     </Button>
                   </Box>
                 </>
               )}
-            </label>
-            {/* </div> */}
+              {selectedFiles.length === 0 && (
+                <Box
+                  sx={{
+                    display: "grid",
+                    width: "200px",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Button
+                    sx={{ marginTop: "10px" }}
+                    variant="contained"
+                    color="secondary"
+                    onClick={handleFilesOpen}
+                    startIcon={<FileOpenIcon />}
+                  >
+                    View Files
+                  </Button>
+                </Box>
+              )}
 
-            <Grid
-              marginTop="12px"
-              height="50px"
-              container
-              direction="row"
-              justifyContent="center"
-            >
-              <Grid item xs={9}>
+              <Modal
+                open={open}
+                onClose={handleFileClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+              >
+                <div className="modal">
+                  <Box className="modal-box">
+                    {/* <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                  <IconButton onClick={handleFileClose}>
+                    <CloseOutlined />
+                  </IconButton>
+                </div> */}
+
+                    <List
+                      sx={{
+                        width: "100%",
+                        maxWidth: 550,
+                        bgcolor: "#f0f6fb",
+                        position: "relative",
+                        overflow: "auto",
+                        borderRadius: "8px",
+                        maxHeight: 250,
+                        "& ul": { padding: 0 },
+                      }}
+                      subheader={<ListItem />}
+                    >
+                      <Typography
+                        display="flex"
+                        justifyContent="center"
+                        variant="h4"
+                      >
+                        Uploaded Files
+                      </Typography>
+                      {filesList.map((item, index) => (
+                        <>
+                          <ListItem sx={{ maxHeight: "200px" }}>
+                            {index + 1}
+
+                            <ListItemButton
+                              onClick={() => handleRowClick(item.fileUrl)}
+                            >
+                              <ListItemIcon>
+                                <ArticleIcon />
+                              </ListItemIcon>
+                              <Tooltip
+                                arrow
+                                placement="bottom"
+                                title={item.originalname}
+                              >
+                                <ListItemText
+                                  // onMouseOver={() => handleMouseOver(item)}
+                                  // onMouseOut={handleMouseOut}
+                                  sx={{ wordBreak: "break-all" }}
+                                  primary={item.originalname}
+                                ></ListItemText>
+                              </Tooltip>
+                            </ListItemButton>
+
+                            <DeleteIcon
+                              sx={{ cursor: "pointer" }}
+                              onClick={() => handleOnRowDelete(item)}
+                            />
+                          </ListItem>
+                          <Divider component="li" />
+                        </>
+                      ))}
+                    </List>
+                  </Box>
+                </div>
+              </Modal>
+
+              {/* <Grid item xs={9}>
                 <Accordion style={{ borderRadius: "10px" }}>
                   <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
@@ -311,7 +419,7 @@ const FileUpload = () => {
                     </List>
                   </AccordionDetails>
                 </Accordion>
-              </Grid>
+              </Grid> */}
             </Grid>
           </Paper>
         </Grid>
