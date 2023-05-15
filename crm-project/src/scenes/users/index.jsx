@@ -57,7 +57,7 @@ const Users = () => {
   }, []);
 
   const fetchRecords = () => {
-    RequestServer(urlUsers)
+    RequestServer("get",urlUsers)
       .then((res) => {
         console.log(res, "index page res");
         if (res.success) {
@@ -75,6 +75,13 @@ const Users = () => {
         setFetchLoading(false);
       });
   };
+
+  const handleAddPermissionRecord=()=>{
+    navigate("/new-permission", { state: { record: {} } });
+  }
+  const handleAddRolesRecord=()=>{
+    navigate("/new-roles",{state:{record:{}}})
+  }
 
   const handleAddRecord = () => {
     navigate("/new-users", { state: { record: {} } });
@@ -145,6 +152,8 @@ const Users = () => {
         });
       });
   };
+
+
 
   function CustomPagination() {
     const apiRef = useGridApiContext();
@@ -290,7 +299,20 @@ const Users = () => {
                   >
                     New
                   </Button>
-
+                  <Button
+                    variant="contained"
+                    color="info"
+                    onClick={handleAddPermissionRecord}
+                  >
+                    Permission
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="info"
+                    onClick={handleAddRolesRecord}
+                  >
+                    roles
+                  </Button>
                   {/* <ExcelDownload data={records} filename={`OpportunityRecords`}/> */}
                 </>
               )}

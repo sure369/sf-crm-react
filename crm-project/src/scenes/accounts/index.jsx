@@ -32,7 +32,8 @@ import { useFetchRecords } from "../customHooks/useFetchRecords";
 import ApiError from "../Errors/APIError";
 
 const Accounts = () => {
-  const urlDelete = `/deleteAccount?code=`;
+  const urlDelete = `/deleteAccount/`;
+  // const urlDelete = `/deleteAccount?code=`;
   const urlAccount = `/accounts`;
 
   const theme = useTheme();
@@ -61,7 +62,7 @@ const Accounts = () => {
   }, []);
 
   const fetchRecords = () => {
-    RequestServer(urlAccount)
+    RequestServer("get",urlAccount)
       .then((res) => {
         console.log(res, "index page res");
         if (res.success) {
@@ -116,7 +117,7 @@ const Accounts = () => {
   const onebyoneDelete = (row) => {
     console.log("onebyoneDelete rec id", row);
 
-    RequestServer(urlDelete + row)
+    RequestServer("delete",urlDelete + row)
       .then((res) => {
         if (res.success) {
           fetchRecords();

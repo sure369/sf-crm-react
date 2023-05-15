@@ -1,23 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  AppBar,
-  Box,
-  Toolbar,
-  Typography,
-  IconButton,
-  Menu,
-  Container,
-  Avatar,
-  Tooltip,
-  MenuItem,
-  Button,
-  Popover,
-  Dialog,
-  DialogContentText,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  ListItemButton,
+  AppBar, Box, Toolbar, Typography, IconButton, Menu, Container,
+  Avatar, Tooltip, MenuItem, Button, Popover, ListItemButton,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Link, NavLink, useNavigate } from "react-router-dom";
@@ -28,6 +12,7 @@ import { RequestServer } from "../api/HttpReq";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { styled, alpha } from "@mui/material/styles";
 import { PaletteTwoTone } from "@mui/icons-material";
+import { GetTableNames } from "./getTableNames";
 
 const logouturl = `/signout`;
 
@@ -44,35 +29,36 @@ const StyledMenu = styled((props) => (
     }}
     {...props}
   />
-))(({ theme }) => ({
-  "& .MuiPaper-root": {
-    borderRadius: 8,
-    marginTop: theme.spacing(1),
-    minWidth: 180,
-    color:
-      theme.palette.mode === "light"
-        ? "rgb(55, 65, 81)"
-        : theme.palette.grey[300],
-    boxShadow:
-      "rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px",
-    "& .MuiMenu-list": {
-      padding: "4px 0",
-    },
-    "& .MuiMenuItem-root": {
-      "& .MuiSvgIcon-root": {
-        fontSize: 18,
-        color: theme.palette.text.secondary,
-        marginRight: theme.spacing(1.5),
+  ))
+  (({ theme }) => ({
+    "& .MuiPaper-root": {
+      borderRadius: 8,
+      marginTop: theme.spacing(1),
+      minWidth: 180,
+      color:
+        theme.palette.mode === "light"
+          ? "rgb(55, 65, 81)"
+          : theme.palette.grey[300],
+      boxShadow:
+        "rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px",
+      "& .MuiMenu-list": {
+        padding: "4px 0",
       },
-      "&:active": {
-        backgroundColor: alpha(
-          theme.palette.primary.main,
-          theme.palette.action.selectedOpacity
-        ),
+      "& .MuiMenuItem-root": {
+        "& .MuiSvgIcon-root": {
+          fontSize: 18,
+          color: theme.palette.text.secondary,
+          marginRight: theme.spacing(1.5),
+        },
+        "&:active": {
+          backgroundColor: alpha(
+            theme.palette.primary.main,
+            theme.palette.action.selectedOpacity
+          ),
+        },
       },
     },
-  },
-}));
+  }));
 
 const pages = [
   { title: "Home", toNav: "/Home" },
@@ -84,8 +70,8 @@ const pages = [
   { title: "Task", toNav: "/task" },
   { title: "Users", toNav: "/users" },
   { title: "File Upload", toNav: "/file" },
-  // { title: 'Data Loader', toNav: '/dataLoader' },
-  // { title: "Test", toNav: "/test" },
+  { title: 'Permission Set', toNav: '/permissions' },
+  { title: "Roles", toNav: "/getRole" },
   // { title: 'Junction Object', toNav: '/oppInventory' },
 ];
 
@@ -103,6 +89,7 @@ const colors = [
 const settings = ["Logout"];
 
 function AppNavbar() {
+
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [selected, setSelected] = useState("Home");
@@ -113,12 +100,30 @@ function AppNavbar() {
 
   const [anchorElPallete, setAnchorElPallete] = useState(null);
   const PalleteOpen = Boolean(anchorElPallete);
-
+  const navigate = useNavigate();  
+  const [tableNamearr, settableNameArr] = useState([]);
   const loggedInUserData = JSON.parse(sessionStorage.getItem("loggedInUser"));
 
-  console.log(loggedInUserData, "loggedInUserData");
+  useEffect(()=>{
+    // fetchTableNames()
+  },[])
 
-  const navigate = useNavigate();
+ const fetchTableNames=()=>{
+  GetTableNames()
+  .then(res=>{
+    console.log(res,"getTableNames res in appbar")
+    const arr=res.map(i=>{
+      return {title:i,toNav:`list/${i}`}        
+    })
+    console.log(arr,"settableNameArr")
+    settableNameArr(arr)
+  })
+  .catch(err=>{
+    console.log(err,"getTableNames error in appbar")
+  })
+ }
+
+ 
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);

@@ -25,6 +25,9 @@ import DashboardIndex from "../dashboard";
 import HomePage from "../home";
 import PermissiionSetForm from "../recordDetailPage/PermissionSetForm";
 import FileUpload from "../fileUpload/FileUpload";
+import PermissionSets from "../permissionSets";
+import RoleDetailPage from "../recordDetailPage/RoleDetailPage";
+import RoleIndex from "../roles";
 
 function LoginLayoutIndex() {
   return (
@@ -39,6 +42,8 @@ function LoginLayoutIndex() {
         <Route path="/inventories" element={<ResponsiveInventories />} />
         <Route path="/task" element={<ResponsiveTasks />} />
         <Route path="/users" element={<ResponsiveUsers />} />
+        <Route path="/permissions" element={<PermissionSets />} />
+        <Route path="/getRole" element={<RoleIndex />} />
 
         <Route path="/new-contacts" element={<ContactDetailPage />} />
         <Route path="/new-users" element={<UserDetailPage />} />
@@ -46,7 +51,9 @@ function LoginLayoutIndex() {
         <Route path="/new-inventories" element={<InventoryDetailPage />} />
         <Route path="/new-leads" element={<LeadDetailPage />} />
         <Route path="/new-opportunities" element={<OpportunityDetailPage />} />
-        <Route path="/new-accounts" element={<AccountDetailPage />} />
+        <Route path="/new-accounts" element={<AccountDetailPage />} />        
+        <Route path="/new-permission" element={<PermissiionSetForm />} />
+        <Route path="/new-roles" element={<RoleDetailPage />} />        
 
         <Route path="/accountDetailPage/:id" element={<FlexAccounts />} />
         <Route path="/taskDetailPage/:id" element={<FlexTasks />} />
@@ -60,7 +67,6 @@ function LoginLayoutIndex() {
         />
 
         <Route path="/file" element={<FileUpload />} />
-        <Route path="/test" element={<PermissiionSetForm />} />
         <Route path="/Home" element={<HomePage />} />
         <Route path="*" element={<PageNotFound />} />
 

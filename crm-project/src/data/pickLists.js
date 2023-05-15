@@ -218,3 +218,27 @@ export const LeadMonthPicklist =[
   {text:'May',value:'May'},  {text:'June',value:'June'},  {text:'July',value:'July'},  {text:'Aug',value:'Aug'},
   {text:'Sep',value:'Sep'},  {text:'Oct',value:'Oct'},  {text:'Nov',value:'Nov'},  {text:'Dec',value:'Dec'}
 ]
+
+
+export const RolesDepartment=[
+  { text: "Admin", value: "Admin" },
+  { text: "Sales", value: "Sales" },
+  { text: "Marketing", value: "Marketing" },
+]
+
+export const RolesCategories = [
+  { text: "CMO", value: "CMO" },
+  { text: "VP", value: "VP" },
+  { text: "SM", value: "SM" },
+  { text: "M", value: "M" },
+  { text: "TL", value: "TL" },
+  { text: "Rep", value: "Rep" },
+];
+
+export const Objects=[
+  { text: "Account", value: "Account" },
+  { text: "Contact", value: "Contact" },
+  { text: "Opportunity", value: "Opportunity" },
+  { text: "Lead", value: "Lead" },
+  { text: "Inventory", value: "Inventory" },
+]
