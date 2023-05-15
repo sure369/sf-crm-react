@@ -17,6 +17,7 @@ import { RolesDepartment } from '../../data/pickLists';
 import { RequestServer } from '../api/HttpReq';
 import { apiCheckPermission } from '../Auth/apiCheckPermission';
 import { getLoginUserRoleDept } from '../Auth/userRoleDept';
+import queryString from 'query-string';
 
 const OBJECT_API="Permissions"
 const upsertUrl = `/upsertPermission`;
@@ -190,12 +191,14 @@ const PermissiionSetForm = ({ item }) => {
     const FetchRolesbyName = (dpt, inputValue) => {
         console.log(dpt, "dpt")
         console.log(inputValue, 'inputValue')
-        let params = ({
+        let payloadObj = {
             departmentName: dpt,
             role: inputValue
-          });
+          }
 
-        RequestServer("get",`${urlgetRolesByDept}/:${params}`)
+          let url = urlgetRolesByDept + '?' + queryString.stringify(payloadObj);
+
+        RequestServer("get",url)
             .then((res) => {
                 console.log(res, "urlgetRolesByDept res")
                 if(res.success){

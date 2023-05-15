@@ -10,7 +10,7 @@ import CustomizedSelectForFormik from '../formik/CustomizedSelectForFormik';
 import '../recordDetailPage/Form.css'
 import { RequestServer } from '../api/HttpReq';
 import { AccountInitialValues } from '../formik/IntialValues/formValues';
-
+import { apiMethods } from '../api/methods';
 
 const url = `/UpsertAccount`;
 
@@ -78,7 +78,7 @@ const ModalInventoryAccount = ({ item,handleModal }) => {
        
         console.log('after change form submission value',values);
         
-        RequestServer("post",url, values)
+        RequestServer(apiMethods.post,url, values)
         .then((res) => {
             console.log('upsert record  response', res);
             if(res.success){
