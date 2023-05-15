@@ -45,7 +45,7 @@ const OpportunityRelatedItems = ({ item }) => {
 
   const getTasksbyOppId = (recId) => {
     
-    RequestServer(urlTaskbyOppId + recId)
+    RequestServer("post",urlTaskbyOppId + recId)
     .then((res)=>{
       if(res.success){
         setRelatedTask(res.data);
@@ -91,7 +91,7 @@ const OpportunityRelatedItems = ({ item }) => {
 
     console.log('req delete rec', row);
     console.log('req delete rec id', row._id);
-    RequestServer(taskDeleteURL + row._id)
+    RequestServer("post",taskDeleteURL + row._id)
     .then((res)=>{
       if(res.success){        
         getTasksbyOppId(opportunityRecordId)

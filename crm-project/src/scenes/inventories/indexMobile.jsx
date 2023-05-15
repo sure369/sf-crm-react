@@ -42,7 +42,7 @@ const InventoriesMobile = () => {
 
   const fetchRecords = () => {
 
-    RequestServer(urlInventory)
+    RequestServer("post",urlInventory)
     .then((res)=>{
       console.log(res,"api res index page")
       if(res.success){
@@ -101,7 +101,7 @@ const InventoriesMobile = () => {
 
     console.log('one by one Delete row', row)
 
-    RequestServer(urlDelete + row)
+    RequestServer("post",urlDelete + row)
     .then((res)=>{
       if(res.success){
         fetchRecords()

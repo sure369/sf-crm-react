@@ -38,7 +38,7 @@ export default function ForgotPasswordIndex() {
     const formSubmission = async (values, { resetForm }) => {
         console.log('inside form Submission', values);
       
-        RequestServer(confirmEmailURL,values)
+        RequestServer("post",confirmEmailURL,values)
         .then((res)=>{
             console.log(res.data,"api res")
             if(res.data.status==="failure"){

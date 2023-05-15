@@ -110,7 +110,7 @@ const ContactDetailPage = ({ item }) => {
         }
         console.log('after change form submission value', values);
 
-        RequestServer(urlUpsert, values)
+        RequestServer("post",urlUpsert, values)
             .then((res) => {
                 console.log('upsert record  response', res);
                 setNotify({
@@ -136,7 +136,7 @@ const ContactDetailPage = ({ item }) => {
 
     const FetchAccountsbyName = (newInputValue) => {
 
-        RequestServer(fetchAccountsbyName + newInputValue)
+        RequestServer("post",fetchAccountsbyName + newInputValue)
         .then((res)=>{
             if(res.success){
                 if(typeof(res.data)!=='string'){

@@ -37,7 +37,7 @@ const UsersMobile = () => {
   );
 
   const fetchRecords = () => {
-    RequestServer(urlUsers)
+    RequestServer("post",urlUsers)
     .then((res)=>{
       console.log(res,"index page res")
       if(res.success){
@@ -94,7 +94,7 @@ const UsersMobile = () => {
     console.log('onebyoneDelete rec id', row)
 
     
-    RequestServer(urlDelete + row )
+    RequestServer("post",urlDelete + row )
     .then((res)=>{
       if(res.success){
         fetchRecords()

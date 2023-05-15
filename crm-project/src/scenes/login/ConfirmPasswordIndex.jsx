@@ -68,7 +68,7 @@ export default function ConfirmPasswordIndex({ item }) {
 
         console.log('after ', values);
 
-        RequestServer(singupUrl, values)
+        RequestServer("post",singupUrl, values)
             .then((res) => {
                 console.log(res.data, "UpsertUser response")
                 setNotify({

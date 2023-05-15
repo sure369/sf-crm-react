@@ -90,7 +90,7 @@ const AccountDetailPage = ({ item }) => {
 
         console.log("after change form submission value", values);
         
-        RequestServer(urlUpsert,values)
+        RequestServer("post",urlUpsert,values)
         .then((res) => {
             console.log(res,"res from RequestServer")
             if (res.success) {
@@ -124,7 +124,7 @@ const AccountDetailPage = ({ item }) => {
 
     const FetchInventoriesbyName = (newInputValue) => {
         
-        RequestServer(fetchInventoriesbyName+newInputValue)
+        RequestServer("post",fetchInventoriesbyName+newInputValue)
         .then((res)=>{
             if(res.success){
                 if(typeof(res.data)!=='string'){

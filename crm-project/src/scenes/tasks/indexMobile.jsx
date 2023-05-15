@@ -42,7 +42,7 @@ const TaskMobile = () => {
   );
 
   const fetchRecords = () => {
-    RequestServer(urlTask)
+    RequestServer("post",urlTask)
     .then((res)=>{
       console.log(res,"index page res")
       if(res.success){
@@ -99,7 +99,7 @@ const TaskMobile = () => {
   const onebyoneDelete = (row) => {
     console.log('onebyoneDelete rec id', row)
 
-    RequestServer(urlDelete + row )
+    RequestServer("post",urlDelete + row )
     .then((res)=>{
       if(res.success){
         fetchRecords()

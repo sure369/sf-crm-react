@@ -54,7 +54,7 @@ export default function SignUpIndex() {
 
         console.log('after ', values);
 
-        RequestServer(singupUrl, values)
+        RequestServer("post",singupUrl, values)
             .then((res) => {
                 console.log(res.data, "sign up response")
                 if(res.success){

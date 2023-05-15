@@ -78,7 +78,7 @@ const ModalLeadOpportunity = ({ item, handleModal }) => {
 
         console.log('after change form submission value', values);
 
-        RequestServer(url, values)
+        RequestServer("post",url, values)
             .then((res) => {
                 console.log('post response', res);
                 if(res.success){
@@ -111,7 +111,7 @@ const ModalLeadOpportunity = ({ item, handleModal }) => {
     }
 
     const FetchInventoriesbyName = (newInputValue) => {
-        RequestServer(fetchInventoriesbyName + newInputValue)
+        RequestServer("post",fetchInventoriesbyName + newInputValue)
             .then((res) => {
                 console.log('res fetch Inventoriesby Name', res.data)
                 if(res.success){

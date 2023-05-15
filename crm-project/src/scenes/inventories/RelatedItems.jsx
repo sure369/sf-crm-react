@@ -50,7 +50,7 @@ const InventoryRelatedItems = ({ item }) => {
   }, [])
 
   const getOpportunitiesbyInvId = (recId) => {
-    RequestServer(urlgetOpportunitiesbyInvid + recId)
+    RequestServer("post",urlgetOpportunitiesbyInvid + recId)
       .then((res) => {
         if (res.success) {
           setRealtedOpportunity(res.data);
@@ -66,7 +66,7 @@ const InventoryRelatedItems = ({ item }) => {
   }
 
   const getAccountsbyInvId = (InventoryId) => {
-    RequestServer(urlgetAccountsbyInvid + InventoryId)
+    RequestServer("post",urlgetAccountsbyInvid + InventoryId)
     .then((res) => {
       if (res.success) {
         setRelatedAccount(res.data);
@@ -104,7 +104,7 @@ const InventoryRelatedItems = ({ item }) => {
   const onConfirmOpportunityCardDelete = (row) => {
     console.log('req delete rec id', row._id);
 
-    RequestServer(opportunityDeleteURL+row._id)
+    RequestServer("post",opportunityDeleteURL+row._id)
     .then((res)=>{
       if(res.success){
         setOppMenuOpen(false)
@@ -164,7 +164,7 @@ const InventoryRelatedItems = ({ item }) => {
 
   const onConfirmAccountCardDelete = (row) => {
     console.log('req delete rec', row);
-    RequestServer(accountDeleteURL+row._id)
+    RequestServer("post",accountDeleteURL+row._id)
     .then((res)=>{
       if(res.success){
         setAccountMenuOpen(false)

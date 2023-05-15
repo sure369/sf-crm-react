@@ -65,7 +65,7 @@ const WhatAppModalPage = ({ data, handleModal, bulkMail }) => {
         // formData.append('recordsData', JSON.stringify(RecordConvert));
         formData.append('file', element.attachments);
 
-        RequestServer(urlSendWhatsAppbulk, formData)
+        RequestServer("post",urlSendWhatsAppbulk, formData)
             .then((res) => {
                 console.log('email send res', res)
                 if(res.success){

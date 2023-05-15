@@ -75,7 +75,7 @@ const ModalAccTask = ({ item, handleModal }) => {
             values.EndDate = EndDateSec
         }
 
-        await RequestServer(UpsertUrl, values)
+        await RequestServer("post",UpsertUrl, values)
             .then((res) => {
                 console.log('task form Submission  response', res);
                 if(res.success){

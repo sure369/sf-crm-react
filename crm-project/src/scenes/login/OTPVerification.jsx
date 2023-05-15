@@ -50,7 +50,7 @@ export default function OTPVerification() {
     },[])
 
     const handleSendEmailId = () => {
-        RequestServer(generateotpUrl, { emailId: location.state.record.item.email })
+        RequestServer("post",generateotpUrl, { emailId: location.state.record.item.email })
             .then((res) => {
                 console.log(res.data, "otp email res")
                 if(res.success){
@@ -65,7 +65,7 @@ export default function OTPVerification() {
     }
 
     const handleSendOtp =()=>{
-        RequestServer(generateotpUrl, {otp: otp})
+        RequestServer("post",generateotpUrl, {otp: otp})
         .then((res) => {
             console.log(res.data, "otp RES")
             if(res.data.status==='success'){

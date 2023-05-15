@@ -190,9 +190,12 @@ const PermissiionSetForm = ({ item }) => {
     const FetchRolesbyName = (dpt, inputValue) => {
         console.log(dpt, "dpt")
         console.log(inputValue, 'inputValue')
-        let payloadObj = { departmentName: dpt, role: inputValue }
+        let params = ({
+            departmentName: dpt,
+            role: inputValue
+          });
 
-        RequestServer("get",urlgetRolesByDept, payloadObj)
+        RequestServer("get",`${urlgetRolesByDept}/:${params}`)
             .then((res) => {
                 console.log(res, "urlgetRolesByDept res")
                 if(res.success){

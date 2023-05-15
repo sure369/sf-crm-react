@@ -49,7 +49,7 @@ export default function LoginIndex({onAuthentication}) {
     })
     const formSubmission = async (values, { resetForm }) => {
         console.log('inside form Submission', values);
-        RequestServer(loginUrl,values)
+        RequestServer("post",loginUrl,values)
         .then((res)=>{
             console.log(res.data,"login api res")
             res.data.status ==='success' ?setSignInCredential(true) :setSignInCredential(false)

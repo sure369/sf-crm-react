@@ -47,7 +47,7 @@ const ContactsMobile = () => {
   }, []);
 
   const fetchRecords = () => {
-    RequestServer(urlContact)
+    RequestServer("post",urlContact)
     .then((res)=>{
       console.log(res,"index page res")
       if(res.success){
@@ -105,7 +105,7 @@ const ContactsMobile = () => {
   const onebyoneDelete = (row) => {
     console.log('one by on delete', row)
 
-    RequestServer(urlDelete + row )
+    RequestServer("post",urlDelete + row )
     .then((res)=>{
       if(res.success){
         fetchRecords()

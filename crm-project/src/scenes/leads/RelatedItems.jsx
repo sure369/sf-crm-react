@@ -54,7 +54,7 @@ const LeadRelatedItems = ({ item }) => {
   const getTasksbyLeadId = (leadsId) => {
 
     console.log('lead id', leadsId);
-    RequestServer(urlTaskbyLeadId + leadsId)
+    RequestServer("post",urlTaskbyLeadId + leadsId)
       .then((res) => {
         if (res.success) {
           setRelatedTask(res.data);
@@ -70,7 +70,7 @@ const LeadRelatedItems = ({ item }) => {
   }
 
   const getOpportunitybyLeadId = (leadsId) => {
-    RequestServer(urlOppbyLeadId + leadsId)
+    RequestServer("post",urlOppbyLeadId + leadsId)
     .then((res) => {
       if (res.success) {
         setRelatedOpportunity(res.data);
@@ -120,7 +120,7 @@ const LeadRelatedItems = ({ item }) => {
 
   const onConfirmTaskCardDelete = (row) => {
     console.log('req delete rec', row);
-    RequestServer(taskDeleteURL+row._id)
+    RequestServer("post",taskDeleteURL+row._id)
     .then((res)=>{
       if(res.success){        
         getTasksbyLeadId(leadRecordId)
@@ -180,7 +180,7 @@ const LeadRelatedItems = ({ item }) => {
   const onConfirmOpportunityCardDelete = (row) => {
 
     console.log('req opp delete rec', row)
-    RequestServer(opportunityDeleteURL+row._id)
+    RequestServer("post",opportunityDeleteURL+row._id)
     .then((res)=>{
       if(res.success){        
         getOpportunitybyLeadId(leadRecordId)

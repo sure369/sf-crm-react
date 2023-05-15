@@ -78,7 +78,7 @@ const Leads = () => {
   }, []);
 
   const fetchRecords = () => {
-    RequestServer(urlLead)
+    RequestServer("post",urlLead)
       .then((res) => {
         console.log(res, "index page res");
         if (res.success) {
@@ -134,7 +134,7 @@ const Leads = () => {
 
   const onebyoneDelete = (row) => {
     console.log("onebyoneDelete rec id", row);
-    RequestServer(urlDelete + row)
+    RequestServer("post",urlDelete + row)
       .then((res) => {
         if (res.success) {
           fetchRecords();
@@ -217,7 +217,7 @@ const Leads = () => {
     if (e.target.value === null) {
       fetchRecords();
     } else {
-      RequestServer(urlSearchLead + label + "=" + value)
+      RequestServer("post",urlSearchLead + label + "=" + value)
         .then((res) => {
           console.log("Searched Month res ", res);
           if (res.success) {

@@ -61,6 +61,7 @@ function LoginLayoutIndex() {
         <Route path="/contactDetailPage/:id" element={<ContactDetailPage />} />
         <Route path="/userDetailPage/:id" element={<UserDetailPage />} />
         <Route path="/leadDetailPage/:id" element={<FlexLeads />} />
+        <Route path="/roleDetailPage/:id" element={<RoleDetailPage/>}/>
         <Route
           path="/opportunityDetailPage/:id"
           element={<FlexOpportunities />}

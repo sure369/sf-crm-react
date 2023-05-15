@@ -77,7 +77,7 @@ const ModalTask = ({ item, handleModal }) => {
         }
         console.log('valuse after chg', values);
 
-        await RequestServer(UpsertUrl, values)
+        await RequestServer("post",UpsertUrl, values)
 
             .then((res) => {
                 console.log('task form Submission  response', res);

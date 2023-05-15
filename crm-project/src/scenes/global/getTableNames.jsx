@@ -16,7 +16,7 @@ const userRoleDpt ={
 
 
  return new Promise((resolve,reject)=>{
-  RequestServer(getObjectTabs,userRoleDpt)
+  RequestServer("post",getObjectTabs,userRoleDpt)
   .then(res=>{
     console.log(res,"getObjectTabs ")
     if(res.success){

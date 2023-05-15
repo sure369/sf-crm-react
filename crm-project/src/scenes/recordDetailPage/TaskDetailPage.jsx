@@ -150,7 +150,7 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
         }
         console.log('after change form submission value', values);
 
-            await RequestServer(UpsertUrl, values)
+            await RequestServer("post",UpsertUrl, values)
                 .then((res) => {
                     console.log('task form Submission  response', res);
                    if(res.success){
@@ -202,7 +202,7 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
         console.log('passed url', url)
         console.log('new Input  value', newInputValue)
 
-        RequestServer(`${url}?searchKey=${newInputValue}`)
+        RequestServer("post",`${url}?searchKey=${newInputValue}`)
             .then((res) => {
                 console.log('res Fetch Objects byName', res.data)
                if(res.success){

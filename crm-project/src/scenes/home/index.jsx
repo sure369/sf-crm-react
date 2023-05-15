@@ -41,7 +41,7 @@ function DashboardIndex() {
 
   const fetchRecords = () => {
     if (selectedFilterOption.length > 1) {
-      RequestServer(urlOpportunity)
+      RequestServer("post",urlOpportunity)
         .then((res) => {
           console.log(res, "Dashboard index page res");
           console.log("Dashboard Opportunity Data", res.data);

@@ -79,7 +79,7 @@ const ModalConAccount = ({ item, handleModal }) => {
             values.dob = dobSec;
         }
 
-        await RequestServer(UpsertUrl, values)
+        await RequestServer("post",UpsertUrl, values)
 
             .then((res) => {
                 console.log('task form Submission  response', res);

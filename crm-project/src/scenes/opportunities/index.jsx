@@ -65,7 +65,7 @@ const Opportunities = () => {
   }, []);
 
   const fetchRecords = () => {
-    RequestServer(urlOpportunity)
+    RequestServer("post",urlOpportunity)
       .then((res) => {
         console.log(res, "index page res");
         if (res.success) {
@@ -122,7 +122,7 @@ const Opportunities = () => {
   const onebyoneDelete = (row) => {
     console.log("onebyoneDelete rec id", row);
 
-    RequestServer(urlDelete + row)
+    RequestServer("post",urlDelete + row)
       .then((res) => {
         if (res.success) {
           fetchRecords();

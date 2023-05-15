@@ -11,7 +11,7 @@ import './Form.css'
 import { RequestServer } from '../api/HttpReq';
 import { InventoryInitialValues,InventorySavedValues } from '../formik/IntialValues/formValues';
 
-const url = `${process.env.REACT_APP_SERVER_URL}/UpsertInventory`;
+const url = `/UpsertInventory`;
 
 const InventoryDetailPage = ({ item }) => {
 
@@ -80,7 +80,7 @@ const InventoryDetailPage = ({ item }) => {
 
         console.log('after change form submission value', values);
 
-        RequestServer(url, values)
+        RequestServer("post",url, values)
             .then((res) => {                
             console.log(res,"res from RequestServer")
                 if (res.success) {

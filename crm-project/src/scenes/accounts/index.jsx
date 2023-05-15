@@ -62,7 +62,7 @@ const Accounts = () => {
   }, []);
 
   const fetchRecords = () => {
-    RequestServer("get",urlAccount)
+    RequestServer("post",urlAccount)
       .then((res) => {
         console.log(res, "index page res");
         if (res.success) {
@@ -117,7 +117,7 @@ const Accounts = () => {
   const onebyoneDelete = (row) => {
     console.log("onebyoneDelete rec id", row);
 
-    RequestServer("delete",urlDelete + row)
+    RequestServer("post",urlDelete + row)
       .then((res) => {
         if (res.success) {
           fetchRecords();

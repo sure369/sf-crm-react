@@ -64,7 +64,7 @@ const EmailModalPage = ({ data, handleModal, bulkMail }) => {
         // formData.append('recordsData', JSON.stringify(element));
         formData.append('file', values.attachments);
 
-        RequestServer(urlSendEmailbulk, formData)
+        RequestServer("post",urlSendEmailbulk, formData)
             .then((res) => {
                 console.log('email send res', res)
                 if(res.success){

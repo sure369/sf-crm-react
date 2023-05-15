@@ -147,7 +147,7 @@ function AppNavbar() {
 
   const handleUserLogout = () => {
     console.log("handleUserLogout");
-    RequestServer(logouturl)
+    RequestServer("post",logouturl)
       .then((res) => {
         if (res.success) {
           console.log(res.data, "then if");

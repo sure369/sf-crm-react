@@ -109,7 +109,7 @@ const OpportunityDetailPage = ({ item }) => {
         }
         console.log('after change form submission value', values);
 
-        RequestServer(url, values)
+        RequestServer("post",url, values)
             .then((res) => {
                 console.log(res,"res from RequestServer")
                 if (res.success) {
@@ -144,7 +144,7 @@ const OpportunityDetailPage = ({ item }) => {
     const FetchLeadsbyName = (newInputValue) => {
       
         console.log('newInputValue', newInputValue)
-        RequestServer(fetchLeadsbyName + newInputValue)
+        RequestServer("post",fetchLeadsbyName + newInputValue)
             .then((res) => {
                 console.log('res fetchLeadsbyName', res.data)
                 if (res.success) {
@@ -161,7 +161,7 @@ const OpportunityDetailPage = ({ item }) => {
     }
 
     const FetchInventoriesbyName = (newInputValue) => {
-        RequestServer(fetchInventoriesbyName + newInputValue)
+        RequestServer("post",fetchInventoriesbyName + newInputValue)
             .then((res) => {
                 console.log('res fetch Inventoriesby Name', res.data)
                

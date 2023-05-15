@@ -78,7 +78,7 @@ const ModalInventoryAccount = ({ item,handleModal }) => {
        
         console.log('after change form submission value',values);
         
-        RequestServer(url, values)
+        RequestServer("post",url, values)
         .then((res) => {
             console.log('upsert record  response', res);
             if(res.success){

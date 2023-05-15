@@ -51,7 +51,7 @@ const PermissionSets = () => {
   }, []);
 
   const fetchRecords = () => {
-    RequestServer(urlPermissionSets)
+    RequestServer("post",urlPermissionSets)
       .then((res) => {
         console.log(res, "index page res")
         if (res.success) {
@@ -121,7 +121,7 @@ const PermissionSets = () => {
   const onebyoneDelete = (row) => {
     console.log("onebyoneDelete rec id", row);
 
-    RequestServer(urlDelete + row)
+    RequestServer("post",urlDelete + row)
       .then((res) => {
         if (res.success) {
           fetchRecords()

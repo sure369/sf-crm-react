@@ -57,7 +57,7 @@ const AccountRelatedItems = ({ item }) => {
   
     console.log('inside getTasks record Id', accId);
 
-    RequestServer(urlgetTaskbyAccountId + accId)
+    RequestServer("post",urlgetTaskbyAccountId + accId)
     .then((res)=>{
       if(res.success){
         setRelatedTask(res.data);
@@ -75,7 +75,7 @@ const AccountRelatedItems = ({ item }) => {
   const getContactsbyAccountId=(accId)=>{
     console.log('inside getContacts record Id', accId);
 
-    RequestServer(urlgetContactbyAccountId + accId)
+    RequestServer("post",urlgetContactbyAccountId + accId)
     .then((res)=>{
       if(res.success){
         setRelatedContact(res.data);
@@ -126,7 +126,7 @@ const AccountRelatedItems = ({ item }) => {
     const  onConfirmContactCardDelete =(row)=>{
     console.log('req delete rec', row);
 
-    RequestServer(contactDeleteURL + row._id)
+    RequestServer("post",contactDeleteURL + row._id)
     .then((res)=>{
       if(res.success){
         
@@ -183,7 +183,7 @@ console.log('inside handleTaskCardDelete fn')
   }
   const onConfirmTaskCardDelete=(row)=>{
     console.log('req delete rec', row);
-    RequestServer(taskDeleteURL+row._id)
+    RequestServer("post",taskDeleteURL+row._id)
     .then((res)=>{
       if(res.success){
         getTasksbyAccountId(accountRecordId)
