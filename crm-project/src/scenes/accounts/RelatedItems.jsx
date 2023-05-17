@@ -455,10 +455,96 @@ const AccountRelatedItems = ({ item }) => {
           <Typography variant="h4">Contact({relatedContact.length}) </Typography>
         </AccordionSummary>
         <AccordionDetails>
+        {/* <Typography>
             {
-              
+              permissionValuesContact.read ? <>
+
+                <div style={{ textAlign: "end", marginBottom: "5px" }}>
+                  {
+                    permissionValuesContact.create &&
+                    <Button variant="contained" color="info" onClick={() => handleContactModalOpen()} >Add Contact</Button>
+                  }
+                </div>
+                <Card dense compoent="span" >
+                  {
+                    relatedContact.length > 0 ?
+                      relatedContact
+                        .slice((contactPerPage - 1) * contactItemsPerPage, contactPerPage * contactItemsPerPage)
+                        .map((item) => {
+                          return (
+                            <div >
+
+                              <CardContent sx={{ bgcolor: "aliceblue", m: "15px" }}>
+                                <div
+                                  key={item._id}
+                                >
+                                  <Grid container spacing={2}>
+                                    <Grid item xs={10} md={10}>
+                                      <div>Name : {item.fullName} </div>
+                                      <div>Phone : {item.phone}</div>
+                                      <div>Email : {item.email} </div>
+                                    </Grid>
+                                    <Grid item xs={2} md={2}>
+
+                                      <IconButton>
+                                        <MoreVertIcon onClick={(event) => handleContactMoreMenuClick(item, event)} />
+                                        <Menu
+                                          anchorEl={conAnchorEl}
+                                          open={conMenuOpen}
+                                          onClose={handleContactMoreMenuClose}
+                                          anchorOrigin={{
+                                            vertical: 'top',
+                                            horizontal: 'left',
+                                          }}
+                                          transformOrigin={{
+                                            vertical: 'top',
+                                            horizontal: 'left',
+                                          }}
+                                        >
+                                          {
+                                            permissionValuesContact.edit ?
+                                              <MenuItem onClick={() => handleContactCardEdit(conMenuSelectRec)}>Edit</MenuItem>
+                                              :
+                                              <MenuItem onClick={() => handleContactCardEdit(conMenuSelectRec)}>View</MenuItem>
+                                          }
+                                          {
+                                            permissionValuesContact.delete &&
+                                            <MenuItem onClick={(e) => handleReqContactCardDelete(e, conMenuSelectRec)}>Delete</MenuItem>
+                                          }
+                                        </Menu>
+                                      </IconButton>
+                                    </Grid>
+                                  </Grid>
+                                </div>
+                              </CardContent>
+                            </div>
+
+                          );
+                        })
+                      : ""
+                  }
+                </Card>
+                {
+                  relatedContact.length > 0 &&
+                  <Box display="flex" alignItems="center" justifyContent="center">
+                    <Pagination
+                      count={contactNoOfPages}
+                      page={contactPerPage}
+                      onChange={handleChangeContactPage}
+                      defaultPage={1}
+                      color="primary"
+                      size="medium"
+                      showFirstButton
+                      showLastButton
+                    />
+                  </Box>
+                }
+
+              </> : <NoAccessCard/>
             }
-          <div style={{ textAlign: "end", marginBottom: "5px" }}>
+          </Typography> */}
+
+          {/* <div style={{ textAlign: "end", marginBottom: "5px" }}>
             <Button variant="contained" color="info" onClick={() => handleContactModalOpen()} >Add Contact</Button>
           </div>
           {
@@ -479,7 +565,7 @@ const AccountRelatedItems = ({ item }) => {
               />
 
             </Box>
-          }
+          } */}
 
 
         </AccordionDetails>

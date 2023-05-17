@@ -68,9 +68,10 @@ export default function LoginIndex({onAuthentication}) {
                 }
                 sessionStorage.setItem('token',res.data.content)
                 sessionStorage.setItem('loggedInUser',JSON.stringify(obj))
-                setTimeout(()=>{
-                    onAuthentication()
-                },10000)
+                onAuthentication()
+                // setTimeout(()=>{
+                   
+                // },10000)
                 
                
             }
