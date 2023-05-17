@@ -22,6 +22,7 @@ import { RequestServer } from "../api/HttpReq";
 import { apiMethods } from "../api/methods";
 import { getLoginUserRoleDept } from "../Auth/userRoleDept";
 import { apiCheckPermission } from "../Auth/apiCheckPermission";
+import NoAccessCard from '../NoAccess/NoAccessCard'
 
 const AccountRelatedItems = ({ item }) => {
 
@@ -70,23 +71,23 @@ const AccountRelatedItems = ({ item }) => {
   }, [])
 
   const fetchPermission = () => {
-    if(userRoleDptTask){
+    if (userRoleDptTask) {
       apiCheckPermission(userRoleDptTask)
-      .then(res=>{
-        console.log(res[0].permissions," res apiCheckPermission task")
-      })
-      .catch(err=>{
-        console.log(err," error apiCheckPermission task")
-      })
+        .then(res => {
+          console.log(res[0].permissions, " res apiCheckPermission task")
+        })
+        .catch(err => {
+          console.log(err, " error apiCheckPermission task")
+        })
     }
-    if(userRoleDptContact){
+    if (userRoleDptContact) {
       apiCheckPermission(userRoleDptContact)
-      .then(res=>{
-        console.log(res[0].permissions,"res apiCheckPermission contact")
-      })
-      .catch(err=>{
-        console.log(err,"error apiCheckPermission contact")
-      })
+        .then(res => {
+          console.log(res[0].permissions, "res apiCheckPermission contact")
+        })
+        .catch(err => {
+          console.log(err, "error apiCheckPermission contact")
+        })
     }
   }
 
@@ -349,87 +350,97 @@ const AccountRelatedItems = ({ item }) => {
         </AccordionSummary>
         <AccordionDetails>
           <Typography>
-            <div style={{ textAlign: "end", marginBottom: "5px" }}>
-              <Button variant="contained" color="info" onClick={() => handletaskModalOpen()} >NEW EVENT</Button>
-            </div>
-            <Card dense compoent="span" >
-
-              {
-
-                relatedTask.length > 0 ?
-                  relatedTask
-                    .slice((taskPerPage - 1) * taskItemsPerPage, taskPerPage * taskItemsPerPage)
-                    .map((item) => {
-                      let starDateConvert
-                      if (item.StartDate) {
-
-                        starDateConvert = new Date(item.StartDate).getUTCFullYear()
-                          + '-' + ('0' + (new Date(item.StartDate).getUTCMonth() + 1)).slice(-2)
-                          + '-' + ('0' + (new Date(item.StartDate).getUTCDate())).slice(-2) || ''
-                      }
-
-
-                      return (
-                        <div >
-                          <CardContent sx={{ bgcolor: "aliceblue", m: "15px" }}>
-                            <div
-                              key={item._id}
-                            >
-                              <Grid container spacing={2}>
-                                <Grid item xs={10} md={10}>
-                                  <div>Subject : {item.subject} </div>
-                                  <div>Date&Time :{starDateConvert}</div>
-                                  <div>Description : {item.description} </div>
-                                </Grid>
-                                <Grid item xs={2} md={2}>
-
-                                  <IconButton>
-                                    <MoreVertIcon onClick={(event) => handleTaskMoreMenuClick(item, event)} />
-                                    <Menu
-                                      anchorEl={anchorEl}
-                                      open={menuOpen}
-                                      onClose={handleMoreMenuClose}
-                                      anchorOrigin={{
-                                        vertical: 'top',
-                                        horizontal: 'left',
-                                      }}
-                                      transformOrigin={{
-                                        vertical: 'top',
-                                        horizontal: 'left',
-                                      }}
-                                    >
-                                      <MenuItem onClick={() => handleTaskCardEdit(menuSelectRec)}>Edit</MenuItem>
-                                      <MenuItem onClick={(e) => handleReqTaskCardDelete(e, menuSelectRec)}>Delete</MenuItem>
-                                    </Menu>
-                                  </IconButton>
-                                </Grid>
-                              </Grid>
-                            </div>
-                          </CardContent>
-                        </div>
-
-                      );
-                    })
-                  : ""
-              }
-
-            </Card>
             {
-              relatedTask.length > 0 &&
-              <Box display="flex" alignItems="center" justifyContent="center">
-                <Pagination
-                  count={taskNoOfPages}
-                  page={taskPerPage}
-                  onChange={handleChangeTaskPage}
-                  defaultPage={1}
-                  color="primary"
-                  size="medium"
-                  showFirstButton
-                  showLastButton
-                />
-              </Box>
-            }
+              permissionValuesTask.read ? <>
+                {
+                  permissionValuesTask.create &&
+                  <>
+                    <div style={{ textAlign: "end", marginBottom: "5px" }}>
+                      <Button variant="contained" color="info" onClick={() => handletaskModalOpen()} >NEW EVENT</Button>
+                    </div>
+                  </>
+                }
+                <Card dense compoent="span" >
+                  {
+                    relatedTask.length > 0 ?
+                      relatedTask
+                        .slice((taskPerPage - 1) * taskItemsPerPage, taskPerPage * taskItemsPerPage)
+                        .map((item) => {
+                          let starDateConvert
+                          if (item.StartDate) {
 
+                            starDateConvert = new Date(item.StartDate).getUTCFullYear()
+                              + '-' + ('0' + (new Date(item.StartDate).getUTCMonth() + 1)).slice(-2)
+                              + '-' + ('0' + (new Date(item.StartDate).getUTCDate())).slice(-2) || ''
+                          }
+                          return (
+                            <div >
+                              <CardContent sx={{ bgcolor: "aliceblue", m: "15px" }}>
+                                <div
+                                  key={item._id}
+                                >
+                                  <Grid container spacing={2}>
+                                    <Grid item xs={10} md={10}>
+                                      <div>Subject : {item.subject} </div>
+                                      <div>Date&Time :{starDateConvert}</div>
+                                      <div>Description : {item.description} </div>
+                                    </Grid>
+                                    <Grid item xs={2} md={2}>
+                                      <IconButton>
+                                        <MoreVertIcon onClick={(event) => handleTaskMoreMenuClick(item, event)} />
+                                        <Menu
+                                          anchorEl={anchorEl}
+                                          open={menuOpen}
+                                          onClose={handleMoreMenuClose}
+                                          anchorOrigin={{
+                                            vertical: 'top',
+                                            horizontal: 'left',
+                                          }}
+                                          transformOrigin={{
+                                            vertical: 'top',
+                                            horizontal: 'left',
+                                          }}
+                                        >
+                                          {
+                                            permissionValuesTask.edit ?
+                                              <MenuItem onClick={() => handleTaskCardEdit(menuSelectRec)}>Edit</MenuItem>
+                                              :
+                                              <MenuItem onClick={() => handleTaskCardEdit(menuSelectRec)}>View</MenuItem>
+                                          }
+                                          {
+                                            permissionValuesTask.delete &&
+                                            <MenuItem onClick={(e) => handleReqTaskCardDelete(e, menuSelectRec)}>Delete</MenuItem>
+                                          }
+                                        </Menu>
+                                      </IconButton>
+                                    </Grid>
+                                  </Grid>
+                                </div>
+                              </CardContent>
+                            </div>
+                          );
+                        })
+                      : ""
+                  }
+                </Card>
+                {
+                  relatedTask.length > 0 &&
+                  <Box display="flex" alignItems="center" justifyContent="center">
+                    <Pagination
+                      count={taskNoOfPages}
+                      page={taskPerPage}
+                      onChange={handleChangeTaskPage}
+                      defaultPage={1}
+                      color="primary"
+                      size="medium"
+                      showFirstButton
+                      showLastButton
+                    />
+                  </Box>
+                }
+              </>
+                : <NoAccessCard />
+            }
           </Typography>
         </AccordionDetails>
       </Accordion>
@@ -444,7 +455,9 @@ const AccountRelatedItems = ({ item }) => {
           <Typography variant="h4">Contact({relatedContact.length}) </Typography>
         </AccordionSummary>
         <AccordionDetails>
-
+            {
+              
+            }
           <div style={{ textAlign: "end", marginBottom: "5px" }}>
             <Button variant="contained" color="info" onClick={() => handleContactModalOpen()} >Add Contact</Button>
           </div>
