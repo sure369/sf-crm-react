@@ -7,6 +7,7 @@ import '../recordDetailPage/Form.css'
 import Cdlogo from '../assets/cdlogo.jpg';
 import ToastNotification from "../toast/ToastNotification";
 import {RequestServer} from '../api/HttpReq'
+import { apiMethods } from "../api/methods";
 
 const singupUrl = `/UpsertUser`
 
@@ -68,7 +69,7 @@ export default function ConfirmPasswordIndex({ item }) {
 
         console.log('after ', values);
 
-        RequestServer("post",singupUrl, values)
+        RequestServer(apiMethods.post,singupUrl, values)
             .then((res) => {
                 console.log(res.data, "UpsertUser response")
                 setNotify({

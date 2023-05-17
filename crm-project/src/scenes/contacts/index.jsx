@@ -30,6 +30,7 @@ import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import EmailIcon from "@mui/icons-material/Email";
 import ExcelDownload from "../Excel";
 import { RequestServer } from "../api/HttpReq";
+import { apiMethods } from "../api/methods";
 import "../indexCSS/muiBoxStyles.css";
 
 const Contacts = () => {
@@ -65,7 +66,7 @@ const Contacts = () => {
   }, []);
 
   const fetchRecords = () => {
-    RequestServer("post",urlContact)
+    RequestServer(apiMethods.post,urlContact)
       .then((res) => {
         console.log(res, "index page res");
         if (res.success) {
@@ -121,7 +122,7 @@ const Contacts = () => {
   const onebyoneDelete = (row) => {
     console.log("one by on delete", row);
 
-    RequestServer("post",urlDelete + row)
+    RequestServer(apiMethods.post,urlDelete + row)
       .then((res) => {
         if (res.success) {
           fetchRecords();

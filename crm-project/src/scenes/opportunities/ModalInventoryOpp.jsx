@@ -16,6 +16,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import '../recordDetailPage/Form.css'
 import { RequestServer } from '../api/HttpReq';
 import { OpportunityInitialValues } from '../formik/IntialValues/formValues';
+import { apiMethods } from '../api/methods';
 
 const url = `/UpsertOpportunity`;
 const fetchLeadsbyName = `/LeadsbyName?searchKey=`;
@@ -77,7 +78,7 @@ const ModalInventoryOpportunity = ({ item, handleModal }) => {
 
         console.log('after change form submission value', values);
 
-        RequestServer("post",url, values)
+        RequestServer(apiMethods.post,url, values)
             .then((res) => {
                 console.log('post response', res);
                 if(res.success){
@@ -111,7 +112,7 @@ const ModalInventoryOpportunity = ({ item, handleModal }) => {
 
     const FetchLeadsbyName = (newInputValue) => {
         console.log('newInputValue', newInputValue)
-        RequestServer("post",fetchLeadsbyName + newInputValue)
+        RequestServer(apiMethods.post,fetchLeadsbyName + newInputValue)
             .then((res) => {
                 console.log('res fetchLeadsbyName', res.data)
                 if (res.success) {

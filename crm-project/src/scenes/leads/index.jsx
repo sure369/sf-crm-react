@@ -1,26 +1,10 @@
 import React, { useState, useEffect } from "react";
 import {
-  useTheme,
-  Box,
-  Button,
-  IconButton,
-  Pagination,
-  Tooltip,
-  Grid,
-  Modal,
-  Typography,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  Select,
+  useTheme,Box,Button,IconButton,Pagination,Tooltip,Grid,
+  Modal,Typography,MenuItem, FormControl,InputLabel,Select,
 } from "@mui/material";
-import {
-  DataGrid,
-  GridToolbar,
-  gridPageCountSelector,
-  gridPageSelector,
-  useGridApiContext,
-  useGridSelector,
+import {DataGrid,GridToolbar, gridPageCountSelector,
+  gridPageSelector, useGridApiContext,useGridSelector,
 } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import { useNavigate } from "react-router-dom";
@@ -38,6 +22,7 @@ import { RequestServer } from "../api/HttpReq";
 import "../recordDetailPage/Form.css";
 import { LeadMonthPicklist } from "../../data/pickLists";
 import "../indexCSS/muiBoxStyles.css";
+import { apiMethods } from "../api/methods";
 
 const Leads = () => {
   const urlLead = `/leads`;
@@ -52,16 +37,8 @@ const Leads = () => {
   const [fetchError, setFetchError] = useState();
   const [fetchLoading, setFetchLoading] = useState(true);
 
-  const [notify, setNotify] = useState({
-    isOpen: false,
-    message: "",
-    type: "",
-  });
-  const [confirmDialog, setConfirmDialog] = useState({
-    isOpen: false,
-    title: "",
-    subTitle: "",
-  });
+  const [notify, setNotify] = useState({isOpen: false, message: "", type: "", });
+  const [confirmDialog, setConfirmDialog] = useState({ isOpen: false,title: "",subTitle: "",});
 
   const [showDelete, setShowDelete] = useState(false);
   const [selectedRecordIds, setSelectedRecordIds] = useState();
@@ -78,7 +55,7 @@ const Leads = () => {
   }, []);
 
   const fetchRecords = () => {
-    RequestServer("post",urlLead)
+    RequestServer(apiMethods.post,urlLead)
       .then((res) => {
         console.log(res, "index page res");
         if (res.success) {
@@ -134,7 +111,7 @@ const Leads = () => {
 
   const onebyoneDelete = (row) => {
     console.log("onebyoneDelete rec id", row);
-    RequestServer("post",urlDelete + row)
+    RequestServer(apiMethods.post,urlDelete + row)
       .then((res) => {
         if (res.success) {
           fetchRecords();
@@ -217,7 +194,7 @@ const Leads = () => {
     if (e.target.value === null) {
       fetchRecords();
     } else {
-      RequestServer("post",urlSearchLead + label + "=" + value)
+      RequestServer(apiMethods.post,urlSearchLead + label + "=" + value)
         .then((res) => {
           console.log("Searched Month res ", res);
           if (res.success) {

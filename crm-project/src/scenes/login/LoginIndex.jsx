@@ -7,6 +7,7 @@ import '../recordDetailPage/Form.css'
 import Cdlogo from '../assets/cdlogo.jpg';
 import {RequestServer} from '../api/HttpReq'
 import { LoginInitialValue } from "../formik/IntialValues/formValues";
+import { apiMethods } from "../api/methods";
 
 
 const loginUrl = `/signin`;
@@ -49,7 +50,7 @@ export default function LoginIndex({onAuthentication}) {
     })
     const formSubmission = async (values, { resetForm }) => {
         console.log('inside form Submission', values);
-        RequestServer("post",loginUrl,values)
+        RequestServer(apiMethods.post,loginUrl,values)
         .then((res)=>{
             console.log(res.data,"login api res")
             res.data.status ==='success' ?setSignInCredential(true) :setSignInCredential(false)
@@ -61,6 +62,9 @@ export default function LoginIndex({onAuthentication}) {
                     userName:res.data.userDetails.userName,
                     userFullName:res.data.userDetails.fullName,
                     // userRole:res.data.userDetails.role
+                    userRole: res.data.userDetails.roleDetails,
+                    userRoleName:res.data.userDetails.roleDetails.roleName,
+                    userDepartment: res.data.userDetails.departmentName,
                 }
                 sessionStorage.setItem('token',res.data.content)
                 sessionStorage.setItem('loggedInUser',JSON.stringify(obj))

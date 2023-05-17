@@ -125,10 +125,15 @@ export const InvStatusPicklist = [
 
 export const LeadStatusPicklist = [
   // {text:'None',value:''},
-  { text: "Open-Not Contacted", value: "Open-Not Contacted" },
-  { text: "Working-Contacted", value: "Working-Contacted" },
-  { text: "Closed-Contacted", value: "Closed-Contacted" },
-  { text: "Closed-Not Converted", value: "Closed-Not Contacted" },
+  // { text: "Open-Not Contacted", value: "Open-Not Contacted" },
+  // { text: "Working-Contacted", value: "Working-Contacted" },
+  // { text: "Closed-Contacted", value: "Closed-Contacted" },
+  // { text: "Closed-Not Converted", value: "Closed-Not Contacted" },
+
+  { text: "Open", value: "Open" },
+  { text: "Working", value: "Working" },
+  { text: "Not-Convert", value: "Not-Convert" },
+  { text: "Converted", value: "Converted" },
 ];
 
 export const OppStagePicklist = [

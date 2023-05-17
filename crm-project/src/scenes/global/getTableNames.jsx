@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { RequestServer } from '../api/HttpReq';
-
+import { apiMethods } from '../api/methods';
 
 
 export const GetTableNames = () => {    
@@ -8,15 +8,15 @@ export const GetTableNames = () => {
 
 const getObjectTabs =`/getTabs`
 
-const userDetails = JSON.parse(sessionStorage.getItem("loggedInUser"))
+const userDetails = (sessionStorage.getItem("loggedInUser"))
 const userRoleDpt ={
-                     loginUserRole:JSON.parse(userDetails.userRole).roleName,
+                     loginUserRole:(userDetails.userRole).roleName,
                      loginUserDepartmentName:userDetails.userDepartment,
                    }
 
 
  return new Promise((resolve,reject)=>{
-  RequestServer("post",getObjectTabs,userRoleDpt)
+  RequestServer(apiMethods.post,getObjectTabs,userRoleDpt)
   .then(res=>{
     console.log(res,"getObjectTabs ")
     if(res.success){

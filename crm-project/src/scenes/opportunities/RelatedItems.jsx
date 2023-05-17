@@ -17,6 +17,7 @@ import ToastNotification from "../toast/ToastNotification";
 import DeleteConfirmDialog from "../toast/DeleteConfirmDialog";
 import '../recordDetailPage/Form.css'
 import { RequestServer } from "../api/HttpReq";
+import { apiMethods } from "../api/methods";
 
 
 const OpportunityRelatedItems = ({ item }) => {
@@ -45,7 +46,7 @@ const OpportunityRelatedItems = ({ item }) => {
 
   const getTasksbyOppId = (recId) => {
     
-    RequestServer("post",urlTaskbyOppId + recId)
+    RequestServer(apiMethods.post,urlTaskbyOppId + recId)
     .then((res)=>{
       if(res.success){
         setRelatedTask(res.data);
@@ -91,7 +92,7 @@ const OpportunityRelatedItems = ({ item }) => {
 
     console.log('req delete rec', row);
     console.log('req delete rec id', row._id);
-    RequestServer("post",taskDeleteURL + row._id)
+    RequestServer(apiMethods.post,taskDeleteURL + row._id)
     .then((res)=>{
       if(res.success){        
         getTasksbyOppId(opportunityRecordId)

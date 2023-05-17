@@ -12,21 +12,22 @@ import { useParams, useNavigate } from "react-router-dom"
 import ToastNotification from '../toast/ToastNotification';
 import CustomizedSelectForFormik from '../formik/CustomizedSelectForFormik';
 import './Form.css'
-import { PermissionSetInitialValues,PermissionSetSavedValues } from '../formik/IntialValues/formValues';
+import { PermissionSetInitialValues, PermissionSetSavedValues } from '../formik/IntialValues/formValues';
 import { RolesDepartment } from '../../data/pickLists';
 import { RequestServer } from '../api/HttpReq';
 import { apiCheckPermission } from '../Auth/apiCheckPermission';
 import { getLoginUserRoleDept } from '../Auth/userRoleDept';
 import queryString from 'query-string';
+import { apiMethods } from '../api/methods';
 
-const OBJECT_API="Permissions"
-const upsertUrl = `/upsertPermission`;
+const OBJECT_API = "Permissions"
+const upsertUrl = `/permission`;
 const urlgetUsersByName = `/getUsers`;
-const urlgetRolesByDept = `/getRole`
-const urlgetTbaleNames =`/getTabs`
+const urlgetRolesByDept = `/roles`
+const urlgetTbaleNames = `/getTabs`
 
 
-const PermissiionSetForm = ({ item }) => {
+const PermissionSetDetailPage = ({ item }) => {
 
     const [singlePermission, setsinglePermission] = useState();
     const location = useLocation();
@@ -35,38 +36,38 @@ const PermissiionSetForm = ({ item }) => {
     const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
 
     const [roleRecordsByDept, setRoleRecordsByDept] = useState([])
-    const [objTableName,setObjTableName]=useState([])
+    const [objTableName, setObjTableName] = useState([])
 
     // const userRoleDpt= getLoginUserRoleDept(OBJECT_API)
     // const [permissionValues, setPermissionValues] = useState({})
-   
+
     useEffect(() => {
-        console.log('passed record PermissiionSetForm', location.state.record.item);
+        console.log('passed record PermissionSetDetailPage', location.state.record.item);
 
         setsinglePermission(location.state?.record?.item ?? {});
         setshowNew(!location.state.record.item)
-        fetchTableNames()
+         fetchTableNames()
         // fetchPermissions()
     }, [])
 
 
-    const fetchTableNames=()=>{
-        RequestServer("get",urlgetTbaleNames)
-        .then(res=>{
-            if(res.success){
-                console.log(res.data,"urlgetTbaleNames then res")
-                const tableName = res.data.map(i=>{
-                    return i
-                })
-                console.log(tableName,"tableName")
-                setObjTableName(tableName)
-            }else{
-                console.log(res.error,"urlgetTbaleNames then error")
-            }
-        })
-        .catch(error=>{
-            console.log(error,"urlgetTbaleNames catch")
-        })
+    const fetchTableNames = () => {
+        RequestServer(apiMethods.get, urlgetTbaleNames)
+            .then(res => {
+                if (res.success) {
+                    console.log(res.data, "urlgetTbaleNames then res")
+                    const tableName = res.data.map(i => {
+                        return i
+                    })
+                    console.log(tableName, "tableName")
+                    setObjTableName(tableName)
+                } else {
+                    console.log(res.error, "urlgetTbaleNames then error")
+                }
+            })
+            .catch(error => {
+                console.log(error, "urlgetTbaleNames catch")
+            })
     }
 
     // const fetchPermissions=()=>{
@@ -84,18 +85,20 @@ const PermissiionSetForm = ({ item }) => {
 
 
     const initialValues = PermissionSetInitialValues
-    initialValues.permissionSets=objTableName.map(i=>{
-        return {object:i, permissions: {
-          read: false,
-          create: false,
-          edit: false,
-          delete: false,
-        }, permissionLevel: 0,}
+    initialValues.permissionSets = objTableName.map(i => {
+        return {
+            object: i, permissions: {
+                read: false,
+                create: false,
+                edit: false,
+                delete: false,
+            }, permissionLevel: 0,
+        }
     })
     const savedValues = PermissionSetSavedValues(singlePermission)
 
-    console.log(initialValues,"initialValues")
-    console.log(savedValues,"savedValues")
+    console.log(initialValues, "initialValues")
+    console.log(savedValues, "savedValues")
 
     const validationSchema = Yup.object({
         permissionName: Yup
@@ -110,7 +113,7 @@ const PermissiionSetForm = ({ item }) => {
 
         const convertValue = [...values.permissionSets]
         convertValue.forEach(obj => {
-            let permissionLevel = 
+            let permissionLevel =
                 (obj.permissions.read ? 1 : 0) +
                 (obj.permissions.create ? 2 : 0) +
                 (obj.permissions.edit ? 3 : 0) +
@@ -126,30 +129,30 @@ const PermissiionSetForm = ({ item }) => {
 
         let dateSeconds = new Date().getTime();
         let createDateSec = new Date(values.createdDate).getTime()
-        values.roleDetails = JSON.stringify(values.roleDetails)
+        // values.roleDetails = JSON.stringify(values.roleDetails)
         values.permissionSets = JSON.stringify(values.permissionSets)
         if (showNew) {
             values.modifiedDate = dateSeconds;
             values.createdDate = dateSeconds;
-            values.createdBy = (sessionStorage.getItem("loggedInUser"));
-            values.modifiedBy = (sessionStorage.getItem("loggedInUser"));
-            delete values.userDetails;
+            values.createdBy = JSON.parse(sessionStorage.getItem('loggedInUser'))
+            values.modifiedBy =JSON.parse(sessionStorage.getItem('loggedInUser'))
+            // delete values.userDetails;
 
         }
         else if (!showNew) {
             values.modifiedDate = dateSeconds;
             values.createdDate = createDateSec;
             values.createdBy = singlePermission.createdBy;
-            values.modifiedBy = (sessionStorage.getItem("loggedInUser"));
-            delete values.userDetails;
+            values.modifiedBy = JSON.parse(sessionStorage.getItem('loggedInUser'))
+            // delete values.userDetails;
         }
         console.log('after change form submission value', values);
 
 
-        RequestServer("post",upsertUrl, values)
+        RequestServer(apiMethods.post, upsertUrl, values)
             .then((res) => {
                 console.log(res, "res")
-                if(res.success){
+                if (res.success) {
                     setNotify({
                         isOpen: true,
                         message: res.data,
@@ -157,8 +160,8 @@ const PermissiionSetForm = ({ item }) => {
                     })
                     setTimeout(() => {
                         navigate(-1);
-                    }, 2000) 
-                }else{
+                    }, 2000)
+                } else {
                     setNotify({
                         isOpen: true,
                         message: res.error.message,
@@ -166,8 +169,8 @@ const PermissiionSetForm = ({ item }) => {
                     })
                     setTimeout(() => {
                         navigate(-1);
-                    }, 2000) 
-                }                                   
+                    }, 2000)
+                }
             })
             .catch((err) => {
                 console.log(err, "err")
@@ -178,7 +181,7 @@ const PermissiionSetForm = ({ item }) => {
                 })
                 setTimeout(() => {
                     navigate(-1);
-                }, 2000) 
+                }, 2000)
             })
     }
 
@@ -194,21 +197,21 @@ const PermissiionSetForm = ({ item }) => {
         let payloadObj = {
             departmentName: dpt,
             role: inputValue
-          }
+        }
 
-          let url = urlgetRolesByDept + '?' + queryString.stringify(payloadObj);
+        let url = urlgetRolesByDept + '?' + queryString.stringify(payloadObj);
 
-        RequestServer("get",url)
+        RequestServer(apiMethods.get, url)
             .then((res) => {
                 console.log(res, "urlgetRolesByDept res")
-                if(res.success){
+                if (res.success) {
                     setRoleRecordsByDept(res.data)
-                }else{
-                    console.log("urlgetRolesByDept status error",res.error.message)
-                }                
+                } else {
+                    console.log("urlgetRolesByDept status error", res.error.message)
+                }
             })
             .catch((error) => {
-                console.log("error urlgetRolesByDept",error)
+                console.log("error urlgetRolesByDept", error)
             })
 
         // let payloadObj ={department:dpt,value:inputValue}
@@ -240,8 +243,8 @@ const PermissiionSetForm = ({ item }) => {
                     validationSchema={validationSchema}
                     onSubmit={(values) => { formSubmission(values) }}
                 >
-                   {(props) => {
-                        const {values,dirty, isSubmitting, handleChange,handleSubmit,handleReset,setFieldValue,errors,touched,} = props;
+                    {(props) => {
+                        const { values, dirty, isSubmitting, handleChange, handleSubmit, handleReset, setFieldValue, errors, touched, } = props;
 
                         return (
                             <>
@@ -249,10 +252,14 @@ const PermissiionSetForm = ({ item }) => {
                                 <Form className='my-form'>
                                     <Grid container spacing={2}>
                                         <Grid item xs={6} md={6}>
-                                            <label htmlFor="permissionName">Permission Set Name</label>
-                                            <Field type="text" id="permissionName" name="permissionName" class="form-input" 
-                                                // disabled={showNew?!permissionValues.create :!permissionValues.edit}
+                                            <label htmlFor="permissionName">Permission Set Name <span className="text-danger">*</span></label>
+                                            <Field type="text" id="permissionName" name="permissionName" class="form-input"
+                                            // disabled={showNew?!permissionValues.create :!permissionValues.edit}
+
                                             />
+                                            <div style={{ color: "red" }}>
+                                                <ErrorMessage name="permissionName" />
+                                            </div>
                                         </Grid>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="department">Department</label>
@@ -279,19 +286,22 @@ const PermissiionSetForm = ({ item }) => {
                                             </Field>
                                         </Grid>
                                         <Grid item xs={6} md={6}>
-                                            <label htmlFor="roles">Roles</label>
+                                            <label htmlFor="RoleId">Role Name</label>
                                             <Autocomplete
-                                                name="roleDetails"
+                                                name="RoleId"
                                                 options={roleRecordsByDept}
                                                 value={values.roleDetails}
                                                 getOptionLabel={option => option.roleName || ""}
+                                                // getOptionLabel={option => console.log(option,"option")}
                                                 onChange={(e, value) => {
                                                     if (!value) {
                                                         console.log("!value", value)
+                                                        setFieldValue("RoleId", "")
                                                         setFieldValue("roleDetails", "")
                                                     } else {
-                                                        setFieldValue("roleDetails", value)
                                                         console.log("value", value)
+                                                        setFieldValue("roleDetails", value)
+                                                        setFieldValue("RoleId", value._id)
                                                     }
                                                 }}
                                                 onInputChange={(e, newInputValue) => {
@@ -320,8 +330,8 @@ const PermissiionSetForm = ({ item }) => {
                                                         {({ remove, push }) => (
                                                             <>
                                                                 {
-                                                               Array.isArray(values.permissionSets) && values.permissionSets.length > 0 &&
-                                                               
+                                                                    Array.isArray(values.permissionSets) && values.permissionSets.length > 0 &&
+
                                                                     values.permissionSets.map((obj, index) => (
                                                                         <div key={index} style={{ margin: '5px' }}>
                                                                             <Grid container spacing={2} alignItems="center">
@@ -345,12 +355,12 @@ const PermissiionSetForm = ({ item }) => {
                                                                                                     } else {
                                                                                                         console.log(e.target.checked, "read unchecked")
                                                                                                         setFieldValue(`permissionSets.${index}.permissions.read`, e.target.checked)
-                                                                                                        setFieldValue(`permissionSets.${index}.permissions.create`,e.target.checked)
+                                                                                                        setFieldValue(`permissionSets.${index}.permissions.create`, e.target.checked)
                                                                                                         setFieldValue(`permissionSets.${index}.permissions.edit`, e.target.checked)
                                                                                                         setFieldValue(`permissionSets.${index}.permissions.delete`, e.target.checked)
                                                                                                     }
                                                                                                 }}
-                                                                                                // disabled={showNew?!permissionValues.create :!permissionValues.edit}
+                                                                                            // disabled={showNew?!permissionValues.create :!permissionValues.edit}
                                                                                             />
                                                                                         </Grid>
                                                                                         <Grid item xs={3} md={3}>
@@ -369,7 +379,7 @@ const PermissiionSetForm = ({ item }) => {
                                                                                                         setFieldValue(`permissionSets.${index}.permissions.create`, e.target.checked);
                                                                                                     }
                                                                                                 }}
-                                                                                                // disabled={showNew?!permissionValues.create :!permissionValues.edit}
+                                                                                            // disabled={showNew?!permissionValues.create :!permissionValues.edit}
                                                                                             />
                                                                                         </Grid>
 
@@ -390,7 +400,7 @@ const PermissiionSetForm = ({ item }) => {
                                                                                                         setFieldValue(`permissionSets.${index}.permissions.delete`, e.target.checked)
                                                                                                     }
                                                                                                 }}
-                                                                                                // disabled={showNew?!permissionValues.create :!permissionValues.edit}
+                                                                                            // disabled={showNew?!permissionValues.create :!permissionValues.edit}
                                                                                             />
                                                                                         </Grid>
                                                                                         <Grid item xs={3} md={3}>
@@ -412,7 +422,7 @@ const PermissiionSetForm = ({ item }) => {
                                                                                                         setFieldValue(`permissionSets.${index}.permissions.delete`, e.target.checked);
                                                                                                     }
                                                                                                 }}
-                                                                                                // disabled={showNew?!permissionValues.create :!permissionValues.edit}
+                                                                                            // disabled={showNew?!permissionValues.create :!permissionValues.edit}
                                                                                             />
                                                                                         </Grid>
                                                                                     </Grid>
@@ -445,7 +455,7 @@ const PermissiionSetForm = ({ item }) => {
                                         <DialogActions sx={{ justifyContent: "space-between" }}>
                                             {
                                                 showNew ?
-                                                    <Button type='success' variant="contained" color="secondary" disabled={isSubmitting ||!dirty}>Save</Button>
+                                                    <Button type='success' variant="contained" color="secondary" disabled={isSubmitting || !dirty}>Save</Button>
                                                     :
                                                     <Button type='success' variant="contained" color="secondary" disabled={isSubmitting}>Update</Button>
                                             }
@@ -462,5 +472,5 @@ const PermissiionSetForm = ({ item }) => {
         </Grid>
     )
 }
-export default PermissiionSetForm;
+export default PermissionSetDetailPage;
 

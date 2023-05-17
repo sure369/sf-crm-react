@@ -20,13 +20,14 @@ import { RequestServer } from "../api/HttpReq";
 import '../indexCSS/muiBoxStyles.css'
 import { apiCheckPermission } from "../Auth/apiCheckPermission";
 import { getLoginUserRoleDept } from "../Auth/userRoleDept";
+import { apiMethods } from "../api/methods";
 
 
 const PermissionSets = () => {
 
   const OBJECT_API = "Permissions"
-  const urlPermissionSets = `/getPermissions`;
-  const urlDelete = `/deletePermission?code=`;
+  const getUrl = `/permissions`;
+  const deleteUrl = `/permission`;
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -41,18 +42,19 @@ const PermissionSets = () => {
   const [showDelete, setShowDelete] = useState(false);
   const [selectedRecordIds, setSelectedRecordIds] = useState();
   const [selectedRecordDatas, setSelectedRecordDatas] = useState();
-  const [permissionValues, setPermissionValues] = useState({})
+  const [permissionValues, setPermissionValues] = useState({create:true,edit:true,delete:true,read:true})
 
-  const userRoleDpt = getLoginUserRoleDept(OBJECT_API)
+  // const userRoleDpt = getLoginUserRoleDept(OBJECT_API)
 
   useEffect(() => {
     fetchRecords();
-    fetchPermissions();
+    // fetchPermissions();
   }, []);
 
   const fetchRecords = () => {
-    RequestServer("post",urlPermissionSets)
-      .then((res) => {
+    // RequestServer(apiMethods.get,getUrl+'/access=read')
+    RequestServer(apiMethods.get,getUrl)
+    .then((res) => {
         console.log(res, "index page res")
         if (res.success) {
           setRecords(res.data)
@@ -70,18 +72,18 @@ const PermissionSets = () => {
       })
   };
 
-  const fetchPermissions = () => {
-    if (userRoleDpt) {
-      apiCheckPermission(userRoleDpt)
-        .then(res => {
-          console.log(res, "api res apicheckpermission")
-          setPermissionValues(res)
-        })
-        .catch(err => {
-          setPermissionValues({})
-        })
-    }
-  }
+  // const fetchPermissions = () => {
+  //   if (userRoleDpt) {
+  //     apiCheckPermission(userRoleDpt)
+  //       .then(res => {
+  //         console.log(res, "api res apicheckpermission")
+  //         setPermissionValues(res)
+  //       })
+  //       .catch(err => {
+  //         setPermissionValues({})
+  //       })
+  //   }
+  // }
 
   const handleAddRecord = () => {
     navigate("/new-permission", { state: { record: {} } });
@@ -121,7 +123,7 @@ const PermissionSets = () => {
   const onebyoneDelete = (row) => {
     console.log("onebyoneDelete rec id", row);
 
-    RequestServer("post",urlDelete + row)
+    RequestServer(apiMethods.delete,deleteUrl + `/${row}`)
       .then((res) => {
         if (res.success) {
           fetchRecords()
@@ -185,8 +187,15 @@ const PermissionSets = () => {
       field: "roleDetails", headerName: "Role",
       headerAlign: "center", align: "center", flex: 1,
       renderCell: (params) => {
-        let formatValue = JSON.parse(params.value)
-        return <>{formatValue.roleName}</>;
+        if (params.row.roleDetails) {
+          return (
+            <div className="rowitem">
+              {params.row.roleDetails.roleName}
+            </div>
+          );
+        } else {
+          return <div className="rowitem">{null}</div>;
+        }
       },
     },]
   if (permissionValues.delete) {

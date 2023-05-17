@@ -14,6 +14,7 @@ import CustomizedSelectDisableForFormik from "../formik/CustomizedSelectDisableF
 import './Form.css'
 import { TaskInitialValues, TaskSavedValues } from "../formik/IntialValues/formValues";
 import { RequestServer } from "../api/HttpReq";
+import { apiMethods } from "../api/methods";
 
 const UpsertUrl = `/UpsertTask`;
 const fetchAccountUrl = `/accountsname`;
@@ -150,7 +151,7 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
         }
         console.log('after change form submission value', values);
 
-            await RequestServer("post",UpsertUrl, values)
+            await RequestServer(apiMethods.post,UpsertUrl, values)
                 .then((res) => {
                     console.log('task form Submission  response', res);
                    if(res.success){
@@ -202,7 +203,7 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
         console.log('passed url', url)
         console.log('new Input  value', newInputValue)
 
-        RequestServer("post",`${url}?searchKey=${newInputValue}`)
+        RequestServer(apiMethods.post,`${url}?searchKey=${newInputValue}`)
             .then((res) => {
                 console.log('res Fetch Objects byName', res.data)
                if(res.success){

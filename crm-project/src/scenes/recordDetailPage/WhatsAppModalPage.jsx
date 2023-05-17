@@ -7,6 +7,7 @@ import ToastNotification from '../toast/ToastNotification';
 import '../recordDetailPage/Form.css'
 import { RequestServer } from "../api/HttpReq";
 import { WhatsappInitialValues } from "../formik/IntialValues/formValues";
+import { apiMethods } from "../api/methods";
 
 const urlSendWhatsAppbulk = `/bulkewhatsapp`
 
@@ -65,7 +66,7 @@ const WhatAppModalPage = ({ data, handleModal, bulkMail }) => {
         // formData.append('recordsData', JSON.stringify(RecordConvert));
         formData.append('file', element.attachments);
 
-        RequestServer("post",urlSendWhatsAppbulk, formData)
+        RequestServer(apiMethods.post,urlSendWhatsAppbulk, formData)
             .then((res) => {
                 console.log('email send res', res)
                 if(res.success){

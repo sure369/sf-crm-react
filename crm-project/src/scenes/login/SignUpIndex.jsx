@@ -7,6 +7,7 @@ import '../recordDetailPage/Form.css'
 import Cdlogo from '../assets/cdlogo.jpg';
 import {RequestServer} from '../api/HttpReq'
 import { SignUpInitialValue } from "../formik/IntialValues/formValues";
+import { apiMethods } from "../api/methods";
 
 const singupUrl = `/signup`
 
@@ -54,7 +55,7 @@ export default function SignUpIndex() {
 
         console.log('after ', values);
 
-        RequestServer("post",singupUrl, values)
+        RequestServer(apiMethods.post,singupUrl, values)
             .then((res) => {
                 console.log(res.data, "sign up response")
                 if(res.success){

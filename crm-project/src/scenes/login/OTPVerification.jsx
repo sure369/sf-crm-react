@@ -8,6 +8,7 @@ import '../recordDetailPage/Form.css'
 import Cdlogo from '../assets/cdlogo.jpg';
 import OtpInput from 'react-otp-input';
 import { RequestServer } from "../api/HttpReq";
+import { apiMethods } from "../api/methods";
 
 const generateotpUrl = `/generateOTP`
 
@@ -50,7 +51,7 @@ export default function OTPVerification() {
     },[])
 
     const handleSendEmailId = () => {
-        RequestServer("post",generateotpUrl, { emailId: location.state.record.item.email })
+        RequestServer(apiMethods.post,generateotpUrl, { emailId: location.state.record.item.email })
             .then((res) => {
                 console.log(res.data, "otp email res")
                 if(res.success){
@@ -65,7 +66,7 @@ export default function OTPVerification() {
     }
 
     const handleSendOtp =()=>{
-        RequestServer("post",generateotpUrl, {otp: otp})
+        RequestServer(apiMethods.post,generateotpUrl, {otp: otp})
         .then((res) => {
             console.log(res.data, "otp RES")
             if(res.data.status==='success'){

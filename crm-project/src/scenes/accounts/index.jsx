@@ -20,13 +20,17 @@ import "../indexCSS/muiBoxStyles.css";
 import { useFetchRecords } from "../customHooks/useFetchRecords";
 import ApiError from "../Errors/APIError";
 import { apiMethods } from "../api/methods";
+import { apiCheckPermission } from '../Auth/apiCheckPermission'
+import { getLoginUserRoleDept } from '../Auth/userRoleDept';
+
 
 const Accounts = () => {
   
-  console.log(apiMethods,"apiMethods")
+  const OBJECT_API='Account'
   const urlDelete = `/deleteAccount/`;
   // const urlDelete = `/deleteAccount?code=`;
   const urlAccount = `/accounts`;
+
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -40,13 +44,18 @@ const Accounts = () => {
   const [selectedRecordIds, setSelectedRecordIds] = useState();
   const [selectedRecordDatas, setSelectedRecordDatas] = useState();
   const [importModalOpen, setImportModalOpen] = useState(false);
+  const [permissionValues,setPermissionValues] =useState({})
+  const userRoleDpt = getLoginUserRoleDept(OBJECT_API)
+  console.log(userRoleDpt, "userRoleDpt")
+
 
   useEffect(() => {
     fetchRecords();
+    fetchPermission();
   }, []);
 
   const fetchRecords = () => {
-    RequestServer(apiMethods.post,urlAccount)
+    RequestServer(apiMethods.get,urlAccount)
       .then((res) => {
         console.log(res, "index page res");
         if (res.success) {
@@ -64,6 +73,21 @@ const Accounts = () => {
         setFetchLoading(false);
       });
   };
+
+  const fetchPermission=()=>{
+    if (userRoleDpt) {
+      apiCheckPermission(userRoleDpt)
+        .then(res => {
+          console.log(res, "res apiCheckPermission")
+          setPermissionValues(res)
+        })
+        .catch(err => {
+          console.log(err, "res apiCheckPermission")
+          setPermissionValues({})
+        })
+    }
+  }
+
   const handleAddRecord = () => {
     navigate("/new-accounts", { state: { record: {} } });
   };

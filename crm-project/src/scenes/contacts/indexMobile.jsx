@@ -15,6 +15,7 @@ import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import EmailIcon from '@mui/icons-material/Email';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { RequestServer } from '../api/HttpReq';
+import { apiMethods } from '../api/methods';
 
 const ContactsMobile = () => {
 
@@ -47,7 +48,7 @@ const ContactsMobile = () => {
   }, []);
 
   const fetchRecords = () => {
-    RequestServer("post",urlContact)
+    RequestServer(apiMethods.post,urlContact)
     .then((res)=>{
       console.log(res,"index page res")
       if(res.success){
@@ -105,7 +106,7 @@ const ContactsMobile = () => {
   const onebyoneDelete = (row) => {
     console.log('one by on delete', row)
 
-    RequestServer("post",urlDelete + row )
+    RequestServer(apiMethods.post,urlDelete + row )
     .then((res)=>{
       if(res.success){
         fetchRecords()

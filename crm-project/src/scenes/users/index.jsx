@@ -27,6 +27,7 @@ import DeleteConfirmDialog from "../toast/DeleteConfirmDialog";
 import ExcelDownload from "../Excel";
 import { RequestServer } from "../api/HttpReq";
 import "../indexCSS/muiBoxStyles.css";
+import { apiMethods } from "../api/methods";
 
 const Users = () => {
   const urlDelete = `/delete?code=`;
@@ -38,16 +39,8 @@ const Users = () => {
   const [records, setRecords] = useState([]);
   const [fetchError, setFetchError] = useState();
   const [fetchLoading, setFetchLoading] = useState(true);
-  const [notify, setNotify] = useState({
-    isOpen: false,
-    message: "",
-    type: "",
-  });
-  const [confirmDialog, setConfirmDialog] = useState({
-    isOpen: false,
-    title: "",
-    subTitle: "",
-  });
+  const [notify, setNotify] = useState({ isOpen: false, message: "", type: "", });
+  const [confirmDialog, setConfirmDialog] = useState({isOpen: false, title: "",subTitle: "",});
   const [showDelete, setShowDelete] = useState(false);
   const [selectedRecordIds, setSelectedRecordIds] = useState();
   const [selectedRecordDatas, setSelectedRecordDatas] = useState();
@@ -57,7 +50,7 @@ const Users = () => {
   }, []);
 
   const fetchRecords = () => {
-    RequestServer("get",urlUsers)
+    RequestServer(apiMethods.post,urlUsers)
       .then((res) => {
         console.log(res, "index page res");
         if (res.success) {
@@ -119,7 +112,7 @@ const Users = () => {
   const onebyoneDelete = (row) => {
     console.log("onebyoneDelete rec id", row);
 
-    RequestServer("post",urlDelete + row)
+    RequestServer(apiMethods.post,urlDelete + row)
       .then((res) => {
         if (res.success) {
           fetchRecords();
@@ -193,15 +186,29 @@ const Users = () => {
       flex: 1,
     },
     {
-      field: "role",
+      field: "roleDetails",
       headerName: "Role",
       headerAlign: "center",
       align: "center",
       flex: 1,
+      renderCell:(params)=>{
+        console.log(params.value,"params.row.rowDetails")
+        if(params.value){
+          return (
+            
+            <div className="rowitem">
+              {params.value.roleName}
+            </div>
+          );
+        }
+        else {
+          return <div className="rowitem">{null}</div>;
+        }
+      }
     },
     {
-      field: "access",
-      headerName: "Access",
+      field: "departmentName",
+      headerName: "DepartmentName",
       headerAlign: "center",
       align: "center",
       flex: 1,

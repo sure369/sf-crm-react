@@ -10,6 +10,7 @@ import ToastNotification from '../toast/ToastNotification';
 import DeleteConfirmDialog from '../toast/DeleteConfirmDialog';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { RequestServer } from '../api/HttpReq';
+import { apiMethods } from '../api/methods';
 
 const LeadsMobile = () => {
 
@@ -40,7 +41,7 @@ const LeadsMobile = () => {
   }, []);
 
   const fetchRecords = () => {
-    RequestServer("post",urlLead)
+    RequestServer(apiMethods.post,urlLead)
     .then((res)=>{
       console.log(res,"index page res")
       if(res.success){
@@ -96,7 +97,7 @@ const LeadsMobile = () => {
 
   const onebyoneDelete = (row) => {
     console.log('onebyoneDelete rec id', row)
-    RequestServer("post",urlDelete + row)
+    RequestServer(apiMethods.post,urlDelete + row)
     .then((res)=>{
       if(res.success){
         fetchRecords()

@@ -13,6 +13,7 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { styled, alpha } from "@mui/material/styles";
 import { PaletteTwoTone } from "@mui/icons-material";
 import { GetTableNames } from "./getTableNames";
+import { apiMethods } from "../api/methods";
 
 const logouturl = `/signout`;
 
@@ -147,7 +148,7 @@ function AppNavbar() {
 
   const handleUserLogout = () => {
     console.log("handleUserLogout");
-    RequestServer("post",logouturl)
+    RequestServer(apiMethods.post,logouturl)
       .then((res) => {
         if (res.success) {
           console.log(res.data, "then if");

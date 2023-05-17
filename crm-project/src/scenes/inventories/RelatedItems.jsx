@@ -12,6 +12,7 @@ import DeleteConfirmDialog from "../toast/DeleteConfirmDialog";
 import ModalInventoryAccount from "../accounts/ModalAccountInventory";
 import '../recordDetailPage/Form.css'
 import { RequestServer } from "../api/HttpReq";
+import { apiMethods } from "../api/methods";
 
 const InventoryRelatedItems = ({ item }) => {
 
@@ -50,7 +51,7 @@ const InventoryRelatedItems = ({ item }) => {
   }, [])
 
   const getOpportunitiesbyInvId = (recId) => {
-    RequestServer("post",urlgetOpportunitiesbyInvid + recId)
+    RequestServer(apiMethods.post,urlgetOpportunitiesbyInvid + recId)
       .then((res) => {
         if (res.success) {
           setRealtedOpportunity(res.data);
@@ -66,7 +67,7 @@ const InventoryRelatedItems = ({ item }) => {
   }
 
   const getAccountsbyInvId = (InventoryId) => {
-    RequestServer("post",urlgetAccountsbyInvid + InventoryId)
+    RequestServer(apiMethods.post,urlgetAccountsbyInvid + InventoryId)
     .then((res) => {
       if (res.success) {
         setRelatedAccount(res.data);
@@ -104,7 +105,7 @@ const InventoryRelatedItems = ({ item }) => {
   const onConfirmOpportunityCardDelete = (row) => {
     console.log('req delete rec id', row._id);
 
-    RequestServer("post",opportunityDeleteURL+row._id)
+    RequestServer(apiMethods.post,opportunityDeleteURL+row._id)
     .then((res)=>{
       if(res.success){
         setOppMenuOpen(false)
@@ -164,7 +165,7 @@ const InventoryRelatedItems = ({ item }) => {
 
   const onConfirmAccountCardDelete = (row) => {
     console.log('req delete rec', row);
-    RequestServer("post",accountDeleteURL+row._id)
+    RequestServer(apiMethods.post,accountDeleteURL+row._id)
     .then((res)=>{
       if(res.success){
         setAccountMenuOpen(false)

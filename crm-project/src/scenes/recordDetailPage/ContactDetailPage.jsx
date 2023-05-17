@@ -20,6 +20,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import './Form.css'
 import { ContactInitialValues,ContactSavedValues } from '../formik/IntialValues/formValues';
 import { RequestServer } from '../api/HttpReq';
+import { apiMethods } from '../api/methods';
 
 const urlUpsert = `/UpsertContact`;
 const fetchAccountsbyName = `/accountsname?searchKey=`;
@@ -110,7 +111,7 @@ const ContactDetailPage = ({ item }) => {
         }
         console.log('after change form submission value', values);
 
-        RequestServer("post",urlUpsert, values)
+        RequestServer(apiMethods.post,urlUpsert, values)
             .then((res) => {
                 console.log('upsert record  response', res);
                 setNotify({
@@ -136,7 +137,7 @@ const ContactDetailPage = ({ item }) => {
 
     const FetchAccountsbyName = (newInputValue) => {
 
-        RequestServer("post",fetchAccountsbyName + newInputValue)
+        RequestServer(apiMethods.post,fetchAccountsbyName + newInputValue)
         .then((res)=>{
             if(res.success){
                 if(typeof(res.data)!=='string'){

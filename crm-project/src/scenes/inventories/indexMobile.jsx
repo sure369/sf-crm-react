@@ -10,6 +10,7 @@ import ToastNotification from '../toast/ToastNotification';
 import DeleteConfirmDialog from '../toast/DeleteConfirmDialog';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { RequestServer } from '../api/HttpReq';
+import { apiMethods } from '../api/methods';
 
 const InventoriesMobile = () => {
 
@@ -42,7 +43,7 @@ const InventoriesMobile = () => {
 
   const fetchRecords = () => {
 
-    RequestServer("post",urlInventory)
+    RequestServer(apiMethods.post,urlInventory)
     .then((res)=>{
       console.log(res,"api res index page")
       if(res.success){
@@ -101,7 +102,7 @@ const InventoriesMobile = () => {
 
     console.log('one by one Delete row', row)
 
-    RequestServer("post",urlDelete + row)
+    RequestServer(apiMethods.post,urlDelete + row)
     .then((res)=>{
       if(res.success){
         fetchRecords()

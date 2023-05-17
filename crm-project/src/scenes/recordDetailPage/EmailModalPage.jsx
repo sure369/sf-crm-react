@@ -8,6 +8,7 @@ import { convert } from "html-to-text";
 import CustomizedRichTextField from "../formik/CustomizedRichTextField";
 import '../recordDetailPage/Form.css'
 import { RequestServer } from "../api/HttpReq";
+import { apiMethods } from "../api/methods";
 
 const urlSendEmailbulk = `/bulkemail`
 
@@ -64,7 +65,7 @@ const EmailModalPage = ({ data, handleModal, bulkMail }) => {
         // formData.append('recordsData', JSON.stringify(element));
         formData.append('file', values.attachments);
 
-        RequestServer("post",urlSendEmailbulk, formData)
+        RequestServer(apiMethods.post,urlSendEmailbulk, formData)
             .then((res) => {
                 console.log('email send res', res)
                 if(res.success){

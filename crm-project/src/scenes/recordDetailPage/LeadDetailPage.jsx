@@ -2,18 +2,26 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import {Grid,Button,DialogActions,TextField,
-  Autocomplete, MenuItem,Select,} from "@mui/material";
+import {
+  Grid, Button, DialogActions, TextField,
+  Autocomplete, MenuItem, Select, Typography,Modal
+} from "@mui/material";
+import { Timeline } from "@mui/lab";
 import { useParams, useNavigate } from "react-router-dom";
 import ToastNotification from "../toast/ToastNotification";
-import {NameSalutionPickList,LeadSourcePickList,IndustryPickList,LeadStatusPicklist,LeadsDemoPicklist,LeadMonthPicklist,} from "../../data/pickLists";
+import { NameSalutionPickList, LeadSourcePickList, IndustryPickList, LeadStatusPicklist, LeadsDemoPicklist, LeadMonthPicklist, } from "../../data/pickLists";
 import CustomizedSelectForFormik from "../formik/CustomizedSelectForFormik";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { DatePicker } from "@mui/x-date-pickers";
 import "./Form.css";
 import { RequestServer } from "../api/HttpReq";
-import { LeadInitialValues,LeadSavedValues } from "../formik/IntialValues/formValues";
+import { LeadInitialValues, LeadSavedValues } from "../formik/IntialValues/formValues";
+import { apiMethods } from "../api/methods";
+import TimelineTrack from "../timeline/LeadTimeline";
+import ButtonGroup from "../timeline/ButtonGroup";
+import ModalOppTask from "../tasks/ModalOppTask";
+import ModalLeadConvertion from "../timeline/ModalLeadConvertion";
 
 const url = `/UpsertLead`;
 const fetchUsersbyName = `/usersbyName`;
@@ -25,17 +33,24 @@ const LeadDetailPage = ({ item }) => {
   const [showNew, setshowNew] = useState();
 
   const [usersRecord, setUsersRecord] = useState([]);
-  const [notify, setNotify] = useState({isOpen: false, message: "",type: "",});
+  const [notify, setNotify] = useState({ isOpen: false, message: "", type: "", });
+
+  const [stageActive, setStageActive] = useState()
+  const [modalLeadConvertionOpen,setModalLeadConvertionOpen]=useState(false)
 
   useEffect(() => {
     console.log("passed record", location.state.record.item);
     setsingleLead(location.state.record.item);
     setshowNew(!location.state.record.item);
+    if (location.state.record.item) {
+      setStageActive(location.state.record.item.leadStatus)
+    }
     // getTasks(location.state.record.item._id)
   }, []);
 
-  const initialValues=LeadInitialValues
-  const savedValues=LeadSavedValues(singleLead)
+  const initialValues = LeadInitialValues
+  const savedValues = LeadSavedValues(singleLead)
+
 
   const phoneRegExp =
     /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -51,7 +66,7 @@ const LeadDetailPage = ({ item }) => {
     companyName: Yup.string()
       .required("Required")
       .max(25, "lastName must be less than 15 characters"),
-      email: Yup.string().email("Invalid email address").required("Required"),
+    email: Yup.string().email("Invalid email address").required("Required"),
 
     // phone: Yup.string()
     //   .matches(phoneRegex, "Phone number is not valid")
@@ -59,7 +74,7 @@ const LeadDetailPage = ({ item }) => {
     //   .max(10, "Phone number must be 10 characters,its long"),
 
     // leadStatus: Yup.string().required("Required"),
-   
+
     // primaryPhone: Yup.string().matches(phoneRegex, "Phone number is not valid"),
     // secondaryPhone: Yup.string().matches(landlineRegex,"Phone number is not valid" ),
   });
@@ -81,23 +96,23 @@ const LeadDetailPage = ({ item }) => {
     }
     console.log("after change form submission value", values);
 
-    RequestServer("post",url, values)
+    RequestServer(apiMethods.post, url, values)
       .then((res) => {
         console.log("upsert record  response", res);
         if (res.success) {
           setNotify({
-              isOpen: true,
-              message: res.data,
-              type: "success",
-          })               
-      } else {
+            isOpen: true,
+            message: res.data,
+            type: "success",
+          })
+        } else {
           console.log(res, "error in then");
           setNotify({
-              isOpen: true,
-              message: res.error.message,
-              type: "error",
+            isOpen: true,
+            message: res.error.message,
+            type: "error",
           })
-      }
+        }
       })
       .catch((error) => {
         console.log("upsert record error", error);
@@ -107,12 +122,12 @@ const LeadDetailPage = ({ item }) => {
           type: "error",
         })
       })
-      
-      .finally(()=>{
+
+      .finally(() => {
         setTimeout(() => {
-            navigate(-1);
+          navigate(-1);
         }, 2000);
-    }) 
+      })
   };
   const handleFormClose = () => {
     navigate(-1);
@@ -122,20 +137,58 @@ const LeadDetailPage = ({ item }) => {
     window.open(url, "_blank");
   };
 
+  const handleTimeLineClick = (item) => {
+    console.log("handleTimeLineClick", item)
+    setStageActive(item.value)
+    if (item.hasOwnProperty('convert')) {
+      console.log(item.convert, "inside convert stage")
+      const updateSavedValue = {
+        ...savedValues,
+        leadStatus: item.value
+      }
+      if(item.value === 'Converted'){
+        setModalLeadConvertionOpen(true)
+      }else{
+        formSubmission(updateSavedValue)
+      }
+    }
+  }
+
+  const hanldeConvetionModelClose=()=>{
+    setModalLeadConvertionOpen(false)
+    const updateSavedValue = {
+      ...savedValues,
+      leadStatus: 'Converted'
+    };
+    formSubmission(updateSavedValue);
+  }
+  const hanldeConvetionModelClose1 = () => {
+    setModalLeadConvertionOpen(false)
+  }
+
   return (
+
     <Grid item xs={12} style={{ margin: "20px" }}>
       <div style={{ textAlign: "center", marginBottom: "10px" }}>
         {showNew ? <h3>New Lead</h3> : <h3>Lead Detail Page </h3>}
       </div>
+      {
+        !showNew &&singleLead&&
+        <div className="timeline-track">
+          <TimelineTrack stages={LeadStatusPicklist} activeStage={stageActive} onItemClick={handleTimeLineClick}
+          record={singleLead} />
+        </div>
+
+      }
       <div>
         <Formik
           enableReinitialize={true}
           initialValues={showNew ? initialValues : savedValues}
           validationSchema={validationSchema}
-          onSubmit={(values) => {formSubmission(values);}}
+          onSubmit={(values) => { formSubmission(values); }}
         >
-         {(props) => {
-                        const {values,dirty, isSubmitting, handleChange,handleSubmit,handleReset,setFieldValue,errors,touched,} = props;
+          {(props) => {
+            const { values, dirty, isSubmitting, handleChange, handleSubmit, handleReset, setFieldValue, errors, touched, } = props;
 
             return (
               <>
@@ -151,7 +204,7 @@ const LeadDetailPage = ({ item }) => {
                     </Grid>
                     <Grid item xs={6} md={6}>
                       <label htmlFor="companyName">Company Name</label>
-                      <Field name="companyName"  type="text" class="form-input"/>
+                      <Field name="companyName" type="text" class="form-input" />
                       <div style={{ color: "red" }}>
                         <ErrorMessage name="companyName" />
                       </div>
@@ -159,7 +212,7 @@ const LeadDetailPage = ({ item }) => {
 
                     <Grid item xs={6} md={6}>
                       <label htmlFor="designation">Designation</label>
-                      <Field  name="designation" type="text" class="form-input"/>
+                      <Field name="designation" type="text" class="form-input" />
                     </Grid>
 
                     <Grid item xs={6} md={6}>
@@ -179,7 +232,7 @@ const LeadDetailPage = ({ item }) => {
                     </Grid>
                     <Grid item xs={6} md={6}>
                       <label htmlFor="leadSource"> Lead Source</label>
-                      <Field name="leadSource" component={CustomizedSelectForFormik}>   
+                      <Field name="leadSource" component={CustomizedSelectForFormik}>
                         <MenuItem value="">
                           <em>None</em>
                         </MenuItem>
@@ -256,7 +309,7 @@ const LeadDetailPage = ({ item }) => {
                     </Grid>
                     <Grid item xs={6} md={6}>
                       <label htmlFor="demo">Demo</label>
-                      <Field  name="demo" component={CustomizedSelectForFormik} > 
+                      <Field name="demo" component={CustomizedSelectForFormik} >
                         <MenuItem value="">
                           <em>None</em>
                         </MenuItem>
@@ -278,30 +331,30 @@ const LeadDetailPage = ({ item }) => {
                     </Grid>
                     <Grid item xs={6} md={6}>
                       <label htmlFor="primaryPhone">Primary Phone</label>
-                      <Field name="primaryPhone"type="text" class="form-input"/>
+                      <Field name="primaryPhone" type="text" class="form-input" />
                       <div style={{ color: "red" }}>
                         <ErrorMessage name="primaryPhone" />
                       </div>
                     </Grid>
                     <Grid item xs={6} md={6}>
                       <label htmlFor="secondaryPhone">Secondary Phone</label>
-                      <Field name="secondaryPhone" type="text"class="form-input"/>
+                      <Field name="secondaryPhone" type="text" class="form-input" />
                       <div style={{ color: "red" }}>
                         <ErrorMessage name="secondaryPhone" />
                       </div>
                     </Grid>
                     <Grid item xs={6} md={6}>
                       <label htmlFor="remarks">Remarks</label>
-                      <Field name="remarks"  as="textarea"
+                      <Field name="remarks" as="textarea"
                         class="form-input-textarea"
-                        style={{ width: "100%" }} rows="6" 
+                        style={{ width: "100%" }} rows="6"
                       />
                     </Grid>
                     {!showNew && (
                       <>
                         <Grid item xs={6} md={6}>
                           <label htmlFor="createdDate">Created Date</label>
-                          <Field  name="createdDate" type="text"
+                          <Field name="createdDate" type="text"
                             class="form-input" disabled
                           />
                         </Grid>
@@ -352,6 +405,19 @@ const LeadDetailPage = ({ item }) => {
           }}
         </Formik>
       </div>
+      
+     <Modal
+     open={modalLeadConvertionOpen}
+     onClose={hanldeConvetionModelClose1}
+     aria-labelledby="modal-modal-title"
+     aria-describedby="modal-modal-description"
+     sx={{ backdropFilter: "blur(1px)" }}
+   >
+     <div className="modal">
+       <ModalLeadConvertion handleModal={hanldeConvetionModelClose1} />
+     </div>
+   </Modal>
+
     </Grid>
   );
 };

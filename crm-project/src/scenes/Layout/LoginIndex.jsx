@@ -23,7 +23,7 @@ import FlexTasks from "../Flex/FlexTasks";
 import PageNotFound from "../Errors/PageNotFound";
 import DashboardIndex from "../dashboard";
 import HomePage from "../home";
-import PermissiionSetForm from "../recordDetailPage/PermissionSetForm";
+import PermissionSetDetailPage from "../recordDetailPage/PermissionSetDetailPage";
 import FileUpload from "../fileUpload/FileUpload";
 import PermissionSets from "../permissionSets";
 import RoleDetailPage from "../recordDetailPage/RoleDetailPage";
@@ -52,7 +52,7 @@ function LoginLayoutIndex() {
         <Route path="/new-leads" element={<LeadDetailPage />} />
         <Route path="/new-opportunities" element={<OpportunityDetailPage />} />
         <Route path="/new-accounts" element={<AccountDetailPage />} />        
-        <Route path="/new-permission" element={<PermissiionSetForm />} />
+        <Route path="/new-permission" element={<PermissionSetDetailPage />} />
         <Route path="/new-roles" element={<RoleDetailPage />} />        
 
         <Route path="/accountDetailPage/:id" element={<FlexAccounts />} />
@@ -62,10 +62,8 @@ function LoginLayoutIndex() {
         <Route path="/userDetailPage/:id" element={<UserDetailPage />} />
         <Route path="/leadDetailPage/:id" element={<FlexLeads />} />
         <Route path="/roleDetailPage/:id" element={<RoleDetailPage/>}/>
-        <Route
-          path="/opportunityDetailPage/:id"
-          element={<FlexOpportunities />}
-        />
+        <Route path="/opportunityDetailPage/:id" element={<FlexOpportunities />}/>
+        <Route path="/permissionDetailPage/:id" element={<PermissionSetDetailPage />}/>
 
         <Route path="/file" element={<FileUpload />} />
         <Route path="/Home" element={<HomePage />} />

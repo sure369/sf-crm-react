@@ -3,9 +3,9 @@ export const getLoginUserRoleDept =(OBJECT_API)=>{
 
     const userDetails = JSON.parse(sessionStorage.getItem("loggedInUser"))
    const userRoleDpt ={
-                        loginUserRole:JSON.parse(userDetails.userRole).roleName,
+                        loginUserRole:userDetails.userRoleName,
                         loginUserDepartmentName:userDetails.userDepartment,
-                        object:OBJECT_API
+                        object:OBJECT_API,
                       }
               
     return userRoleDpt;

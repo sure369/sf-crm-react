@@ -350,70 +350,9 @@ export const RoleSavedValues = (singleRole) => {
 
 export const PermissionSetInitialValues = {
   permissionName: "",
-  userDetails: "",
-  // permissionSets: [
-  //   {
-  //     object: "Account",
-  //     permissions: {
-  //       read: false,
-  //       create: false,
-  //       edit: false,
-  //       delete: false,
-  //     },
-  //     permissionLevel: 0,
-  //   },
-  //   {
-  //     object: "Contact",
-  //     permissions: {
-  //       read: false,
-  //       create: false,
-  //       edit: false,
-  //       delete: false,
-  //     },
-  //     permissionLevel: 0,
-  //   },
-  //   {
-  //     object: "Opportunity",
-  //     permissions: {
-  //       read: false,
-  //       create: false,
-  //       edit: false,
-  //       delete: false,
-  //     },
-  //     permissionLevel: 0,
-  //   },
-  //   {
-  //     object: "Lead",
-  //     permissions: {
-  //       read: false,
-  //       create: false,
-  //       edit: false,
-  //       delete: false,
-  //     },
-  //     permissionLevel: 0,
-  //   },
-  //   {
-  //     object: "Inventory",
-  //     permissions: {
-  //       read: false,
-  //       create: false,
-  //       edit: false,
-  //       delete: false,
-  //     },
-  //     permissionLevel: 0,
-  //   },
-  //   {
-  //     object: "Task",
-  //     permissions: {
-  //       read: false,
-  //       create: false,
-  //       edit: false,
-  //       delete: false,
-  //     },
-  //     permissionLevel: 0,
-  //   },
-  // ],
-
+  department:"",
+  roleDetails:"",
+  // userDetails: "",
   createdDate: "",
   modifiedDate: "",
   createdBy: "",
@@ -427,34 +366,37 @@ export const PermissionSetSavedValues = (singlePermission) => {
     createdDate: new Date(singlePermission?.createdDate).toLocaleString(),
     modifiedDate: new Date(singlePermission?.modifiedDate).toLocaleString(),
     _id: singlePermission?._id ?? "",
-    roleDetails: (() => {
-      try {
-        return JSON.parse(singlePermission?.roleDetails);
-      } catch {
-        return "";
-      }
-    })(),
-    userDetails: (() => {
-      try {
-        return JSON.parse(singlePermission?.userDetails);
-      } catch {
-        return "";
-      }
-    })(),
-    createdBy: (() => {
-      try {
-        return JSON.parse(singlePermission?.createdBy);
-      } catch {
-        return "";
-      }
-    })(),
-    modifiedBy: (() => {
-      try {
-        return JSON.parse(singlePermission?.modifiedBy);
-      } catch {
-        return "";
-      }
-    })(),
+    roleDetails:singlePermission?.roleDetails,
+    createdBy: singlePermission?.createdBy ?? "",
+    modifiedBy: singlePermission?.modifiedBy ?? "",
+    // roleDetails: (() => {
+    //   try {
+    //     return JSON.parse(singlePermission?.roleDetails);
+    //   } catch {
+    //     return "";
+    //   }
+    // })(),
+    // userDetails: (() => {
+    //   try {
+    //     return JSON.parse(singlePermission?.userDetails);
+    //   } catch {
+    //     return "";
+    //   }
+    // })(),
+    // createdBy: (() => {
+    //   try {
+    //     return JSON.parse(singlePermission?.createdBy);
+    //   } catch {
+    //     return "";
+    //   }
+    // })(),
+    // modifiedBy: (() => {
+    //   try {
+    //     return JSON.parse(singlePermission?.modifiedBy);
+    //   } catch {
+    //     return "";
+    //   }
+    // })(),
     permissionSets: (() => {
       try {
         return JSON.parse(singlePermission?.permissionSets);

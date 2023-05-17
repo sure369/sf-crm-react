@@ -12,6 +12,7 @@ import ToastNotification from "../toast/ToastNotification";
 import "./Form.css";
 import { RequestServer } from "../api/HttpReq";
 import { AccountInitialValues,AccountSavedValues } from "../formik/IntialValues/formValues";
+import { apiMethods } from "../api/methods";
 
 const urlUpsert = `/UpsertAccount`;
 const fetchInventoriesbyName = `/InventoryName?searchKey=`;
@@ -90,7 +91,7 @@ const AccountDetailPage = ({ item }) => {
 
         console.log("after change form submission value", values);
         
-        RequestServer("post",urlUpsert,values)
+        RequestServer(apiMethods.post,urlUpsert,values)
         .then((res) => {
             console.log(res,"res from RequestServer")
             if (res.success) {
@@ -124,7 +125,7 @@ const AccountDetailPage = ({ item }) => {
 
     const FetchInventoriesbyName = (newInputValue) => {
         
-        RequestServer("post",fetchInventoriesbyName+newInputValue)
+        RequestServer(apiMethods.post,fetchInventoriesbyName+newInputValue)
         .then((res)=>{
             if(res.success){
                 if(typeof(res.data)!=='string'){

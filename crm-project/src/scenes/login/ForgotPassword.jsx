@@ -6,6 +6,7 @@ import { Grid, Button, DialogActions, InputAdornment, IconButton, Paper,Avatar,T
 import '../recordDetailPage/Form.css'
 import Cdlogo from '../assets/cdlogo.jpg';
 import {RequestServer} from '../api/HttpReq'
+import { apiMethods } from "../api/methods";
 
 
 const confirmEmailURL = `/checkSignUpUser`
@@ -38,7 +39,7 @@ export default function ForgotPasswordIndex() {
     const formSubmission = async (values, { resetForm }) => {
         console.log('inside form Submission', values);
       
-        RequestServer("post",confirmEmailURL,values)
+        RequestServer(apiMethods.post,confirmEmailURL,values)
         .then((res)=>{
             console.log(res.data,"api res")
             if(res.data.status==="failure"){

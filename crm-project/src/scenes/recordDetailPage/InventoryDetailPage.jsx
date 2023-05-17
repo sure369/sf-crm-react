@@ -10,6 +10,7 @@ import CustomizedSelectForFormik from '../formik/CustomizedSelectForFormik';
 import './Form.css'
 import { RequestServer } from '../api/HttpReq';
 import { InventoryInitialValues,InventorySavedValues } from '../formik/IntialValues/formValues';
+import { apiMethods } from '../api/methods';
 
 const url = `/UpsertInventory`;
 
@@ -80,7 +81,7 @@ const InventoryDetailPage = ({ item }) => {
 
         console.log('after change form submission value', values);
 
-        RequestServer("post",url, values)
+        RequestServer(apiMethods.post,url, values)
             .then((res) => {                
             console.log(res,"res from RequestServer")
                 if (res.success) {

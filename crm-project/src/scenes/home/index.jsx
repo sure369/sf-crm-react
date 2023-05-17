@@ -12,7 +12,7 @@ import React, { useEffect, useState } from "react";
 import { RequestServer } from "../api/HttpReq";
 import { Bar, Doughnut, Line, Pie, PolarArea, Radar } from "react-chartjs-2";
 import "./home.css";
-
+import { apiMethods } from "../api/methods";
 import useViewport from "../../utility/useViewPort";
 
 function DashboardIndex() {
@@ -41,7 +41,7 @@ function DashboardIndex() {
 
   const fetchRecords = () => {
     if (selectedFilterOption.length > 1) {
-      RequestServer("post",urlOpportunity)
+      RequestServer(apiMethods.post,urlOpportunity)
         .then((res) => {
           console.log(res, "Dashboard index page res");
           console.log("Dashboard Opportunity Data", res.data);

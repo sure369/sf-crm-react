@@ -1,22 +1,10 @@
 import React, { useState, useEffect } from "react";
-import {
-  Box,
-  Button,
-  useTheme,
-  IconButton,
-  Pagination,
-  Tooltip,
-  Grid,
-  Modal,
-  Typography,
+import {Box,Button,useTheme,
+  IconButton,Pagination,Tooltip,
+  Grid,Modal, Typography,
 } from "@mui/material";
-import {
-  DataGrid,
-  GridToolbar,
-  gridPageCountSelector,
-  gridPageSelector,
-  useGridApiContext,
-  useGridSelector,
+import {DataGrid,GridToolbar, gridPageCountSelector,
+  gridPageSelector, useGridApiContext,useGridSelector,
 } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import { useNavigate } from "react-router-dom";
@@ -27,6 +15,7 @@ import DeleteConfirmDialog from "../toast/DeleteConfirmDialog";
 import ExcelDownload from "../Excel";
 import { RequestServer } from "../api/HttpReq";
 import "../indexCSS/muiBoxStyles.css";
+import { apiMethods } from "../api/methods";
 
 const Inventories = () => {
   const urlDelete = `/deleteInventory?code=`;
@@ -38,16 +27,8 @@ const Inventories = () => {
   const [records, setRecords] = useState([]);
   const [fetchError, setFetchError] = useState();
   const [fetchLoading, setFetchLoading] = useState(true);
-  const [notify, setNotify] = useState({
-    isOpen: false,
-    message: "",
-    type: "",
-  });
-  const [confirmDialog, setConfirmDialog] = useState({
-    isOpen: false,
-    title: "",
-    subTitle: "",
-  });
+  const [notify, setNotify] = useState({isOpen: false,message: "",type: "",});
+  const [confirmDialog, setConfirmDialog] = useState({isOpen: false,title: "",subTitle: "",});
 
   const [showDelete, setShowDelete] = useState(false);
   const [selectedRecordIds, setSelectedRecordIds] = useState();
@@ -58,7 +39,7 @@ const Inventories = () => {
   }, []);
 
   const fetchRecords = () => {
-    RequestServer("post",urlInventory)
+    RequestServer(apiMethods.post,urlInventory)
       .then((res) => {
         console.log("index page", res);
         if (res.success) {
@@ -117,7 +98,7 @@ const Inventories = () => {
   const onebyoneDelete = (row) => {
     console.log("one by one Delete row", row);
 
-    RequestServer("post",urlDelete + row)
+    RequestServer(apiMethods.post,urlDelete + row)
       .then((res) => {
         if (res.success) {
           fetchRecords();

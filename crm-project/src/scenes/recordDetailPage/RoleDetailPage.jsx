@@ -17,13 +17,14 @@ import { RoleInitialValues, RoleSavedValues } from "../formik/IntialValues/formV
 // import {apiCheckPermission} from '../Auth/apiCheckPermission'
 // import { getLoginUserRoleDept } from '../Auth/userRoleDept';
 import { RequestServer } from '../api/HttpReq';
+import { apiMethods } from '../api/methods';
 
 
 
 const RoleDetailPage = ({ item }) => {
 
     const OBJECT_API="Role"
-    const url = `/upsertRole`;
+    const url = `/role`;
 const urlSendEmailbulk = `/bulkemail`
 
 
@@ -94,7 +95,7 @@ const urlSendEmailbulk = `/bulkemail`
         }
         console.log('after change form submission value', values);
 
-        RequestServer("post",url, values)
+        RequestServer(apiMethods.post,url, values)
             .then((res) => {
                 console.log('upsert record  response', res);
                 if (res.success) {

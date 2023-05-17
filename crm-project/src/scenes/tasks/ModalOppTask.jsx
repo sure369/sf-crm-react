@@ -15,6 +15,7 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import '../recordDetailPage/Form.css'
 import { RequestServer } from '../api/HttpReq';
 import { TaskInitialValues } from '../formik/IntialValues/formValues';
+import { apiMethods } from "../api/methods";
 
 const UpsertUrl = `/UpsertTask`;
 
@@ -78,7 +79,7 @@ const ModalOppTask = ({ item, handleModal }) => {
         }
         console.log('value after chg', values);
 
-        await RequestServer("post",UpsertUrl, values)
+        await RequestServer(apiMethods.post,UpsertUrl, values)
 
             .then((res) => {
                 console.log('task form Submission  response', res);

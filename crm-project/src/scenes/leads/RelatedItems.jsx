@@ -14,6 +14,7 @@ import ToastNotification from '../toast/ToastNotification';
 import DeleteConfirmDialog from "../toast/DeleteConfirmDialog";
 import '../recordDetailPage/Form.css'
 import { RequestServer } from "../api/HttpReq";
+import { apiMethods } from "../api/methods";
 
 
 const LeadRelatedItems = ({ item }) => {
@@ -54,7 +55,7 @@ const LeadRelatedItems = ({ item }) => {
   const getTasksbyLeadId = (leadsId) => {
 
     console.log('lead id', leadsId);
-    RequestServer("post",urlTaskbyLeadId + leadsId)
+    RequestServer(apiMethods.post,urlTaskbyLeadId + leadsId)
       .then((res) => {
         if (res.success) {
           setRelatedTask(res.data);
@@ -70,7 +71,7 @@ const LeadRelatedItems = ({ item }) => {
   }
 
   const getOpportunitybyLeadId = (leadsId) => {
-    RequestServer("post",urlOppbyLeadId + leadsId)
+    RequestServer(apiMethods.post,urlOppbyLeadId + leadsId)
     .then((res) => {
       if (res.success) {
         setRelatedOpportunity(res.data);
@@ -120,7 +121,7 @@ const LeadRelatedItems = ({ item }) => {
 
   const onConfirmTaskCardDelete = (row) => {
     console.log('req delete rec', row);
-    RequestServer("post",taskDeleteURL+row._id)
+    RequestServer(apiMethods.post,taskDeleteURL+row._id)
     .then((res)=>{
       if(res.success){        
         getTasksbyLeadId(leadRecordId)
@@ -180,7 +181,7 @@ const LeadRelatedItems = ({ item }) => {
   const onConfirmOpportunityCardDelete = (row) => {
 
     console.log('req opp delete rec', row)
-    RequestServer("post",opportunityDeleteURL+row._id)
+    RequestServer(apiMethods.post,opportunityDeleteURL+row._id)
     .then((res)=>{
       if(res.success){        
         getOpportunitybyLeadId(leadRecordId)

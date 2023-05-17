@@ -1,22 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect ,useMemo} from "react";
 import {
-  Box,
-  Button,
-  useTheme,
-  IconButton,
-  Pagination,
-  Tooltip,
-  Grid,
-  Modal,
-  Typography,
+  Box, Button, useTheme, IconButton,Pagination,
+  Tooltip, Grid, Modal, Typography,
 } from "@mui/material";
 import {
-  DataGrid,
-  GridToolbar,
-  gridPageCountSelector,
-  gridPageSelector,
-  useGridApiContext,
-  useGridSelector,
+  DataGrid,GridToolbar, gridPageCountSelector,
+  gridPageSelector,useGridApiContext, useGridSelector,
 } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import { useNavigate } from "react-router-dom";
@@ -29,6 +18,7 @@ import { OppIndexFilterPicklist } from "../../data/pickLists";
 import ExcelDownload from "../Excel";
 import { RequestServer } from "../api/HttpReq";
 import "../indexCSS/muiBoxStyles.css";
+import { apiMethods } from "../api/methods";
 
 const Opportunities = () => {
   const urlOpportunity = `/opportunities`;
@@ -41,16 +31,8 @@ const Opportunities = () => {
   const [records, setRecords] = useState([]);
   const [fetchLoading, setFetchLoading] = useState(true);
   const [fetchError, setFetchError] = useState();
-  const [notify, setNotify] = useState({
-    isOpen: false,
-    message: "",
-    type: "",
-  });
-  const [confirmDialog, setConfirmDialog] = useState({
-    isOpen: false,
-    title: "",
-    subTitle: "",
-  });
+  const [notify, setNotify] = useState({ isOpen: false,message: "",type: "",});
+  const [confirmDialog, setConfirmDialog] = useState({isOpen: false,title: "",subTitle: "",});
 
   const [showDelete, setShowDelete] = useState(false);
   const [selectedRecordIds, setSelectedRecordIds] = useState();
@@ -65,7 +47,7 @@ const Opportunities = () => {
   }, []);
 
   const fetchRecords = () => {
-    RequestServer("post",urlOpportunity)
+    RequestServer(apiMethods.post,urlOpportunity)
       .then((res) => {
         console.log(res, "index page res");
         if (res.success) {
@@ -83,6 +65,14 @@ const Opportunities = () => {
         setFetchLoading(false);
       });
   };
+
+  const totalRevenue=useMemo(()=>{
+    console.log("calculate total opportunity useMemo hook")
+    return records.reduce((opp,record)=>opp + parseInt(record.amount),0
+    )
+  },[records])
+  
+  console.log(totalRevenue,"totalRevenue")
 
   const handleAddRecord = () => {
     navigate("/new-opportunities", { state: { record: {} } });
@@ -122,7 +112,7 @@ const Opportunities = () => {
   const onebyoneDelete = (row) => {
     console.log("onebyoneDelete rec id", row);
 
-    RequestServer("post",urlDelete + row)
+    RequestServer(apiMethods.post,urlDelete + row)
       .then((res) => {
         if (res.success) {
           fetchRecords();

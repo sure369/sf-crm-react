@@ -27,6 +27,7 @@ import DeleteConfirmDialog from "../toast/DeleteConfirmDialog";
 import ExcelDownload from "../Excel";
 import { RequestServer } from "../api/HttpReq";
 import "../indexCSS/muiBoxStyles.css";
+import { apiMethods } from "../api/methods";
 
 const Task = () => {
   const urlDelete = `/deleteTask?code=`;
@@ -58,7 +59,7 @@ const Task = () => {
   }, []);
 
   const fetchRecords = () => {
-    RequestServer("post",urlTask)
+    RequestServer(apiMethods.post,urlTask)
       .then((res) => {
         console.log(res, "index page res");
         if (res.success) {
@@ -113,7 +114,7 @@ const Task = () => {
 
   const onebyoneDelete = (row) => {
     console.log("onebyoneDelete rec id", row);
-    RequestServer("post",urlDelete + row)
+    RequestServer(apiMethods.post,urlDelete + row)
       .then((res) => {
         if (res.success) {
           fetchRecords();

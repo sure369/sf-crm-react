@@ -16,12 +16,13 @@ import { RequestServer } from '../api/HttpReq';
 import '../indexCSS/muiBoxStyles.css'
 // import { apiCheckPermission } from '../Auth/apiCheckPermission';
 import { getLoginUserRoleDept } from '../Auth/userRoleDept';
+import { apiMethods } from '../api/methods';
 
 const RoleIndex = () => {
 
   const OBJECT_API = "Role"
-  const urlDelete = `/delete?code=`;
-  const urlRoles = `/getRole`;
+  const urlDelete = `/role`;
+  const urlgetRoles = `/roles`;
 
 
   const theme = useTheme();
@@ -50,7 +51,7 @@ const RoleIndex = () => {
   );
 
   const fetchRecords = () => {
-    RequestServer("get",urlRoles)
+    RequestServer(apiMethods.get,urlgetRoles)
       .then((res) => {
         console.log(res.data, "index page res")
         if (res.success) {
@@ -85,7 +86,7 @@ const RoleIndex = () => {
   //   }
   // }
   const handleAddRecord = () => {
-    navigate("/new-role", { state: { record: {} } })
+    navigate("/new-roles", { state: { record: {} } })
   };
 
   const handleOnCellClick = (e, row) => {
@@ -121,7 +122,7 @@ const RoleIndex = () => {
   const onebyoneDelete = (row) => {
     console.log('onebyoneDelete rec id', row)
 
-    RequestServer("post",urlDelete + row)
+    RequestServer(apiMethods.delete,urlDelete + `/${row}`)
       .then((res) => {
         if (res.success) {
           fetchRecords()
@@ -277,47 +278,7 @@ const RoleIndex = () => {
             <Box
               m="15px 0 0 0"
               height="380px"
-              sx={{
-                "& .MuiDataGrid-root": {
-                  border: "none",
-                },
-                "& .MuiDataGrid-cell": {
-                  borderBottom: "none",
-                },
-                "& .name-column--cell": {
-                  color: colors.greenAccent[300],
-                },
-                "& .MuiDataGrid-columnHeaders": {
-                  backgroundColor: colors.blueAccent[700],
-                  borderBottom: "none",
-                },
-                "& .MuiDataGrid-columnHeaderTitle": { 
-                  fontWeight: 'bold !important',
-                  overflow: 'visible !important'
-               },
-                "& .MuiDataGrid-virtualScroller": {
-                  // backgroundColor: colors.primary[400],
-                },
-                "& .MuiDataGrid-footerContainer": {
-                  borderBottom: "none",
-                  backgroundColor: colors.blueAccent[700],
-                },
-                "& .MuiCheckbox-root": {
-                  color: `${colors.greenAccent[200]} !important`,
-                },
-                "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-                  color: `${colors.grey[100]} !important`,
-                },
-                "& .MuiDataGrid-row:hover": {
-                  backgroundColor: "#CECEF0"
-                },                     
-                "& .C-MuiDataGrid-row-even":{
-                  backgroundColor: "#D7ECFF",
-                }, 
-                "& .C-MuiDataGrid-row-odd":{
-                  backgroundColor: "#F0F8FF",
-                },
-              }}
+              className="my-mui-styles"
             >
 
 

@@ -1,10 +1,14 @@
 import { RequestServer } from "../api/HttpReq"
+import { apiMethods } from "../api/methods"
+
 export const apiCheckPermission= (obj)=>{
 
-    const urlCheck=`/checkAccess`
+    const urlCheck=`/permissionforobject/${obj.object}/${obj.loginUserDepartmentName}/${obj.loginUserRole}`
+
+    //   /api/permissionforobject/:object/:department/:role
 
     return new Promise((resolve,reject)=>{
-        RequestServer(urlCheck,obj)
+        RequestServer(apiMethods.get,urlCheck)
         .then(res=>{
             console.log(res,"res checkPermission2")
             if(res.success){
