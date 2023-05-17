@@ -31,8 +31,8 @@ export const AccountSavedValues = (singleAccount) => {
     billingCountry: singleAccount?.billingCountry ?? "",
     billingCity: singleAccount?.billingCity ?? "",
     billingCities: singleAccount?.billingCities ?? "",
-    createdBy: singleAccount?.createdBy.userFullName ?? "",
-    modifiedBy: singleAccount?.modifiedBy.userFullName ?? "",
+    createdBy: singleAccount?.createdBy?.userFullName ?? "",
+    modifiedBy: singleAccount?.modifiedBy?.userFullName ?? "",
     createdDate: new Date(singleAccount?.createdDate).toLocaleString(),
     modifiedDate: new Date(singleAccount?.modifiedDate).toLocaleString(),
     _id: singleAccount?._id ?? "",
@@ -351,7 +351,7 @@ export const RoleSavedValues = (singleRole) => {
 export const PermissionSetInitialValues = {
   permissionName: "",
   department:"",
-  roleDetails:"",
+  roleDetails:[{}],
   // userDetails: "",
   createdDate: "",
   modifiedDate: "",
@@ -367,6 +367,7 @@ export const PermissionSetSavedValues = (singlePermission) => {
     modifiedDate: new Date(singlePermission?.modifiedDate).toLocaleString(),
     _id: singlePermission?._id ?? "",
     roleDetails:singlePermission?.roleDetails,
+    RoleId:singlePermission?.RoleId,
     createdBy: singlePermission?.createdBy ?? "",
     modifiedBy: singlePermission?.modifiedBy ?? "",
     // roleDetails: (() => {

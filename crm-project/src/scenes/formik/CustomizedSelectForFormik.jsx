@@ -26,6 +26,7 @@ const CustomizedSelectForFormik = ({ children, form, field, ...props }) => {
   return (
     <Select
       style={{ width: '100%' }}
+      disabled={props.disabled?props.disabled:false}
       name={name}
       value={value}
       onChange={(e) => {

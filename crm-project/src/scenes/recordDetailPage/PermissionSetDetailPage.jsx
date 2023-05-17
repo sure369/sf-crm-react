@@ -46,7 +46,7 @@ const PermissionSetDetailPage = ({ item }) => {
 
         setsinglePermission(location.state?.record?.item ?? {});
         setshowNew(!location.state.record.item)
-         fetchTableNames()
+        fetchTableNames()
         // fetchPermissions()
     }, [])
 
@@ -70,19 +70,6 @@ const PermissionSetDetailPage = ({ item }) => {
             })
     }
 
-    // const fetchPermissions=()=>{
-    //     if(userRoleDpt){
-    //         apiCheckPermission(userRoleDpt)
-    //         .then(res=>{
-    //             setPermissionValues(res)
-    //         })
-    //         .catch(err=>{
-    //             console.log(err,"res apiCheckPermission error")
-    //             setPermissionValues({})
-    //         })
-    //     }
-    // }
-
 
     const initialValues = PermissionSetInitialValues
     initialValues.permissionSets = objTableName.map(i => {
@@ -95,6 +82,7 @@ const PermissionSetDetailPage = ({ item }) => {
             }, permissionLevel: 0,
         }
     })
+
     const savedValues = PermissionSetSavedValues(singlePermission)
 
     console.log(initialValues, "initialValues")
@@ -135,7 +123,7 @@ const PermissionSetDetailPage = ({ item }) => {
             values.modifiedDate = dateSeconds;
             values.createdDate = dateSeconds;
             values.createdBy = JSON.parse(sessionStorage.getItem('loggedInUser'))
-            values.modifiedBy =JSON.parse(sessionStorage.getItem('loggedInUser'))
+            values.modifiedBy = JSON.parse(sessionStorage.getItem('loggedInUser'))
             // delete values.userDetails;
 
         }
@@ -203,15 +191,22 @@ const PermissionSetDetailPage = ({ item }) => {
 
         RequestServer(apiMethods.get, url)
             .then((res) => {
-                console.log(res, "urlgetRolesByDept res")
+                console.log(res, " FetchRolesbyName urlgetRolesByDept res")
                 if (res.success) {
-                    setRoleRecordsByDept(res.data)
+                    // const obj={id:res.data._id,roleName:res.data.roleName}
+                    if (typeof (res.data) === 'object') {
+                        setRoleRecordsByDept(res.data)
+                    } else {
+                        setRoleRecordsByDept([])
+                    }
                 } else {
                     console.log("urlgetRolesByDept status error", res.error.message)
+                    setRoleRecordsByDept([])
                 }
             })
             .catch((error) => {
                 console.log("error urlgetRolesByDept", error)
+                setRoleRecordsByDept([])
             })
 
         // let payloadObj ={department:dpt,value:inputValue}
@@ -287,12 +282,12 @@ const PermissionSetDetailPage = ({ item }) => {
                                         </Grid>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="RoleId">Role Name</label>
+
                                             <Autocomplete
                                                 name="RoleId"
                                                 options={roleRecordsByDept}
                                                 value={values.roleDetails}
                                                 getOptionLabel={option => option.roleName || ""}
-                                                // getOptionLabel={option => console.log(option,"option")}
                                                 onChange={(e, value) => {
                                                     if (!value) {
                                                         console.log("!value", value)
@@ -300,7 +295,8 @@ const PermissionSetDetailPage = ({ item }) => {
                                                         setFieldValue("roleDetails", "")
                                                     } else {
                                                         console.log("value", value)
-                                                        setFieldValue("roleDetails", value)
+                                                        const obj = { id: value._id, roleName: value.roleName }
+                                                        setFieldValue("roleDetails", obj)
                                                         setFieldValue("RoleId", value._id)
                                                     }
                                                 }}
@@ -315,6 +311,7 @@ const PermissionSetDetailPage = ({ item }) => {
                                                 }}
                                                 // disabled={showNew?!permissionValues.create :!permissionValues.edit}
                                                 renderInput={params => (
+                                                    // console.log(params,"params")
                                                     <Field component={TextField} {...params} name="roleDetails" />
                                                 )}
                                             />

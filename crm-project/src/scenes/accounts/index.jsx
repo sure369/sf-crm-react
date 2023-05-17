@@ -78,8 +78,9 @@ const Accounts = () => {
     if (userRoleDpt) {
       apiCheckPermission(userRoleDpt)
         .then(res => {
-          console.log(res, "res apiCheckPermission")
-          setPermissionValues(res)
+          console.log(res[0].permissions, "res apiCheckPermission")
+         
+          setPermissionValues(res[0].permissions)
         })
         .catch(err => {
           console.log(err, "res apiCheckPermission")
@@ -274,6 +275,9 @@ const Accounts = () => {
       />
 
       <Box m="20px">
+        {
+          permissionValues.read ?
+       <>
         <Typography
           variant="h2"
           color={colors.grey[100]}
@@ -297,6 +301,9 @@ const Accounts = () => {
           >
             {showDelete ? (
               <>
+                 {
+                  permissionValues.delete &&
+                  <>             
                 <div
                   style={{
                     width: "230px",
@@ -313,9 +320,15 @@ const Accounts = () => {
                     </IconButton>
                   </Tooltip>
                 </div>
+                </>
+                 }
               </>
             ) : (
               <>
+              {
+                permissionValues.create && <>
+
+             
                 <Button
                   variant="contained"
                   color="secondary"
@@ -335,6 +348,8 @@ const Accounts = () => {
 
                 <ExcelDownload data={records} filename={`AccountRecords`} />
               </>
+}
+</>
             )}
           </div>
         </Box>
@@ -381,6 +396,10 @@ const Accounts = () => {
             />
           </Box>
         )}
+        </>
+           :
+           null 
+           }
       </Box>
 
       <Modal

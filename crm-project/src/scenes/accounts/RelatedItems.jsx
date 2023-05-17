@@ -8,9 +8,11 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ModalAccTask from "../tasks/ModalAccTask";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ToastNotification from "../toast/ToastNotification";
-import { DataGrid, GridToolbar,
-  gridPageCountSelector,gridPageSelector,
-  useGridApiContext,useGridSelector} from "@mui/x-data-grid";
+import {
+  DataGrid, GridToolbar,
+  gridPageCountSelector, gridPageSelector,
+  useGridApiContext, useGridSelector
+} from "@mui/x-data-grid";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import ModalConAccount from "../contacts/ModalConAccount";
@@ -18,17 +20,21 @@ import DeleteConfirmDialog from "../toast/DeleteConfirmDialog";
 import '../recordDetailPage/Form.css'
 import { RequestServer } from "../api/HttpReq";
 import { apiMethods } from "../api/methods";
+import { getLoginUserRoleDept } from "../Auth/userRoleDept";
+import { apiCheckPermission } from "../Auth/apiCheckPermission";
 
 const AccountRelatedItems = ({ item }) => {
 
+  const OBJECT_API_task = "Task"
+  const OBJECT_API_contact = "Contact"
   const taskDeleteURL = `/deleteTask?code=`;
   const urlgetTaskbyAccountId = `/getTaskbyAccountId?searchId=`;
-  const urlgetContactbyAccountId=`/getContactsbyAccountId?searchId=`;
-  const contactDeleteURL=`/deleteContact?code=`;
+  const urlgetContactbyAccountId = `/getContactsbyAccountId?searchId=`;
+  const contactDeleteURL = `/deleteContact?code=`;
 
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   const [accountRecordId, setAccountRecordId] = useState()
   const [relatedTask, setRelatedTask] = useState([]);
   const [relatedContact, setRelatedContact] = useState([]);
@@ -45,49 +51,80 @@ const AccountRelatedItems = ({ item }) => {
   const [contactPerPage, setContactPerPage] = useState(1);
   const [contactNoOfPages, setContactNoOfPages] = useState(0);
 
+  const [permissionValuesTask, setPermissionValuesTask] = useState({})
+  const [permissionValuesContact, setPermissionValuesContact] = useState({})
+
+  const userRoleDptTask = getLoginUserRoleDept(OBJECT_API_task)
+  const userRoleDptContact = getLoginUserRoleDept(OBJECT_API_contact)
+  console.log(userRoleDptTask, "userRoleDptTask")
+  console.log(userRoleDptContact, "userRoleDptContact")
+
+
   useEffect(() => {
     console.log('inside  acc related useEffect', location.state.record.item);
     setAccountRecordId(location.state.record.item._id)
     getTasksbyAccountId(location.state.record.item._id)
     getContactsbyAccountId(location.state.record.item._id)
+
+    fetchPermission();
   }, [])
 
-
-  const getTasksbyAccountId = (accId) => {
-  
-    console.log('inside getTasks record Id', accId);
-
-    RequestServer(apiMethods.post,urlgetTaskbyAccountId + accId)
-    .then((res)=>{
-      if(res.success){
-        setRelatedTask(res.data);
-        setTaskNoOfPages(Math.ceil(res.data.length / taskItemsPerPage));
-        setTaskPerPage(1)
-      }else{
-        setRelatedTask([])
-      }
-    })
-    .catch((err)=>{
-      console.log('error task fetch', err)
-    })
+  const fetchPermission = () => {
+    if(userRoleDptTask){
+      apiCheckPermission(userRoleDptTask)
+      .then(res=>{
+        console.log(res[0].permissions," res apiCheckPermission task")
+      })
+      .catch(err=>{
+        console.log(err," error apiCheckPermission task")
+      })
+    }
+    if(userRoleDptContact){
+      apiCheckPermission(userRoleDptContact)
+      .then(res=>{
+        console.log(res[0].permissions,"res apiCheckPermission contact")
+      })
+      .catch(err=>{
+        console.log(err,"error apiCheckPermission contact")
+      })
+    }
   }
 
-  const getContactsbyAccountId=(accId)=>{
+  const getTasksbyAccountId = (accId) => {
+
+    console.log('inside getTasks record Id', accId);
+
+    RequestServer(apiMethods.post, urlgetTaskbyAccountId + accId)
+      .then((res) => {
+        if (res.success) {
+          setRelatedTask(res.data);
+          setTaskNoOfPages(Math.ceil(res.data.length / taskItemsPerPage));
+          setTaskPerPage(1)
+        } else {
+          setRelatedTask([])
+        }
+      })
+      .catch((err) => {
+        console.log('error task fetch', err)
+      })
+  }
+
+  const getContactsbyAccountId = (accId) => {
     console.log('inside getContacts record Id', accId);
 
-    RequestServer(apiMethods.post,urlgetContactbyAccountId + accId)
-    .then((res)=>{
-      if(res.success){
-        setRelatedContact(res.data);
-        setContactNoOfPages(Math.ceil(res.data.length / taskItemsPerPage));
-        setContactPerPage(1)
-      }else{
-        setRelatedContact([])
-      }
-    })
-    .catch((err)=>{
-      console.log('error task fetch', err)
-    })
+    RequestServer(apiMethods.post, urlgetContactbyAccountId + accId)
+      .then((res) => {
+        if (res.success) {
+          setRelatedContact(res.data);
+          setContactNoOfPages(Math.ceil(res.data.length / taskItemsPerPage));
+          setContactPerPage(1)
+        } else {
+          setRelatedContact([])
+        }
+      })
+      .catch((err) => {
+        console.log('error task fetch', err)
+      })
   }
 
   const handletaskModalOpen = () => {
@@ -105,97 +142,41 @@ const AccountRelatedItems = ({ item }) => {
     getContactsbyAccountId(accountRecordId)
   }
 
-  const handleContactCardEdit = (e,row) => {
+  const handleContactCardEdit = (e, row) => {
     console.log('selected record', row);
     const item = row;
     navigate(`/contactDetailPage/${item._id}`, { state: { record: { item } } })
   };
 
-  const handleReqContactCardDelete = (e,row) => {
+  const handleReqContactCardDelete = (e, row) => {
 
     e.stopPropagation();
     console.log('inside handleReqContactCardDelete fn')
-        setConfirmDialog({
-          isOpen:true,
-          title:`Are you sure to delete this Record ?`,
-          subTitle:"You can't undo this Operation",
-          onConfirm:()=>{onConfirmContactCardDelete(row)}
-        })
-      }
-
-    const  onConfirmContactCardDelete =(row)=>{
-    console.log('req delete rec', row);
-
-    RequestServer(apiMethods.post,contactDeleteURL + row._id)
-    .then((res)=>{
-      if(res.success){
-        
-        getContactsbyAccountId(accountRecordId)
-        setMenuOpen(false)
-        setNotify({
-          isOpen:true,
-          message:res.data,
-          type:'success'
-        })
-      }
-      else{
-        console.log(res,"error in then")
-        setNotify({
-          isOpen: true,
-          message: res.error.message,
-          type: 'error'
-        })        
-        getContactsbyAccountId(accountRecordId)
-        setMenuOpen(false)
-      }
-    })
-    .catch((error)=>{
-      console.log('api delete error', error);
-          setNotify({
-            isOpen: true,
-            message: error.message,
-            type: 'error'
-          })
-    })
-    .finally(()=>{
-      setConfirmDialog({
-        ...confirmDialog,
-        isOpen: false
-      })
-    })
-  };
- 
-  const handleTaskCardEdit = (row) => {
-    console.log('selected record', row);
-    const item = row;
-    navigate(`/taskDetailPage/${item._id}`, { state: { record: { item } } })
-  };
-
-  const handleReqTaskCardDelete = (e,row) => {
-    e.stopPropagation();
-console.log('inside handleTaskCardDelete fn')
     setConfirmDialog({
-      isOpen:true,
-      title:`Are you sure to delete this Record ?`,
-      subTitle:"You can't undo this Operation",
-      onConfirm:()=>{onConfirmTaskCardDelete(row)}
+      isOpen: true,
+      title: `Are you sure to delete this Record ?`,
+      subTitle: "You can't undo this Operation",
+      onConfirm: () => { onConfirmContactCardDelete(row) }
     })
   }
-  const onConfirmTaskCardDelete=(row)=>{
+
+  const onConfirmContactCardDelete = (row) => {
     console.log('req delete rec', row);
-    RequestServer(apiMethods.post,taskDeleteURL+row._id)
-    .then((res)=>{
-      if(res.success){
-        getTasksbyAccountId(accountRecordId)
-        setNotify({
-          isOpen:true,
-          message:res.data,
-          type:'success'
-        })
-        setMenuOpen(false)
-      }
-      else{
-        console.log(res,"error in then")
+
+    RequestServer(apiMethods.post, contactDeleteURL + row._id)
+      .then((res) => {
+        if (res.success) {
+
+          getContactsbyAccountId(accountRecordId)
+          setMenuOpen(false)
+          setNotify({
+            isOpen: true,
+            message: res.data,
+            type: 'success'
+          })
+        }
+        else {
+          console.log(res, "error in then")
           setNotify({
             isOpen: true,
             message: res.error.message,
@@ -203,22 +184,78 @@ console.log('inside handleTaskCardDelete fn')
           })
           getContactsbyAccountId(accountRecordId)
           setMenuOpen(false)
-      }
+        }
+      })
+      .catch((error) => {
+        console.log('api delete error', error);
+        setNotify({
+          isOpen: true,
+          message: error.message,
+          type: 'error'
+        })
+      })
+      .finally(() => {
+        setConfirmDialog({
+          ...confirmDialog,
+          isOpen: false
+        })
+      })
+  };
+
+  const handleTaskCardEdit = (row) => {
+    console.log('selected record', row);
+    const item = row;
+    navigate(`/taskDetailPage/${item._id}`, { state: { record: { item } } })
+  };
+
+  const handleReqTaskCardDelete = (e, row) => {
+    e.stopPropagation();
+    console.log('inside handleTaskCardDelete fn')
+    setConfirmDialog({
+      isOpen: true,
+      title: `Are you sure to delete this Record ?`,
+      subTitle: "You can't undo this Operation",
+      onConfirm: () => { onConfirmTaskCardDelete(row) }
     })
-    .catch((error)=>{
-      console.log('api delete error', error);
+  }
+  const onConfirmTaskCardDelete = (row) => {
+    console.log('req delete rec', row);
+    RequestServer(apiMethods.post, taskDeleteURL + row._id)
+      .then((res) => {
+        if (res.success) {
+          getTasksbyAccountId(accountRecordId)
           setNotify({
             isOpen: true,
-            message: error.message,
+            message: res.data,
+            type: 'success'
+          })
+          setMenuOpen(false)
+        }
+        else {
+          console.log(res, "error in then")
+          setNotify({
+            isOpen: true,
+            message: res.error.message,
             type: 'error'
           })
-    })
-    .finally(()=>{
-      setConfirmDialog({
-        ...confirmDialog,
-        isOpen: false
+          getContactsbyAccountId(accountRecordId)
+          setMenuOpen(false)
+        }
       })
-    })
+      .catch((error) => {
+        console.log('api delete error', error);
+        setNotify({
+          isOpen: true,
+          message: error.message,
+          type: 'error'
+        })
+      })
+      .finally(() => {
+        setConfirmDialog({
+          ...confirmDialog,
+          isOpen: false
+        })
+      })
   };
 
   const handleChangeTaskPage = (event, value) => {
@@ -242,59 +279,59 @@ console.log('inside handleTaskCardDelete fn')
   };
   // menu dropdown end
 
-   // DATA GRID TABLE PAGINATION
- function CustomPagination() {
-  const apiRef = useGridApiContext();
-  const page = useGridSelector(apiRef, gridPageSelector);
-  const pageCount = useGridSelector(apiRef, gridPageCountSelector);
+  // DATA GRID TABLE PAGINATION
+  function CustomPagination() {
+    const apiRef = useGridApiContext();
+    const page = useGridSelector(apiRef, gridPageSelector);
+    const pageCount = useGridSelector(apiRef, gridPageCountSelector);
 
-  return (
-    <Pagination
-      color="primary"
-      count={pageCount}
-      page={page + 1}
-      onChange={(event, value) => apiRef.current.setPage(value - 1)}
-    />
-  );
-}
-
-const columns = [
-  {
-    field: "fullName", headerName: "Name",
-    headerAlign: 'center', align: 'center', flex: 1, 
-  },
-  {
-    field: "email", headerName: "Email",
-    headerAlign: 'center', align: 'center', flex: 1,
-  },
-  {
-    field: "phone", headerName: "Phone",
-    headerAlign: 'center', align: 'center', flex: 1,
-  },
-  {
-    field: 'actions', headerName: 'Actions',
-    headerAlign: 'center', align: 'center', flex: 1, width: 400,
-    renderCell: (params) => {
-      return (
-        <>
-          <IconButton style={{ padding: '20px' }}>
-            <EditIcon onClick={(e) => handleContactCardEdit(e, params.row)} />
-          </IconButton>
-          <IconButton style={{ padding: '20px' }}>
-            <DeleteIcon onClick={(e) => handleReqContactCardDelete(e, params.row)} />
-          </IconButton>
-        </>
-      );
-    }
+    return (
+      <Pagination
+        color="primary"
+        count={pageCount}
+        page={page + 1}
+        onChange={(event, value) => apiRef.current.setPage(value - 1)}
+      />
+    );
   }
- 
-];
+
+  const columns = [
+    {
+      field: "fullName", headerName: "Name",
+      headerAlign: 'center', align: 'center', flex: 1,
+    },
+    {
+      field: "email", headerName: "Email",
+      headerAlign: 'center', align: 'center', flex: 1,
+    },
+    {
+      field: "phone", headerName: "Phone",
+      headerAlign: 'center', align: 'center', flex: 1,
+    },
+    {
+      field: 'actions', headerName: 'Actions',
+      headerAlign: 'center', align: 'center', flex: 1, width: 400,
+      renderCell: (params) => {
+        return (
+          <>
+            <IconButton style={{ padding: '20px' }}>
+              <EditIcon onClick={(e) => handleContactCardEdit(e, params.row)} />
+            </IconButton>
+            <IconButton style={{ padding: '20px' }}>
+              <DeleteIcon onClick={(e) => handleReqContactCardDelete(e, params.row)} />
+            </IconButton>
+          </>
+        );
+      }
+    }
+
+  ];
 
   return (
     <>
-     
-     <ToastNotification notify={notify} setNotify={setNotify} />
-     <DeleteConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog}  moreModalClose={handleMoreMenuClose}/>
+
+      <ToastNotification notify={notify} setNotify={setNotify} />
+      <DeleteConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog} moreModalClose={handleMoreMenuClose} />
 
 
       <div style={{ textAlign: "center", marginBottom: "10px" }}>
@@ -323,12 +360,12 @@ const columns = [
                   relatedTask
                     .slice((taskPerPage - 1) * taskItemsPerPage, taskPerPage * taskItemsPerPage)
                     .map((item) => {
-                      let   starDateConvert 
-                      if(item.StartDate){
+                      let starDateConvert
+                      if (item.StartDate) {
 
                         starDateConvert = new Date(item.StartDate).getUTCFullYear()
-                      + '-' +  ('0'+ (new Date(item.StartDate).getUTCMonth() + 1)).slice(-2) 
-                      + '-' + ('0'+ ( new Date(item.StartDate).getUTCDate())).slice(-2)  ||''
+                          + '-' + ('0' + (new Date(item.StartDate).getUTCMonth() + 1)).slice(-2)
+                          + '-' + ('0' + (new Date(item.StartDate).getUTCDate())).slice(-2) || ''
                       }
 
 
@@ -362,7 +399,7 @@ const columns = [
                                       }}
                                     >
                                       <MenuItem onClick={() => handleTaskCardEdit(menuSelectRec)}>Edit</MenuItem>
-                                      <MenuItem onClick={(e) => handleReqTaskCardDelete(e,menuSelectRec)}>Delete</MenuItem>
+                                      <MenuItem onClick={(e) => handleReqTaskCardDelete(e, menuSelectRec)}>Delete</MenuItem>
                                     </Menu>
                                   </IconButton>
                                 </Grid>
@@ -396,9 +433,9 @@ const columns = [
           </Typography>
         </AccordionDetails>
       </Accordion>
-     
-{/* Contact table */}
-<Accordion >
+
+      {/* Contact table */}
+      <Accordion >
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel2a-content"
@@ -407,30 +444,30 @@ const columns = [
           <Typography variant="h4">Contact({relatedContact.length}) </Typography>
         </AccordionSummary>
         <AccordionDetails>
-       
-        <div style={{ textAlign: "end", marginBottom: "5px" }}>
-              <Button variant="contained" color="info" onClick={() => handleContactModalOpen()} >Add Contact</Button>
-            </div>
-            {
-              relatedContact.length>0 && 
-              <Box sx={{ height: 315, width: '100%' }}>
+
+          <div style={{ textAlign: "end", marginBottom: "5px" }}>
+            <Button variant="contained" color="info" onClick={() => handleContactModalOpen()} >Add Contact</Button>
+          </div>
+          {
+            relatedContact.length > 0 &&
+            <Box sx={{ height: 315, width: '100%' }}>
 
               <DataGrid
-                          rows={relatedContact}
-                          columns={columns}
-                          getRowId={(row) => row._id}
-                          pageSize={4}
-                          rowsPerPageOptions={[4]}
-                          //  onCellClick={handleOnCellClick}
-                          components={{ Pagination:CustomPagination}}
-                         
-                          disableColumnMenu
-                          autoHeight={true}
-                        />
-     
-        </Box>
-            }
-      
+                rows={relatedContact}
+                columns={columns}
+                getRowId={(row) => row._id}
+                pageSize={4}
+                rowsPerPageOptions={[4]}
+                //  onCellClick={handleOnCellClick}
+                components={{ Pagination: CustomPagination }}
+
+                disableColumnMenu
+                autoHeight={true}
+              />
+
+            </Box>
+          }
+
 
         </AccordionDetails>
       </Accordion>
@@ -447,19 +484,19 @@ const columns = [
           <ModalAccTask handleModal={handleTaskModalClose} />
         </div>
       </Modal>
-  {/* Contact Modal*/}
+      {/* Contact Modal*/}
 
-  <Modal
+      <Modal
         open={contactModalOpen}
         onClose={handleConatctModalClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
-        sx={{ backdropFilter: "blur(1px)"}}
+        sx={{ backdropFilter: "blur(1px)" }}
       >
         {/* <Box sx={ModalStyle}> */}
         <div className="modal">
-          <ModalConAccount  handleModal={handleConatctModalClose} />
-        {/* </Box> */}
+          <ModalConAccount handleModal={handleConatctModalClose} />
+          {/* </Box> */}
         </div>
       </Modal>
 

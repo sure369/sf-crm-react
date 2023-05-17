@@ -11,9 +11,12 @@ import DeleteConfirmDialog from '../toast/DeleteConfirmDialog';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { RequestServer } from '../api/HttpReq';
 import { apiMethods } from '../api/methods';
+import { apiCheckPermission } from '../Auth/apiCheckPermission';
+import { getLoginUserRoleDept } from '../Auth/userRoleDept';
 
 const AccountsMobile = () => {
 
+  const OBJECT_API = "Account"
   const urlDelete = `/deleteAccount?code=`;
   const urlAccount = `/accounts`;
 
@@ -22,7 +25,7 @@ const AccountsMobile = () => {
   const navigate = useNavigate();
   const [records, setRecords] = useState([]);
   const [fetchLoading, setFetchLoading] = useState(true);
-  const[fetchError,setFetchError]=useState()
+  const [fetchError, setFetchError] = useState()
   const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
   const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subTitle: '' })
 
@@ -33,33 +36,51 @@ const AccountsMobile = () => {
   const [itemsPerPage, setItemsPerPage] = useState(3);
   const [page, setPage] = useState(1);
   const [noOfPages, setNoOfPages] = useState(0);
+  const [permissionValues, setPermissionValues] = useState({})
+  const userRoleDpt = getLoginUserRoleDept(OBJECT_API)
+  console.log(userRoleDpt, "userRoleDpt")
 
   useEffect(() => {
     fetchRecords();
+    fetchPermissions();
   }, []
   );
 
   const fetchRecords = () => {
-    RequestServer(apiMethods.post,urlAccount)
-    .then((res)=>{
-      console.log(res,"index page res")
-      if(res.success){
-        setRecords(res.data)
+    RequestServer(apiMethods.get, urlAccount)
+      .then((res) => {
+        console.log(res, "index page res")
+        if (res.success) {
+          setRecords(res.data)
+          setFetchLoading(false)
+          setFetchError(null)
+          setNoOfPages(Math.ceil(res.data.length / itemsPerPage));
+        }
+        else {
+          setRecords([])
+          setFetchError(res.error.message)
+          setFetchLoading(false)
+        }
+      })
+      .catch((err) => {
+        setFetchError(err.message)
         setFetchLoading(false)
-        setFetchError(null)
-        setNoOfPages(Math.ceil(res.data.length / itemsPerPage));
-      }
-      else{
-        setRecords([])
-        setFetchError(res.error.message)
-        setFetchLoading(false)
-      }
-    })
-    .catch((err)=>{
-      setFetchError(err.message)
-      setFetchLoading(false)
-    })
+      })
   }
+
+  const fetchPermissions = () => {
+    if (userRoleDpt) {
+      apiCheckPermission(userRoleDpt)
+        .then(res => {
+          console.log(res, "api resa piCheckPermission")
+          setPermissionValues(res[0].permissions)
+        })
+        .catch(err => {
+          setPermissionValues({})
+        })
+    }
+  }
+
   const handleAddRecord = () => {
     navigate("/new-accounts", { state: { record: {} } })
   };
@@ -96,41 +117,41 @@ const AccountsMobile = () => {
   const onebyoneDelete = (row) => {
     console.log('onebyoneDelete rec id', row)
 
-    RequestServer(apiMethods.post,urlDelete + row)
-    .then((res)=>{
-      if(res.success){
-        fetchRecords()
-        setNotify({
-          isOpen:true,
-          message:res.data,
-          type:'success'
-        })
-        setMenuOpen(false)
-      }
-      else{
-        console.log(res,"error in then")
+    RequestServer(apiMethods.post, urlDelete + row)
+      .then((res) => {
+        if (res.success) {
+          fetchRecords()
+          setNotify({
+            isOpen: true,
+            message: res.data,
+            type: 'success'
+          })
+          setMenuOpen(false)
+        }
+        else {
+          console.log(res, "error in then")
           setNotify({
             isOpen: true,
             message: res.error.message,
             type: 'error'
           })
           setMenuOpen(false)
-      }
-    })
-    .catch((error)=>{
-      console.log('api delete error', error);
-          setNotify({
-            isOpen: true,
-            message: error.message,
-            type: 'error'
-          })
-    })
-    .finally(()=>{
-      setConfirmDialog({
-        ...confirmDialog,
-        isOpen: false
+        }
       })
-    })
+      .catch((error) => {
+        console.log('api delete error', error);
+        setNotify({
+          isOpen: true,
+          message: error.message,
+          type: 'error'
+        })
+      })
+      .finally(() => {
+        setConfirmDialog({
+          ...confirmDialog,
+          isOpen: false
+        })
+      })
   };
 
   const handleChangePage = (event, value) => {
@@ -160,88 +181,105 @@ const AccountsMobile = () => {
       <DeleteConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog} moreModalClose={handleMoreMenuClose} />
 
       <Box m="20px">
-        <Header
-          title="Accounts"
-          subtitle="List of Account"
-        />
-
-        <div className='btn-test'>
-          <Button variant="contained" color="info" onClick={handleAddRecord}>
-            New
-          </Button>
-        </div>
-
-        <Card dense compoent="span" sx={{ bgcolor: "white" }}>
-          {records.length > 0 ?
-            records
-              .slice((page - 1) * itemsPerPage, page * itemsPerPage)
-              .map((item) => {
-                return (
-                  <div>
-                    <CardContent sx={{ bgcolor: "aliceblue", m: "20px" }}>
-                      <div
-                        key={item._id}
-                      >
-                        <Grid container spacing={2}>
-                          <Grid item xs={10} md={10}>
-                            <div>Name : {item.accountName} </div>
-                            <div>Phone :{item.phone} </div>
-                            <div>BillingCity : {item.billingCity} </div>
-                            <div>Industry : {item.industry} </div>
-                          </Grid>
-                          <Grid item xs={2} md={2}>
-                            <IconButton>
-                              <MoreVertIcon onClick={(event) => handleTaskMoreMenuClick(item, event)} />
-                              <Menu
-                                anchorEl={anchorEl}
-                                open={menuOpen}
-                                onClose={handleMoreMenuClose}
-                                anchorOrigin={{
-                                  vertical: 'top',
-                                  horizontal: 'left',
-                                }}
-                                transformOrigin={{
-                                  vertical: 'top',
-                                  horizontal: 'left',
-                                }}
-                              >
-                                <MenuItem onClick={() => handleCardEdit(menuSelectRec)}>Edit</MenuItem>
-                                <MenuItem onClick={(e) => handleCardDelete(e, menuSelectRec)}>Delete</MenuItem>
-                              </Menu>
-                            </IconButton>
-                          </Grid>
-                        </Grid>
-                      </div>
-                    </CardContent>
-                  </div>
-                );
-              })
-            :
+        {
+          permissionValues.read ?
             <>
-              <CardContent sx={{ bgcolor: "aliceblue", m: "20px" }}>
-                <div>No Records Found</div>
-              </CardContent>
+              <Header
+                title="Accounts"
+                subtitle="List of Account"
+              />
+              {
+                permissionValues.create &&
+
+                <div className='btn-test'>
+                  <Button variant="contained" color="info" onClick={handleAddRecord}>
+                    New
+                  </Button>
+                </div>
+              }
+              <Card dense compoent="span" sx={{ bgcolor: "white" }}>
+                {records.length > 0 ?
+                  records
+                    .slice((page - 1) * itemsPerPage, page * itemsPerPage)
+                    .map((item) => {
+                      return (
+                        <div>
+                          <CardContent sx={{ bgcolor: "aliceblue", m: "20px" }}>
+                            <div
+                              key={item._id}
+                            >
+                              <Grid container spacing={2}>
+                                <Grid item xs={10} md={10}>
+                                  <div>Name : {item.accountName} </div>
+                                  <div>Phone :{item.phone} </div>
+                                  <div>BillingCity : {item.billingCity} </div>
+                                  <div>Industry : {item.industry} </div>
+                                </Grid>
+                                <Grid item xs={2} md={2}>
+                                  <IconButton>
+                                    <MoreVertIcon onClick={(event) => handleTaskMoreMenuClick(item, event)} />
+                                    <Menu
+                                      anchorEl={anchorEl}
+                                      open={menuOpen}
+                                      onClose={handleMoreMenuClose}
+                                      anchorOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'left',
+                                      }}
+                                      transformOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'left',
+                                      }}
+                                    >
+                                      {
+                                        permissionValues.edit ?
+                                          <MenuItem onClick={() => handleCardEdit(menuSelectRec)}>Edit</MenuItem>
+                                          :
+                                          <MenuItem onClick={() => handleCardEdit(menuSelectRec)}>View</MenuItem>
+                                      }
+                                      {
+                                        permissionValues.delete &&
+                                        <MenuItem onClick={(e) => handleCardDelete(e, menuSelectRec)}>Delete</MenuItem>
+                                      }
+                                     </Menu>
+                                  </IconButton>
+                                </Grid>
+                              </Grid>
+                            </div>
+                          </CardContent>
+                        </div>
+                      );
+                    })
+                  :
+                  <>
+                    <CardContent sx={{ bgcolor: "aliceblue", m: "20px" }}>
+                      <div>No Records Found</div>
+                    </CardContent>
+                  </>
+                }
+              </Card>
+              {records.length > 0 &&
+                <Box sx={{
+                  margin: "auto",
+                  width: "fit-content",
+                  alignItems: "center",
+                  // justifyContent:'space-between'
+                }} >
+                  <Pagination
+                    count={noOfPages}
+                    page={page}
+                    onChange={handleChangePage}
+                    defaultPage={1}
+                    color="primary"
+                    size="large"
+                    showFirstButton
+                    showLastButton
+                  />
+                </Box>
+              }
+
             </>
-          }
-        </Card>
-        {records.length > 0 &&
-          <Box sx={{
-            margin: "auto",
-            width: "fit-content",
-            alignItems: "center",
-            // justifyContent:'space-between'
-          }} >
-            <Pagination
-              count={noOfPages}
-              page={page}
-              onChange={handleChangePage}
-              defaultPage={1}
-              color="primary"
-              size="large"
-              showFirstButton
-              showLastButton
-            />
-          </Box>
+            : null
         }
       </Box>
     </>

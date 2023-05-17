@@ -13,18 +13,26 @@ import "./Form.css";
 import { RequestServer } from "../api/HttpReq";
 import { AccountInitialValues,AccountSavedValues } from "../formik/IntialValues/formValues";
 import { apiMethods } from "../api/methods";
+import { apiCheckPermission } from "../Auth/apiCheckPermission";
+import { getLoginUserRoleDept } from "../Auth/userRoleDept";
 
+const AccountDetailPage = ({ item }) => {
+    
+const OBJECT_API = "Account"
 const urlUpsert = `/UpsertAccount`;
 const fetchInventoriesbyName = `/InventoryName?searchKey=`;
 
-const AccountDetailPage = ({ item }) => {
+
     const [singleAccount, setsingleAccount] = useState();
     const location = useLocation();
     const navigate = useNavigate();
     const [showNew, setshowNew] = useState();
     const [inventoriesRecord, setInventoriesRecord] = useState([]);
     const [notify, setNotify] = useState({isOpen: false,message: "",type: "",});
+    const [permissionValues, setPermissionValues] = useState({})
 
+    const userRoleDpt= getLoginUserRoleDept(OBJECT_API)
+    console.log(userRoleDpt,"userRoleDpt")
 
     useEffect(() => {
         console.log("passed record", location.state.record.item);
@@ -32,8 +40,22 @@ const AccountDetailPage = ({ item }) => {
         console.log("true", !location.state.record.item);
         setshowNew(!location.state.record.item);
         FetchInventoriesbyName("");
+        fetchObjectPermissions();   
     }, []);
 
+    const fetchObjectPermissions=()=>{
+        if(userRoleDpt){
+            apiCheckPermission(userRoleDpt)
+            .then(res=>{
+                console.log(res[0].permissions,"apiCheckPermission promise res")
+                setPermissionValues(res[0].permissions)
+            })
+            .catch(err=>{
+                console.log(err,"res apiCheckPermission error")
+                setPermissionValues({})
+            })
+        }
+    }
     const initialValues=AccountInitialValues;
     const savedValues=AccountSavedValues(singleAccount)
 
@@ -175,9 +197,8 @@ const AccountDetailPage = ({ item }) => {
                                                 Account Name <span className="text-danger">*</span>
                                             </label>
                                             <Field
-                                                name="accountName"
-                                                type="text"
-                                                class="form-input"
+                                                name="accountName" type="text" class="form-input"
+                                                disabled={showNew ? !permissionValues.create : !permissionValues.edit}
                                             />
                                             <div style={{ color: "red" }}>
                                                 <ErrorMessage name="accountName" />
@@ -186,9 +207,8 @@ const AccountDetailPage = ({ item }) => {
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="accountNumber">Account Number </label>
                                             <Field
-                                                name="accountNumber"
-                                                type="number"
-                                                class="form-input"
+                                                name="accountNumber" type="number" class="form-input"
+                                                disabled={showNew ? !permissionValues.create : !permissionValues.edit}
                                             />
                                         </Grid>
                                         <Grid item xs={6} md={6}>
@@ -218,10 +238,11 @@ const AccountDetailPage = ({ item }) => {
                                                     console.log("newInputValue", newInputValue);
                                                     if (newInputValue.length >= 3) {
                                                         FetchInventoriesbyName(newInputValue);
-                                                    } else if (newInputValue.length == 0) {
+                                                    } else if (newInputValue.length === 0) {
                                                         FetchInventoriesbyName(newInputValue);
                                                     }
                                                 }}
+                                                disabled={showNew ? !permissionValues.create : !permissionValues.edit}
                                                 renderInput={(params) => (
                                                     <Field
                                                         component={TextField}
@@ -235,9 +256,8 @@ const AccountDetailPage = ({ item }) => {
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="annualRevenue">Annual Revenue</label>
                                             <Field
-                                                class="form-input"
-                                                type="text"
-                                                name="annualRevenue"
+                                                class="form-input" type="text" name="annualRevenue"
+                                                disabled={showNew ? !permissionValues.create : !permissionValues.edit}
                                             />
                                             <div style={{ color: "red" }}>
                                                 <ErrorMessage name="annualRevenue" />
@@ -245,14 +265,18 @@ const AccountDetailPage = ({ item }) => {
                                         </Grid>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="phone">Phone</label>
-                                            <Field name="phone" type="phone" class="form-input" />
+                                            <Field name="phone" type="phone" class="form-input"
+                                            disabled={showNew ? !permissionValues.create : !permissionValues.edit}
+                                             />
                                             <div style={{ color: "red" }}>
                                                 <ErrorMessage name="phone" />
                                             </div>
                                         </Grid>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="rating">Rating<span className="text-danger">*</span></label>
-                                            <Field  name="rating" component={CustomizedSelectForFormik}>
+                                            <Field  name="rating" component={CustomizedSelectForFormik}
+                                            disabled={showNew ? !permissionValues.create : !permissionValues.edit}
+                                            >
                                                 <MenuItem value="">
                                                     <em>None</em>
                                                 </MenuItem>
@@ -266,7 +290,9 @@ const AccountDetailPage = ({ item }) => {
                                         </Grid>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="type">Type</label>
-                                            <Field name="type" component={CustomizedSelectForFormik}>
+                                            <Field name="type" component={CustomizedSelectForFormik} 
+                                            disabled={showNew ? !permissionValues.create : !permissionValues.edit}
+                                            >
                                                 <MenuItem value="">
                                                     <em>None</em>
                                                 </MenuItem>
@@ -277,7 +303,9 @@ const AccountDetailPage = ({ item }) => {
                                         </Grid>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="industry">Industry</label>
-                                            <Field name="industry"component={CustomizedSelectForFormik}>
+                                            <Field name="industry"component={CustomizedSelectForFormik}
+                                            disabled={showNew ? !permissionValues.create : !permissionValues.edit}
+                                            >
                                                 <MenuItem value="">
                                                     <em>None</em>
                                                 </MenuItem>
@@ -304,6 +332,7 @@ const AccountDetailPage = ({ item }) => {
                                                     setFieldValue("billingCity", "");
                                                     setFieldValue("billingCities", _billingCities);
                                                 }}
+                                                disabled={showNew ? !permissionValues.create : !permissionValues.edit}
                                             >
                                                 <MenuItem value="">
                                                     <em>None</em>
@@ -322,6 +351,7 @@ const AccountDetailPage = ({ item }) => {
                                                 id="billingCity"
                                                 name="billingCity"
                                                 component={CustomizedSelectForFormik}
+                                                disabled={showNew ? !permissionValues.create : !permissionValues.edit}
                                             >
                                                 <MenuItem value="">
                                                     <em>None</em>
@@ -343,6 +373,7 @@ const AccountDetailPage = ({ item }) => {
                                             <label htmlFor="billingAddress">Billing Address </label>
                                             <Field  name="billingAddress" as="textarea"
                                                 class="form-input-textarea" style={{ width: "100%" }}
+                                                disabled={showNew ? !permissionValues.create : !permissionValues.edit}
                                             />
                                         </Grid>
 
@@ -366,7 +397,7 @@ const AccountDetailPage = ({ item }) => {
                                                     </Grid>
 
                                                     <Grid item xs={6} md={6}>
-                                                        <label htmlFor="modifiedDate">Modified By</label>
+                                                        <label htmlFor="modifiedDate">Modified By</label>                                                     
                                                         <div style={{ overflowX: "auto" }}>
                                                             <Field name="modifiedDate"
                                                                 type="text" class="form-input"

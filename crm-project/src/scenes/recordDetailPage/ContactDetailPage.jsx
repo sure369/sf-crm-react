@@ -269,12 +269,13 @@ const ContactDetailPage = ({ item }) => {
                                                         if (newInputValue.length >= 3) {
                                                             FetchAccountsbyName(newInputValue);
                                                         }
-                                                        else  if (newInputValue.length == 0) {
+                                                        else  if (newInputValue.length === 0) {
                                                             FetchAccountsbyName(newInputValue);
                                                         }
                                                     }}
                                                     renderInput={params => (
-                                                        <Field component={TextField} {...params} name="AccountId" />
+                                                        console.log(params,"params")
+                                                        // <Field component={TextField} {...params} name="AccountId" />
                                                     )}
                                                 />
                                             </Grid>
