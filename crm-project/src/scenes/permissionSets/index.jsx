@@ -18,9 +18,10 @@ import { OppIndexFilterPicklist } from "../../data/pickLists";
 import ExcelDownload from '../Excel';
 import { RequestServer } from "../api/HttpReq";
 import '../indexCSS/muiBoxStyles.css'
-import { apiCheckPermission } from "../Auth/apiCheckPermission";
-import { getLoginUserRoleDept } from "../Auth/userRoleDept";
 import { apiMethods } from "../api/methods";
+import { apiCheckObjectPermission } from '../Auth/apiCheckObjectPermission'
+import { getLoginUserRoleDept } from '../Auth/userRoleDept';
+
 
 
 const PermissionSets = () => {
@@ -42,13 +43,14 @@ const PermissionSets = () => {
   const [showDelete, setShowDelete] = useState(false);
   const [selectedRecordIds, setSelectedRecordIds] = useState();
   const [selectedRecordDatas, setSelectedRecordDatas] = useState();
-  const [permissionValues, setPermissionValues] = useState({create:true,edit:true,delete:true,read:true})
-
-  // const userRoleDpt = getLoginUserRoleDept(OBJECT_API)
+  
+  const [permissionValues, setPermissionValues] = useState({})
+  const userRoleDpt = getLoginUserRoleDept(OBJECT_API)
+  console.log(userRoleDpt, "userRoleDpt")
 
   useEffect(() => {
     fetchRecords();
-    // fetchPermissions();
+    fetchObjectPermissions();
   }, []);
 
   const fetchRecords = () => {
@@ -72,18 +74,19 @@ const PermissionSets = () => {
       })
   };
 
-  // const fetchPermissions = () => {
-  //   if (userRoleDpt) {
-  //     apiCheckPermission(userRoleDpt)
-  //       .then(res => {
-  //         console.log(res, "api res apicheckpermission")
-  //         setPermissionValues(res)
-  //       })
-  //       .catch(err => {
-  //         setPermissionValues({})
-  //       })
-  //   }
-  // }
+  const fetchObjectPermissions=()=>{
+    if (userRoleDpt) {
+      apiCheckObjectPermission(userRoleDpt)
+        .then(res => {
+          console.log(res[0].permissions, "res apiCheckObjectPermission")
+          setPermissionValues(res[0].permissions)
+        })
+        .catch(err => {
+          console.log(err, "res apiCheckObjectPermission")
+          setPermissionValues({})
+        })
+    }
+  }
 
   const handleAddRecord = () => {
     navigate("/new-permission", { state: { record: {} } });
@@ -236,8 +239,8 @@ const PermissionSets = () => {
       />
 
       <Box m="20px">
-        {/* {
-          // permissionValues.read ? */}
+        {
+           permissionValues.read ?
             <>
               <Typography
                 variant="h2"
@@ -265,7 +268,7 @@ const PermissionSets = () => {
                   {showDelete ? (
                     <>
                       {
-                        // permissionValues.delete &&
+                        permissionValues.delete &&
                         <>
 
                           <Tooltip title="Delete Selected">
@@ -281,7 +284,7 @@ const PermissionSets = () => {
                   ) : (
                     <>
                       {
-                        // permissionValues.create &&
+                         permissionValues.create &&
                         <>
                           <Button variant="contained" color="info" onClick={handleAddRecord}>
                             New
@@ -334,6 +337,8 @@ const PermissionSets = () => {
               </Box>
 
             </>
+            : null
+            }
       </Box>
 
 

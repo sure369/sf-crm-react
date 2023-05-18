@@ -15,19 +15,21 @@ import './Form.css'
 import { PermissionSetInitialValues, PermissionSetSavedValues } from '../formik/IntialValues/formValues';
 import { RolesDepartment } from '../../data/pickLists';
 import { RequestServer } from '../api/HttpReq';
-import { apiCheckPermission } from '../Auth/apiCheckPermission';
-import { getLoginUserRoleDept } from '../Auth/userRoleDept';
 import queryString from 'query-string';
 import { apiMethods } from '../api/methods';
+import { apiCheckObjectPermission } from "../Auth/apiCheckObjectPermission";
+import { getLoginUserRoleDept } from "../Auth/userRoleDept";
 
-const OBJECT_API = "Permissions"
+
+
+const PermissionSetDetailPage = ({ item }) => {
+
+    const OBJECT_API = "Permissions"
 const upsertUrl = `/permission`;
 const urlgetUsersByName = `/getUsers`;
 const urlgetRolesByDept = `/roles`
 const urlgetTbaleNames = `/getTabs`
 
-
-const PermissionSetDetailPage = ({ item }) => {
 
     const [singlePermission, setsinglePermission] = useState();
     const location = useLocation();
@@ -38,8 +40,10 @@ const PermissionSetDetailPage = ({ item }) => {
     const [roleRecordsByDept, setRoleRecordsByDept] = useState([])
     const [objTableName, setObjTableName] = useState([])
 
-    // const userRoleDpt= getLoginUserRoleDept(OBJECT_API)
-    // const [permissionValues, setPermissionValues] = useState({})
+    
+    const [permissionValues, setPermissionValues] = useState({})
+    const userRoleDpt= getLoginUserRoleDept(OBJECT_API)
+    console.log(userRoleDpt,"userRoleDpt")
 
     useEffect(() => {
         console.log('passed record PermissionSetDetailPage', location.state.record.item);
@@ -47,9 +51,23 @@ const PermissionSetDetailPage = ({ item }) => {
         setsinglePermission(location.state?.record?.item ?? {});
         setshowNew(!location.state.record.item)
         fetchTableNames()
-        // fetchPermissions()
+        fetchObjectPermissions()
     }, [])
 
+
+    const fetchObjectPermissions=()=>{
+        if(userRoleDpt){
+            apiCheckObjectPermission(userRoleDpt)
+            .then(res=>{
+                console.log(res[0].permissions,"apiCheckObjectPermission promise res")
+                setPermissionValues(res[0].permissions)
+            })
+            .catch(err=>{
+                console.log(err,"res apiCheckObjectPermission error")
+                setPermissionValues({})
+            })
+        }
+    }
 
     const fetchTableNames = () => {
         RequestServer(apiMethods.get, urlgetTbaleNames)
@@ -249,7 +267,7 @@ const PermissionSetDetailPage = ({ item }) => {
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="permissionName">Permission Set Name <span className="text-danger">*</span></label>
                                             <Field type="text" id="permissionName" name="permissionName" class="form-input"
-                                            // disabled={showNew?!permissionValues.create :!permissionValues.edit}
+                                             disabled={showNew?!permissionValues.create :!permissionValues.edit}
 
                                             />
                                             <div style={{ color: "red" }}>
@@ -260,7 +278,7 @@ const PermissionSetDetailPage = ({ item }) => {
                                             <label htmlFor="department">Department</label>
                                             <Field name="department"
                                                 component={CustomizedSelectForFormik}
-                                                // disabled={showNew?!permissionValues.create :!permissionValues.edit}
+                                                 disabled={showNew?!permissionValues.create :!permissionValues.edit}
                                                 className="form-customSelect"
                                                 onChange={(e) => {
                                                     console.log(e.target.value, "event")
@@ -309,7 +327,7 @@ const PermissionSetDetailPage = ({ item }) => {
                                                         console.log(values.department, "else ")
                                                     }
                                                 }}
-                                                // disabled={showNew?!permissionValues.create :!permissionValues.edit}
+                                                 disabled={showNew?!permissionValues.create :!permissionValues.edit}
                                                 renderInput={params => (
                                                     // console.log(params,"params")
                                                     <Field component={TextField} {...params} name="roleDetails" />
@@ -357,7 +375,7 @@ const PermissionSetDetailPage = ({ item }) => {
                                                                                                         setFieldValue(`permissionSets.${index}.permissions.delete`, e.target.checked)
                                                                                                     }
                                                                                                 }}
-                                                                                            // disabled={showNew?!permissionValues.create :!permissionValues.edit}
+                                                                                             disabled={showNew?!permissionValues.create :!permissionValues.edit}
                                                                                             />
                                                                                         </Grid>
                                                                                         <Grid item xs={3} md={3}>
@@ -376,7 +394,7 @@ const PermissionSetDetailPage = ({ item }) => {
                                                                                                         setFieldValue(`permissionSets.${index}.permissions.create`, e.target.checked);
                                                                                                     }
                                                                                                 }}
-                                                                                            // disabled={showNew?!permissionValues.create :!permissionValues.edit}
+                                                                                             disabled={showNew?!permissionValues.create :!permissionValues.edit}
                                                                                             />
                                                                                         </Grid>
 
@@ -397,7 +415,7 @@ const PermissionSetDetailPage = ({ item }) => {
                                                                                                         setFieldValue(`permissionSets.${index}.permissions.delete`, e.target.checked)
                                                                                                     }
                                                                                                 }}
-                                                                                            // disabled={showNew?!permissionValues.create :!permissionValues.edit}
+                                                                                             disabled={showNew?!permissionValues.create :!permissionValues.edit}
                                                                                             />
                                                                                         </Grid>
                                                                                         <Grid item xs={3} md={3}>
@@ -419,7 +437,7 @@ const PermissionSetDetailPage = ({ item }) => {
                                                                                                         setFieldValue(`permissionSets.${index}.permissions.delete`, e.target.checked);
                                                                                                     }
                                                                                                 }}
-                                                                                            // disabled={showNew?!permissionValues.create :!permissionValues.edit}
+                                                                                             disabled={showNew?!permissionValues.create :!permissionValues.edit}
                                                                                             />
                                                                                         </Grid>
                                                                                     </Grid>

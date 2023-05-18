@@ -1,22 +1,11 @@
 import React, { useState, useEffect } from "react";
 import {
-  Box,
-  Button,
-  useTheme,
-  IconButton,
-  Pagination,
-  Tooltip,
-  Grid,
-  Modal,
-  Typography,
+  Box, Button, useTheme, IconButton, Pagination,
+  Tooltip, Grid, Modal, Typography,
 } from "@mui/material";
 import {
-  DataGrid,
-  GridToolbar,
-  gridPageCountSelector,
-  gridPageSelector,
-  useGridApiContext,
-  useGridSelector,
+  DataGrid, GridToolbar, gridPageCountSelector,
+  gridPageSelector, useGridApiContext, useGridSelector,
 } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import { useNavigate } from "react-router-dom";
@@ -32,8 +21,12 @@ import ExcelDownload from "../Excel";
 import { RequestServer } from "../api/HttpReq";
 import { apiMethods } from "../api/methods";
 import "../indexCSS/muiBoxStyles.css";
+import { getLoginUserRoleDept } from "../Auth/userRoleDept";
+import { apiCheckObjectPermission } from "../Auth/apiCheckObjectPermission";
 
 const Contacts = () => {
+
+  const OBJECT_API='Contact' ;
   const urlContact = `/contacts`;
   const urlDelete = `/deleteContact?code=`;
 
@@ -43,16 +36,8 @@ const Contacts = () => {
   const [records, setRecords] = useState([]);
   const [fetchError, setFetchError] = useState();
   const [fetchLoading, setFetchLoading] = useState(true);
-  const [notify, setNotify] = useState({
-    isOpen: false,
-    message: "",
-    type: "",
-  });
-  const [confirmDialog, setConfirmDialog] = useState({
-    isOpen: false,
-    title: "",
-    subTitle: "",
-  });
+  const [notify, setNotify] = useState({ isOpen: false, message: "",type: "",});
+  const [confirmDialog, setConfirmDialog] = useState({isOpen: false,title: "",subTitle: "",});
 
   //email,Whatsapp
   const [showEmail, setShowEmail] = useState(false);
@@ -60,13 +45,18 @@ const Contacts = () => {
   const [selectedRecordDatas, setSelectedRecordDatas] = useState();
   const [emailModalOpen, setEmailModalOpen] = useState(false);
   const [whatsAppModalOpen, setWhatsAppModalOpen] = useState(false);
+  const [permissionValues,setPermissionValues] =useState({})
+  
+  const userRoleDpt = getLoginUserRoleDept(OBJECT_API)
+  console.log(userRoleDpt, "userRoleDpt")
 
   useEffect(() => {
     fetchRecords();
+    fetchObjectPermissions()
   }, []);
 
   const fetchRecords = () => {
-    RequestServer(apiMethods.post,urlContact)
+    RequestServer(apiMethods.post, urlContact)
       .then((res) => {
         console.log(res, "index page res");
         if (res.success) {
@@ -84,6 +74,19 @@ const Contacts = () => {
         setFetchLoading(false);
       });
   };
+
+  const fetchObjectPermissions=()=>{
+    if(userRoleDpt){
+      apiCheckObjectPermission(userRoleDpt)
+      .then(res=>{
+        console.log(res,"res apiCheckObjectPermission")
+        setPermissionValues(res[0].permissions)
+      })
+      .catch(err=>{
+        console.log(err,"error apiCheckObjectPermission")
+      })
+    }
+  }
 
   const handleAddRecord = () => {
     navigate("/new-contacts", { state: { record: {} } });
@@ -122,7 +125,7 @@ const Contacts = () => {
   const onebyoneDelete = (row) => {
     console.log("one by on delete", row);
 
-    RequestServer(apiMethods.post,urlDelete + row)
+    RequestServer(apiMethods.post, urlDelete + row)
       .then((res) => {
         if (res.success) {
           fetchRecords();
@@ -237,37 +240,40 @@ const Contacts = () => {
       headerAlign: "center",
       align: "center",
       flex: 1,
-    },
-    {
-      field: "actions",
-      headerName: "Actions",
-      headerAlign: "center",
-      align: "center",
-      flex: 1,
-      width: 400,
-      renderCell: (params) => {
-        return (
-          <>
-            {!showEmail ? (
+    }]
+    if(permissionValues.delete){
+      columns.push(
+        {
+          field: "actions",
+          headerName: "Actions",
+          headerAlign: "center",
+          align: "center",
+          flex: 1,
+          width: 400,
+          renderCell: (params) => {
+            return (
               <>
-                {/* <IconButton onClick={(e) => handleOnCellClick(e, params.row)} style={{ padding: '20px', color: '#0080FF' }} >
-                    <EditIcon  />
-                  </IconButton> */}
-                <IconButton
-                  onClick={(e) => onHandleDelete(e, params.row)}
-                  style={{ padding: "20px", color: "#FF3333" }}
-                >
-                  <DeleteIcon />
-                </IconButton>
+                {!showEmail ? (
+                  <>
+                    {/* <IconButton onClick={(e) => handleOnCellClick(e, params.row)} style={{ padding: '20px', color: '#0080FF' }} >
+                        <EditIcon  />
+                      </IconButton> */}
+                    <IconButton
+                      onClick={(e) => onHandleDelete(e, params.row)}
+                      style={{ padding: "20px", color: "#FF3333" }}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </>
+                ) : (
+                  ""
+                )}
               </>
-            ) : (
-              ""
-            )}
-          </>
-        );
-      },
-    },
-  ];
+            );
+          },
+        },
+      )
+    }
 
   return (
     <>
@@ -278,6 +284,10 @@ const Contacts = () => {
       />
 
       <Box m="20px">
+        {
+          permissionValues.read ?
+          <>
+         
         <Typography
           variant="h2"
           color={colors.grey[100]}
@@ -309,29 +319,36 @@ const Contacts = () => {
                     gap: "15px",
                   }}
                 >
-                  <Tooltip title="Delete Selected">
-                    <IconButton>
-                      <DeleteIcon
-                        sx={{ color: "#FF3333" }}
-                        onClick={(e) => onHandleDelete(e, selectedRecordIds)}
-                      />
-                    </IconButton>
-                  </Tooltip>
+                  {
+                    permissionValues.delete &&                 
+                          <Tooltip title="Delete Selected">
+                            <IconButton>
+                              <DeleteIcon
+                                sx={{ color: "#FF3333" }}
+                                onClick={(e) => onHandleDelete(e, selectedRecordIds)}
+                              />
+                            </IconButton>
+                          </Tooltip>
+                   }{
+                    permissionValues.create &&                   
                   <Tooltip title="Email">
                     <IconButton>
                       <EmailIcon
                         sx={{ color: "#DB4437" }}
                         onClick={handlesendEmail}
-                      />{" "}
+                      />
                     </IconButton>
                   </Tooltip>
+                  }
                 </div>
               </>
             ) : (
               <>
+              {
+                permissionValues.create &&
+              <>
                 <Button
-                  variant="contained"
-                  color="info"
+                  variant="contained"color="info"
                   onClick={handleAddRecord}
                 >
                   New
@@ -339,6 +356,8 @@ const Contacts = () => {
 
                 <ExcelDownload data={records} filename={`OpportunityRecords`} />
               </>
+              }
+                </>
             )}
           </div>
         </Box>
@@ -380,6 +399,10 @@ const Contacts = () => {
             onRowClick={(e) => handleOnCellClick(e)}
           />
         </Box>
+         
+        </>
+        :null
+        }
       </Box>
 
       <Modal

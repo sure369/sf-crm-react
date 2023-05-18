@@ -14,18 +14,17 @@ import CustomizedSelectForFormik from '../formik/CustomizedSelectForFormik';
 import { RolesCategories, RolesDepartment, UserAccessPicklist, UserRolePicklist } from '../../data/pickLists';
 import './Form.css'
 import { RoleInitialValues, RoleSavedValues } from "../formik/IntialValues/formValues"
-// import {apiCheckPermission} from '../Auth/apiCheckPermission'
-// import { getLoginUserRoleDept } from '../Auth/userRoleDept';
 import { RequestServer } from '../api/HttpReq';
 import { apiMethods } from '../api/methods';
-
+import { apiCheckObjectPermission } from "../Auth/apiCheckObjectPermission";
+import { getLoginUserRoleDept } from "../Auth/userRoleDept";
 
 
 const RoleDetailPage = ({ item }) => {
 
     const OBJECT_API="Role"
     const url = `/role`;
-const urlSendEmailbulk = `/bulkemail`
+    const urlSendEmailbulk = `/bulkemail`
 
 
     const [singleRole, setsingleRole] = useState();
@@ -33,31 +32,32 @@ const urlSendEmailbulk = `/bulkemail`
     const navigate = useNavigate();
     const [showNew, setshowNew] = useState()
     const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
+    
     const [permissionValues, setPermissionValues] = useState({})
-   
-    // const userRoleDpt= getLoginUserRoleDept(OBJECT_API)
-    // console.log(userRoleDpt,"userRoleDpt")
+    const userRoleDpt= getLoginUserRoleDept(OBJECT_API)
+    console.log(userRoleDpt,"userRoleDpt")
 
     useEffect(() => {
         console.log('passed record', location.state.record.item);
         setsingleRole(location.state?.record?.item ?? {});
         setshowNew(!location.state.record.item)
-        // fetchObjectPermissions()
+         fetchObjectPermissions()
 
     }, [])
 
-    // const fetchObjectPermissions=()=>{
-    //     if(userRoleDpt){
-    //         apiCheckPermission(userRoleDpt)
-    //         .then(res=>{
-    //             setPermissionValues(res)
-    //         })
-    //         .catch(err=>{                
-    //             console.log(err,"res apiCheckPermission error")
-    //             setPermissionValues({})
-    //         })
-    //     }
-    // }
+    const fetchObjectPermissions=()=>{
+        if(userRoleDpt){
+            apiCheckObjectPermission(userRoleDpt)
+            .then(res=>{
+                console.log(res[0].permissions,"apiCheckObjectPermission promise res")
+                setPermissionValues(res[0].permissions)
+            })
+            .catch(err=>{
+                console.log(err,"res apiCheckObjectPermission error")
+                setPermissionValues({})
+            })
+        }
+    }
 
     const initialValues = RoleInitialValues
     const savedValues = RoleSavedValues(singleRole)
@@ -160,7 +160,7 @@ const urlSendEmailbulk = `/bulkemail`
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="roleName">Role Name <span className="text-danger">*</span> </label>
                                             <Field name="roleName" component={CustomizedSelectForFormik}
-                                                // disabled={showNew ? !permissionValues.create : !permissionValues.edit}
+                                                 disabled={showNew ? !permissionValues.create : !permissionValues.edit}
                                             >
                                                 <MenuItem value=""><em>None</em></MenuItem>
                                                 {
@@ -176,7 +176,7 @@ const urlSendEmailbulk = `/bulkemail`
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="departmentName">Department Name <span className="text-danger">*</span> </label>
                                             <Field name="departmentName" component={CustomizedSelectForFormik}
-                                                // disabled={showNew ? !permissionValues.create : !permissionValues.edit}
+                                             disabled={showNew ? !permissionValues.create : !permissionValues.edit}
                                             >
                                                 <MenuItem value=""><em>None</em></MenuItem>
                                                 {

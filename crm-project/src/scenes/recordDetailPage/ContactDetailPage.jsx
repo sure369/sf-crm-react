@@ -21,7 +21,11 @@ import './Form.css'
 import { ContactInitialValues,ContactSavedValues } from '../formik/IntialValues/formValues';
 import { RequestServer } from '../api/HttpReq';
 import { apiMethods } from '../api/methods';
+import { apiCheckObjectPermission } from '../Auth/apiCheckObjectPermission';
+import { getLoginUserRoleDept } from '../Auth/userRoleDept';
+import NoAccessCard from '../NoAccess/NoAccessCard';
 
+const OBJECT_API ='Contact'
 const urlUpsert = `/UpsertContact`;
 const fetchAccountsbyName = `/accountsname?searchKey=`;
 
@@ -36,13 +40,30 @@ const ContactDetailPage = ({ item }) => {
     const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
     const [whatsAppModalOpen, setWhatsAppModalOpen] = useState(false)
 
+    const[permissionValues,setPermissionValues]=useState({})
+    const userRoleDpt =getLoginUserRoleDept(OBJECT_API)
+    console.log(userRoleDpt,"userRoleDpt")
+
     useEffect(() => {
         console.log('passed record', location.state.record.item);
         setsingleContact(location.state.record.item);
         setshowNew(!location.state.record.item)
         FetchAccountsbyName('');
-
+        fetchObjectPermissions()
     }, [])
+
+    const fetchObjectPermissions=()=>{
+        if(userRoleDpt)
+        apiCheckObjectPermission(userRoleDpt)
+        .then(res=>{
+            console.log(res,"res apiCheckObjectPermission")
+            setPermissionValues(res[0].permissions)
+        })
+        .catch(err=>{
+            console.log(err, " error apiCheckObjectPermission task")
+            setPermissionValues({})
+        })
+    }
 
     const initialValues= ContactInitialValues
     const savedValues= ContactSavedValues(singleContact)
@@ -175,7 +196,12 @@ const ContactDetailPage = ({ item }) => {
 
     return (
         <div className="App" >
+            
             <Grid item xs={12} style={{ margin: "20px" }}>
+                {
+                    permissionValues.read ?
+                    <>
+                    
                 <div style={{ textAlign: "center", marginBottom: "10px" }}>
                     {
                         showNew ? <h2>New Contact </h2> : <h2>Contact Detail Page </h2>
@@ -184,7 +210,7 @@ const ContactDetailPage = ({ item }) => {
                 <div>
                     <div className='btn-test'>
                         {
-                            !showNew ?
+                            !showNew && permissionValues.read && permissionValues.create ?
                                 <>
                                     <Tooltip title="Send Email">
                                         <IconButton> <EmailIcon sx={{ color: '#DB4437' }} onClick={handlesendEmail} /> </IconButton>
@@ -214,7 +240,9 @@ const ContactDetailPage = ({ item }) => {
                                         <Grid container spacing={2}>
                                             <Grid item xs={6} md={2}>
                                                 <label htmlFor="salutation">Salutation  </label>
-                                                <Field name="salutation" component={CustomizedSelectForFormik} className="form-customSelect">
+                                                <Field name="salutation" component={CustomizedSelectForFormik} className="form-customSelect"
+                                                disabled={showNew ? !permissionValues.create : !permissionValues.edit}
+                                                >
                                                 <MenuItem value=""><em>None</em></MenuItem>
                                                     {
                                                         NameSalutionPickList.map((i) => {
@@ -225,14 +253,18 @@ const ContactDetailPage = ({ item }) => {
                                             </Grid>
                                             <Grid item xs={6} md={4}>
                                                 <label htmlFor="firstName" >First Name</label>
-                                                <Field name='firstName' type="text" class="form-input" />
+                                                <Field name='firstName' type="text" class="form-input" 
+                                                disabled={showNew ? !permissionValues.create : !permissionValues.edit}
+                                                />
                                                 <div style={{ color: 'red' }}>
                                                     <ErrorMessage name="firstName" />
                                                 </div>
                                             </Grid>
                                             <Grid item xs={6} md={6}>
                                                 <label htmlFor="lastName" >Last Name<span className="text-danger">*</span> </label>
-                                                <Field name='lastName' type="text" class="form-input" />
+                                                <Field name='lastName' type="text" class="form-input" 
+                                                disabled={showNew ? !permissionValues.create : !permissionValues.edit}
+                                                />
                                                 <div style={{ color: 'red' }}>
                                                     <ErrorMessage name="lastName" />
                                                 </div>
@@ -273,15 +305,18 @@ const ContactDetailPage = ({ item }) => {
                                                             FetchAccountsbyName(newInputValue);
                                                         }
                                                     }}
+                                                    disabled={showNew ? !permissionValues.create : !permissionValues.edit}
                                                     renderInput={params => (
-                                                        console.log(params,"params")
-                                                        // <Field component={TextField} {...params} name="AccountId" />
+                                                        // console.log(params,"params")
+                                                         <Field component={TextField} {...params} name="AccountId" />
                                                     )}
                                                 />
                                             </Grid>
                                             <Grid item xs={6} md={6}>
                                                 <label htmlFor="phone">Phone</label>
-                                                <Field name="phone" type="phone" class="form-input" />
+                                                <Field name="phone" type="phone" class="form-input" 
+                                                    disabled={showNew ? !permissionValues.create : !permissionValues.edit}
+                                                />
                                                 <div style={{ color: 'red' }}>
                                                     <ErrorMessage name="phone" />
                                                 </div>
@@ -297,24 +332,31 @@ const ContactDetailPage = ({ item }) => {
                                                         onChange={(e) => {
                                                             setFieldValue('dob', e)
                                                         }}
+                                                        disabled={showNew ? !permissionValues.create : !permissionValues.edit}
                                                         renderInput={(params) => <TextField  {...params} style={{width:'100%'}} error={false} />}
                                                     />
                                                 </LocalizationProvider>
                                             </Grid>
                                             <Grid item xs={6} md={6}>
                                                 <label htmlFor="department">Department</label>
-                                                <Field name="department" type="text" class="form-input" />
+                                                <Field name="department" type="text" class="form-input" 
+                                                disabled={showNew ? !permissionValues.create : !permissionValues.edit}
+                                                />
                                             </Grid>
                                             <Grid item xs={6} md={6}>
                                                 <label htmlFor="email">Email <span className="text-danger">*</span></label>
-                                                <Field name="email" type="text" class="form-input" />
+                                                <Field name="email" type="text" class="form-input" 
+                                                disabled={showNew ? !permissionValues.create : !permissionValues.edit}
+                                                />
                                                 <div style={{ color: 'red' }}>
                                                     <ErrorMessage name="email" />
                                                 </div>
                                             </Grid>
                                             <Grid item xs={6} md={6}>
                                                 <label htmlFor="leadSource"> Lead Source</label>
-                                                <Field name="leadSource" component={CustomizedSelectForFormik} className="form-customSelect">
+                                                <Field name="leadSource" component={CustomizedSelectForFormik} className="form-customSelect"
+                                                disabled={showNew ? !permissionValues.create : !permissionValues.edit}
+                                                >
                                                 <MenuItem value=""><em>None</em></MenuItem>
                                                  {
                                                         LeadSourcePickList.map((i) => {
@@ -325,11 +367,15 @@ const ContactDetailPage = ({ item }) => {
                                             </Grid>
                                             <Grid Grid item xs={6} md={6}>
                                                 <label htmlFor="fullAddress">Full Address</label>
-                                                <Field as="textarea" name="fullAddress" class="form-input-textarea" style={{width:'100%'}} />
+                                                <Field as="textarea" name="fullAddress" class="form-input-textarea" style={{width:'100%'}} 
+                                                disabled={showNew ? !permissionValues.create : !permissionValues.edit}
+                                                />
                                             </Grid>
                                             <Grid Grid item xs={6} md={12}>
                                                 <label htmlFor="description">Description</label>
-                                                <Field as="textarea" name="description" class="form-input-textarea" style={{width:'100%'}} />
+                                                <Field as="textarea" name="description" class="form-input-textarea" style={{width:'100%'}} 
+                                                disabled={showNew ? !permissionValues.create : !permissionValues.edit}
+                                                />
                                             </Grid>
                                             {!showNew && (
                                                 <>
@@ -376,6 +422,10 @@ const ContactDetailPage = ({ item }) => {
                         }}
                     </Formik>
                 </div>
+                </>
+                : <NoAccessCard/>
+                }
+
             </Grid>
 
             <Modal
@@ -395,9 +445,9 @@ const ContactDetailPage = ({ item }) => {
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
-                <Box sx={ModalStyle}>
+                <div className='modal'>
                     <WhatAppModalPage data={singleContact} handleModal={setWhatAppModalClose} bulkMail={true} />
-                </Box>
+                </div>
             </Modal>
 
         </div>
@@ -408,13 +458,3 @@ const ContactDetailPage = ({ item }) => {
 }
 export default ContactDetailPage;
 
-const ModalStyle = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 600,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-};

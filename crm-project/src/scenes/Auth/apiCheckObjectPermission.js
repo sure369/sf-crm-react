@@ -1,7 +1,7 @@
 import { RequestServer } from "../api/HttpReq"
 import { apiMethods } from "../api/methods"
 
-export const apiCheckPermission= (obj)=>{
+export const apiCheckObjectPermission= (obj)=>{
 
     const urlCheck=`/permissionforobject/${obj.object}/${obj.loginUserDepartmentName}/${obj.loginUserRole}`
 

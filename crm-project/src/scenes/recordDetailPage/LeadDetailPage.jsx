@@ -4,7 +4,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import {
   Grid, Button, DialogActions, TextField,
-  Autocomplete, MenuItem, Select, Typography,Modal
+  Autocomplete, MenuItem, Select, Typography, Modal
 } from "@mui/material";
 import { Timeline } from "@mui/lab";
 import { useParams, useNavigate } from "react-router-dom";
@@ -22,11 +22,16 @@ import TimelineTrack from "../timeline/LeadTimeline";
 import ButtonGroup from "../timeline/ButtonGroup";
 import ModalOppTask from "../tasks/ModalOppTask";
 import ModalLeadConvertion from "../timeline/ModalLeadConvertion";
-
-const url = `/UpsertLead`;
-const fetchUsersbyName = `/usersbyName`;
+import { apiCheckObjectPermission } from "../Auth/apiCheckObjectPermission";
+import { getLoginUserRoleDept } from "../Auth/userRoleDept";
 
 const LeadDetailPage = ({ item }) => {
+
+  const OBJECT_API = 'Lead'
+  const url = `/UpsertLead`;
+  const fetchUsersbyName = `/usersbyName`;
+
+
   const [singleLead, setsingleLead] = useState();
   const location = useLocation();
   const navigate = useNavigate();
@@ -36,7 +41,11 @@ const LeadDetailPage = ({ item }) => {
   const [notify, setNotify] = useState({ isOpen: false, message: "", type: "", });
 
   const [stageActive, setStageActive] = useState()
-  const [modalLeadConvertionOpen,setModalLeadConvertionOpen]=useState(false)
+  const [modalLeadConvertionOpen, setModalLeadConvertionOpen] = useState(false)
+
+  const [permissionValues, setPermissionValues] = useState({})
+  const userRoleDpt = getLoginUserRoleDept(OBJECT_API)
+  console.log(userRoleDpt, "userRoleDpt")
 
   useEffect(() => {
     console.log("passed record", location.state.record.item);
@@ -46,7 +55,22 @@ const LeadDetailPage = ({ item }) => {
       setStageActive(location.state.record.item.leadStatus)
     }
     // getTasks(location.state.record.item._id)
+    fetchObjectPermissions();
   }, []);
+
+  const fetchObjectPermissions = () => {
+    if (userRoleDpt) {
+      apiCheckObjectPermission(userRoleDpt)
+        .then(res => {
+          console.log(res[0].permissions, "apiCheckObjectPermission promise res")
+          setPermissionValues(res[0].permissions)
+        })
+        .catch(err => {
+          console.log(err, "res apiCheckObjectPermission error")
+          setPermissionValues({})
+        })
+    }
+  }
 
   const initialValues = LeadInitialValues
   const savedValues = LeadSavedValues(singleLead)
@@ -146,15 +170,15 @@ const LeadDetailPage = ({ item }) => {
         ...savedValues,
         leadStatus: item.value
       }
-      if(item.value === 'Converted'){
+      if (item.value === 'Converted') {
         setModalLeadConvertionOpen(true)
-      }else{
+      } else {
         formSubmission(updateSavedValue)
       }
     }
   }
 
-  const hanldeConvetionModelClose=()=>{
+  const hanldeConvetionModelClose = () => {
     setModalLeadConvertionOpen(false)
     const updateSavedValue = {
       ...savedValues,
@@ -173,10 +197,10 @@ const LeadDetailPage = ({ item }) => {
         {showNew ? <h3>New Lead</h3> : <h3>Lead Detail Page </h3>}
       </div>
       {
-        !showNew &&singleLead&&
+        !showNew && singleLead &&
         <div className="timeline-track">
           <TimelineTrack stages={LeadStatusPicklist} activeStage={stageActive} onItemClick={handleTimeLineClick}
-          record={singleLead} />
+            record={singleLead} />
         </div>
 
       }
@@ -197,14 +221,18 @@ const LeadDetailPage = ({ item }) => {
                   <Grid container spacing={2}>
                     <Grid item xs={6} md={6}>
                       <label htmlFor="fullName">Full Name<span className="text-danger">*</span></label>
-                      <Field name="fullName" type="text" class="form-input" />
+                      <Field name="fullName" type="text" class="form-input"
+                        disabled={showNew ? !permissionValues.create : !permissionValues.edit}
+                      />
                       <div style={{ color: "red" }}>
                         <ErrorMessage name="fullName" />
                       </div>
                     </Grid>
                     <Grid item xs={6} md={6}>
                       <label htmlFor="companyName">Company Name</label>
-                      <Field name="companyName" type="text" class="form-input" />
+                      <Field name="companyName" type="text" class="form-input"
+                        disabled={showNew ? !permissionValues.create : !permissionValues.edit}
+                      />
                       <div style={{ color: "red" }}>
                         <ErrorMessage name="companyName" />
                       </div>
@@ -212,12 +240,16 @@ const LeadDetailPage = ({ item }) => {
 
                     <Grid item xs={6} md={6}>
                       <label htmlFor="designation">Designation</label>
-                      <Field name="designation" type="text" class="form-input" />
+                      <Field name="designation" type="text" class="form-input"
+                        disabled={showNew ? !permissionValues.create : !permissionValues.edit}
+                      />
                     </Grid>
 
                     <Grid item xs={6} md={6}>
                       <label htmlFor="phone">Phone</label>
-                      <Field name="phone" type="phone" class="form-input" />
+                      <Field name="phone" type="phone" class="form-input"
+                        disabled={showNew ? !permissionValues.create : !permissionValues.edit}
+                      />
                       <div style={{ color: "red" }}>
                         <ErrorMessage name="phone" />
                       </div>
@@ -225,14 +257,18 @@ const LeadDetailPage = ({ item }) => {
 
                     <Grid item xs={6} md={6}>
                       <label htmlFor="email"> Email <span className="text-danger">*</span></label>
-                      <Field name="email" type="text" class="form-input" />
+                      <Field name="email" type="text" class="form-input"
+                        disabled={showNew ? !permissionValues.create : !permissionValues.edit}
+                      />
                       <div style={{ color: "red" }}>
                         <ErrorMessage name="email" />
                       </div>
                     </Grid>
                     <Grid item xs={6} md={6}>
                       <label htmlFor="leadSource"> Lead Source</label>
-                      <Field name="leadSource" component={CustomizedSelectForFormik}>
+                      <Field name="leadSource" component={CustomizedSelectForFormik}
+                        disabled={showNew ? !permissionValues.create : !permissionValues.edit}
+                      >
                         <MenuItem value="">
                           <em>None</em>
                         </MenuItem>
@@ -243,7 +279,9 @@ const LeadDetailPage = ({ item }) => {
                     </Grid>
                     <Grid item xs={6} md={6}>
                       <label htmlFor="industry">Industry</label>
-                      <Field name="industry" component={CustomizedSelectForFormik}>
+                      <Field name="industry" component={CustomizedSelectForFormik}
+                        disabled={showNew ? !permissionValues.create : !permissionValues.edit}
+                      >
                         <MenuItem value="">
                           <em>None</em>
                         </MenuItem>
@@ -254,7 +292,9 @@ const LeadDetailPage = ({ item }) => {
                     </Grid>
                     <Grid item xs={6} md={6}>
                       <label htmlFor="leadStatus"> Lead Status <span className="text-danger">*</span></label>
-                      <Field name="leadStatus" component={CustomizedSelectForFormik} >
+                      <Field name="leadStatus" component={CustomizedSelectForFormik}
+                        disabled={showNew ? !permissionValues.create : !permissionValues.edit}
+                      >
                         <MenuItem value="">
                           <em>None</em>
                         </MenuItem>
@@ -281,11 +321,14 @@ const LeadDetailPage = ({ item }) => {
                             openInNewTab(linkedinProfile);
                           }
                         }}
+                        disabled={showNew ? !permissionValues.create : !permissionValues.edit}
                       />
                     </Grid>
                     <Grid item xs={6} md={6}>
                       <label htmlFor="location">Location</label>
-                      <Field name="location" type="text" class="form-input" />
+                      <Field name="location" type="text" class="form-input"
+                        disabled={showNew ? !permissionValues.create : !permissionValues.edit}
+                      />
                     </Grid>
                     <Grid item xs={6} md={6}>
                       <label htmlFor="appointmentDate">Appointment Date</label>
@@ -303,13 +346,16 @@ const LeadDetailPage = ({ item }) => {
                               error={false}
                             />
                           )}
+                          disabled={showNew ? !permissionValues.create : !permissionValues.edit}
                         />
                       </LocalizationProvider>
                       {/* <Field name="appointmentDate" type="date" class="form-input" /> */}
                     </Grid>
                     <Grid item xs={6} md={6}>
                       <label htmlFor="demo">Demo</label>
-                      <Field name="demo" component={CustomizedSelectForFormik} >
+                      <Field name="demo" component={CustomizedSelectForFormik}
+                        disabled={showNew ? !permissionValues.create : !permissionValues.edit}
+                      >
                         <MenuItem value="">
                           <em>None</em>
                         </MenuItem>
@@ -320,7 +366,9 @@ const LeadDetailPage = ({ item }) => {
                     </Grid>
                     <Grid item xs={6} md={6}>
                       <label htmlFor="month">PipeLine</label>
-                      <Field name="month" component={CustomizedSelectForFormik} >
+                      <Field name="month" component={CustomizedSelectForFormik}
+                        disabled={showNew ? !permissionValues.create : !permissionValues.edit}
+                      >
                         <MenuItem value="">
                           <em>None</em>
                         </MenuItem>
@@ -331,14 +379,18 @@ const LeadDetailPage = ({ item }) => {
                     </Grid>
                     <Grid item xs={6} md={6}>
                       <label htmlFor="primaryPhone">Primary Phone</label>
-                      <Field name="primaryPhone" type="text" class="form-input" />
+                      <Field name="primaryPhone" type="text" class="form-input"
+                        disabled={showNew ? !permissionValues.create : !permissionValues.edit}
+                      />
                       <div style={{ color: "red" }}>
                         <ErrorMessage name="primaryPhone" />
                       </div>
                     </Grid>
                     <Grid item xs={6} md={6}>
                       <label htmlFor="secondaryPhone">Secondary Phone</label>
-                      <Field name="secondaryPhone" type="text" class="form-input" />
+                      <Field name="secondaryPhone" type="text" class="form-input"
+                        disabled={showNew ? !permissionValues.create : !permissionValues.edit}
+                      />
                       <div style={{ color: "red" }}>
                         <ErrorMessage name="secondaryPhone" />
                       </div>
@@ -348,6 +400,7 @@ const LeadDetailPage = ({ item }) => {
                       <Field name="remarks" as="textarea"
                         class="form-input-textarea"
                         style={{ width: "100%" }} rows="6"
+                        disabled={showNew ? !permissionValues.create : !permissionValues.edit}
                       />
                     </Grid>
                     {!showNew && (
@@ -373,26 +426,21 @@ const LeadDetailPage = ({ item }) => {
                     <DialogActions sx={{ justifyContent: "space-between" }}>
                       {showNew ? (
                         <Button
-                          type="success"
-                          variant="contained"
-                          color="secondary"
+                          type="success" variant="contained" color="secondary"
                           disabled={isSubmitting || !dirty}
                         >
                           Save
                         </Button>
                       ) : (
                         <Button
-                          type="success"
-                          variant="contained"
-                          color="secondary"
+                          type="success" variant="contained" color="secondary"
                           disabled={isSubmitting || !dirty}
                         >
                           Update
                         </Button>
                       )}
                       <Button
-                        type="reset"
-                        variant="contained"
+                        type="reset" variant="contained"
                         onClick={handleFormClose}
                       >
                         Cancel
@@ -405,18 +453,18 @@ const LeadDetailPage = ({ item }) => {
           }}
         </Formik>
       </div>
-      
-     <Modal
-     open={modalLeadConvertionOpen}
-     onClose={hanldeConvetionModelClose1}
-     aria-labelledby="modal-modal-title"
-     aria-describedby="modal-modal-description"
-     sx={{ backdropFilter: "blur(1px)" }}
-   >
-     <div className="modal">
-       <ModalLeadConvertion handleModal={hanldeConvetionModelClose1} />
-     </div>
-   </Modal>
+
+      <Modal
+        open={modalLeadConvertionOpen}
+        onClose={hanldeConvetionModelClose1}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+        sx={{ backdropFilter: "blur(1px)" }}
+      >
+        <div className="modal">
+          <ModalLeadConvertion handleModal={hanldeConvetionModelClose1} />
+        </div>
+      </Modal>
 
     </Grid>
   );

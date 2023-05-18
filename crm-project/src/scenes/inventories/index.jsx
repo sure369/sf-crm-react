@@ -16,8 +16,12 @@ import ExcelDownload from "../Excel";
 import { RequestServer } from "../api/HttpReq";
 import "../indexCSS/muiBoxStyles.css";
 import { apiMethods } from "../api/methods";
+import { apiCheckObjectPermission } from "../Auth/apiCheckObjectPermission";
+import { getLoginUserRoleDept } from "../Auth/userRoleDept";
 
 const Inventories = () => {
+
+  const OBJECT_API='Inventory Management'
   const urlDelete = `/deleteInventory?code=`;
   const urlInventory = `/inventories`;
 
@@ -34,8 +38,12 @@ const Inventories = () => {
   const [selectedRecordIds, setSelectedRecordIds] = useState();
   const [selectedRecordDatas, setSelectedRecordDatas] = useState();
 
+  const [permissionValues,setPermissionValues]=useState({})
+  const userRoleDpt = getLoginUserRoleDept(OBJECT_API)
+
   useEffect(() => {
     fetchRecords();
+    fetchObjectPermissions()
   }, []);
 
   const fetchRecords = () => {
@@ -57,6 +65,20 @@ const Inventories = () => {
         setFetchLoading(false);
       });
   };
+
+  const fetchObjectPermissions=()=>{
+    if(userRoleDpt){
+      apiCheckObjectPermission(userRoleDpt)
+      .then(res=>{
+        console.log(res,"res apiCheckObjectPermission")
+        setPermissionValues(res[0].permissions)
+      })
+      .catch(err=>{
+        console.log(err,"error apiCheckObjectPermission")
+        setPermissionValues({})
+      })
+    }
+  }
 
   const handleAddRecord = () => {
     navigate("/new-inventories", { state: { record: {} } });
@@ -195,37 +217,38 @@ const Inventories = () => {
             : "";
         return statusClassName;
       },
-    },
-    {
-      field: "actions",
-      headerName: "Actions",
-      headerAlign: "center",
-      align: "center",
-      flex: 1,
-      width: 400,
-      renderCell: (params) => {
-        return (
-          <>
-            {!showDelete ? (
+    }]
+    if(permissionValues.delete){
+      columns.push(
+        {
+          field: "actions",
+          headerName: "Actions",
+          headerAlign: "center",
+          align: "center",
+          flex: 1,
+          width: 400,
+          renderCell: (params) => {
+            return (
               <>
-                {/* <IconButton onClick={(e) => handleOnCellClick(e, params.row)} style={{ padding: '20px', color: '#0080FF' }}>
-              <EditIcon  />
-            </IconButton> */}
-                <IconButton
-                  onClick={(e) => onHandleDelete(e, params.row)}
-                  style={{ padding: "20px", color: "#FF3333" }}
-                >
-                  <DeleteIcon />
-                </IconButton>
+                {!showDelete ? (
+                  <>
+                    {/* <IconButton onClick={(e) => handleOnCellClick(e, params.row)} style={{ padding: '20px', color: '#0080FF' }}>
+                  <EditIcon  />
+                </IconButton> */}
+                    <IconButton
+                      onClick={(e) => onHandleDelete(e, params.row)}
+                      style={{ padding: "20px", color: "#FF3333" }}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </>
+                ) : (null)
+                }
               </>
-            ) : (
-              ""
-            )}
-          </>
-        );
-      },
-    },
-  ];
+            )}},
+      )
+    }
+    
 
   return (
     <>
@@ -236,6 +259,9 @@ const Inventories = () => {
       />
 
       <Box m="20px">
+        {
+          permissionValues.read ?
+          <>         
         <Typography
           variant="h2"
           color={colors.grey[100]}
@@ -257,37 +283,45 @@ const Inventories = () => {
               height: "30px",
             }}
           >
-            {showDelete ? (
-              <>
-                <div
-                  style={{
-                    width: "180px",
-                    display: "flex",
-                    justifyContent: "flex-end",
-                  }}
-                >
-                  <Tooltip title="Delete Selected">
-                    <IconButton>
-                      <DeleteIcon
-                        sx={{ color: "#FF3333" }}
-                        onClick={(e) => onHandleDelete(e, selectedRecordIds)}
-                      />
-                    </IconButton>
-                  </Tooltip>
-                </div>
-              </>
-            ) : (
-              <>
-                <Button
-                  variant="contained"
-                  color="info"
-                  onClick={handleAddRecord}
-                >
-                  New
-                </Button>
-                <ExcelDownload data={records} filename={`AccountRecords`} />
-              </>
-            )}
+                  {showDelete ? (
+                    <>
+                      <div
+                        style={{
+                          width: "180px",
+                          display: "flex",
+                          justifyContent: "flex-end",
+                        }}
+                      >
+                        {
+                          permissionValues.delete &&
+                          <Tooltip title="Delete Selected">
+                            <IconButton>
+                              <DeleteIcon
+                                sx={{ color: "#FF3333" }}
+                                onClick={(e) => onHandleDelete(e, selectedRecordIds)}
+                              />
+                            </IconButton>
+                          </Tooltip>
+                        }
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      {
+                        permissionValues.create &&
+                        <>
+                          <Button
+                            variant="contained"
+                            color="info"
+                            onClick={handleAddRecord}
+                          >
+                            New
+                          </Button>
+                          <ExcelDownload data={records} filename={`AccountRecords`} />
+                        </>
+                      }
+                    </>
+                  )}
           </div>
         </Box>
         <Box m="15px 0 0 0" height="380px" className="my-mui-styles">
@@ -329,6 +363,9 @@ const Inventories = () => {
             onRowClick={(e) => handleOnCellClick(e)}
           />
         </Box>
+        </>
+        : null
+        }
       </Box>
     </>
   );

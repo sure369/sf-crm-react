@@ -11,7 +11,7 @@ import DeleteConfirmDialog from '../toast/DeleteConfirmDialog';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { RequestServer } from '../api/HttpReq';
 import { apiMethods } from '../api/methods';
-import { apiCheckPermission } from '../Auth/apiCheckPermission';
+import { apiCheckObjectPermission } from '../Auth/apiCheckObjectPermission';
 import { getLoginUserRoleDept } from '../Auth/userRoleDept';
 
 const AccountsMobile = () => {
@@ -36,13 +36,14 @@ const AccountsMobile = () => {
   const [itemsPerPage, setItemsPerPage] = useState(3);
   const [page, setPage] = useState(1);
   const [noOfPages, setNoOfPages] = useState(0);
+  
   const [permissionValues, setPermissionValues] = useState({})
   const userRoleDpt = getLoginUserRoleDept(OBJECT_API)
   console.log(userRoleDpt, "userRoleDpt")
 
   useEffect(() => {
     fetchRecords();
-    fetchPermissions();
+    fetchObjectPermissions();
   }, []
   );
 
@@ -68,11 +69,11 @@ const AccountsMobile = () => {
       })
   }
 
-  const fetchPermissions = () => {
+  const fetchObjectPermissions = () => {
     if (userRoleDpt) {
-      apiCheckPermission(userRoleDpt)
+      apiCheckObjectPermission(userRoleDpt)
         .then(res => {
-          console.log(res, "api resa piCheckPermission")
+          console.log(res, "api res apiCheckPermission")
           setPermissionValues(res[0].permissions)
         })
         .catch(err => {

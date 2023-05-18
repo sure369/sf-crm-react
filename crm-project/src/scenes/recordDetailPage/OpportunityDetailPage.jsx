@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { Grid, Button, Forminput, DialogActions, TextField, Autocomplete, MenuItem ,Chip } from "@mui/material";
+import { Grid, Button, Forminput, DialogActions, TextField, Autocomplete, MenuItem, Chip } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom"
 import ToastNotification from '../toast/ToastNotification';
 import { LeadSourcePickList, OppStagePicklist, OppTypePicklist } from '../../data/pickLists';
@@ -12,15 +12,20 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import './Form.css'
 import { RequestServer } from '../api/HttpReq';
-import { OpportunityInitialValues,OpportunitySavedValues } from '../formik/IntialValues/formValues';
+import { OpportunityInitialValues, OpportunitySavedValues } from '../formik/IntialValues/formValues';
 import { apiMethods } from '../api/methods';
+import { apiCheckObjectPermission } from "../Auth/apiCheckObjectPermission";
+import { getLoginUserRoleDept } from "../Auth/userRoleDept";
 
-const url = `/UpsertOpportunity`;
-const fetchLeadsbyName = `/LeadsbyName?searchKey=`;
-const fetchInventoriesbyName = `/InventoryName?searchKey=`;
 
 
 const OpportunityDetailPage = ({ item }) => {
+
+    const OBJECT_API = 'Opportunity'
+    const url = `/UpsertOpportunity`;
+    const fetchLeadsbyName = `/LeadsbyName?searchKey=`;
+    const fetchInventoriesbyName = `/InventoryName?searchKey=`;
+
 
     const [singleOpportunity, setSinglOpportunity] = useState();
     const location = useLocation();
@@ -30,6 +35,10 @@ const OpportunityDetailPage = ({ item }) => {
     const [inventoriesRecord, setInventoriesRecord] = useState([]);
     const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
 
+    const [permissionValues, setPermissionValues] = useState({})
+    const userRoleDpt = getLoginUserRoleDept(OBJECT_API)
+    console.log(userRoleDpt, "userRoleDpt")
+
     useEffect(() => {
         console.log('passed record', location.state.record.item);
         console.log('inside opportunity');
@@ -37,11 +46,27 @@ const OpportunityDetailPage = ({ item }) => {
         setshowNew(!location.state.record.item)
         FetchInventoriesbyName('');
         FetchLeadsbyName('');
+        fetchObjectPermissions()
 
     }, [])
 
-    const initialValues= OpportunityInitialValues;
-    const savedValues=OpportunitySavedValues(singleOpportunity)
+
+    const fetchObjectPermissions = () => {
+        if (userRoleDpt) {
+            apiCheckObjectPermission(userRoleDpt)
+                .then(res => {
+                    console.log(res[0].permissions, "apiCheckObjectPermission promise res")
+                    setPermissionValues(res[0].permissions)
+                })
+                .catch(err => {
+                    console.log(err, "res apiCheckObjectPermission error")
+                    setPermissionValues({})
+                })
+        }
+    }
+
+    const initialValues = OpportunityInitialValues;
+    const savedValues = OpportunitySavedValues(singleOpportunity)
 
 
     const validationSchema = Yup.object({
@@ -110,15 +135,15 @@ const OpportunityDetailPage = ({ item }) => {
         }
         console.log('after change form submission value', values);
 
-        RequestServer(apiMethods.post,url, values)
+        RequestServer(apiMethods.post, url, values)
             .then((res) => {
-                console.log(res,"res from RequestServer")
+                console.log(res, "res from RequestServer")
                 if (res.success) {
                     setNotify({
                         isOpen: true,
                         message: res.data,
                         type: "success",
-                    });               
+                    });
                 } else {
                     console.log(res, "error in then");
                     setNotify({
@@ -128,24 +153,24 @@ const OpportunityDetailPage = ({ item }) => {
                     });
                 }
             })
-            .catch((error)=>{
+            .catch((error) => {
                 setNotify({
-                            isOpen:true,
-                            message:error.message,
-                            type:'error'
-                          })
+                    isOpen: true,
+                    message: error.message,
+                    type: 'error'
+                })
             })
-            .finally(()=>{
+            .finally(() => {
                 setTimeout(() => {
                     navigate(-1);
                 }, 2000);
-            })     
+            })
     }
 
     const FetchLeadsbyName = (newInputValue) => {
-      
+
         console.log('newInputValue', newInputValue)
-        RequestServer(apiMethods.post,fetchLeadsbyName + newInputValue)
+        RequestServer(apiMethods.post, fetchLeadsbyName + newInputValue)
             .then((res) => {
                 console.log('res fetchLeadsbyName', res.data)
                 if (res.success) {
@@ -162,17 +187,16 @@ const OpportunityDetailPage = ({ item }) => {
     }
 
     const FetchInventoriesbyName = (newInputValue) => {
-        RequestServer(apiMethods.post,fetchInventoriesbyName + newInputValue)
+        RequestServer(apiMethods.post, fetchInventoriesbyName + newInputValue)
             .then((res) => {
                 console.log('res fetch Inventoriesby Name', res.data)
-               
                 if (res.success) {
                     if (typeof (res.data) === "object") {
                         setInventoriesRecord(res.data)
                     }
                 } else {
                     setInventoriesRecord([])
-                }                 
+                }
             })
             .catch((error) => {
                 console.log('error fetchInventoriesbyName', error);
@@ -198,8 +222,8 @@ const OpportunityDetailPage = ({ item }) => {
                     validationSchema={validationSchema}
                     onSubmit={(values, { resetForm }) => { formSubmission(values) }}
                 >
-                     {(props) => {
-                        const {values,dirty, isSubmitting, handleChange,handleSubmit,handleReset,setFieldValue,errors,touched,} = props;
+                    {(props) => {
+                        const { values, dirty, isSubmitting, handleChange, handleSubmit, handleReset, setFieldValue, errors, touched, } = props;
 
                         return (
                             <>
@@ -208,7 +232,9 @@ const OpportunityDetailPage = ({ item }) => {
                                     <Grid container spacing={2}>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="opportunityName" >Opportunity Name<span className="text-danger">*</span> </label>
-                                            <Field name='opportunityName' type="text" class="form-input" />
+                                            <Field name='opportunityName' type="text" class="form-input"
+                                                disabled={showNew ? !permissionValues.create : !permissionValues.edit}
+                                            />
                                             <div style={{ color: 'red' }}>
                                                 <ErrorMessage name="opportunityName" />
                                             </div>
@@ -216,24 +242,23 @@ const OpportunityDetailPage = ({ item }) => {
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="InventoryId">Inventory Name </label>
                                             <Autocomplete
-                                          
+
                                                 name="InventoryId"
                                                 options={inventoriesRecord}
                                                 value={values.inventoryDetails}
                                                 getOptionLabel={option => option.propertyName || ''}
-                                                
+
                                                 onChange={(e, value) => {
                                                     if (!value) {
                                                         console.log('!value', value);
                                                         setFieldValue("InventoryId", '')
                                                         setFieldValue("inventoryDetails", '')
-                                                        setFieldValue("InventoryName",'')
+                                                        setFieldValue("InventoryName", '')
                                                     } else {
                                                         console.log('value', value);
                                                         setFieldValue("InventoryId", value.id)
                                                         setFieldValue("inventoryDetails", value)
-                                                        setFieldValue("InventoryName",value.propertyName)
-                                                  
+                                                        setFieldValue("InventoryName", value.propertyName)
                                                     }
                                                 }}
                                                 onInputChange={(event, newInputValue) => {
@@ -255,8 +280,9 @@ const OpportunityDetailPage = ({ item }) => {
                                                         />
                                                     ))
                                                 }
+                                                disabled={showNew ? !permissionValues.create : !permissionValues.edit}
                                                 renderInput={params => (
-                                                    <Field component={TextField} {...params} name="InventoryId"   />
+                                                    <Field component={TextField} {...params} name="InventoryId" />
                                                 )}
                                             />
                                         </Grid>
@@ -290,6 +316,7 @@ const OpportunityDetailPage = ({ item }) => {
                                                         FetchLeadsbyName(newInputValue);
                                                     }
                                                 }}
+                                                disabled={showNew ? !permissionValues.create : !permissionValues.edit}
                                                 renderInput={params => (
                                                     <Field component={TextField} {...params} name="LeadId" />
                                                 )}
@@ -297,7 +324,9 @@ const OpportunityDetailPage = ({ item }) => {
                                         </Grid>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="stage">Opportunity Stage</label>
-                                            <Field name="stage" component={CustomizedSelectForFormik} >
+                                            <Field name="stage" component={CustomizedSelectForFormik}
+                                                disabled={showNew ? !permissionValues.create : !permissionValues.edit}
+                                            >
                                                 <MenuItem value=""><em>None</em></MenuItem>
                                                 {
                                                     OppStagePicklist.map((i) => {
@@ -308,7 +337,9 @@ const OpportunityDetailPage = ({ item }) => {
                                         </Grid>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="type">Type</label>
-                                            <Field name="type" component={CustomizedSelectForFormik}>
+                                            <Field name="type" component={CustomizedSelectForFormik}
+                                                disabled={showNew ? !permissionValues.create : !permissionValues.edit}
+                                            >
                                                 <MenuItem value=""><em>None</em></MenuItem>
                                                 {
                                                     OppTypePicklist.map((i) => {
@@ -319,7 +350,9 @@ const OpportunityDetailPage = ({ item }) => {
                                         </Grid>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="leadSource"> Lead Source</label>
-                                            <Field name="leadSource" component={CustomizedSelectForFormik} >
+                                            <Field name="leadSource" component={CustomizedSelectForFormik}
+                                                disabled={showNew ? !permissionValues.create : !permissionValues.edit}
+                                            >
                                                 <MenuItem value=""><em>None</em></MenuItem>
                                                 {
                                                     LeadSourcePickList.map((i) => {
@@ -337,25 +370,30 @@ const OpportunityDetailPage = ({ item }) => {
                                                     onChange={(e) => {
                                                         setFieldValue('closeDate', e)
                                                     }}
-                                                    renderInput={(params) => <TextField  {...params} style={{width: '100%'}} error={false} />}
+                                                    renderInput={(params) => <TextField  {...params} style={{ width: '100%' }} error={false} />}
+                                                    disabled={showNew ? !permissionValues.create : !permissionValues.edit}
                                                 />
                                             </LocalizationProvider>
                                         </Grid>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="amount">Amount<span className="text-danger">*</span> </label>
-                                            <Field class="form-input" type='text' name="amount" />
+                                            <Field class="form-input" type='text' name="amount"
+                                                disabled={showNew ? !permissionValues.create : !permissionValues.edit}
+                                            />
                                             <div style={{ color: 'red' }}>
                                                 <ErrorMessage name="amount" />
                                             </div>
                                         </Grid>
                                         <Grid item xs={12} md={12}>
                                             <label htmlFor="description">Description</label>
-                                            <Field as="textarea" name="description" class="form-input-textarea"  style={{width:'100%'}}/>
+                                            <Field as="textarea" name="description" class="form-input-textarea" style={{ width: '100%' }}
+                                                disabled={showNew ? !permissionValues.create : !permissionValues.edit}
+                                            />
                                         </Grid>
                                         {!showNew && (
                                             <>
                                                 <Grid container spacing={2} item xs={12} md={12} direction="row">
-                                            {/* <Grid item xs={6} md={6}>
+                                                    {/* <Grid item xs={6} md={6}>
                                                     <label htmlFor="createdBy" >Created By</label>
                                                     <Field name='createdBy' type="text" class="form-input" disabled />
                                                 </Grid>
@@ -363,19 +401,18 @@ const OpportunityDetailPage = ({ item }) => {
                                                     <label htmlFor="modifiedBy" >Modified By</label>
                                                     <Field name='modifiedBy' type="text" class="form-input" disabled />
                                                 </Grid> */}
-                                                <Grid item xs={6} md={6}>
-                                                    {/* value is aagined to  the fields */}
-                                                    <label htmlFor="createdDate" >Created By</label>
-                                                    <Field name='createdDate' type="text" class="form-input"
-                                                     value={values.createdBy +',  '+values.createdDate}  disabled />
-                                                </Grid>
-
-                                                <Grid item xs={6} md={6}>
-                                                    {/* value is aagined to  the fields */}
-                                                    <label htmlFor="modifiedDate" >Modified By</label>
-                                                    <Field name='modifiedDate' type="text" class="form-input" 
-                                                     value={values.modifiedBy +',  '+values.modifiedDate} disabled />
-                                                </Grid>
+                                                    <Grid item xs={6} md={6}>
+                                                        {/* value is aagined to  the fields */}
+                                                        <label htmlFor="createdDate" >Created By</label>
+                                                        <Field name='createdDate' type="text" class="form-input"
+                                                            value={values.createdBy + ',  ' + values.createdDate} disabled />
+                                                    </Grid>
+                                                    <Grid item xs={6} md={6}>
+                                                        {/* value is aagined to  the fields */}
+                                                        <label htmlFor="modifiedDate" >Modified By</label>
+                                                        <Field name='modifiedDate' type="text" class="form-input"
+                                                            value={values.modifiedBy + ',  ' + values.modifiedDate} disabled />
+                                                    </Grid>
                                                 </Grid>
                                             </>
                                         )}
@@ -383,7 +420,7 @@ const OpportunityDetailPage = ({ item }) => {
                                     <div className='action-buttons'>
                                         <DialogActions sx={{ justifyContent: "space-between" }}>
 
-                                            {showNew ? 
+                                            {showNew ?
                                                 <Button type='success' variant="contained" color="secondary" disabled={isSubmitting || !dirty}>Save</Button>
                                                 :
                                                 <Button type='success' variant="contained" color="secondary" disabled={isSubmitting || !dirty}>Update</Button>

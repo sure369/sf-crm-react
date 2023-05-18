@@ -21,7 +21,7 @@ import '../recordDetailPage/Form.css'
 import { RequestServer } from "../api/HttpReq";
 import { apiMethods } from "../api/methods";
 import { getLoginUserRoleDept } from "../Auth/userRoleDept";
-import { apiCheckPermission } from "../Auth/apiCheckPermission";
+import { apiCheckObjectPermission } from "../Auth/apiCheckObjectPermission";
 import NoAccessCard from '../NoAccess/NoAccessCard'
 
 const AccountRelatedItems = ({ item }) => {
@@ -67,26 +67,30 @@ const AccountRelatedItems = ({ item }) => {
     getTasksbyAccountId(location.state.record.item._id)
     getContactsbyAccountId(location.state.record.item._id)
 
-    fetchPermission();
+    fetchObjectPermissions();
   }, [])
 
-  const fetchPermission = () => {
+  const fetchObjectPermissions = () => {
     if (userRoleDptTask) {
-      apiCheckPermission(userRoleDptTask)
+      apiCheckObjectPermission(userRoleDptTask)
         .then(res => {
-          console.log(res[0].permissions, " res apiCheckPermission task")
+          console.log(res[0].permissions, " res apiCheckObjectPermission task")
+        setPermissionValuesTask(res[0].permissions)
         })
         .catch(err => {
-          console.log(err, " error apiCheckPermission task")
+          console.log(err, " error apiCheckObjectPermission task")
+          setPermissionValuesTask({})
         })
     }
     if (userRoleDptContact) {
-      apiCheckPermission(userRoleDptContact)
+      apiCheckObjectPermission(userRoleDptContact)
         .then(res => {
-          console.log(res[0].permissions, "res apiCheckPermission contact")
+          console.log(res[0].permissions, "res apiCheckObjectPermission contact")
+        setPermissionValuesContact(res[0].permissions)
         })
         .catch(err => {
-          console.log(err, "error apiCheckPermission contact")
+          console.log(err, "error apiCheckObjectPermission contact")
+          setPermissionValuesTask({})
         })
     }
   }
@@ -143,7 +147,8 @@ const AccountRelatedItems = ({ item }) => {
     getContactsbyAccountId(accountRecordId)
   }
 
-  const handleContactCardEdit = (e, row) => {
+  const handleContactCardEdit = (row) => {
+    console.log("inside handleContactCardEdit")
     console.log('selected record', row);
     const item = row;
     navigate(`/contactDetailPage/${item._id}`, { state: { record: { item } } })
@@ -169,7 +174,7 @@ const AccountRelatedItems = ({ item }) => {
         if (res.success) {
 
           getContactsbyAccountId(accountRecordId)
-          setMenuOpen(false)
+          setConMenuOpen(false)
           setNotify({
             isOpen: true,
             message: res.data,
@@ -184,7 +189,7 @@ const AccountRelatedItems = ({ item }) => {
             type: 'error'
           })
           getContactsbyAccountId(accountRecordId)
-          setMenuOpen(false)
+          setConMenuOpen(false)
         }
       })
       .catch((error) => {
@@ -262,7 +267,9 @@ const AccountRelatedItems = ({ item }) => {
   const handleChangeTaskPage = (event, value) => {
     setTaskPerPage(value);
   };
-
+  const handleChangeContactPage = (event, value) => {
+    setContactPerPage(value);
+  };
   // menu dropdown strart //menu pass rec
   const [anchorEl, setAnchorEl] = useState(null);
   const [menuSelectRec, setMenuSelectRec] = useState()
@@ -279,6 +286,25 @@ const AccountRelatedItems = ({ item }) => {
     setMenuOpen(false)
   };
   // menu dropdown end
+
+   // Opp menu dropdown strart //menu pass rec
+   const [conAnchorEl, setConAnchorEl] = useState(null);
+   const [conMenuSelectRec, setConMenuSelectRec] = useState()
+   const [conMenuOpen, setConMenuOpen] = useState();
+ 
+   const handleContactMoreMenuClick = (item, event) => {
+     setConMenuSelectRec(item)
+     setConAnchorEl(event.currentTarget);
+     setConMenuOpen(true)
+ 
+   };
+   const handleContactMoreMenuClose = () => {
+     setConAnchorEl(null);
+     setConMenuOpen(false)
+     // setMenuSelectRec()
+   };
+   // menu dropdown end
+ 
 
   // DATA GRID TABLE PAGINATION
   function CustomPagination() {
@@ -455,7 +481,7 @@ const AccountRelatedItems = ({ item }) => {
           <Typography variant="h4">Contact({relatedContact.length}) </Typography>
         </AccordionSummary>
         <AccordionDetails>
-        {/* <Typography>
+        <Typography>
             {
               permissionValuesContact.read ? <>
 
@@ -542,7 +568,7 @@ const AccountRelatedItems = ({ item }) => {
 
               </> : <NoAccessCard/>
             }
-          </Typography> */}
+          </Typography>
 
           {/* <div style={{ textAlign: "end", marginBottom: "5px" }}>
             <Button variant="contained" color="info" onClick={() => handleContactModalOpen()} >Add Contact</Button>

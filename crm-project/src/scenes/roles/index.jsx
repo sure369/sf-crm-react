@@ -14,9 +14,9 @@ import DeleteConfirmDialog from '../toast/DeleteConfirmDialog';
 import ExcelDownload from '../Excel';
 import { RequestServer } from '../api/HttpReq';
 import '../indexCSS/muiBoxStyles.css'
-// import { apiCheckPermission } from '../Auth/apiCheckPermission';
-import { getLoginUserRoleDept } from '../Auth/userRoleDept';
 import { apiMethods } from '../api/methods';
+import { apiCheckObjectPermission } from "../Auth/apiCheckObjectPermission";
+import { getLoginUserRoleDept } from "../Auth/userRoleDept";
 
 const RoleIndex = () => {
 
@@ -39,19 +39,19 @@ const RoleIndex = () => {
   const [showDelete, setShowDelete] = useState(false)
   const [selectedRecordIds, setSelectedRecordIds] = useState()
   const [selectedRecordDatas, setSelectedRecordDatas] = useState()
-  const [permissionValues, setPermissionValues] = useState({read:true,create:true,edit:true,delete:true})
 
-  // const userRoleDpt = getLoginUserRoleDept(OBJECT_API)
-
+  const [permissionValues, setPermissionValues] = useState({})
+  const userRoleDpt = getLoginUserRoleDept(OBJECT_API)
+  console.log(userRoleDpt, "userRoleDpt")
 
   useEffect(() => {
     fetchRecords();
-    // fetchPermissions()
+    fetchObjectPermissions();
   }, []
   );
 
   const fetchRecords = () => {
-    RequestServer(apiMethods.get,urlgetRoles)
+    RequestServer(apiMethods.get, urlgetRoles)
       .then((res) => {
         console.log(res.data, "index page res")
         if (res.success) {
@@ -72,19 +72,20 @@ const RoleIndex = () => {
       })
   }
 
-  // const fetchPermissions = () => {
-  //   if (userRoleDpt) {
-  //     apiCheckPermission(userRoleDpt)
-  //       .then(res => {
-  //         console.log(res, "api res apiCheckPermission")
-  //         setPermissionValues(res)
-  //       })
-  //       .catch(err => {
-  //         console.log(err, "api res error apiCheckPermission")
-  //         setPermissionValues({})
-  //       })
-  //   }
-  // }
+  const fetchObjectPermissions = () => {
+    if (userRoleDpt) {
+      apiCheckObjectPermission(userRoleDpt)
+        .then(res => {
+          console.log(res[0].permissions, "apiCheckObjectPermission promise res")
+          setPermissionValues(res[0].permissions)
+        })
+        .catch(err => {
+          console.log(err, "res apiCheckObjectPermission error")
+          setPermissionValues({})
+        })
+    }
+  }
+
   const handleAddRecord = () => {
     navigate("/new-roles", { state: { record: {} } })
   };
@@ -94,8 +95,6 @@ const RoleIndex = () => {
     const item = row;
     navigate(`/roleDetailPage/${item._id}`, { state: { record: { item } } })
   };
-
-
 
   const onHandleDelete = (e, row) => {
     e.stopPropagation();
@@ -122,7 +121,7 @@ const RoleIndex = () => {
   const onebyoneDelete = (row) => {
     console.log('onebyoneDelete rec id', row)
 
-    RequestServer(apiMethods.delete,urlDelete + `/${row}`)
+    RequestServer(apiMethods.delete, urlDelete + `/${row}`)
       .then((res) => {
         if (res.success) {
           fetchRecords()
@@ -311,7 +310,7 @@ const RoleIndex = () => {
                 }}
               />
             </Box>
-          </> :  null 
+          </> : null
           // <NoAccess />
         }
       </Box>

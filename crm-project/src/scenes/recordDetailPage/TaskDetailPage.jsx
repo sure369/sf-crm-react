@@ -15,13 +15,19 @@ import './Form.css'
 import { TaskInitialValues, TaskSavedValues } from "../formik/IntialValues/formValues";
 import { RequestServer } from "../api/HttpReq";
 import { apiMethods } from "../api/methods";
+import { apiCheckObjectPermission } from "../Auth/apiCheckObjectPermission";
+import { getLoginUserRoleDept } from "../Auth/userRoleDept";
 
-const UpsertUrl = `/UpsertTask`;
-const fetchAccountUrl = `/accountsname`;
-const fetchLeadUrl = `/LeadsbyName`;
-const fetchOpportunityUrl = `/opportunitiesbyName`;
+
 
 const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
+    
+    const OBJECT_API = 'Task'
+    const UpsertUrl = `/UpsertTask`;
+    const fetchAccountUrl = `/accountsname`;
+    const fetchLeadUrl = `/LeadsbyName`;
+    const fetchOpportunityUrl = `/opportunitiesbyName`;
+
 
     const [singleTask, setSingleTask] = useState();
     const [showNew, setshowNew] = useState()
@@ -37,6 +43,10 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
     
     const[autocompleteReadOnly,setAutoCompleteReadOnly]=useState(false)
 
+    const [permissionValues, setPermissionValues] = useState({})
+    const userRoleDpt= getLoginUserRoleDept(OBJECT_API)
+    console.log(userRoleDpt,"userRoleDpt")
+
     useEffect(() => {
         console.log('passed record', location.state.record.item);
         setSingleTask(location.state.record.item)
@@ -47,8 +57,24 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
             console.log('inside condition')
             callEvent(location.state.record.item.object)
             setAutoCompleteReadOnly(true)
-        }        
+        }  
+        
+        fetchObjectPermissions();        
     }, [])
+
+    const fetchObjectPermissions=()=>{
+        if(userRoleDpt){
+            apiCheckObjectPermission(userRoleDpt)
+            .then(res=>{
+                console.log(res[0].permissions,"apiCheckObjectPermission promise res")
+                setPermissionValues(res[0].permissions)
+            })
+            .catch(err=>{
+                console.log(err,"res apiCheckObjectPermission error")
+                setPermissionValues({})
+            })
+        }
+    }
 
     const initialValues=TaskInitialValues
     const savedValues=TaskSavedValues(singleTask)
@@ -247,7 +273,9 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
                                 <Grid container spacing={2}>
                                     <Grid item xs={6} md={6}>
                                         <label htmlFor="subject">Subject  <span className="text-danger">*</span></label>
-                                        <Field name="subject" component={CustomizedSelectForFormik} >
+                                        <Field name="subject" component={CustomizedSelectForFormik} 
+                                        disabled={showNew ? !permissionValues.create : !permissionValues.edit}
+                                        >
                                         <MenuItem value=""><em>None</em></MenuItem>
                                          {
                                                         TaskSubjectPicklist.map((i)=>{
@@ -265,6 +293,7 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
                                             name="object"
                                             component={autocompleteReadOnly ? CustomizedSelectDisableForFormik :CustomizedSelectForFormik } 
                                             testprop="testing" 
+                                            disabled={showNew ? !permissionValues.create : !permissionValues.edit}
                                             onChange = {(e) => {
                                                 console.log('customSelect value', e.target.value)
                                                 callEvent(e.target.value)
@@ -327,6 +356,7 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
                                                         FetchObjectsbyName(newInputValue, url)
                                                     }
                                                 }}
+                                                disabled={showNew ? !permissionValues.create : !permissionValues.edit}
                                                 renderInput={params => (
                                                     <Field component={TextField} {...params} name="realatedTo" />
                                                 )}
@@ -334,7 +364,9 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
                                     </Grid>
                                     <Grid item xs={6} md={6}>
                                         <label htmlFor="assignedTo">Assigned To  </label>
-                                        <Field name="assignedTo" type="text" class="form-input" />
+                                        <Field name="assignedTo" type="text" class="form-input" 
+                                        disabled={showNew ? !permissionValues.create : !permissionValues.edit}
+                                        />
                                     </Grid>
                                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                                     <Grid item xs={6} md={6}>
@@ -345,17 +377,19 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
                                         onChange={(e)=>{
                                             setFieldValue('StartDate',e)
                                         }}
+                                        disabled={showNew ? !permissionValues.create : !permissionValues.edit}
                                          renderInput={(params) => <TextField  {...params} style={{width:'100%'}} error={false} />}
                                      />
                                     </Grid>
                                     <Grid item xs={6} md={6}>
                                         <label htmlFor="EndDate">End Date & Time  </label> <br/>
-                                        <DateTimePicker
-                                                renderInput={(params) => <TextField {...params} style={{width:'100%'}} error={false}/>}
+                                        <DateTimePicker                                                
                                                 value={values.EndDate}
                                                 onChange={(e) => {                                                  
                                                     setFieldValue('EndDate',e)                                            
                                                 }}
+                                                renderInput={(params) => <TextField {...params} style={{width:'100%'}} error={false}/>}
+                                                disabled={showNew ? !permissionValues.create : !permissionValues.edit}
                                                 />
                                     </Grid>
                                     </LocalizationProvider>
@@ -398,7 +432,9 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
 
                                     <Grid item xs={12} md={12}>
                                         <label htmlFor="description">Description</label>
-                                        <Field as="textarea" name="description" class="form-input-textarea" style={{width:'100%'}}/>
+                                        <Field as="textarea" name="description" class="form-input-textarea" style={{width:'100%'}}
+                                        disabled={showNew ? !permissionValues.create : !permissionValues.edit}
+                                        />
                                     </Grid>
                                     {!showNew && (
                                         <>

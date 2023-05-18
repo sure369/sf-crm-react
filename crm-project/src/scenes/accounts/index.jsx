@@ -20,7 +20,7 @@ import "../indexCSS/muiBoxStyles.css";
 import { useFetchRecords } from "../customHooks/useFetchRecords";
 import ApiError from "../Errors/APIError";
 import { apiMethods } from "../api/methods";
-import { apiCheckPermission } from '../Auth/apiCheckPermission'
+import { apiCheckObjectPermission } from '../Auth/apiCheckObjectPermission'
 import { getLoginUserRoleDept } from '../Auth/userRoleDept';
 
 
@@ -44,6 +44,7 @@ const Accounts = () => {
   const [selectedRecordIds, setSelectedRecordIds] = useState();
   const [selectedRecordDatas, setSelectedRecordDatas] = useState();
   const [importModalOpen, setImportModalOpen] = useState(false);
+  
   const [permissionValues,setPermissionValues] =useState({})
   const userRoleDpt = getLoginUserRoleDept(OBJECT_API)
   console.log(userRoleDpt, "userRoleDpt")
@@ -51,7 +52,7 @@ const Accounts = () => {
 
   useEffect(() => {
     fetchRecords();
-    fetchPermission();
+    fetchObjectPermissions();
   }, []);
 
   const fetchRecords = () => {
@@ -74,16 +75,15 @@ const Accounts = () => {
       });
   };
 
-  const fetchPermission=()=>{
+  const fetchObjectPermissions=()=>{
     if (userRoleDpt) {
-      apiCheckPermission(userRoleDpt)
+      apiCheckObjectPermission(userRoleDpt)
         .then(res => {
-          console.log(res[0].permissions, "res apiCheckPermission")
-         
+          console.log(res[0].permissions, "res apiCheckObjectPermission")
           setPermissionValues(res[0].permissions)
         })
         .catch(err => {
-          console.log(err, "res apiCheckPermission")
+          console.log(err, "res apiCheckObjectPermission")
           setPermissionValues({})
         })
     }
@@ -234,37 +234,40 @@ const Accounts = () => {
       headerAlign: "center",
       align: "center",
       flex: 1,
-    },
-    {
-      field: "actions",
-      headerName: "Actions",
-      headerAlign: "center",
-      align: "center",
-      width: 400,
-      flex: 1,
-      renderCell: (params) => {
-        return (
-          <>
-            {!showDelete ? (
+    }]
+    if(permissionValues.delete){
+      columns.push(
+        {
+          field: "actions",
+          headerName: "Actions",
+          headerAlign: "center",
+          align: "center",
+          width: 400,
+          flex: 1,
+          renderCell: (params) => {
+            return (
               <>
-                {/* <IconButton onClick={(e) => handleOnCellClick(e, params.row)} style={{ padding: '20px', color: '#0080FF' }}>
-                    <EditIcon  />
-                  </IconButton> */}
-                <IconButton
-                  onClick={(e) => onHandleDelete(e, params.row)}
-                  style={{ padding: "20px", color: "#FF3333" }}
-                >
-                  <DeleteIcon />
-                </IconButton>
+                {!showDelete ? (
+                  <>
+                    {/* <IconButton onClick={(e) => handleOnCellClick(e, params.row)} style={{ padding: '20px', color: '#0080FF' }}>
+                        <EditIcon  />
+                      </IconButton> */}
+                    <IconButton
+                      onClick={(e) => onHandleDelete(e, params.row)}
+                      style={{ padding: "20px", color: "#FF3333" }}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </>
+                ) : (
+                  ""
+                )}
               </>
-            ) : (
-              ""
-            )}
-          </>
-        );
-      },
-    },
-  ];
+            );
+          },
+        },
+      )
+    }
 
   return (
     <>

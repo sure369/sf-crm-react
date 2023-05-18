@@ -23,6 +23,7 @@ const fetchLeadsbyName = `/LeadsbyName?searchKey=`;
 
 const ModalInventoryOpportunity = ({ item, handleModal }) => {
 
+    
     const [inventoryParentRecord, setinventoryParentRecord] = useState();
     const location = useLocation();
     const navigate = useNavigate();

@@ -13,8 +13,9 @@ import "./Form.css";
 import { RequestServer } from "../api/HttpReq";
 import { AccountInitialValues,AccountSavedValues } from "../formik/IntialValues/formValues";
 import { apiMethods } from "../api/methods";
-import { apiCheckPermission } from "../Auth/apiCheckPermission";
+import { apiCheckObjectPermission } from "../Auth/apiCheckObjectPermission";
 import { getLoginUserRoleDept } from "../Auth/userRoleDept";
+
 
 const AccountDetailPage = ({ item }) => {
     
@@ -29,8 +30,8 @@ const fetchInventoriesbyName = `/InventoryName?searchKey=`;
     const [showNew, setshowNew] = useState();
     const [inventoriesRecord, setInventoriesRecord] = useState([]);
     const [notify, setNotify] = useState({isOpen: false,message: "",type: "",});
+    
     const [permissionValues, setPermissionValues] = useState({})
-
     const userRoleDpt= getLoginUserRoleDept(OBJECT_API)
     console.log(userRoleDpt,"userRoleDpt")
 
@@ -45,17 +46,18 @@ const fetchInventoriesbyName = `/InventoryName?searchKey=`;
 
     const fetchObjectPermissions=()=>{
         if(userRoleDpt){
-            apiCheckPermission(userRoleDpt)
+            apiCheckObjectPermission(userRoleDpt)
             .then(res=>{
-                console.log(res[0].permissions,"apiCheckPermission promise res")
+                console.log(res[0].permissions,"apiCheckObjectPermission promise res")
                 setPermissionValues(res[0].permissions)
             })
             .catch(err=>{
-                console.log(err,"res apiCheckPermission error")
+                console.log(err,"res apiCheckObjectPermission error")
                 setPermissionValues({})
             })
         }
     }
+    
     const initialValues=AccountInitialValues;
     const savedValues=AccountSavedValues(singleAccount)
 
@@ -171,8 +173,13 @@ const fetchInventoriesbyName = `/InventoryName?searchKey=`;
     const MenuItemhandleclick = (e) => {
         console.log(e);
     };
-    return (
+    return (            
+          
         <Grid item xs={12} style={{ margin: "20px" }}>
+           
+            {/* {
+                permissionValues.read ? <> */}
+          
             <div style={{ textAlign: "center", marginBottom: "10px" }}>
                 {showNew ? <h2>New Account</h2> : <h2>Account Detail Page </h2>}
             </div>
@@ -442,7 +449,10 @@ const fetchInventoriesbyName = `/InventoryName?searchKey=`;
                     }}
                 </Formik>
             </div>
-        </Grid>
+            {/* </>
+            : <NoAccessCard/>
+            } */}
+        </Grid>    
     );
 };
 export default AccountDetailPage;

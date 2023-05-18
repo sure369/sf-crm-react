@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import {
-  useTheme,Box,Button,IconButton,Pagination,Tooltip,Grid,
-  Modal,Typography,MenuItem, FormControl,InputLabel,Select,
+  useTheme, Box, Button, IconButton, Pagination, Tooltip, Grid,
+  Modal, Typography, MenuItem, FormControl, InputLabel, Select,
 } from "@mui/material";
-import {DataGrid,GridToolbar, gridPageCountSelector,
-  gridPageSelector, useGridApiContext,useGridSelector,
+import {
+  DataGrid, GridToolbar, gridPageCountSelector,
+  gridPageSelector, useGridApiContext, useGridSelector,
 } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import { useNavigate } from "react-router-dom";
@@ -23,8 +24,13 @@ import "../recordDetailPage/Form.css";
 import { LeadMonthPicklist } from "../../data/pickLists";
 import "../indexCSS/muiBoxStyles.css";
 import { apiMethods } from "../api/methods";
+import { apiCheckObjectPermission } from '../Auth/apiCheckObjectPermission'
+import { getLoginUserRoleDept } from '../Auth/userRoleDept';
+
 
 const Leads = () => {
+
+  const OBJECT_API = 'Lead'
   const urlLead = `/leads`;
   const urlSearchLead = `/leads?`;
   const urlDelete = `/deleteLead?code=`;
@@ -37,8 +43,8 @@ const Leads = () => {
   const [fetchError, setFetchError] = useState();
   const [fetchLoading, setFetchLoading] = useState(true);
 
-  const [notify, setNotify] = useState({isOpen: false, message: "", type: "", });
-  const [confirmDialog, setConfirmDialog] = useState({ isOpen: false,title: "",subTitle: "",});
+  const [notify, setNotify] = useState({ isOpen: false, message: "", type: "", });
+  const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: "", subTitle: "", });
 
   const [showDelete, setShowDelete] = useState(false);
   const [selectedRecordIds, setSelectedRecordIds] = useState();
@@ -50,12 +56,18 @@ const Leads = () => {
 
   const [filterMonth, setFilterMonth] = useState();
 
+  const [permissionValues, setPermissionValues] = useState({})
+  const userRoleDpt = getLoginUserRoleDept(OBJECT_API)
+  console.log(userRoleDpt, "userRoleDpt")
+
   useEffect(() => {
     fetchRecords();
+    fetchObjectPermissions();
+
   }, []);
 
   const fetchRecords = () => {
-    RequestServer(apiMethods.post,urlLead)
+    RequestServer(apiMethods.post, urlLead)
       .then((res) => {
         console.log(res, "index page res");
         if (res.success) {
@@ -74,6 +86,21 @@ const Leads = () => {
         setFetchLoading(false);
       });
   };
+
+  const fetchObjectPermissions = () => {
+    if (userRoleDpt) {
+      apiCheckObjectPermission(userRoleDpt)
+        .then(res => {
+          console.log(res[0].permissions, "res apiCheckObjectPermission")
+          setPermissionValues(res[0].permissions)
+        })
+        .catch(err => {
+          console.log(err, "res apiCheckObjectPermission")
+          setPermissionValues({})
+        })
+    }
+  }
+
   const handleAddRecord = () => {
     navigate("/new-leads", { state: { record: {} } });
   };
@@ -111,7 +138,7 @@ const Leads = () => {
 
   const onebyoneDelete = (row) => {
     console.log("onebyoneDelete rec id", row);
-    RequestServer(apiMethods.post,urlDelete + row)
+    RequestServer(apiMethods.post, urlDelete + row)
       .then((res) => {
         if (res.success) {
           fetchRecords();
@@ -194,7 +221,7 @@ const Leads = () => {
     if (e.target.value === null) {
       fetchRecords();
     } else {
-      RequestServer(apiMethods.post,urlSearchLead + label + "=" + value)
+      RequestServer(apiMethods.post, urlSearchLead + label + "=" + value)
         .then((res) => {
           console.log("Searched Month res ", res);
           if (res.success) {
@@ -243,37 +270,38 @@ const Leads = () => {
       headerAlign: "center",
       align: "center",
       flex: 1,
-    },
-    {
-      field: "actions",
-      headerName: "Actions",
-      headerAlign: "center",
-      align: "center",
-      width: 400,
-      flex: 1,
-      renderCell: (params) => {
-        return (
-          <>
-            {!showDelete ? (
-              <>
-                {/* <IconButton  onClick={(e) => handleOnCellClick(e, params.row)} style={{ padding: '20px', color: '#0080FF' }}>
-                    <EditIcon />
-                  </IconButton> */}
-                <IconButton
-                  onClick={(e) => onHandleDelete(e, params.row)}
-                  style={{ padding: "20px", color: "#FF3333" }}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </>
-            ) : (
-              ""
-            )}
-          </>
-        );
+    }]
+  if (permissionValues.delete) {
+    columns.push(
+      {
+        field: "actions",
+        headerName: "Actions",
+        headerAlign: "center",
+        align: "center",
+        width: 400,
+        flex: 1,
+        renderCell: (params) => {
+          return (
+            <>
+              {!showDelete ? (
+                <>
+                  {/* <IconButton  onClick={(e) => handleOnCellClick(e, params.row)} style={{ padding: '20px', color: '#0080FF' }}>
+                        <EditIcon />
+                      </IconButton> */}
+                  <IconButton
+                    onClick={(e) => onHandleDelete(e, params.row)}
+                    style={{ padding: "20px", color: "#FF3333" }}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </>
+              ) : (null)}
+            </>);
+        },
       },
-    },
-  ];
+    )
+  }
+
 
   return (
     <>
@@ -284,144 +312,166 @@ const Leads = () => {
       />
 
       <Box m="20px">
-        <Typography
-          variant="h2"
-          color={colors.grey[100]}
-          fontWeight="bold"
-          sx={{ m: "0 0 5px 0" }}
-        >
-          Leads
-        </Typography>
-        <Box display="flex" justifyContent="space-between">
-          <Typography variant="h5" color={colors.greenAccent[400]}>
-            <strong>List Of {filterMonth} Leads</strong>
-          </Typography>
+        {
+          permissionValues.read ?
+            <>
+              <Typography
+                variant="h2"
+                color={colors.grey[100]}
+                fontWeight="bold"
+                sx={{ m: "0 0 5px 0" }}
+              >
+                Leads
+              </Typography>
+              <Box display="flex" justifyContent="space-between">
+                <Typography variant="h5" color={colors.greenAccent[400]}>
+                  <strong>List Of {filterMonth} Leads</strong>
+                </Typography>
 
-          <div
-            style={{
-              display: "flex",
-              width: "380px",
-              justifyContent: "space-evenly",
-              height: "30px",
-            }}
-          >
-            {showDelete ? (
-              <>
                 <div
                   style={{
-                    width: "350px",
                     display: "flex",
-                    justifyContent: "flex-end",
-                    gap: "15px",
+                    width: "380px",
+                    justifyContent: "space-evenly",
+                    height: "30px",
                   }}
                 >
-                  <Tooltip title="Email">
-                    <IconButton>
-                      <EmailIcon
-                        sx={{ color: "#DB4437" }}
-                        onClick={handlesendEmail}
-                      />{" "}
-                    </IconButton>
-                  </Tooltip>
-                  {/* <Tooltip title="Whatsapp">
+                  {showDelete ? (
+                    <>
+                      <div
+                        style={{
+                          width: "350px",
+                          display: "flex",
+                          justifyContent: "flex-end",
+                          gap: "15px",
+                        }}
+                      >
+                        {
+                          permissionValues.create &&
+                          <>
+                            <Tooltip title="Email">
+                              <IconButton>
+                                <EmailIcon
+                                  sx={{ color: "#DB4437" }}
+                                  onClick={handlesendEmail}
+                                />
+                              </IconButton>
+                            </Tooltip>
+                            {/*  <Tooltip title="Whatsapp"> 
                     <IconButton> <WhatsAppIcon sx={{ color: '#34A853' }} onClick={handlesendWhatsapp} /> </IconButton>
                   </Tooltip> */}
-                  <Tooltip title="Delete Selected">
-                    <IconButton>
-                      <DeleteIcon
-                        sx={{ color: "#FF3333" }}
-                        onClick={(e) => onHandleDelete(e, selectedRecordIds)}
-                      />
-                    </IconButton>
-                  </Tooltip>
+                          </>
+                        }
+                        {
+                          permissionValues.delete &&
+                          <Tooltip title="Delete Selected">
+                            <IconButton>
+                              <DeleteIcon
+                                sx={{ color: "#FF3333" }}
+                                onClick={(e) => onHandleDelete(e, selectedRecordIds)}
+                              />
+                            </IconButton>
+                          </Tooltip>
+                        }
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      {
+                        permissionValues.read &&
+
+                        <FormControl sx={{ mr: 1, bottom: "8px" }} size="small">
+                          <InputLabel id="demo-simple-select-label">
+                            <b> Select Lead Month </b>
+                          </InputLabel>
+                          <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={filterMonth}
+                            label="Select Lead Month"
+                            name="month"
+                            style={{ width: 155 }}
+                            SelectDisplayProps={{
+                              style: { paddingTop: "12px" },
+                            }}
+                            onChange={handleLeadFilterChange}
+                          >
+                            <MenuItem value={null}>
+                              <em>None</em>
+                            </MenuItem>
+                            {LeadMonthPicklist.map((i) => {
+                              return <MenuItem value={i.value}>{i.text}</MenuItem>;
+                            })}
+                          </Select>
+                        </FormControl>
+                      }
+                      {
+                        permissionValues.create &&
+                        <>
+                          <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={handleImportModalOpen}
+                            sx={{ color: "white" }}
+                          >
+                            Import
+                          </Button>
+
+                          <Button
+                            variant="contained"
+                            color="info"
+                            onClick={handleAddRecord}
+                          >
+                            New
+                          </Button>
+                          <ExcelDownload data={records} filename={`LeadRecords`} />
+                        </>
+                      }
+                    </>
+                  )}
                 </div>
-              </>
-            ) : (
-              <>
-                <FormControl sx={{ mr: 1, bottom: "8px" }} size="small">
-                  <InputLabel id="demo-simple-select-label">
-                    <b> Select Lead Month </b>
-                  </InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={filterMonth}
-                    label="Select Lead Month"
-                    name="month"
-                    style={{ width: 155 }}
-                    SelectDisplayProps={{
-                      style: { paddingTop: "12px" },
-                    }}
-                    onChange={handleLeadFilterChange}
-                  >
-                    <MenuItem value={null}>
-                      <em>None</em>
-                    </MenuItem>
-                    {LeadMonthPicklist.map((i) => {
-                      return <MenuItem value={i.value}>{i.text}</MenuItem>;
-                    })}
-                  </Select>
-                </FormControl>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  onClick={handleImportModalOpen}
-                  sx={{ color: "white" }}
-                >
-                  Import
-                </Button>
-
-                <Button
-                  variant="contained"
-                  color="info"
-                  onClick={handleAddRecord}
-                >
-                  New
-                </Button>
-
-                <ExcelDownload data={records} filename={`LeadRecords`} />
-              </>
-            )}
-          </div>
-        </Box>
-        <Box m="15px 0 0 0" height="380px" className="my-mui-styles">
-          <DataGrid
-            sx={{
-              boxShadow:
-                "rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px",
-            }}
-            rows={filteredRecord}
-            columns={columns}
-            getRowId={(row) => row._id}
-            pageSize={7}
-            rowsPerPageOptions={[7]}
-            // onCellClick={handleOnCellClick}
-            components={{
-              Pagination: CustomPagination,
-              // Toolbar: GridToolbar
-            }}
-            loading={fetchLoading}
-            getRowClassName={(params) =>
-              params.indexRelativeToCurrentPage % 2 === 0
-                ? "C-MuiDataGrid-row-even"
-                : "C-MuiDataGrid-row-odd"
-            }
-            checkboxSelection
-            disableSelectionOnClick
-            onSelectionModelChange={(ids) => {
-              var size = Object.keys(ids).length;
-              size > 0 ? setShowDelete(true) : setShowDelete(false);
-              console.log("checkbox selection ids", ids);
-              setSelectedRecordIds(ids);
-              const selectedIDs = new Set(ids);
-              const selectedRowRecords = records.filter((row) =>
-                selectedIDs.has(row._id.toString())
-              );
-              setSelectedRecordDatas(selectedRowRecords);
-            }}
-            onRowClick={(e) => handleOnCellClick(e)}
-          />
-        </Box>
+              </Box>
+              <Box m="15px 0 0 0" height="380px" className="my-mui-styles">
+                <DataGrid
+                  sx={{
+                    boxShadow:
+                      "rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px",
+                  }}
+                  rows={filteredRecord}
+                  columns={columns}
+                  getRowId={(row) => row._id}
+                  pageSize={7}
+                  rowsPerPageOptions={[7]}
+                  // onCellClick={handleOnCellClick}
+                  components={{
+                    Pagination: CustomPagination,
+                    // Toolbar: GridToolbar
+                  }}
+                  loading={fetchLoading}
+                  getRowClassName={(params) =>
+                    params.indexRelativeToCurrentPage % 2 === 0
+                      ? "C-MuiDataGrid-row-even"
+                      : "C-MuiDataGrid-row-odd"
+                  }
+                  checkboxSelection
+                  disableSelectionOnClick
+                  onSelectionModelChange={(ids) => {
+                    var size = Object.keys(ids).length;
+                    size > 0 ? setShowDelete(true) : setShowDelete(false);
+                    console.log("checkbox selection ids", ids);
+                    setSelectedRecordIds(ids);
+                    const selectedIDs = new Set(ids);
+                    const selectedRowRecords = records.filter((row) =>
+                      selectedIDs.has(row._id.toString())
+                    );
+                    setSelectedRecordDatas(selectedRowRecords);
+                  }}
+                  onRowClick={(e) => handleOnCellClick(e)}
+                />
+              </Box>
+            </>
+            : null
+        }
       </Box>
 
       <Modal
