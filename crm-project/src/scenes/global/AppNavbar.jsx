@@ -89,6 +89,7 @@ const colors = [
 
 const settings = ["Logout"];
 
+
 function AppNavbar() {
 
   const [anchorElNav, setAnchorElNav] = useState(null);
@@ -106,23 +107,23 @@ function AppNavbar() {
   const loggedInUserData = JSON.parse(sessionStorage.getItem("loggedInUser"));
 
   useEffect(()=>{
-    // fetchTableNames()
+    fetchTableNames()
   },[])
 
- const fetchTableNames=()=>{
-  GetTableNames()
-  .then(res=>{
-    console.log(res,"getTableNames res in appbar")
-    const arr=res.map(i=>{
-      return {title:i,toNav:`list/${i}`}        
+  const fetchTableNames=()=>{
+    GetTableNames()
+    .then(res=>{
+      console.log(res,"GetTableNames res in appbar")
+      const arr=res.map(i=>{
+        return {title:i.Tabs,toNav:`list/${i.Tabs}`}        
+      })
+      console.log(arr,"settableNameArr")
+      settableNameArr(arr)
     })
-    console.log(arr,"settableNameArr")
-    settableNameArr(arr)
-  })
-  .catch(err=>{
-    console.log(err,"getTableNames error in appbar")
-  })
- }
+    .catch(err=>{
+      console.log(err,"GetTableNames error in appbar")
+    })
+  }
 
  
 

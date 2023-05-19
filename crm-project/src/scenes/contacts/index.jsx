@@ -23,6 +23,7 @@ import { apiMethods } from "../api/methods";
 import "../indexCSS/muiBoxStyles.css";
 import { getLoginUserRoleDept } from "../Auth/userRoleDept";
 import { apiCheckObjectPermission } from "../Auth/apiCheckObjectPermission";
+import CircularProgress from '@mui/material/CircularProgress';
 
 const Contacts = () => {
 
@@ -35,7 +36,9 @@ const Contacts = () => {
   const navigate = useNavigate();
   const [records, setRecords] = useState([]);
   const [fetchError, setFetchError] = useState();
-  const [fetchLoading, setFetchLoading] = useState(true);
+  const [fetchRecordsLoading, setFetchRecordsLoading] = useState(true);
+  const [fetchPermissionloading, setFetchPermissionLoading] = useState(true);
+
   const [notify, setNotify] = useState({ isOpen: false, message: "",type: "",});
   const [confirmDialog, setConfirmDialog] = useState({isOpen: false,title: "",subTitle: "",});
 
@@ -55,24 +58,25 @@ const Contacts = () => {
     fetchObjectPermissions()
   }, []);
 
-  const fetchRecords = () => {
+  const fetchRecords = () => {    
+    setFetchRecordsLoading(true)
     RequestServer(apiMethods.post, urlContact)
       .then((res) => {
         console.log(res, "index page res");
         if (res.success) {
           setRecords(res.data);
           setFetchError(null);
-          setFetchLoading(false);
         } else {
           setRecords([]);
           setFetchError(res.error.message);
-          setFetchLoading(false);
         }
       })
       .catch((err) => {
         setFetchError(err.message);
-        setFetchLoading(false);
-      });
+      })
+      .finally(()=>{
+        setFetchRecordsLoading(false)
+      })
   };
 
   const fetchObjectPermissions=()=>{
@@ -84,6 +88,9 @@ const Contacts = () => {
       })
       .catch(err=>{
         console.log(err,"error apiCheckObjectPermission")
+      })
+      .finally(()=>{
+        setFetchPermissionLoading(false)
       })
     }
   }
@@ -376,7 +383,7 @@ const Contacts = () => {
               // Toolbar: GridToolbar,
               Pagination: CustomPagination,
             }}
-            loading={fetchLoading}
+            loading={fetchRecordsLoading}
             getRowClassName={(params) =>
               params.indexRelativeToCurrentPage % 2 === 0
                 ? "C-MuiDataGrid-row-even"
