@@ -21,9 +21,9 @@ import { getLoginUserRoleDept } from "../Auth/userRoleDept";
 
 const Inventories = () => {
 
-  const OBJECT_API='Inventory Management'
-  const urlDelete = `/deleteInventory?code=`;
-  const urlInventory = `/inventories`;
+  const OBJECT_API = process.env.REACT_APP_OBJECT_INVENTORY_API
+  const URL_getRecords= process.env.REACT_APP_GET_INVENTORY
+  const URL_deleteRecords= process.env.REACT_APP_DELETE_INVENTORY
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -47,7 +47,7 @@ const Inventories = () => {
   }, []);
 
   const fetchRecords = () => {
-    RequestServer(apiMethods.post,urlInventory)
+    RequestServer(apiMethods.get,URL_getRecords)
       .then((res) => {
         console.log("index page", res);
         if (res.success) {
@@ -120,7 +120,7 @@ const Inventories = () => {
   const onebyoneDelete = (row) => {
     console.log("one by one Delete row", row);
 
-    RequestServer(apiMethods.post,urlDelete + row)
+    RequestServer(apiMethods.delete,URL_deleteRecords + row)
       .then((res) => {
         if (res.success) {
           fetchRecords();

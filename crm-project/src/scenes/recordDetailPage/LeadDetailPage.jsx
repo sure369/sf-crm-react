@@ -27,10 +27,8 @@ import { getLoginUserRoleDept } from "../Auth/userRoleDept";
 
 const LeadDetailPage = ({ item }) => {
 
-  const OBJECT_API = 'Lead'
-  const url = `/UpsertLead`;
-  const fetchUsersbyName = `/usersbyName`;
-
+  const OBJECT_API =process.env.REACT_APP_OBJECT_ENQUIRY_API
+  const URL_postRecords=process.env.REACT_APP_POST_ENQUIRY
 
   const [singleLead, setsingleLead] = useState();
   const location = useLocation();
@@ -120,7 +118,7 @@ const LeadDetailPage = ({ item }) => {
     }
     console.log("after change form submission value", values);
 
-    RequestServer(apiMethods.post, url, values)
+    RequestServer(apiMethods.post, URL_postRecords, values)
       .then((res) => {
         console.log("upsert record  response", res);
         if (res.success) {

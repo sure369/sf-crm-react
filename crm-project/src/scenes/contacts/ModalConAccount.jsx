@@ -17,7 +17,8 @@ import { RequestServer } from "../api/HttpReq";
 import { ContactInitialValues } from "../formik/IntialValues/formValues";
 import { apiMethods } from "../api/methods";
 
-const UpsertUrl = `/UpsertContact`;
+
+const URL_postRecords= process.env.REACT_APP_POST_CONTACT
 
 const ModalConAccount = ({ item, handleModal }) => {
 
@@ -80,7 +81,7 @@ const ModalConAccount = ({ item, handleModal }) => {
             values.dob = dobSec;
         }
 
-        await RequestServer(apiMethods.post,UpsertUrl, values)
+        await RequestServer(apiMethods.post,URL_postRecords, values)
             .then((res) => {
                 console.log('task form Submission  response', res);
                if(res.success){

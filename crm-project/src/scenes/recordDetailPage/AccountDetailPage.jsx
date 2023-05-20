@@ -19,8 +19,8 @@ import { getLoginUserRoleDept } from "../Auth/userRoleDept";
 
 const AccountDetailPage = ({ item }) => {
     
-const OBJECT_API = "Account"
-const urlUpsert = `/UpsertAccount`;
+const OBJECT_API = process.env.REACT_APP_OBJECT_ACCOUNT_API
+const URL_upsertRecords = process.env.REACT_APP_POST_ACCOUNT
 const fetchInventoriesbyName = `/InventoryName?searchKey=`;
 
 
@@ -115,7 +115,7 @@ const fetchInventoriesbyName = `/InventoryName?searchKey=`;
 
         console.log("after change form submission value", values);
         
-        RequestServer(apiMethods.post,urlUpsert,values)
+        RequestServer(apiMethods.post,URL_upsertRecords,values)
         .then((res) => {
             console.log(res,"res from RequestServer")
             if (res.success) {

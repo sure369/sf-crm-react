@@ -16,8 +16,8 @@ import { getLoginUserRoleDept, getObjectUserRoleDpt } from '../Auth/userRoleDept
 
 const InventoryDetailPage = ({ item }) => {
 
-    const OBJECT_API = 'Inventory Management'
-    const url = `/UpsertInventory`;
+    const OBJECT_API = process.env.REACT_APP_OBJECT_INVENTORY_API
+    const URL_postRecords= process.env.REACT_APP_POST_INVENTORY
 
     const [singleInventory, setsingleInventory] = useState();
     const location = useLocation();
@@ -98,7 +98,7 @@ const InventoryDetailPage = ({ item }) => {
 
         console.log('after change form submission value', values);
 
-        RequestServer(apiMethods.post, url, values)
+        RequestServer(apiMethods.post, URL_postRecords, values)
             .then((res) => {
                 console.log(res, "res from RequestServer")
                 if (res.success) {

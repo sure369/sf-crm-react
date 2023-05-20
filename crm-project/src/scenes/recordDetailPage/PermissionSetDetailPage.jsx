@@ -28,7 +28,7 @@ const PermissionSetDetailPage = ({ item }) => {
 const upsertUrl = `/permission`;
 const urlgetUsersByName = `/getUsers`;
 const urlgetRolesByDept = `/roles`
-const urlgetTbaleNames = `/getTabs`
+const urlGetAllTableNames = `/objects`
 
 
     const [singlePermission, setsinglePermission] = useState();
@@ -70,21 +70,28 @@ const urlgetTbaleNames = `/getTabs`
     }
 
     const fetchTableNames = () => {
-        RequestServer(apiMethods.get, urlgetTbaleNames)
+        RequestServer(apiMethods.get, urlGetAllTableNames)
             .then(res => {
                 if (res.success) {
-                    console.log(res.data, "urlgetTbaleNames then res")
-                    const tableName = res.data.map(i => {
+                    console.log(res.data, "urlGetAllTableNames then res")
+                    const objNameChangeArr = res.data.map(item => {
+                        if (item === "Inventory Management") {
+                          return "Inventory";
+                        } else {
+                          return item;
+                        }
+                      });
+                    const tableName = objNameChangeArr.map(i => {
                         return i
                     })
                     console.log(tableName, "tableName")
                     setObjTableName(tableName)
                 } else {
-                    console.log(res.error, "urlgetTbaleNames then error")
+                    console.log(res.error, "urlGetAllTableNames then error")
                 }
             })
             .catch(error => {
-                console.log(error, "urlgetTbaleNames catch")
+                console.log(error, "urlGetAllTableNames catch")
             })
     }
 

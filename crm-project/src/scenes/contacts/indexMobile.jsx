@@ -21,9 +21,10 @@ import { getLoginUserRoleDept } from '../Auth/userRoleDept';
 
 const ContactsMobile = () => {
 
-  const OBJECT_API = 'Contact';
-  const urlContact = `/contacts`;
-  const urlDelete = `/deleteContact?code=`;
+  const OBJECT_API = process.env.REACT_APP_OBJECT_CONTACT_API
+  const URL_getRecords= process.env.REACT_APP_GET_CONTACT
+  const URL_deleteRecords= process.env.REACT_APP_DELETE_CONTACT
+
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -55,7 +56,7 @@ const ContactsMobile = () => {
   }, []);
 
   const fetchRecords = () => {
-    RequestServer(apiMethods.post, urlContact)
+    RequestServer(apiMethods.get, URL_getRecords)
       .then((res) => {
         console.log(res, "index page res")
         if (res.success) {
@@ -127,7 +128,7 @@ const ContactsMobile = () => {
   const onebyoneDelete = (row) => {
     console.log('one by on delete', row)
 
-    RequestServer(apiMethods.post, urlDelete + row)
+    RequestServer(apiMethods.delete, URL_deleteRecords + row)
       .then((res) => {
         if (res.success) {
           fetchRecords()

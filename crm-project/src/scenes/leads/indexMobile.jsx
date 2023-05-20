@@ -16,9 +16,9 @@ import { getLoginUserRoleDept } from '../Auth/userRoleDept';
 
 const LeadsMobile = () => {
 
-  const OBJECT_API = 'Lead'
-  const urlLead = `/leads`;
-  const urlDelete = `/deleteLead?code=`;
+  const OBJECT_API = process.env.REACT_APP_OBJECT_ENQUIRY_API
+  const URL_getRecords = process.env.REACT_APP_POST_ENQUIRY
+  const URL_deleteRecords = process.env.REACT_APP_DELETE_ENQUIRY
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -47,7 +47,7 @@ const LeadsMobile = () => {
   }, []);
 
   const fetchRecords = () => {
-    RequestServer(apiMethods.post, urlLead)
+    RequestServer(apiMethods.get, URL_getRecords)
       .then((res) => {
         console.log(res, "index page res")
         if (res.success) {
@@ -117,7 +117,7 @@ const LeadsMobile = () => {
 
   const onebyoneDelete = (row) => {
     console.log('onebyoneDelete rec id', row)
-    RequestServer(apiMethods.post, urlDelete + row)
+    RequestServer(apiMethods.delete, URL_deleteRecords + row)
       .then((res) => {
         if (res.success) {
           fetchRecords()

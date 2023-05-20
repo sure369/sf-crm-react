@@ -25,8 +25,8 @@ import { apiCheckObjectPermission } from '../Auth/apiCheckObjectPermission';
 import { getLoginUserRoleDept } from '../Auth/userRoleDept';
 import NoAccessCard from '../NoAccess/NoAccessCard';
 
-const OBJECT_API ='Contact'
-const urlUpsert = `/UpsertContact`;
+const OBJECT_API = process.env.REACT_APP_OBJECT_CONTACT_API
+const URL_postRecords= process.env.REACT_APP_POST_CONTACT
 const fetchAccountsbyName = `/accountsname?searchKey=`;
 
 const ContactDetailPage = ({ item }) => {
@@ -132,7 +132,7 @@ const ContactDetailPage = ({ item }) => {
         }
         console.log('after change form submission value', values);
 
-        RequestServer(apiMethods.post,urlUpsert, values)
+        RequestServer(apiMethods.post,URL_postRecords, values)
             .then((res) => {
                 console.log('upsert record  response', res);
                 setNotify({

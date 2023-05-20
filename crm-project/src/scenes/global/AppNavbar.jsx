@@ -14,6 +14,7 @@ import { styled, alpha } from "@mui/material/styles";
 import { PaletteTwoTone } from "@mui/icons-material";
 import { GetTableNames } from "./getTableNames";
 import { apiMethods } from "../api/methods";
+import CircularProgress from '@mui/material/CircularProgress';
 
 const logouturl = `/signout`;
 
@@ -90,7 +91,7 @@ const colors = [
 const settings = ["Logout"];
 
 
-function AppNavbar() {
+function AppNavbar({setIsLoggedIn}) {
 
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
@@ -104,6 +105,7 @@ function AppNavbar() {
   const PalleteOpen = Boolean(anchorElPallete);
   const navigate = useNavigate();  
   const [tableNamearr, settableNameArr] = useState([]);
+  const [fetchTableNamesLoading,setFetchTableNameLoading]=useState(true)
   const loggedInUserData = JSON.parse(sessionStorage.getItem("loggedInUser"));
 
   useEffect(()=>{
@@ -114,11 +116,21 @@ function AppNavbar() {
     GetTableNames()
     .then(res=>{
       console.log(res,"GetTableNames res in appbar")
-      const arr=res.map(i=>{
-        return {title:i.Tabs,toNav:`list/${i.Tabs}`}        
-      })
-      console.log(arr,"settableNameArr")
-      settableNameArr(arr)
+
+      const updateArr = res.map(item => {
+        let title = item;
+        let toNav = 'list/' + item.toLowerCase().replace(' ', '');
+        
+        if (item === 'Inventory Management') {
+          title = 'Inventory';
+          toNav = 'list/inventory';
+        }
+      
+        return { title, toNav };
+      }); 
+      console.log(updateArr,"settableNameArr")
+      settableNameArr(updateArr)
+      setFetchTableNameLoading(false)
     })
     .catch(err=>{
       console.log(err,"GetTableNames error in appbar")
@@ -152,9 +164,8 @@ function AppNavbar() {
     RequestServer(apiMethods.post,logouturl)
       .then((res) => {
         if (res.success) {
-          console.log(res.data, "then if");
-          sessionStorage.removeItem("token");
-          navigate("/");
+          sessionStorage.clear();
+          navigate('/')
         } else {
           console.log(res.error.message, "then else");
         }
@@ -198,17 +209,32 @@ function AppNavbar() {
     backgroundColor: selectedColor,
   };
 
-  const visiblePages = pages.slice(0, 6);
-  const hiddenPages = pages.slice(6);
+  const visiblePages = tableNamearr.slice(0, 6);
+  const hiddenPages = tableNamearr.slice(6);
 
-  console.log(window.location.href, "ggg");
 
   return (
-    // 5C5CFF
-    // fixed //static //sticky
+    <>
+    {   fetchTableNamesLoading ? (
+       <Box
+       display="flex"
+       justifyContent="center"
+       alignItems="center"
+       height="200px"
+     >
+       <CircularProgress />
+     </Box>
+      // <div style={{ display: 'flex', alignItems: 'center' }}>
+      // <CircularProgress size={24} />
+      // <Typography variant="body1" sx={{ marginLeft: '10px' }}>
+      //   Loading...
+      // </Typography>
+    // </div>
+  ) : (
+    <>
     <AppBar id="navBar" position="sticky" sx={{ backgroundColor: navBarStyle }}>
       <Container maxWidth="xl">
-        <Toolbar disableGutters>
+        <Toolbar disableGutters>     
           <Box className="CRM-Title-Box">
             <Typography
               className="CRM-Title"
@@ -267,7 +293,7 @@ function AppNavbar() {
                 display: { xs: "block", md: "none" },
               }}
             >
-              {pages.map((page, index) => (
+              {tableNamearr.map((page, index) => (
                 <MenuItem
                   key={page.title}
                   onClick={() => handleMenuItemClick(page)}
@@ -278,17 +304,12 @@ function AppNavbar() {
                       : {}
                   }
                 >
-                  {/* <Link
-                    to={page.toNav}
-                    style={{ textDecoration: "none", color: "unset" }}
-                  > */}
                   <Typography>{page.title} </Typography>
-                  {/* </Link> */}
                 </MenuItem>
               ))}
             </Menu>
           </Box>
-          {/* <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} /> */}
+          
           <Typography
             variant="h5"
             noWrap
@@ -327,13 +348,8 @@ function AppNavbar() {
                     ? "selected-app-menuItem"
                     : "app-nav-css"
                 }
-              >
-                {/* <Link
-                  to={page.toNav}
-                  style={{ textDecoration: "none", color: "unset" }}
-                > */}
+              >                
                 <Typography variant="h6">{page.title} </Typography>
-                {/* </Link> */}
               </MenuItem>
             ))}
 
@@ -345,10 +361,6 @@ function AppNavbar() {
               More
               <ArrowDropDownIcon />
             </MenuItem>
-
-            {/* <IconButton onClick={handlePaletteClick}>
-              <PaletteTwoTone />
-            </IconButton> */}
           </Box>
 
           {/* <StyledMenu
@@ -386,14 +398,8 @@ function AppNavbar() {
                     ? { bgcolor: "#BAD8FF", borderRadius: "5px" }
                     : {}
                 }
-              >
-                {/* {item.title} */}
-                {/* <Link
-                  to={item.toNav}
-                  style={{ textDecoration: "none", color: "unset" }}
-                > */}
+              >                
                 <Typography>{item.title}</Typography>
-                {/* </Link> */}
               </ListItemButton>
             ))}
           </StyledMenu>
@@ -420,12 +426,11 @@ function AppNavbar() {
             >
               <div style={{ padding: "16px" }}>
                 <Typography variant="h5">
-                  <strong>Hi, {loggedInUserData.userFullName}</strong>
+                  <strong>Hi, {loggedInUserData?.userFullName}</strong>
                 </Typography>
                 <Typography variant="subtitle1">
-                  {loggedInUserData.userName}
+                  {loggedInUserData?.userName}
                 </Typography>
-                {/* <Typography variant="body2">{loggedInUserData.userName}</Typography> */}
                 <div style={{ marginTop: "10px" }}>
                   <Button
                     variant="contained"
@@ -437,47 +442,16 @@ function AppNavbar() {
                   </Button>
                 </div>
               </div>
-            </Popover>
-
-            {/* <Dialog open={dialogOpen} onClose={handleOpenUserMenu}>
-          <DialogTitle>User Details</DialogTitle>
-          <DialogContent>
-            <DialogContentText>{loggedInUserData.userFullName}</DialogContentText>
-            <DialogContentText>{loggedInUserData._id}</DialogContentText>
-            <DialogContentText>{loggedInUserData.userName}</DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleUserLogout}>Logout</Button>
-            <Button onClick={handleOpenUserMenu}>Close</Button>
-          </DialogActions>
-        </Dialog> */}
-
-            {/* <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleUserLogout}>
-                  {setting}
-                </MenuItem>
-              ))}
-            </Menu> */}
+            </Popover>           
           </Box>
+   
         </Toolbar>
       </Container>
     </AppBar>
+    </>
+    )
+}</>
   );
+
 }
 export default AppNavbar;

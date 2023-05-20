@@ -12,8 +12,7 @@ import { RequestServer } from '../api/HttpReq';
 import { AccountInitialValues } from '../formik/IntialValues/formValues';
 import { apiMethods } from '../api/methods';
 
-const url = `/UpsertAccount`;
-
+const URL_upsertRecords=process.env.REACT_APP_POST_ACCOUNT
 
 const ModalInventoryAccount = ({ item,handleModal }) => {
 
@@ -78,7 +77,7 @@ const ModalInventoryAccount = ({ item,handleModal }) => {
        
         console.log('after change form submission value',values);
         
-        RequestServer(apiMethods.post,url, values)
+        RequestServer(apiMethods.post,URL_upsertRecords, values)
         .then((res) => {
             console.log('upsert record  response', res);
             if(res.success){

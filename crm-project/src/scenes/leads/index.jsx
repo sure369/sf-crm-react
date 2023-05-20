@@ -26,14 +26,16 @@ import "../indexCSS/muiBoxStyles.css";
 import { apiMethods } from "../api/methods";
 import { apiCheckObjectPermission } from '../Auth/apiCheckObjectPermission'
 import { getLoginUserRoleDept } from '../Auth/userRoleDept';
+import queryString from 'query-string';
 
 
 const Leads = () => {
 
-  const OBJECT_API = 'Lead'
-  const urlLead = `/leads`;
-  const urlSearchLead = `/leads?`;
-  const urlDelete = `/deleteLead?code=`;
+  const OBJECT_API = process.env.REACT_APP_OBJECT_ENQUIRY_API
+  const URL_getRecords = process.env.REACT_APP_GET_ENQUIRY
+  const URL_deleteRecords = process.env.REACT_APP_DELETE_ENQUIRY
+  const URL_getRecords_Monthwise = process.env.REACT_APP_GET_ENQUIRY_BY_MONTH
+
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -67,7 +69,7 @@ const Leads = () => {
   }, []);
 
   const fetchRecords = () => {
-    RequestServer(apiMethods.post, urlLead)
+    RequestServer(apiMethods.get, URL_getRecords)
       .then((res) => {
         console.log(res, "index page res");
         if (res.success) {
@@ -138,7 +140,7 @@ const Leads = () => {
 
   const onebyoneDelete = (row) => {
     console.log("onebyoneDelete rec id", row);
-    RequestServer(apiMethods.post, urlDelete + row)
+    RequestServer(apiMethods.delete, URL_deleteRecords + row)
       .then((res) => {
         if (res.success) {
           fetchRecords();
@@ -214,14 +216,18 @@ const Leads = () => {
   };
 
   const handleLeadFilterChange = (e) => {
+    console.log("inside handleLeadFilterChange ")
     const value = e.target.value;
     const label = e.target.name;
+    const obj ={[label]:value,}
     setFilterMonth(value);
-    console.log(`${urlSearchLead}${label}=${value}`);
+    // console.log(`${urlSearchLead}${label}=${value}`);
     if (e.target.value === null) {
+      console.log("if part")
       fetchRecords();
     } else {
-      RequestServer(apiMethods.post, urlSearchLead + label + "=" + value)
+      // console.log( URL_getRecords_Monthwise + queryString(obj),"else part")
+      RequestServer(apiMethods.get, URL_getRecords_Monthwise +`${label}=${value}`)
         .then((res) => {
           console.log("Searched Month res ", res);
           if (res.success) {

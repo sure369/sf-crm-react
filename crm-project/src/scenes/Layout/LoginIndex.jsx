@@ -32,18 +32,21 @@ import RoleIndex from "../roles";
 function LoginLayoutIndex() {
   return (
     <>
-      <AppNavbar />
+    
+    {/* <AppNavbar /> */}
       <Routes>
         <Route path="/" exact element={<HomePage />} />
-        <Route path="/accounts" element={<ResponsiveAccounts />} />
-        <Route path="/contacts" element={<ResponsiveContacts />} />
-        <Route path="/opportunities" element={<ResponsiveOpportunities />} />
-        <Route path="/leads" element={<ResponsiveLeads />} />
-        <Route path="/inventories" element={<ResponsiveInventories />} />
-        <Route path="/task" element={<ResponsiveTasks />} />
-        <Route path="/users" element={<ResponsiveUsers />} />
-        <Route path="/permissions" element={<PermissionSets />} />
-        <Route path="/getRole" element={<RoleIndex />} />
+        <Route path="/list/account" element={<ResponsiveAccounts />} />
+        <Route path="/list/contact" element={<ResponsiveContacts />} />
+        <Route path="/list/opportunity" element={<ResponsiveOpportunities />} />
+        <Route path="/list/lead" element={<ResponsiveLeads />} />
+        <Route path="/list/inventory" element={<ResponsiveInventories />} />
+        <Route path="/list/task" element={<ResponsiveTasks />} />
+        <Route path="/list/user" element={<ResponsiveUsers />} />
+        <Route path="/list/permissions" element={<PermissionSets />} />
+        <Route path="/list/role" element={<RoleIndex />} />
+        <Route path="/list/files" element={<FileUpload />} />
+
 
         <Route path="/new-contacts" element={<ContactDetailPage />} />
         <Route path="/new-users" element={<UserDetailPage />} />
@@ -65,7 +68,7 @@ function LoginLayoutIndex() {
         <Route path="/opportunityDetailPage/:id" element={<FlexOpportunities />}/>
         <Route path="/permissionDetailPage/:id" element={<PermissionSetDetailPage />}/>
 
-        <Route path="/file" element={<FileUpload />} />
+        
         <Route path="/Home" element={<HomePage />} />
         <Route path="*" element={<PageNotFound />} />
 

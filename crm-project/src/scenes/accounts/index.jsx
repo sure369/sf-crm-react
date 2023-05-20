@@ -27,11 +27,9 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 const Accounts = () => {
 
-  const OBJECT_API = 'Account'
-  const urlDelete = `/deleteAccount/`;
-  // const urlDelete = `/deleteAccount?code=`;
-  const urlAccount = `/accounts`;
-
+  const OBJECT_API = process.env.REACT_APP_OBJECT_ACCOUNT_API
+  const URL_getRecords= process.env.REACT_APP_GET_ACCOUNT
+  const URL_deleteRecords= process.env.REACT_APP_DELETE_ACCOUNT
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -60,7 +58,7 @@ const Accounts = () => {
 
   const fetchRecords = () => {
     setFetchRecordsLoading(true)
-    RequestServer(apiMethods.get, urlAccount)
+    RequestServer(apiMethods.get, URL_getRecords)
       .then((res) => {
         console.log(res, "index page res");
         if (res.success) {
@@ -132,8 +130,9 @@ const Accounts = () => {
   };
   const onebyoneDelete = (row) => {
     console.log("onebyoneDelete rec id", row);
+    // http://localhost:8080/api/account/6464aa6b546b824fe18768d9
 
-    RequestServer(apiMethods.post, urlDelete + row)
+    RequestServer(apiMethods.delete, URL_deleteRecords + row)
       .then((res) => {
         if (res.success) {
           fetchRecords();
