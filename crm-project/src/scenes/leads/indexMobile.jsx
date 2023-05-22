@@ -13,13 +13,14 @@ import { RequestServer } from '../api/HttpReq';
 import { apiMethods } from '../api/methods';
 import { apiCheckObjectPermission } from '../Auth/apiCheckObjectPermission';
 import { getLoginUserRoleDept } from '../Auth/userRoleDept';
+import { OBJECT_API_ENQUIRY,GET_ENQUIRY,DELETE_ENQUIRY,GET_ENQUIRY_BY_MONTH } from "../api/endUrls";
 
 const LeadsMobile = () => {
 
-  const OBJECT_API = process.env.REACT_APP_OBJECT_ENQUIRY_API
-  const URL_getRecords = process.env.REACT_APP_POST_ENQUIRY
-  const URL_deleteRecords = process.env.REACT_APP_DELETE_ENQUIRY
-
+  const OBJECT_API = OBJECT_API_ENQUIRY
+  const URL_getRecords = GET_ENQUIRY
+  const URL_deleteRecords = DELETE_ENQUIRY
+  
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();

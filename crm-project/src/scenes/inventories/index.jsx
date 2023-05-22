@@ -18,12 +18,13 @@ import "../indexCSS/muiBoxStyles.css";
 import { apiMethods } from "../api/methods";
 import { apiCheckObjectPermission } from "../Auth/apiCheckObjectPermission";
 import { getLoginUserRoleDept } from "../Auth/userRoleDept";
+import { OBJECT_API_INVENTORY,GET_INVENTORY,DELETE_INVENTORY } from "../api/endUrls";
 
 const Inventories = () => {
 
-  const OBJECT_API = process.env.REACT_APP_OBJECT_INVENTORY_API
-  const URL_getRecords= process.env.REACT_APP_GET_INVENTORY
-  const URL_deleteRecords= process.env.REACT_APP_DELETE_INVENTORY
+  const OBJECT_API = OBJECT_API_INVENTORY
+  const URL_getRecords= GET_INVENTORY
+  const URL_deleteRecords= DELETE_INVENTORY
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);

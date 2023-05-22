@@ -13,13 +13,13 @@ import { RequestServer } from '../api/HttpReq';
 import { apiMethods } from '../api/methods';
 import { apiCheckObjectPermission } from '../Auth/apiCheckObjectPermission';
 import { getLoginUserRoleDept } from '../Auth/userRoleDept';
+import { OBJECT_API_ACCOUNT,GET_ACCOUNT,DELETE_ACCOUNT } from "../api/endUrls";
 
 const AccountsMobile = () => {
 
-  const OBJECT_API = process.env.REACT_APP_OBJECT_ACCOUNT_API
-  const URL_getRecords= process.env.REACT_APP_GET_ACCOUNT
-  const URL_deleteRecords= process.env.REACT_APP_DELETE_ACCOUNT
-
+  const OBJECT_API = OBJECT_API_ACCOUNT
+  const URL_getRecords= GET_ACCOUNT
+  const URL_deleteRecords= DELETE_ACCOUNT
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);

@@ -13,11 +13,12 @@ import { InventoryInitialValues, InventorySavedValues } from '../formik/IntialVa
 import { apiMethods } from '../api/methods';
 import { apiCheckObjectPermission } from '../Auth/apiCheckObjectPermission';
 import { getLoginUserRoleDept, getObjectUserRoleDpt } from '../Auth/userRoleDept'
+import { OBJECT_API_INVENTORY,POST_INVENTORY } from '../api/endUrls';
 
 const InventoryDetailPage = ({ item }) => {
 
-    const OBJECT_API = process.env.REACT_APP_OBJECT_INVENTORY_API
-    const URL_postRecords= process.env.REACT_APP_POST_INVENTORY
+    const OBJECT_API = OBJECT_API_INVENTORY
+    const URL_postRecords= POST_INVENTORY
 
     const [singleInventory, setsingleInventory] = useState();
     const location = useLocation();

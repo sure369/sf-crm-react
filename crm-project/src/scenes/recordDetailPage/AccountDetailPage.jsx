@@ -15,12 +15,13 @@ import { AccountInitialValues,AccountSavedValues } from "../formik/IntialValues/
 import { apiMethods } from "../api/methods";
 import { apiCheckObjectPermission } from "../Auth/apiCheckObjectPermission";
 import { getLoginUserRoleDept } from "../Auth/userRoleDept";
+import {OBJECT_API_ACCOUNT, POST_ACCOUNT } from "../api/endUrls";
 
 
 const AccountDetailPage = ({ item }) => {
     
-const OBJECT_API = process.env.REACT_APP_OBJECT_ACCOUNT_API
-const URL_upsertRecords = process.env.REACT_APP_POST_ACCOUNT
+const OBJECT_API = OBJECT_API_ACCOUNT
+const URL_postRecords = POST_ACCOUNT
 const fetchInventoriesbyName = `/InventoryName?searchKey=`;
 
 
@@ -115,7 +116,7 @@ const fetchInventoriesbyName = `/InventoryName?searchKey=`;
 
         console.log("after change form submission value", values);
         
-        RequestServer(apiMethods.post,URL_upsertRecords,values)
+        RequestServer(apiMethods.post,URL_postRecords,values)
         .then((res) => {
             console.log(res,"res from RequestServer")
             if (res.success) {

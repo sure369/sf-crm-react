@@ -15,10 +15,9 @@ import { RequestServer } from '../api/HttpReq';
 import { UserInitialValues,UserSavedValues } from '../formik/IntialValues/formValues';
 import { apiMethods } from '../api/methods';
 import queryString from 'query-string';
+import { POST_USER } from '../api/endUrls';
 
-
-
-const url = `/UpsertUser`;
+const URL_postRecords = POST_USER
 const fetchUsersbyName = `/usersbyName`
 const urlSendEmailbulk = `/bulkemail`
 const urlgetRolesByDept='/roles'
@@ -149,7 +148,7 @@ const UserDetailPage = ({ item }) => {
         }
         console.log('after change form submission value', values);
 
-        RequestServer(apiMethods.post,url, values)
+        RequestServer(apiMethods.post,URL_postRecords, values)
             .then((res) => {
                 console.log('upsert record  response', res);
                 if(res.success){

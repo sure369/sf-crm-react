@@ -19,13 +19,13 @@ import queryString from 'query-string';
 import { apiMethods } from '../api/methods';
 import { apiCheckObjectPermission } from "../Auth/apiCheckObjectPermission";
 import { getLoginUserRoleDept } from "../Auth/userRoleDept";
-
+import { OBJECT_API_PERMISSIONS,POST_PERMISSIONS } from '../api/endUrls';
 
 
 const PermissionSetDetailPage = ({ item }) => {
 
-    const OBJECT_API = "Permissions"
-const upsertUrl = `/permission`;
+    const OBJECT_API = OBJECT_API_PERMISSIONS
+const URL_postRecords = POST_PERMISSIONS
 const urlgetUsersByName = `/getUsers`;
 const urlgetRolesByDept = `/roles`
 const urlGetAllTableNames = `/objects`
@@ -162,7 +162,7 @@ const urlGetAllTableNames = `/objects`
         console.log('after change form submission value', values);
 
 
-        RequestServer(apiMethods.post, upsertUrl, values)
+        RequestServer(apiMethods.post, URL_postRecords, values)
             .then((res) => {
                 console.log(res, "res")
                 if (res.success) {

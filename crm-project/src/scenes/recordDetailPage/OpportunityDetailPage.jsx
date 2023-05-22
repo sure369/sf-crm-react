@@ -16,13 +16,13 @@ import { OpportunityInitialValues, OpportunitySavedValues } from '../formik/Inti
 import { apiMethods } from '../api/methods';
 import { apiCheckObjectPermission } from "../Auth/apiCheckObjectPermission";
 import { getLoginUserRoleDept } from "../Auth/userRoleDept";
-
+import { OBJECT_API_DEAL,POST_DEAL } from '../api/endUrls';
 
 
 const OpportunityDetailPage = ({ item }) => {
 
-    const OBJECT_API = 'Opportunity'
-    const url = `/UpsertOpportunity`;
+    const OBJECT_API = OBJECT_API_DEAL
+    const URL_postRecords = POST_DEAL
     const fetchLeadsbyName = `/LeadsbyName?searchKey=`;
     const fetchInventoriesbyName = `/InventoryName?searchKey=`;
 
@@ -135,7 +135,7 @@ const OpportunityDetailPage = ({ item }) => {
         }
         console.log('after change form submission value', values);
 
-        RequestServer(apiMethods.post, url, values)
+        RequestServer(apiMethods.post, URL_postRecords, values)
             .then((res) => {
                 console.log(res, "res from RequestServer")
                 if (res.success) {

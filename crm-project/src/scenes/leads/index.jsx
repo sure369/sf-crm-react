@@ -26,16 +26,14 @@ import "../indexCSS/muiBoxStyles.css";
 import { apiMethods } from "../api/methods";
 import { apiCheckObjectPermission } from '../Auth/apiCheckObjectPermission'
 import { getLoginUserRoleDept } from '../Auth/userRoleDept';
-import queryString from 'query-string';
-
+import { OBJECT_API_ENQUIRY,GET_ENQUIRY,DELETE_ENQUIRY,GET_ENQUIRY_BY_MONTH } from "../api/endUrls";
 
 const Leads = () => {
 
-  const OBJECT_API = process.env.REACT_APP_OBJECT_ENQUIRY_API
-  const URL_getRecords = process.env.REACT_APP_GET_ENQUIRY
-  const URL_deleteRecords = process.env.REACT_APP_DELETE_ENQUIRY
-  const URL_getRecords_Monthwise = process.env.REACT_APP_GET_ENQUIRY_BY_MONTH
-
+  const OBJECT_API = OBJECT_API_ENQUIRY
+  const URL_getRecords = GET_ENQUIRY
+  const URL_deleteRecords = DELETE_ENQUIRY
+  const URL_getRecords_Monthwise = GET_ENQUIRY_BY_MONTH
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);

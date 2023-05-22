@@ -17,13 +17,14 @@ import '../indexCSS/muiBoxStyles.css'
 import { apiMethods } from '../api/methods';
 import { apiCheckObjectPermission } from "../Auth/apiCheckObjectPermission";
 import { getLoginUserRoleDept } from "../Auth/userRoleDept";
+import { OBJECT_API_ROLE,GET_ROLE,DELETE_ROLE } from '../api/endUrls';
+
 
 const RoleIndex = () => {
 
-  const OBJECT_API = "Role"
-  const urlDelete = `/role`;
-  const urlgetRoles = `/roles`;
-
+  const OBJECT_API = OBJECT_API_ROLE
+  const URL_getRecords = GET_ROLE
+  const URL_deleteRecords =DELETE_ROLE
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -51,7 +52,7 @@ const RoleIndex = () => {
   );
 
   const fetchRecords = () => {
-    RequestServer(apiMethods.get, urlgetRoles)
+    RequestServer(apiMethods.get, URL_getRecords)
       .then((res) => {
         console.log(res.data, "index page res")
         if (res.success) {
@@ -121,7 +122,7 @@ const RoleIndex = () => {
   const onebyoneDelete = (row) => {
     console.log('onebyoneDelete rec id', row)
 
-    RequestServer(apiMethods.delete, urlDelete + `/${row}`)
+    RequestServer(apiMethods.delete, URL_deleteRecords +row)
       .then((res) => {
         if (res.success) {
           fetchRecords()

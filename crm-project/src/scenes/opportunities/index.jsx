@@ -21,13 +21,13 @@ import "../indexCSS/muiBoxStyles.css";
 import { apiMethods } from "../api/methods";
 import { apiCheckObjectPermission } from '../Auth/apiCheckObjectPermission'
 import { getLoginUserRoleDept } from '../Auth/userRoleDept';
+import { OBJECT_API_DEAL ,GET_DEAL,DELETE_DEAL} from "../api/endUrls";
 
 const Opportunities = () => {
 
-  const OBJECT_API = 'Opportunity'
-  const urlOpportunity = `/opportunities`;
-  const urlFilterOpportunity = `/opportunitiesFilter?code=`;
-  const urlDelete = `/deleteOpportunity?code=`;
+  const OBJECT_API = OBJECT_API_DEAL
+  const URL_getRecords = GET_DEAL
+  const URL_deleteRecords = DELETE_DEAL
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -69,7 +69,7 @@ const Opportunities = () => {
   }
 
   const fetchRecords = () => {
-    RequestServer(apiMethods.post, urlOpportunity)
+    RequestServer(apiMethods.get, URL_getRecords)
       .then((res) => {
         console.log(res, "index page res");
         if (res.success) {
@@ -134,7 +134,7 @@ const Opportunities = () => {
   const onebyoneDelete = (row) => {
     console.log("onebyoneDelete rec id", row);
 
-    RequestServer(apiMethods.post, urlDelete + row)
+    RequestServer(apiMethods.delete, URL_deleteRecords + row)
       .then((res) => {
         if (res.success) {
           fetchRecords();
@@ -166,170 +166,6 @@ const Opportunities = () => {
           isOpen: false,
         });
       });
-  };
-
-  const handleOppFilterChange = (e) => {
-    console.log(e.target.value, "onselect");
-    setFilterOpportunity(e.target.value);
-
-    // assuming your array of objects is named "records"
-    const now = new Date(); // get the current date
-    const currentMonth = now.getMonth(); // get the current month (0-11)
-    const nextMonth = (now.getMonth() + 1) % 12; // get the next month (0-11, wrap around to 0 if December)
-    const lastMonth = (now.getMonth() - 1 + 12) % 12;
-    const today = new Date();
-    const thisWeekStart = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate() - today.getDay()
-    );
-    const thisWeekEnd = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate() + (6 - today.getDay())
-    );
-    const lastMonthStart = new Date(
-      today.getFullYear(),
-      today.getMonth() - 1,
-      1
-    );
-    const lastMonthEnd = new Date(today.getFullYear(), today.getMonth(), 0);
-    const lastWeekStart = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate() - today.getDay() - 7
-    );
-    const lastWeekEnd = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate() - today.getDay() - 1
-    );
-    const ninetyDaysAgo = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate() - 90
-    );
-    const selectedOption = e.target.value; // replace with the selected option
-
-    const filteredRecords = records.filter((record) => {
-      if (!record.closeDate || !record.createdDate) {
-        return false; // skip records without closeDate or createdDate fields
-      }
-      const closeDate = new Date(record.closeDate);
-      const createdDate = new Date(record.createdDate);
-
-      switch (selectedOption) {
-        case "Closing_This_Month":
-          return (
-            closeDate.getMonth() === currentMonth &&
-            closeDate.getFullYear() === now.getFullYear()
-          );
-        case "Closing_Next_Month":
-          return (
-            closeDate.getMonth() === nextMonth &&
-            closeDate.getFullYear() === now.getFullYear()
-          );
-        case "Closing_Last_Month":
-          return (
-            closeDate.getMonth() === lastMonth &&
-            closeDate.getFullYear() === now.getFullYear()
-          );
-        case "New_This_Week":
-          return createdDate >= thisWeekStart && createdDate <= thisWeekEnd;
-        case "New_Last_Week":
-          return createdDate >= lastWeekStart && createdDate <= lastWeekEnd;
-        case "New_This_Month":
-          return (
-            createdDate.getMonth() === currentMonth &&
-            createdDate.getFullYear() === now.getFullYear()
-          );
-        case "New_Last_Month":
-          return createdDate >= lastMonthStart && createdDate <= lastMonthEnd;
-        case "Last_90_Days":
-          return createdDate >= ninetyDaysAgo && createdDate <= now;
-        default:
-          return true; // return all records if no valid option is selected
-      }
-    });
-
-    console.log(filteredRecords, "filteredRecords"); // output the filtered records
-
-    setFilteredRecords(filteredRecords);
-    //     // assuming your array of objects is named "records"
-    // const now = new Date(); // get the current date
-    // const currentMonth = now.getMonth(); // get the current month (0-11)
-    // const nextMonth = (currentMonth + 1) % 12; // get the next month (0-11, wrap around to 0 if December)
-
-    // // filter records for the current month
-    // const currentMonthRecords = records.filter(record => {
-    //   const closeDate = new Date(record.closeDate);
-    //   return closeDate.getMonth() === currentMonth && closeDate.getFullYear() === now.getFullYear();
-    // });
-
-    // // filter records for the next month
-    // const nextMonthRecords = records.filter(record => {
-    //   const closeDate = new Date(record.closeDate);
-    //   return closeDate.getMonth() === nextMonth && closeDate.getFullYear() === (now.getMonth() === 11 ? now.getFullYear() + 1 : now.getFullYear());
-    // });
-
-    // // filter records created this month
-    // const thisMonthRecords = records.filter(record => {
-    //   const createdDate = new Date(record.createdDate);
-    //   const thisMonth = new Date().getMonth();
-    //   return createdDate.getMonth() === thisMonth;
-    // });
-    // console.log(thisMonthRecords,"thisMonthRecords")
-
-    // // filter records created this week
-    // const today = new Date();
-    // const thisWeekStart = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay());
-    // const thisWeekEnd = new Date(today.getFullYear(), today.getMonth(), today.getDate() + (6 - today.getDay()));
-    // console.log(thisWeekStart,"thisWeekStart")
-    // console.log(thisWeekEnd,"thisWeekEnd")
-    // const thisWeekRecords = records.filter(record => {
-    //   const createdDate = new Date(record.createdDate);
-    //   console.log(createdDate,"createdDate")
-    //   console.log(createdDate >= thisWeekStart && createdDate <= thisWeekEnd,"thisWeekRecords")
-    //   return createdDate >= thisWeekStart && createdDate <= thisWeekEnd;
-    // });
-    // console.log(thisWeekRecords,"thisWeekRecords")
-
-    // // filter records created last week
-    // const lastWeekStart = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay() - 7);
-    // const lastWeekEnd = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay() - 1);
-    // const lastWeekRecords = records.filter(record => {
-    //   const createdDate = new Date(record.createdDate);
-    //   return createdDate >= lastWeekStart && createdDate <= lastWeekEnd;
-    // });
-
-    // console.log(lastWeekRecords,"lastWeekRecords")
-    // // filter records created last month
-    // const lastMonthStart = new Date(today.getFullYear(), today.getMonth() - 1, 1);
-    // const lastMonthEnd = new Date(today.getFullYear(), today.getMonth(), 0);
-    // const lastMonthRecords = records.filter(record => {
-    //   const createdDate = new Date(record.createdDate);
-    //   return createdDate >= lastMonthStart && createdDate <= lastMonthEnd;
-    // });
-
-    // console.log(lastMonthRecords,"lastMonthRecords")
-
-    // if(e.target.value ==='Closing This Month'){
-    //   console.log('1st')
-    //   console.log(currentMonthRecords,"currentMonthRecords")
-    //   setFilteredRecords(currentMonthRecords)
-    // }
-    // else if(e.target.value ==='Closing Next Month'){
-    //   console.log('2nd')
-    //   console.log(nextMonthRecords,"nextMonthRecords")
-    //   setFilteredRecords(nextMonthRecords)
-    // }
-    // else if(e.target.value ==='All'){
-    //   setFilteredRecords(records)
-    // }
-
-    console.log(records, "allRecords");
-
-    //
   };
 
   const handleImportModalOpen = () => {
@@ -577,3 +413,169 @@ const Opportunities = () => {
   );
 };
 export default Opportunities;
+
+
+
+// const handleOppFilterChange = (e) => {
+//   console.log(e.target.value, "onselect");
+//   setFilterOpportunity(e.target.value);
+
+//   // assuming your array of objects is named "records"
+//   const now = new Date(); // get the current date
+//   const currentMonth = now.getMonth(); // get the current month (0-11)
+//   const nextMonth = (now.getMonth() + 1) % 12; // get the next month (0-11, wrap around to 0 if December)
+//   const lastMonth = (now.getMonth() - 1 + 12) % 12;
+//   const today = new Date();
+//   const thisWeekStart = new Date(
+//     today.getFullYear(),
+//     today.getMonth(),
+//     today.getDate() - today.getDay()
+//   );
+//   const thisWeekEnd = new Date(
+//     today.getFullYear(),
+//     today.getMonth(),
+//     today.getDate() + (6 - today.getDay())
+//   );
+//   const lastMonthStart = new Date(
+//     today.getFullYear(),
+//     today.getMonth() - 1,
+//     1
+//   );
+//   const lastMonthEnd = new Date(today.getFullYear(), today.getMonth(), 0);
+//   const lastWeekStart = new Date(
+//     today.getFullYear(),
+//     today.getMonth(),
+//     today.getDate() - today.getDay() - 7
+//   );
+//   const lastWeekEnd = new Date(
+//     today.getFullYear(),
+//     today.getMonth(),
+//     today.getDate() - today.getDay() - 1
+//   );
+//   const ninetyDaysAgo = new Date(
+//     today.getFullYear(),
+//     today.getMonth(),
+//     today.getDate() - 90
+//   );
+//   const selectedOption = e.target.value; // replace with the selected option
+
+//   const filteredRecords = records.filter((record) => {
+//     if (!record.closeDate || !record.createdDate) {
+//       return false; // skip records without closeDate or createdDate fields
+//     }
+//     const closeDate = new Date(record.closeDate);
+//     const createdDate = new Date(record.createdDate);
+
+//     switch (selectedOption) {
+//       case "Closing_This_Month":
+//         return (
+//           closeDate.getMonth() === currentMonth &&
+//           closeDate.getFullYear() === now.getFullYear()
+//         );
+//       case "Closing_Next_Month":
+//         return (
+//           closeDate.getMonth() === nextMonth &&
+//           closeDate.getFullYear() === now.getFullYear()
+//         );
+//       case "Closing_Last_Month":
+//         return (
+//           closeDate.getMonth() === lastMonth &&
+//           closeDate.getFullYear() === now.getFullYear()
+//         );
+//       case "New_This_Week":
+//         return createdDate >= thisWeekStart && createdDate <= thisWeekEnd;
+//       case "New_Last_Week":
+//         return createdDate >= lastWeekStart && createdDate <= lastWeekEnd;
+//       case "New_This_Month":
+//         return (
+//           createdDate.getMonth() === currentMonth &&
+//           createdDate.getFullYear() === now.getFullYear()
+//         );
+//       case "New_Last_Month":
+//         return createdDate >= lastMonthStart && createdDate <= lastMonthEnd;
+//       case "Last_90_Days":
+//         return createdDate >= ninetyDaysAgo && createdDate <= now;
+//       default:
+//         return true; // return all records if no valid option is selected
+//     }
+//   });
+
+//   console.log(filteredRecords, "filteredRecords"); // output the filtered records
+
+//   setFilteredRecords(filteredRecords);
+//   //     // assuming your array of objects is named "records"
+//   // const now = new Date(); // get the current date
+//   // const currentMonth = now.getMonth(); // get the current month (0-11)
+//   // const nextMonth = (currentMonth + 1) % 12; // get the next month (0-11, wrap around to 0 if December)
+
+//   // // filter records for the current month
+//   // const currentMonthRecords = records.filter(record => {
+//   //   const closeDate = new Date(record.closeDate);
+//   //   return closeDate.getMonth() === currentMonth && closeDate.getFullYear() === now.getFullYear();
+//   // });
+
+//   // // filter records for the next month
+//   // const nextMonthRecords = records.filter(record => {
+//   //   const closeDate = new Date(record.closeDate);
+//   //   return closeDate.getMonth() === nextMonth && closeDate.getFullYear() === (now.getMonth() === 11 ? now.getFullYear() + 1 : now.getFullYear());
+//   // });
+
+//   // // filter records created this month
+//   // const thisMonthRecords = records.filter(record => {
+//   //   const createdDate = new Date(record.createdDate);
+//   //   const thisMonth = new Date().getMonth();
+//   //   return createdDate.getMonth() === thisMonth;
+//   // });
+//   // console.log(thisMonthRecords,"thisMonthRecords")
+
+//   // // filter records created this week
+//   // const today = new Date();
+//   // const thisWeekStart = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay());
+//   // const thisWeekEnd = new Date(today.getFullYear(), today.getMonth(), today.getDate() + (6 - today.getDay()));
+//   // console.log(thisWeekStart,"thisWeekStart")
+//   // console.log(thisWeekEnd,"thisWeekEnd")
+//   // const thisWeekRecords = records.filter(record => {
+//   //   const createdDate = new Date(record.createdDate);
+//   //   console.log(createdDate,"createdDate")
+//   //   console.log(createdDate >= thisWeekStart && createdDate <= thisWeekEnd,"thisWeekRecords")
+//   //   return createdDate >= thisWeekStart && createdDate <= thisWeekEnd;
+//   // });
+//   // console.log(thisWeekRecords,"thisWeekRecords")
+
+//   // // filter records created last week
+//   // const lastWeekStart = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay() - 7);
+//   // const lastWeekEnd = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay() - 1);
+//   // const lastWeekRecords = records.filter(record => {
+//   //   const createdDate = new Date(record.createdDate);
+//   //   return createdDate >= lastWeekStart && createdDate <= lastWeekEnd;
+//   // });
+
+//   // console.log(lastWeekRecords,"lastWeekRecords")
+//   // // filter records created last month
+//   // const lastMonthStart = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+//   // const lastMonthEnd = new Date(today.getFullYear(), today.getMonth(), 0);
+//   // const lastMonthRecords = records.filter(record => {
+//   //   const createdDate = new Date(record.createdDate);
+//   //   return createdDate >= lastMonthStart && createdDate <= lastMonthEnd;
+//   // });
+
+//   // console.log(lastMonthRecords,"lastMonthRecords")
+
+//   // if(e.target.value ==='Closing This Month'){
+//   //   console.log('1st')
+//   //   console.log(currentMonthRecords,"currentMonthRecords")
+//   //   setFilteredRecords(currentMonthRecords)
+//   // }
+//   // else if(e.target.value ==='Closing Next Month'){
+//   //   console.log('2nd')
+//   //   console.log(nextMonthRecords,"nextMonthRecords")
+//   //   setFilteredRecords(nextMonthRecords)
+//   // }
+//   // else if(e.target.value ==='All'){
+//   //   setFilteredRecords(records)
+//   // }
+
+//   console.log(records, "allRecords");
+
+//   //
+// };

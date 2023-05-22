@@ -19,13 +19,13 @@ import "../indexCSS/muiBoxStyles.css";
 import { apiMethods } from "../api/methods";
 import { apiCheckObjectPermission } from '../Auth/apiCheckObjectPermission'
 import { getLoginUserRoleDept } from '../Auth/userRoleDept';
-
+import { OBJECT_API_EVENT,GET_EVENT,DELETE_EVENT } from "../api/endUrls";
 
 const Task = () => {
 
-  const OBJECT_API = 'Task'
-  const urlDelete = `/deleteTask?code=`;
-  const urlTask = `/Task`;
+  const OBJECT_API = OBJECT_API_EVENT
+  const URL_getRecords = GET_EVENT
+  const URL_deleteRecords =DELETE_EVENT
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -50,7 +50,7 @@ const Task = () => {
   }, []);
 
   const fetchRecords = () => {
-    RequestServer(apiMethods.post, urlTask)
+    RequestServer(apiMethods.get, URL_getRecords)
       .then((res) => {
         console.log(res, "index page res");
         if (res.success) {
@@ -120,7 +120,7 @@ const Task = () => {
 
   const onebyoneDelete = (row) => {
     console.log("onebyoneDelete rec id", row);
-    RequestServer(apiMethods.post, urlDelete + row)
+    RequestServer(apiMethods.delete, URL_deleteRecords + row)
       .then((res) => {
         if (res.success) {
           fetchRecords();

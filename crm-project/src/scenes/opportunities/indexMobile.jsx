@@ -14,11 +14,14 @@ import { apiMethods } from '../api/methods';
 import { apiCheckObjectPermission } from '../Auth/apiCheckObjectPermission';
 import { getLoginUserRoleDept } from '../Auth/userRoleDept';
 import NoAccessCard from '../NoAccess/NoAccessCard';
+import { OBJECT_API_DEAL ,GET_DEAL,DELETE_DEAL} from "../api/endUrls";
 
 const OpportunitiesMobile = () => {
-  const OBJECT_API = 'Opportunity'
-  const urlOpportunity = `/opportunities`;
-  const urlDelete = `/deleteOpportunity?code=`;
+  
+  const OBJECT_API = OBJECT_API_DEAL
+  const URL_getRecords = GET_DEAL
+  const URL_deleteRecords = DELETE_DEAL
+
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -50,7 +53,7 @@ const OpportunitiesMobile = () => {
   );
 
   const fetchRecords = () => {
-    RequestServer(apiMethods.post, urlOpportunity)
+    RequestServer(apiMethods.get, URL_getRecords)
       .then((res) => {
         console.log(res, "index page res")
         if (res.success) {
@@ -119,7 +122,7 @@ const OpportunitiesMobile = () => {
   const onebyoneDelete = (row) => {
     console.log('onebyoneDelete rec id', row)
 
-    RequestServer(apiMethods.post, urlDelete + row)
+    RequestServer(apiMethods.delete, URL_deleteRecords + row)
       .then((res) => {
         if (res.success) {
           fetchRecords()

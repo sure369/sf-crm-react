@@ -24,11 +24,12 @@ import ModalOppTask from "../tasks/ModalOppTask";
 import ModalLeadConvertion from "../timeline/ModalLeadConvertion";
 import { apiCheckObjectPermission } from "../Auth/apiCheckObjectPermission";
 import { getLoginUserRoleDept } from "../Auth/userRoleDept";
+import { OBJECT_API_ENQUIRY,POST_ENQUIRY } from "../api/endUrls";
 
 const LeadDetailPage = ({ item }) => {
 
-  const OBJECT_API =process.env.REACT_APP_OBJECT_ENQUIRY_API
-  const URL_postRecords=process.env.REACT_APP_POST_ENQUIRY
+  const OBJECT_API =OBJECT_API_ENQUIRY
+  const URL_postRecords=POST_ENQUIRY
 
   const [singleLead, setsingleLead] = useState();
   const location = useLocation();

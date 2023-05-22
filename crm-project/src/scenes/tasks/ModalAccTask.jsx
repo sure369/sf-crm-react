@@ -16,9 +16,10 @@ import '../recordDetailPage/Form.css'
 import { RequestServer } from '../api/HttpReq';
 import { TaskInitialValues } from '../formik/IntialValues/formValues';
 import { apiMethods } from "../api/methods";
+import { POST_EVENT } from "../api/endUrls";
 
 
-const UpsertUrl = `/UpsertTask`;
+const URL_postRecords = POST_EVENT 
 
 const ModalAccTask = ({ item, handleModal }) => {
 
@@ -76,7 +77,7 @@ const ModalAccTask = ({ item, handleModal }) => {
             values.EndDate = EndDateSec
         }
 
-        await RequestServer(apiMethods.post,UpsertUrl, values)
+        await RequestServer(apiMethods.post,URL_postRecords, values)
             .then((res) => {
                 console.log('task form Submission  response', res);
                 if(res.success){

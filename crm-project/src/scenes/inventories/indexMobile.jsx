@@ -13,12 +13,14 @@ import { RequestServer } from '../api/HttpReq';
 import { apiMethods } from '../api/methods';
 import { apiCheckObjectPermission } from '../Auth/apiCheckObjectPermission';
 import { getLoginUserRoleDept } from '../Auth/userRoleDept';
+import { OBJECT_API_INVENTORY,GET_INVENTORY,DELETE_INVENTORY } from "../api/endUrls";
 
 const InventoriesMobile = () => {
 
-  const OBJECT_API = 'Inventory Management'
-  const urlDelete = `/deleteInventory?code=`;
-  const urlInventory = `/inventories`;
+  const OBJECT_API = OBJECT_API_INVENTORY
+  const URL_getRecords= GET_INVENTORY
+  const URL_deleteRecords= DELETE_INVENTORY
+
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -48,7 +50,7 @@ const InventoriesMobile = () => {
 
   const fetchRecords = () => {
 
-    RequestServer(apiMethods.post, urlInventory)
+    RequestServer(apiMethods.get, URL_getRecords)
       .then((res) => {
         console.log(res, "api res index page")
         if (res.success) {
@@ -121,7 +123,7 @@ const InventoriesMobile = () => {
 
     console.log('one by one Delete row', row)
 
-    RequestServer(apiMethods.post, urlDelete + row)
+    RequestServer(apiMethods.delete, URL_deleteRecords + row)
       .then((res) => {
         if (res.success) {
           fetchRecords()

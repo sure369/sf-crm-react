@@ -18,12 +18,12 @@ import { RequestServer } from '../api/HttpReq';
 import { apiMethods } from '../api/methods';
 import { apiCheckObjectPermission } from "../Auth/apiCheckObjectPermission";
 import { getLoginUserRoleDept } from "../Auth/userRoleDept";
-
+import { OBJECT_API_ROLE,POST_ROLE } from '../api/endUrls';
 
 const RoleDetailPage = ({ item }) => {
 
-    const OBJECT_API="Role"
-    const url = `/role`;
+    const OBJECT_API=OBJECT_API_ROLE
+    const URL_postRecords = POST_ROLE
     const urlSendEmailbulk = `/bulkemail`
 
 
@@ -95,7 +95,7 @@ const RoleDetailPage = ({ item }) => {
         }
         console.log('after change form submission value', values);
 
-        RequestServer(apiMethods.post,url, values)
+        RequestServer(apiMethods.post,URL_postRecords, values)
             .then((res) => {
                 console.log('upsert record  response', res);
                 if (res.success) {

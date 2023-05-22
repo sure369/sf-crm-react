@@ -24,9 +24,10 @@ import { apiMethods } from '../api/methods';
 import { apiCheckObjectPermission } from '../Auth/apiCheckObjectPermission';
 import { getLoginUserRoleDept } from '../Auth/userRoleDept';
 import NoAccessCard from '../NoAccess/NoAccessCard';
+import { OBJECT_API_CONTACT,POST_CONTACT } from '../api/endUrls';
 
-const OBJECT_API = process.env.REACT_APP_OBJECT_CONTACT_API
-const URL_postRecords= process.env.REACT_APP_POST_CONTACT
+const OBJECT_API = OBJECT_API_CONTACT
+const URL_postRecords= POST_CONTACT
 const fetchAccountsbyName = `/accountsname?searchKey=`;
 
 const ContactDetailPage = ({ item }) => {

@@ -18,7 +18,9 @@ import { RequestServer } from '../api/HttpReq';
 import { OpportunityInitialValues } from '../formik/IntialValues/formValues';
 import { apiMethods } from '../api/methods';
 
-const url = `/UpsertOpportunity`;
+import { POST_DEAL } from '../api/endUrls';
+
+const URL_postRecords = POST_DEAL;
 const fetchInventoriesbyName = `/InventoryName?searchKey=`;
 
 
@@ -79,7 +81,7 @@ const ModalLeadOpportunity = ({ item, handleModal }) => {
 
         console.log('after change form submission value', values);
 
-        RequestServer(apiMethods.post,url, values)
+        RequestServer(apiMethods.post,URL_postRecords, values)
             .then((res) => {
                 console.log('post response', res);
                 if(res.success){

@@ -21,14 +21,14 @@ import '../indexCSS/muiBoxStyles.css'
 import { apiMethods } from "../api/methods";
 import { apiCheckObjectPermission } from '../Auth/apiCheckObjectPermission'
 import { getLoginUserRoleDept } from '../Auth/userRoleDept';
-
+import { OBJECT_API_PERMISSIONS,GET_PERMISSIONS,DELETE_PERMISSIONS } from "../api/endUrls";
 
 
 const PermissionSets = () => {
 
-  const OBJECT_API = "Permissions"
-  const getUrl = `/permissions`;
-  const deleteUrl = `/permission`;
+  const OBJECT_API = OBJECT_API_PERMISSIONS
+  const URL_getRecords = GET_PERMISSIONS
+  const URL_deleteRecords =DELETE_PERMISSIONS
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -54,8 +54,8 @@ const PermissionSets = () => {
   }, []);
 
   const fetchRecords = () => {
-    // RequestServer(apiMethods.get,getUrl+'/access=read')
-    RequestServer(apiMethods.get,getUrl)
+    // RequestServer(apiMethods.get,URL_getRecords+'/access=read')
+    RequestServer(apiMethods.get,URL_getRecords)
     .then((res) => {
         console.log(res, "index page res")
         if (res.success) {
@@ -126,7 +126,7 @@ const PermissionSets = () => {
   const onebyoneDelete = (row) => {
     console.log("onebyoneDelete rec id", row);
 
-    RequestServer(apiMethods.delete,deleteUrl + `/${row}`)
+    RequestServer(apiMethods.delete,URL_deleteRecords + row)
       .then((res) => {
         if (res.success) {
           fetchRecords()

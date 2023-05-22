@@ -17,13 +17,13 @@ import { RequestServer } from "../api/HttpReq";
 import { apiMethods } from "../api/methods";
 import { apiCheckObjectPermission } from "../Auth/apiCheckObjectPermission";
 import { getLoginUserRoleDept } from "../Auth/userRoleDept";
-
+import { OBJECT_API_EVENT ,POST_EVENT} from "../api/endUrls";
 
 
 const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
     
-    const OBJECT_API = 'Task'
-    const UpsertUrl = `/UpsertTask`;
+    const OBJECT_API = OBJECT_API_EVENT
+    const URL_postRecords = POST_EVENT
     const fetchAccountUrl = `/accountsname`;
     const fetchLeadUrl = `/LeadsbyName`;
     const fetchOpportunityUrl = `/opportunitiesbyName`;
@@ -177,7 +177,7 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
         }
         console.log('after change form submission value', values);
 
-            await RequestServer(apiMethods.post,UpsertUrl, values)
+            await RequestServer(apiMethods.post,URL_postRecords, values)
                 .then((res) => {
                     console.log('task form Submission  response', res);
                    if(res.success){

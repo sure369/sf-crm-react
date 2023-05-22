@@ -24,12 +24,13 @@ import "../indexCSS/muiBoxStyles.css";
 import { getLoginUserRoleDept } from "../Auth/userRoleDept";
 import { apiCheckObjectPermission } from "../Auth/apiCheckObjectPermission";
 import CircularProgress from '@mui/material/CircularProgress';
+import { OBJECT_API_CONTACT,GET_CONTACT,DELETE_CONTACT } from "../api/endUrls";
 
 const Contacts = () => {
 
-  const OBJECT_API = process.env.REACT_APP_OBJECT_CONTACT_API
-  const URL_getRecords= process.env.REACT_APP_GET_CONTACT
-  const URL_deleteRecords= process.env.REACT_APP_DELETE_CONTACT
+  const OBJECT_API = OBJECT_API_CONTACT
+  const URL_getRecords= GET_CONTACT
+  const URL_deleteRecords= DELETE_CONTACT
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);

@@ -16,10 +16,10 @@ import '../recordDetailPage/Form.css'
 import { RequestServer } from '../api/HttpReq';
 import { TaskInitialValues } from '../formik/IntialValues/formValues';
 import { apiMethods } from "../api/methods";
+import { POST_EVENT } from "../api/endUrls";
 
+const URL_postRecords = POST_EVENT 
 
-
-const UpsertUrl = `/UpsertTask`;
 
 const ModalTask = ({ item, handleModal }) => {
 
@@ -78,7 +78,7 @@ const ModalTask = ({ item, handleModal }) => {
         }
         console.log('valuse after chg', values);
 
-        await RequestServer(apiMethods.post,UpsertUrl, values)
+        await RequestServer(apiMethods.post,URL_postRecords, values)
 
             .then((res) => {
                 console.log('task form Submission  response', res);

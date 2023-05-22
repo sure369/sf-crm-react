@@ -18,13 +18,13 @@ import { RequestServer } from '../api/HttpReq';
 import { apiMethods } from '../api/methods';
 import { apiCheckObjectPermission } from '../Auth/apiCheckObjectPermission';
 import { getLoginUserRoleDept } from '../Auth/userRoleDept';
+import { OBJECT_API_CONTACT,GET_CONTACT,DELETE_CONTACT } from "../api/endUrls";
 
 const ContactsMobile = () => {
 
-  const OBJECT_API = process.env.REACT_APP_OBJECT_CONTACT_API
-  const URL_getRecords= process.env.REACT_APP_GET_CONTACT
-  const URL_deleteRecords= process.env.REACT_APP_DELETE_CONTACT
-
+  const OBJECT_API = OBJECT_API_CONTACT
+  const URL_getRecords= GET_CONTACT
+  const URL_deleteRecords= DELETE_CONTACT
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);

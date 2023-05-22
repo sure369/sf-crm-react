@@ -16,11 +16,13 @@ import '../recordDetailPage/Form.css'
 import { RequestServer } from "../api/HttpReq";
 import { ContactInitialValues } from "../formik/IntialValues/formValues";
 import { apiMethods } from "../api/methods";
+import { POST_CONTACT } from "../api/endUrls";
 
 
-const URL_postRecords= process.env.REACT_APP_POST_CONTACT
 
 const ModalConAccount = ({ item, handleModal }) => {
+
+    const URL_postRecords= POST_CONTACT
 
     const [accountParentRecord, setAccountParentRecord] = useState();
     const[notify,setNotify]=useState({isOpen:false,message:'',type:''})
