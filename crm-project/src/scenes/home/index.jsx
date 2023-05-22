@@ -8,9 +8,10 @@ import "./home.css";
 import { apiMethods } from "../api/methods";
 import useViewport from "../../utility/useViewPort";
 import CircularProgress from '@mui/material/CircularProgress';
+import { GET_DEAL } from "../api/endUrls";
 
 function DashboardIndex() {
-  const urlOpportunity = `/opportunities`;
+  const URL_getRecords = GET_DEAL;
 
 
   const { width, breakpoint } = useViewport();
@@ -29,7 +30,7 @@ function DashboardIndex() {
   }, []);
 
   const fetchRecords = () => {
-      RequestServer(apiMethods.post,urlOpportunity)
+      RequestServer(apiMethods.get,URL_getRecords)
         .then((res) => {
           console.log(res, "Dashboard index page res");
           console.log("Dashboard Opportunity Data", res.data);
