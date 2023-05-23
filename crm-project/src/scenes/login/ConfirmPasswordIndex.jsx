@@ -8,8 +8,10 @@ import Cdlogo from '../assets/cdlogo.jpg';
 import ToastNotification from "../toast/ToastNotification";
 import {RequestServer} from '../api/HttpReq'
 import { apiMethods } from "../api/methods";
+import { POST_USER_PASSWORD_CHANGE } from "../api/endUrls";
 
-const singupUrl = `/UpsertUser`
+
+const URL_postSingup = POST_USER_PASSWORD_CHANGE
 
 export default function ConfirmPasswordIndex({ item }) {
 
@@ -69,7 +71,7 @@ export default function ConfirmPasswordIndex({ item }) {
 
         console.log('after ', values);
 
-        RequestServer(apiMethods.post,singupUrl, values)
+        RequestServer(apiMethods.post,URL_postSingup, values)
             .then((res) => {
                 console.log(res.data, "UpsertUser response")
                 setNotify({

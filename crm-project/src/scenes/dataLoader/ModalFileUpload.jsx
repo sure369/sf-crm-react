@@ -5,16 +5,16 @@ import {
     Grid, Button, FormControl, Stack, Alert, DialogActions,
     Autocomplete, TextField,Table
 } from "@mui/material";
-import axios from 'axios'
-// import "../formik/FormStyles.css"
 import '../recordDetailPage/Form.css'
 import PreviewDataload from "./PreviewUpsert";
-import { RequestServer } from "../api/HttpReq";
+import { apiMethods } from "../api/methods";
+import { RequestServerFiles } from "../api/HttpReqFiles";
+import { POST_DATALOADER_FILE_PREVIEW } from "../api/endUrls";
 
-const generatePreview =`http://localhost:8080/api/generatePreview`;
- const generatePreviewReq =`/generatePreview`;
 
-const ModalFileUpload = ({ item, handleModal }) => {
+const URL_postFilePreview=POST_DATALOADER_FILE_PREVIEW
+
+const ModalFileUpload = ({ object,handleModal }) => {
 
     const[uplodedData,setUplodedData]=useState([])
     const[uplodedFile,setUploadedFile]=useState()
@@ -41,18 +41,18 @@ const ModalFileUpload = ({ item, handleModal }) => {
         let formData = new FormData();
         formData.append('file',files)
         console.log('modified formData',formData);
-        axios.post(generatePreview, formData)
-        // RequestServer(generatePreview, formData)
+        RequestServerFiles(apiMethods.post, URL_postFilePreview, formData)
             .then((res) => {
-                console.log('file Submission  response', res.data);
-                if(res.status===200){
+                console.log('RequestServer file Submission  response', res);
+                if(res.success){
+                    console.log(res.data,"inside res success")
                     setUplodedData(res.data) 
                 } else{
-                    console.log("file then error",res.error.message)
+                    console.log("RequestServer file then error",res.error.message)
                 } 
             })
             .catch((error) => {
-                console.log('file form Submission  error', error);
+                console.log('RequestServer file form Submission  error', error);
             })
     }
 
@@ -65,12 +65,12 @@ const ModalFileUpload = ({ item, handleModal }) => {
     
         <div>
             <div style={{ textAlign: "center", marginBottom: "10px" }}>
-                <h3>Data Loader</h3>                 
+                <h3>Data Loader </h3>                 
             </div>
         {uplodedData.length>0 ? 
         
         <>
-        <PreviewDataload  data={uplodedData} file={uplodedFile} ModalClose={handleModal}/>
+        <PreviewDataload  data={uplodedData} file={uplodedFile} ModalClose={handleModal} object={object}/>
         </> :
      
            

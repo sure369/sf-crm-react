@@ -16,7 +16,6 @@ import { string } from "yup/lib/locale";
 import RelatedFileUpload from "../fileUpload/ReletedFileUpload";
 
 const TaskRelatedItems = ({ item }) => {
-  const urlDelete = `${process.env.REACT_APP_SERVER_URL}/deleteTask?code=`;
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -39,7 +38,7 @@ const TaskRelatedItems = ({ item }) => {
     console.log(" Task RecordId", location.state.record.item);
     if (location.state.record.item) {
       setTaskRecordId(location.state.record.item._id);
-      // console.log("taskRecordID is :", taskRecordId);
+     
     }
   }, []);
 

@@ -15,8 +15,9 @@ import { PaletteTwoTone } from "@mui/icons-material";
 import { GetTableNames } from "./getTableNames";
 import { apiMethods } from "../api/methods";
 import CircularProgress from '@mui/material/CircularProgress';
+import { POST_USER_SIGNOUT } from "../api/endUrls";
 
-const logouturl = `/signout`;
+const URL_postLogout = POST_USER_SIGNOUT;
 
 const StyledMenu = styled((props) => (
   <Menu
@@ -62,20 +63,6 @@ const StyledMenu = styled((props) => (
     },
   }));
 
-const pages = [
-  { title: "Home", toNav: "/Home" },
-  { title: "Inventories", toNav: "/inventories" },
-  { title: "Leads", toNav: "/leads" },
-  { title: "Accounts", toNav: "/accounts" },
-  { title: "Contacts", toNav: "/contacts" },
-  { title: "Opportunities", toNav: "/opportunities" },
-  { title: "Task", toNav: "/task" },
-  { title: "Users", toNav: "/users" },
-  { title: "File Upload", toNav: "/file" },
-  { title: 'Permission Set', toNav: '/permissions' },
-  { title: "Roles", toNav: "/getRole" },
-  // { title: 'Junction Object', toNav: '/oppInventory' },
-];
 
 const colors = [
   { label: "Default", color: "#5C5CFF" },
@@ -87,9 +74,6 @@ const colors = [
   { label: "Orange", color: "#F3BA5B" },
   { label: "Blue Grey", color: "#507C85" },
 ];
-
-const settings = ["Logout"];
-
 
 function AppNavbar({setIsLoggedIn}) {
 
@@ -161,7 +145,7 @@ function AppNavbar({setIsLoggedIn}) {
 
   const handleUserLogout = () => {
     console.log("handleUserLogout");
-    RequestServer(apiMethods.post,logouturl)
+    RequestServer(apiMethods.post,URL_postLogout)
       .then((res) => {
         if (res.success) {
           sessionStorage.clear();

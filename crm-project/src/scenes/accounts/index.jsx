@@ -415,7 +415,7 @@ const Accounts = () => {
           sx={{ backdropFilter: "blur(1px)" }}
         >
           <div className="modal">
-            <ModalFileUpload handleModal={handleImportModalClose} />
+            <ModalFileUpload object={OBJECT_API_ACCOUNT} handleModal={handleImportModalClose} />
           </div>
         </Modal>
       </Box>

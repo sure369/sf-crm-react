@@ -21,13 +21,14 @@ import { apiMethods } from "../api/methods";
 import { getLoginUserRoleDept } from "../Auth/userRoleDept";
 import { apiCheckObjectPermission } from "../Auth/apiCheckObjectPermission";
 import NoAccessCard from '../NoAccess/NoAccessCard'
+import { OBJECT_API_EVENT,DELETE_EVENT,GET_DEAL_RELATED_EVENT } from "../api/endUrls";
 
 
 const OpportunityRelatedItems = ({ item }) => {
 
-  const OBJECT_API_task = "Task"
-  const taskDeleteURL = `/deleteTask?code=`;
-  const urlTaskbyOppId = `/getTaskbyOpportunityId?searchId=`;
+  const OBJECT_API_task = OBJECT_API_EVENT
+  const URL_getRelatedEventRecords = GET_DEAL_RELATED_EVENT
+  const URL_deleteEventRecord = DELETE_EVENT
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -71,7 +72,7 @@ const OpportunityRelatedItems = ({ item }) => {
 
   const getTasksbyOppId = (recId) => {
 
-    RequestServer(apiMethods.post, urlTaskbyOppId + recId)
+    RequestServer(apiMethods.get, URL_getRelatedEventRecords + recId)
       .then((res) => {
         if (res.success) {
           setRelatedTask(res.data);
@@ -117,7 +118,7 @@ const OpportunityRelatedItems = ({ item }) => {
 
     console.log('req delete rec', row);
     console.log('req delete rec id', row._id);
-    RequestServer(apiMethods.post, taskDeleteURL + row._id)
+    RequestServer(apiMethods.delete, URL_deleteEventRecord + row._id)
       .then((res) => {
         if (res.success) {
           getTasksbyOppId(opportunityRecordId)

@@ -16,17 +16,19 @@ import { apiMethods } from "../api/methods";
 import { getLoginUserRoleDept } from "../Auth/userRoleDept";
 import { apiCheckObjectPermission } from "../Auth/apiCheckObjectPermission";
 import NoAccessCard from "../NoAccess/NoAccessCard";
+import { OBJECT_API_ACCOUNT,OBJECT_API_DEAL
+,GET_INVENTORY_RELATED_ACCOUNT,GET_INVENTORY_RELATED_DEAL,DELETE_ACCOUNT,DELETE_DEAL } from "../api/endUrls";
 
 const InventoryRelatedItems = ({ item }) => {
 
   
-  const OBJECT_API_Account = "Account"
-  const OBJECT_API_Opportunity = "Opportunity"
+  const OBJECT_API_Account = OBJECT_API_ACCOUNT
+  const OBJECT_API_Deal = OBJECT_API_DEAL
+  const URL_getRelatedAccountRecords = GET_INVENTORY_RELATED_ACCOUNT
+  const URL_getRelatedDealRecords = GET_INVENTORY_RELATED_DEAL
+  const URL_deleteAccountRecord = DELETE_ACCOUNT
+  const URL_deleteDealRecord = DELETE_DEAL
 
-  const opportunityDeleteURL = `/deleteOpportunity?code=`;
-  const accountDeleteURL = `/deleteAccount?code=`;
-  const urlgetOpportunitiesbyInvid = `/getOpportunitiesbyInvid?searchId=`;
-  const urlgetAccountsbyInvid = `/getAccountbyInventory?searchId=`;
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -52,9 +54,9 @@ const InventoryRelatedItems = ({ item }) => {
   const [permissionValuesOpportunity, setPermissionValuesOpportunity] = useState({})
 
   const userRoleDptAccount = getLoginUserRoleDept(OBJECT_API_Account)
-  const userRoleDptOpportunity = getLoginUserRoleDept(OBJECT_API_Opportunity)
+  const userRoleDptDeal = getLoginUserRoleDept(OBJECT_API_Deal)
   console.log(userRoleDptAccount, "userRoleDptAccount")
-  console.log(userRoleDptOpportunity, "userRoleDptOpportunity")
+  console.log(userRoleDptDeal, "userRoleDptDeal")
 
 
   useEffect(() => {
@@ -69,7 +71,7 @@ const InventoryRelatedItems = ({ item }) => {
 
   const fetchObjectPermissions= ()=>{
     if (userRoleDptAccount) {
-      apiCheckObjectPermission(OBJECT_API_Account)
+      apiCheckObjectPermission(userRoleDptAccount)
         .then(res => {
           console.log(res[0].permissions, " res apiCheckObjectPermission Account")
           setPermissionValuesAccount(res[0].permissions)
@@ -79,8 +81,8 @@ const InventoryRelatedItems = ({ item }) => {
           setPermissionValuesAccount({})
         })
     }
-    if(userRoleDptOpportunity){
-      apiCheckObjectPermission(userRoleDptOpportunity)
+    if(userRoleDptDeal){
+      apiCheckObjectPermission(userRoleDptDeal)
       .then(res => {
         console.log(res[0].permissions, " res apiCheckObjectPermission Opportunity")
       setPermissionValuesOpportunity(res[0].permissions)
@@ -93,7 +95,7 @@ const InventoryRelatedItems = ({ item }) => {
   }
 
   const getOpportunitiesbyInvId = (recId) => {
-    RequestServer(apiMethods.post,urlgetOpportunitiesbyInvid + recId)
+    RequestServer(apiMethods.get,URL_getRelatedDealRecords + recId)
       .then((res) => {
         if (res.success) {
           setRealtedOpportunity(res.data);
@@ -109,7 +111,7 @@ const InventoryRelatedItems = ({ item }) => {
   }
 
   const getAccountsbyInvId = (InventoryId) => {
-    RequestServer(apiMethods.post,urlgetAccountsbyInvid + InventoryId)
+    RequestServer(apiMethods.get,URL_getRelatedAccountRecords + InventoryId)
     .then((res) => {
       if (res.success) {
         setRelatedAccount(res.data);
@@ -147,7 +149,7 @@ const InventoryRelatedItems = ({ item }) => {
   const onConfirmOpportunityCardDelete = (row) => {
     console.log('req delete rec id', row._id);
 
-    RequestServer(apiMethods.post,opportunityDeleteURL+row._id)
+    RequestServer(apiMethods.delete,URL_deleteDealRecord+row._id)
     .then((res)=>{
       if(res.success){
         setOppMenuOpen(false)
@@ -205,7 +207,7 @@ const InventoryRelatedItems = ({ item }) => {
 
   const onConfirmAccountCardDelete = (row) => {
     console.log('req delete rec', row);
-    RequestServer(apiMethods.post,accountDeleteURL+row._id)
+    RequestServer(apiMethods.delete,URL_deleteAccountRecord+row._id)
     .then((res)=>{
       if(res.success){
         setAccountMenuOpen(false)

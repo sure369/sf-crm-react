@@ -8,17 +8,15 @@ import Cdlogo from '../assets/cdlogo.jpg';
 import {RequestServer} from '../api/HttpReq'
 import { LoginInitialValue } from "../formik/IntialValues/formValues";
 import { apiMethods } from "../api/methods";
+import { POST_USER_SIGNIN } from "../api/endUrls";
 
 
-const loginUrl = `/signin`;
 
-// const loginUrl ='http://localhost:80/api/signin';
+
 
 export default function LoginIndex({onAuthentication}) {
-
-    console.log(process.env.REACT_APP_SERVER_URL,"REACT_APP_SERVER_URL")
-
-
+    
+    const URL_postSignIn = POST_USER_SIGNIN
 
     const paperStyle={padding :20,height:'100%',width:280, margin:"20px auto"}
     const avatarStyle={   width: 100,height: 100}
@@ -50,7 +48,7 @@ export default function LoginIndex({onAuthentication}) {
     })
     const formSubmission = async (values, { resetForm }) => {
         console.log('inside form Submission', values);
-        RequestServer(apiMethods.post,loginUrl,values)
+        RequestServer(apiMethods.post,URL_postSignIn,values)
         .then((res)=>{
             console.log(res.data,"login api res")
             res.data.status ==='success' ?setSignInCredential(true) :setSignInCredential(false)
@@ -61,7 +59,6 @@ export default function LoginIndex({onAuthentication}) {
                     userId:res.data.userDetails._id,
                     userName:res.data.userDetails.userName,
                     userFullName:res.data.userDetails.fullName,
-                    // userRole:res.data.userDetails.role
                     userRole: res.data.userDetails.roleDetails,
                     userRoleName:res.data.userDetails.roleDetails.roleName,
                     userDepartment: res.data.userDetails.departmentName,

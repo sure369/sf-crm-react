@@ -7,9 +7,10 @@ import '../recordDetailPage/Form.css'
 import Cdlogo from '../assets/cdlogo.jpg';
 import {RequestServer} from '../api/HttpReq'
 import { apiMethods } from "../api/methods";
+import { POST_CheckUserPasswordReset } from "../api/endUrls";
 
 
-const confirmEmailURL = `/checkSignUpUser`
+const URL_CheckUserPasswordReset  = POST_CheckUserPasswordReset
 
 export default function ForgotPasswordIndex() {
 
@@ -39,7 +40,7 @@ export default function ForgotPasswordIndex() {
     const formSubmission = async (values, { resetForm }) => {
         console.log('inside form Submission', values);
       
-        RequestServer(apiMethods.post,confirmEmailURL,values)
+        RequestServer(apiMethods.post,URL_CheckUserPasswordReset,values)
         .then((res)=>{
             console.log(res.data,"api res")
             if(res.data.status==="failure"){

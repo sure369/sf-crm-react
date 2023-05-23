@@ -485,7 +485,7 @@ const Leads = () => {
         aria-describedby="modal-modal-description"
       >
         <div className="modal">
-          <ModalFileUpload handleModal={handleImportModalClose} />
+          <ModalFileUpload object={OBJECT_API} handleModal={handleImportModalClose} />
         </div>
       </Modal>
 

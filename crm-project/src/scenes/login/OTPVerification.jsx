@@ -9,8 +9,9 @@ import Cdlogo from '../assets/cdlogo.jpg';
 import OtpInput from 'react-otp-input';
 import { RequestServer } from "../api/HttpReq";
 import { apiMethods } from "../api/methods";
+import { POST_Generate_OTP } from "../api/endUrls";
 
-const generateotpUrl = `/generateOTP`
+const URL_generate_OTP = POST_Generate_OTP
 
 export default function OTPVerification() {
     const paperStyle = { padding: 20, height: '100%', width: 280, margin: "20px auto" }
@@ -51,7 +52,7 @@ export default function OTPVerification() {
     },[])
 
     const handleSendEmailId = () => {
-        RequestServer(apiMethods.post,generateotpUrl, { emailId: location.state.record.item.email })
+        RequestServer(apiMethods.post,URL_generate_OTP, { emailId: location.state.record.item.email })
             .then((res) => {
                 console.log(res.data, "otp email res")
                 if(res.success){
@@ -66,7 +67,7 @@ export default function OTPVerification() {
     }
 
     const handleSendOtp =()=>{
-        RequestServer(apiMethods.post,generateotpUrl, {otp: otp})
+        RequestServer(apiMethods.post,URL_generate_OTP, {otp: otp})
         .then((res) => {
             console.log(res.data, "otp RES")
             if(res.data.status==='success'){

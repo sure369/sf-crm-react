@@ -156,6 +156,35 @@
       box-shadow: none;
     }
   }
+
+  .modalFile {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    height: 50%;
+    box-shadow: 0 0 10px rgba(254, 252,255, );
+    background-color: rgba(254, 252,255);
+    border-radius: 12px;
+  }
+  
+  /* Media query for smaller screens */
+  @media (max-width: 768px) {
+    .modalFile {
+      width: 90%;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    }
+  }
+  
+  /* Media query for even smaller screens */
+  @media (max-width: 480px) {
+    .modalFile {
+      width: 85%;
+      box-shadow: none;
+    }
+  }
+
         /* ***************Error Page Starts Here***************** */
   .errorPage{
 

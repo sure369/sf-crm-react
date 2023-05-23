@@ -1,97 +1,102 @@
 import React, { useState, useEffect } from "react";
-import {Box,Button,useTheme,
-  IconButton,Pagination,Tooltip,
-  Grid,Modal, Typography,
+import {
+  Box, Button, useTheme, IconButton, Pagination,
+  Tooltip, Grid, Modal, Typography,
 } from "@mui/material";
-import {DataGrid,GridToolbar, gridPageCountSelector,
-  gridPageSelector, useGridApiContext,useGridSelector,
+import {
+  DataGrid, GridToolbar, gridPageCountSelector,
+  gridPageSelector, useGridApiContext, useGridSelector,
 } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import { useNavigate } from "react-router-dom";
 import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
 import ToastNotification from "../toast/ToastNotification";
 import DeleteConfirmDialog from "../toast/DeleteConfirmDialog";
-import ExcelDownload from "../Excel";
 import { RequestServer } from "../api/HttpReq";
-import "../indexCSS/muiBoxStyles.css";
 import { apiMethods } from "../api/methods";
-import { apiCheckObjectPermission } from "../Auth/apiCheckObjectPermission";
+import "../indexCSS/muiBoxStyles.css";
 import { getLoginUserRoleDept } from "../Auth/userRoleDept";
-import { OBJECT_API_INVENTORY,GET_INVENTORY,DELETE_INVENTORY } from "../api/endUrls";
+import { apiCheckObjectPermission } from "../Auth/apiCheckObjectPermission";
+import CircularProgress from '@mui/material/CircularProgress';
+import { OBJECT_API_FILE,GET_FILE,DELETE_FILE } from "../api/endUrls";
+import ModalFileUpload from "./ModalNewFile";
 
-const Inventories = () => {
+const Files = () => {
 
-  const OBJECT_API = OBJECT_API_INVENTORY
-  const URL_getRecords= GET_INVENTORY
-  const URL_deleteRecords= DELETE_INVENTORY
+  const OBJECT_API = OBJECT_API_FILE
+  const URL_getRecords= GET_FILE
+  const URL_deleteRecords= DELETE_FILE
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
   const [records, setRecords] = useState([]);
   const [fetchError, setFetchError] = useState();
-  const [fetchLoading, setFetchLoading] = useState(true);
-  const [notify, setNotify] = useState({isOpen: false,message: "",type: "",});
+  const [fetchRecordsLoading, setFetchRecordsLoading] = useState(true);
+  const [fetchPermissionloading, setFetchPermissionLoading] = useState(true);
+
+  const [selectedRecordDatas, setSelectedRecordDatas] = useState();
+  const [selectedRecordIds, setSelectedRecordIds] = useState();
+
+  const [showEmail,setShowEmail]=useState()
+  const [notify, setNotify] = useState({ isOpen: false, message: "",type: "",});
   const [confirmDialog, setConfirmDialog] = useState({isOpen: false,title: "",subTitle: "",});
 
-  const [showDelete, setShowDelete] = useState(false);
-  const [selectedRecordIds, setSelectedRecordIds] = useState();
-  const [selectedRecordDatas, setSelectedRecordDatas] = useState();
-
-  const [permissionValues,setPermissionValues]=useState({})
+   const [permissionValues,setPermissionValues] =useState({})
+  const [modalFileUpload,setModalFileUpload]=useState(false)
   const userRoleDpt = getLoginUserRoleDept(OBJECT_API)
+  console.log(userRoleDpt, "userRoleDpt")
 
   useEffect(() => {
     fetchRecords();
     fetchObjectPermissions()
   }, []);
 
-  const fetchRecords = () => {
-    RequestServer(apiMethods.get,URL_getRecords)
+  const fetchRecords = () => {    
+    setFetchRecordsLoading(true)
+    RequestServer(apiMethods.get, URL_getRecords)
       .then((res) => {
-        console.log("index page GET_INVENTORY", res);
+        console.log(res, "index page res");
         if (res.success) {
-          console.log(res.data,"GET_INVENTORY")
           setRecords(res.data);
-          setFetchLoading(false);
           setFetchError(null);
         } else {
           setRecords([]);
-          setFetchLoading(false);
           setFetchError(res.error.message);
         }
       })
       .catch((err) => {
         setFetchError(err.message);
-        setFetchLoading(false);
-      });
+      })
+      .finally(()=>{
+        setFetchRecordsLoading(false)
+      })
   };
 
   const fetchObjectPermissions=()=>{
     if(userRoleDpt){
       apiCheckObjectPermission(userRoleDpt)
       .then(res=>{
-        console.log(res,"res apiCheckObjectPermission",userRoleDpt)
+        console.log(res,"res apiCheckObjectPermission")
         setPermissionValues(res[0].permissions)
       })
       .catch(err=>{
         console.log(err,"error apiCheckObjectPermission")
-        setPermissionValues({})
+      })
+      .finally(()=>{
+        setFetchPermissionLoading(false)
       })
     }
   }
 
   const handleAddRecord = () => {
-    navigate("/new-inventories", { state: { record: {} } });
+    setModalFileUpload(true)
   };
 
-  const handleOnCellClick = (e, row) => {
-    console.log("selected record", row);
-    const item = e.row;
-    navigate(`/inventoryDetailPage/${item._id}`, {
-      state: { record: { item } },
-    });
+  
+  const handleRowClick = (e) => {
+    console.log(e.row.fileUrl,"handleRowClick")
+     window.open(e.row.fileUrl, "_blank");
   };
 
   const onHandleDelete = (e, row) => {
@@ -110,7 +115,6 @@ const Inventories = () => {
 
   const onConfirmDeleteRecord = (row) => {
     if (row.length) {
-      console.log("if row", row);
       row.forEach((element) => {
         onebyoneDelete(element);
       });
@@ -120,10 +124,11 @@ const Inventories = () => {
   };
 
   const onebyoneDelete = (row) => {
-    console.log("one by one Delete row", row);
+    console.log("one by on delete", row);
 
-    RequestServer(apiMethods.delete,URL_deleteRecords + row)
+    RequestServer(apiMethods.delete, URL_deleteRecords + row)
       .then((res) => {
+        console.log(res,"delete")
         if (res.success) {
           fetchRecords();
           setNotify({
@@ -156,6 +161,11 @@ const Inventories = () => {
       });
   };
 
+  const handleFileModalClose=()=>{
+    setModalFileUpload(false)
+    fetchRecords()
+  }
+
   function CustomPagination() {
     const apiRef = useGridApiContext();
     const page = useGridSelector(apiRef, gridPageSelector);
@@ -171,55 +181,23 @@ const Inventories = () => {
     );
   }
 
+
   const columns = [
     {
-      field: "projectName",
-      headerName: "Project Name",
+      field: "filename",
+      headerName: "File Name",
       headerAlign: "center",
       align: "center",
       flex: 1,
     },
     {
-      field: "propertyName",
-      headerName: "Property Name",
+      field: "mimetype",
+      headerName: "File Type",
       headerAlign: "center",
       align: "center",
       flex: 1,
-    },
-    {
-      field: "type",
-      headerName: "Type",
-      headerAlign: "center",
-      align: "center",
-      flex: 1,
-    },
-    {
-      field: "country",
-      headerName: "Country",
-      headerAlign: "center",
-      align: "center",
-      flex: 1,
-    },
-    {
-      field: "status",
-      headerName: "Status",
-      headerAlign: "center",
-      align: "center",
-      flex: 1,
-      cellClassName: (params) => {
-        const statusClassName =
-          params.row.status === "Available"
-            ? "inventory-status-avail-green"
-            : params.row.status === "Booked"
-            ? "inventory-status-booked-pink"
-            : params.row.status === "Sold"
-            ? "inventory-status-sold-red"
-            : params.row.status === "Processed"
-            ? "inventory-status-process-yellow"
-            : "";
-        return statusClassName;
-      },
-    }]
+    }
+]
     if(permissionValues.delete){
       columns.push(
         {
@@ -232,11 +210,8 @@ const Inventories = () => {
           renderCell: (params) => {
             return (
               <>
-                {!showDelete ? (
+                {!showEmail ? (
                   <>
-                    {/* <IconButton onClick={(e) => handleOnCellClick(e, params.row)} style={{ padding: '20px', color: '#0080FF' }}>
-                  <EditIcon  />
-                </IconButton> */}
                     <IconButton
                       onClick={(e) => onHandleDelete(e, params.row)}
                       style={{ padding: "20px", color: "#FF3333" }}
@@ -244,13 +219,15 @@ const Inventories = () => {
                       <DeleteIcon />
                     </IconButton>
                   </>
-                ) : (null)
-                }
+                ) : (
+                  ""
+                )}
               </>
-            )}},
+            );
+          },
+        },
       )
     }
-    
 
   return (
     <>
@@ -263,18 +240,19 @@ const Inventories = () => {
       <Box m="20px">
         {
           permissionValues.read ?
-          <>         
+          <>
+         
         <Typography
           variant="h2"
           color={colors.grey[100]}
           fontWeight="bold"
           sx={{ m: "0 0 5px 0" }}
         >
-          Inventories
+          Files
         </Typography>
         <Box display="flex" justifyContent="space-between">
           <Typography variant="h5" color={colors.greenAccent[400]}>
-            List Of Inventories
+            List Of Files
           </Typography>
 
           <div
@@ -285,17 +263,18 @@ const Inventories = () => {
               height: "30px",
             }}
           >
-                  {showDelete ? (
-                    <>
-                      <div
-                        style={{
-                          width: "180px",
-                          display: "flex",
-                          justifyContent: "flex-end",
-                        }}
-                      >
-                        {
-                          permissionValues.delete &&
+            {showEmail ? (
+              <>
+                <div
+                  style={{
+                    width: "180px",
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    gap: "15px",
+                  }}
+                >
+                  {
+                    permissionValues.delete &&                 
                           <Tooltip title="Delete Selected">
                             <IconButton>
                               <DeleteIcon
@@ -304,26 +283,24 @@ const Inventories = () => {
                               />
                             </IconButton>
                           </Tooltip>
-                        }
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      {
-                        permissionValues.create &&
-                        <>
-                          <Button
-                            variant="contained"
-                            color="info"
-                            onClick={handleAddRecord}
-                          >
-                            New
-                          </Button>
-                          <ExcelDownload data={records} filename={`AccountRecords`} />
-                        </>
-                      }
-                    </>
-                  )}
+                   }
+                </div>
+              </>
+            ) : (
+              <>
+              {
+                permissionValues.create &&
+              <>
+                <Button
+                  variant="contained"color="info"
+                  onClick={handleAddRecord}
+                >
+                  Upload File
+                </Button>
+              </>
+              }
+                </>
+            )}
           </div>
         </Box>
         <Box m="15px 0 0 0" height="380px" className="my-mui-styles">
@@ -337,12 +314,11 @@ const Inventories = () => {
             getRowId={(row) => row._id}
             pageSize={7}
             rowsPerPageOptions={[7]}
-            hideFooterSelectedRowCount
             components={{
-              Pagination: CustomPagination,
               // Toolbar: GridToolbar,
+              Pagination: CustomPagination,
             }}
-            loading={fetchLoading}
+            loading={fetchRecordsLoading}
             getRowClassName={(params) =>
               params.indexRelativeToCurrentPage % 2 === 0
                 ? "C-MuiDataGrid-row-even"
@@ -352,7 +328,7 @@ const Inventories = () => {
             disableSelectionOnClick
             onSelectionModelChange={(ids) => {
               var size = Object.keys(ids).length;
-              size > 0 ? setShowDelete(true) : setShowDelete(false);
+              size > 0 ? setShowEmail(true) : setShowEmail(false);
               console.log("checkbox selection ids", ids);
               setSelectedRecordIds(ids);
               const selectedIDs = new Set(ids);
@@ -362,15 +338,28 @@ const Inventories = () => {
               setSelectedRecordDatas(selectedRowRecords);
               console.log("selectedRowRecords", selectedRowRecords);
             }}
-            onRowClick={(e) => handleOnCellClick(e)}
+            onRowClick={(e) => handleRowClick(e)}
           />
         </Box>
+        <Modal
+        open={modalFileUpload}
+        onClose={handleFileModalClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+        sx={{ backdropFilter: "blur(1px)" }}
+      >
+        <div className="modalFile">
+          <ModalFileUpload handleModal={handleFileModalClose} />
+        </div>
+      </Modal>
+
         </>
-        : null
+        :null
         }
       </Box>
+      
     </>
   );
 };
 
-export default Inventories;
+export default Files;

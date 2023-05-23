@@ -21,13 +21,13 @@ import FlexLeads from "../Flex/FlexLeads";
 import FlexOpportunities from "../Flex/FlexOpportunities";
 import FlexTasks from "../Flex/FlexTasks";
 import PageNotFound from "../Errors/PageNotFound";
-import DashboardIndex from "../dashboard";
 import HomePage from "../home";
 import PermissionSetDetailPage from "../recordDetailPage/PermissionSetDetailPage";
 import FileUpload from "../fileUpload/FileUpload";
 import PermissionSets from "../permissionSets";
 import RoleDetailPage from "../recordDetailPage/RoleDetailPage";
 import RoleIndex from "../roles";
+import Files from "../Files";
 
 function LoginLayoutIndex() {
   return (
@@ -45,7 +45,8 @@ function LoginLayoutIndex() {
         <Route path="/list/user" element={<ResponsiveUsers />} />
         <Route path="/list/permissions" element={<PermissionSets />} />
         <Route path="/list/role" element={<RoleIndex />} />
-        <Route path="/list/files" element={<FileUpload />} />
+        <Route path="/list/files" element={<Files />} />
+        {/* <Route path="/list/files" element={<FileUpload />} /> */}
 
 
         <Route path="/new-contacts" element={<ContactDetailPage />} />
@@ -71,13 +72,6 @@ function LoginLayoutIndex() {
         
         <Route path="/Home" element={<HomePage />} />
         <Route path="*" element={<PageNotFound />} />
-
-        {/* <Route path="/leadDetailPage/:Id" element={<LeadDetailPage/>} /> */}
-        {/* <Route path="/accountDetailPage/:id" element={<FlexAccounts/>} /> */}
-        {/* <Route path="/dataLoader" element={<DataLoadPage />} /> */}
-        {/* <Route path='/mobi' element={<AccountsMobile/>} /> */}
-        {/* <Route path='/invmobi' element={<InventoriesMobile/>} />  */}
-        {/* <Route path ='/test' element={<ResponsiveScreen/>} />   */}
       </Routes>
     </>
   );

@@ -18,16 +18,20 @@ import { apiMethods } from "../api/methods";
 import { getLoginUserRoleDept } from "../Auth/userRoleDept";
 import { apiCheckObjectPermission } from "../Auth/apiCheckObjectPermission";
 import NoAccessCard from '../NoAccess/NoAccessCard'
-
+import { OBJECT_API_DEAL,OBJECT_API_EVENT,
+GET_ENQUIRY_RELATED_DEAL,GET_ENQUIRY_RELATED_EVENT,
+DELETE_EVENT,DELETE_DEAL } 
+from "../api/endUrls";
 
 const LeadRelatedItems = ({ item }) => {
 
-  const OBJECT_API_Task = "Task"
-  const OBJECT_API_Opportunity = "Opportunity"
-  const taskDeleteURL = `/deleteTask?code=`;
-  const opportunityDeleteURL = `/deleteOpportunity?code=`;
-  const urlTaskbyLeadId = `/getTaskbyLeadId?searchId=`;
-  const urlOppbyLeadId = `/getLeadsbyOppid?searchId=`;
+
+  const OBJECT_API_Deal = OBJECT_API_DEAL
+  const OBJECT_API_Event = OBJECT_API_EVENT
+  const URL_getRelatedDealRecords = GET_ENQUIRY_RELATED_DEAL;
+  const URL_getRelatedEventRecords = GET_ENQUIRY_RELATED_EVENT;
+  const URL_deleteDealRecords = DELETE_DEAL;
+  const URL_deleteEventRecords = DELETE_EVENT;
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -53,8 +57,8 @@ const LeadRelatedItems = ({ item }) => {
   const [permissionValuesTask, setPermissionValuesTask] = useState({})
   const [permissionValuesOpportunity, setPermissionValuesOpportunity] = useState({})
 
-  const userRoleDptTask = getLoginUserRoleDept(OBJECT_API_Task)
-  const userRoleDptOpportunity = getLoginUserRoleDept(OBJECT_API_Opportunity)
+  const userRoleDptTask = getLoginUserRoleDept(OBJECT_API_Event)
+  const userRoleDptOpportunity = getLoginUserRoleDept(OBJECT_API_Deal)
   console.log(userRoleDptTask, "userRoleDptTask")
   console.log(userRoleDptOpportunity, "userRoleDptOpportunity")
 
@@ -95,7 +99,7 @@ const LeadRelatedItems = ({ item }) => {
   const getTasksbyLeadId = (leadsId) => {
 
     console.log('lead id', leadsId);
-    RequestServer(apiMethods.post, urlTaskbyLeadId + leadsId)
+    RequestServer(apiMethods.get, URL_getRelatedEventRecords + leadsId)
       .then((res) => {
         if (res.success) {
           setRelatedTask(res.data);
@@ -111,7 +115,7 @@ const LeadRelatedItems = ({ item }) => {
   }
 
   const getOpportunitybyLeadId = (leadsId) => {
-    RequestServer(apiMethods.post, urlOppbyLeadId + leadsId)
+    RequestServer(apiMethods.get, URL_getRelatedDealRecords + leadsId)
       .then((res) => {
         if (res.success) {
           setRelatedOpportunity(res.data);
@@ -161,7 +165,7 @@ const LeadRelatedItems = ({ item }) => {
 
   const onConfirmTaskCardDelete = (row) => {
     console.log('req delete rec', row);
-    RequestServer(apiMethods.post, taskDeleteURL + row._id)
+    RequestServer(apiMethods.delete, URL_deleteEventRecords + row._id)
       .then((res) => {
         if (res.success) {
           getTasksbyLeadId(leadRecordId)
@@ -221,7 +225,7 @@ const LeadRelatedItems = ({ item }) => {
   const onConfirmOpportunityCardDelete = (row) => {
 
     console.log('req opp delete rec', row)
-    RequestServer(apiMethods.post, opportunityDeleteURL + row._id)
+    RequestServer(apiMethods.delete, URL_deleteDealRecords + row._id)
       .then((res) => {
         if (res.success) {
           getOpportunitybyLeadId(leadRecordId)

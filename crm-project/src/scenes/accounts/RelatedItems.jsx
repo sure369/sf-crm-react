@@ -23,18 +23,20 @@ import { apiMethods } from "../api/methods";
 import { getLoginUserRoleDept } from "../Auth/userRoleDept";
 import { apiCheckObjectPermission } from "../Auth/apiCheckObjectPermission";
 import NoAccessCard from '../NoAccess/NoAccessCard'
+import { DELETE_CONTACT, DELETE_EVENT, GET_ACCOUNT_RELATED_EVENT,OBJECT_API_CONTACT,OBJECT_API_EVENT } from "../api/endUrls";
 
 const AccountRelatedItems = ({ item }) => {
 
-  const OBJECT_API_task = "Task"
-  const OBJECT_API_contact = "Contact"
-  const taskDeleteURL = `/deleteTask?code=`;
-  const urlgetTaskbyAccountId = `/getTaskbyAccountId?searchId=`;
-  const urlgetContactbyAccountId = `/getContactsbyAccountId?searchId=`;
-  const contactDeleteURL = `/deleteContact?code=`;
+  const OBJECT_API_task = OBJECT_API_EVENT
+  const OBJECT_API_contact = OBJECT_API_CONTACT
+  const URL_getRelatedEventRecords = GET_ACCOUNT_RELATED_EVENT
+  const URL_getRelatedContactRecords = GET_ACCOUNT_RELATED_EVENT
+  const URL_deleteContactRecord = DELETE_CONTACT
+  const URL_deleteEventRecord = DELETE_EVENT
 
   const navigate = useNavigate();
   const location = useLocation();
+
 
   const [accountRecordId, setAccountRecordId] = useState()
   const [relatedTask, setRelatedTask] = useState([]);
@@ -99,7 +101,7 @@ const AccountRelatedItems = ({ item }) => {
 
     console.log('inside getTasks record Id', accId);
 
-    RequestServer(apiMethods.post, urlgetTaskbyAccountId + accId)
+    RequestServer(apiMethods.get, URL_getRelatedEventRecords + accId)
       .then((res) => {
         if (res.success) {
           setRelatedTask(res.data);
@@ -117,7 +119,7 @@ const AccountRelatedItems = ({ item }) => {
   const getContactsbyAccountId = (accId) => {
     console.log('inside getContacts record Id', accId);
 
-    RequestServer(apiMethods.post, urlgetContactbyAccountId + accId)
+    RequestServer(apiMethods.get, URL_getRelatedContactRecords + accId)
       .then((res) => {
         if (res.success) {
           setRelatedContact(res.data);
@@ -169,7 +171,7 @@ const AccountRelatedItems = ({ item }) => {
   const onConfirmContactCardDelete = (row) => {
     console.log('req delete rec', row);
 
-    RequestServer(apiMethods.post, contactDeleteURL + row._id)
+    RequestServer(apiMethods.delete, URL_deleteContactRecord + row._id)
       .then((res) => {
         if (res.success) {
 
@@ -226,7 +228,7 @@ const AccountRelatedItems = ({ item }) => {
   }
   const onConfirmTaskCardDelete = (row) => {
     console.log('req delete rec', row);
-    RequestServer(apiMethods.post, taskDeleteURL + row._id)
+    RequestServer(apiMethods.delete, URL_deleteEventRecord + row._id)
       .then((res) => {
         if (res.success) {
           getTasksbyAccountId(accountRecordId)

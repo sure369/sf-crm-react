@@ -1,9 +1,9 @@
-import api from "./api";
+import apiFile from "./apiFiles";
 
-export const RequestServer = (method,endpoint, payload) => {
-        return api[method](endpoint, payload)
+export const RequestServerFiles = (method,endpoint, payload) => {
+        return apiFile[method](endpoint, payload)
         .then((res) => {
-            console.log("inside HttpReq res ", res);
+            console.log("inside HttpReqFiles res ", res);
             if (res.status === 200) {
                 console.log("status success ", res.data);
                 return {
