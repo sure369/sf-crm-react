@@ -17,17 +17,18 @@ import { RequestServer } from "../api/HttpReq";
 import { apiMethods } from "../api/methods";
 import { apiCheckObjectPermission } from "../Auth/apiCheckObjectPermission";
 import { getLoginUserRoleDept } from "../Auth/userRoleDept";
-import { OBJECT_API_EVENT ,POST_EVENT} from "../api/endUrls";
+import { OBJECT_API_EVENT ,POST_EVENT,
+    GET_DEAL_NAME,GET_ACCOUNT_NAME,GET_ENQUIRY_NAME
+} from "../api/endUrls";
 
 
 const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
     
     const OBJECT_API = OBJECT_API_EVENT
     const URL_postRecords = POST_EVENT
-    const fetchAccountUrl = `/accountsname`;
-    const fetchLeadUrl = `/LeadsbyName`;
-    const fetchOpportunityUrl = `/opportunitiesbyName`;
-
+    const URL_getAccountLookUpRecords=GET_ACCOUNT_NAME
+    const URL_getEnquiryLookUpRecords=GET_ENQUIRY_NAME
+    const URL_getDealLookUpRecords=GET_DEAL_NAME
 
     const [singleTask, setSingleTask] = useState();
     const [showNew, setshowNew] = useState()
@@ -78,7 +79,7 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
 
     const initialValues=TaskInitialValues
     const savedValues=TaskSavedValues(singleTask)
-
+    console.log(savedValues,"savedValues")
     const validationSchema = Yup.object({
         subject: Yup
             .string()
@@ -117,63 +118,12 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
             }else if (values.EndDate) {
                 values.EndDate = EndDateSec
             }
-            if (values.object === 'Account') {               
-                delete values.OpportunityId; 
-                delete values.LeadId; 
-            }else if (values.object === 'Opportunity') {                
-                 delete values.AccountId; 
-                 delete values.LeadId;    
-            }else if (values.object === 'Lead') {
-                delete values.OpportunityId; 
-                delete values.AccountId; 
-            }else{
-                delete values.OpportunityId; 
-                delete values.AccountId; 
-                delete values.LeadId; 
-            }
         }
         else if (!showNew) {
             values.modifiedDate = dateSeconds;
             values.createdDate = createDateSec
             values.createdBy = singleTask.createdBy;
             values.modifiedBy = JSON.parse(sessionStorage.getItem('loggedInUser'))
-
-            if (values.StartDate && values.EndDate) {
-                values.StartDate = StartDateSec
-                values.EndDate = EndDateSec
-            }
-            else if (values.StartDate) {
-                values.StartDate = StartDateSec
-            }
-            else if (values.EndDate) {
-                values.EndDate = EndDateSec
-            }
-            if ( values.object === 'Account') {               
-                delete values.OpportunityId; 
-                delete values.LeadId;
-                if(!values.AccountId){
-                    delete values.AccountId
-                }
-            }else if ( values.object === 'Opportunity') {                
-                 delete values.AccountId; 
-                 delete values.LeadId;  
-                 if(!values.OpportunityId){
-                    delete values.OpportunityId
-                }  
-            }else if (values.object==='Lead') {
-                console.log('inside')
-                delete values.OpportunityId; 
-                delete values.AccountId; 
-                delete values.opportunityDetails
-                delete values.accountDetails
-                if(!values.LeadId){
-                    delete values.LeadId
-                }
-            }else{
-                delete values.OpportunityId; 
-                delete values.AccountId; 
-                delete values.LeadId; 
-            }
         }
         console.log('after change form submission value', values);
 
@@ -204,7 +154,7 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
                 })
                 .finally(()=>{
                     setTimeout(() => {
-                        navigate(-1);
+                        // navigate(-1);
                     }, 2000)
                 })
         }
@@ -215,7 +165,11 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
 
         console.log('inside call event',initialValues.object)
 
-        let url1 = e === 'Account' ? fetchAccountUrl : e === 'Lead' ? fetchLeadUrl : e === 'Opportunity' ? fetchOpportunityUrl : null
+        let url1 =
+            e === 'Account' ? URL_getAccountLookUpRecords :
+                e === 'Enquiry' ? URL_getEnquiryLookUpRecords :
+                    e === 'Deal' ? URL_getDealLookUpRecords :
+                        null
         setUrl(url1)
         FetchObjectsbyName('', url1);
         if (url == null) {
@@ -229,7 +183,7 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
         console.log('passed url', url)
         console.log('new Input  value', newInputValue)
 
-        RequestServer(apiMethods.post,`${url}?searchKey=${newInputValue}`)
+        RequestServer(apiMethods.get,url+newInputValue )
             .then((res) => {
                 console.log('res Fetch Objects byName', res.data)
                if(res.success){
@@ -309,12 +263,14 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
                                         </Field>
                                     </Grid>
                                     <Grid item xs={6} md={6}>
-                                        <label htmlFor="relatedto"> Realated To  </label> 
+                                        <label htmlFor="relatedTo"> Realated To  </label> 
                                              <Autocomplete
-                                                name="relatedto"
+                                                name="relatedTo"
                                                 readOnly={autocompleteReadOnly}
                                                 options={relatedRecNames}
-                                                value={values.accountDetails ||values.opportunityDetails ||values.leadDetails  }
+                                                value={values.relatedTo}
+                                                // value={values.accountDetails ||values.opportunityDetails ||values.leadDetails  }
+
                                                 getOptionLabel={option => option.leadName || option.accountName || option.opportunityName || ''}
                                                 isOptionEqualToValue={(option, value) =>
                                                     option.id === value
@@ -323,36 +279,38 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
                                                     console.log('inside onchange values', value);
                                                     if(!value){                                
                                                         console.log('!value',value);
-                                                        if (values.object === 'Account') {
-                                                            setFieldValue('AccountId', '')
-                                                            setFieldValue('accountDetails','')
-                                                        } else if (values.object === 'Opportunity') {
-                                                            setFieldValue('OpportunityId', '')
-                                                            setFieldValue('opportunityDetails','')
-                                                        } else if (values.object === 'Lead') {
-                                                            setFieldValue('LeadId', '')
-                                                            setFieldValue('leadDetails','')
-                                                        }
+                                                        setFieldValue('relatedTo','')
+                                                        // if (values.object === 'Account') {
+                                                        //     // setFieldValue('AccountId', '')
+                                                        //     setFieldValue('accountDetails','')
+                                                        // } else if (values.object === 'Deal') {
+                                                        //     // setFieldValue('OpportunityId', '')
+                                                        //     setFieldValue('opportunityDetails','')
+                                                        // } else if (values.object === 'Enquiry') {
+                                                        //     // setFieldValue('LeadId', '')
+                                                        //     setFieldValue('leadDetails','')
+                                                        // }
                                                     }
                                                     else{
-                                                        console.log('value',value);
-                                                        if (values.object === 'Account') {
-                                                            setFieldValue('AccountId', value.id)
-                                                            setFieldValue('accountDetails',value)
-                                                        } else if (values.object === 'Opportunity') {
-                                                            setFieldValue('OpportunityId', value.id)
-                                                            setFieldValue('opportunityDetails',value)
-                                                        } else if (values.object === 'Lead') {
-                                                            setFieldValue('LeadId', value.id)
-                                                            setFieldValue('leadDetails',value)
-                                                        }
+                                                        console.log('autocomplete selected value',value);                                                        
+                                                        setFieldValue('relatedTo',value)
+                                                        // if (values.object === 'Account') {
+                                                        //     // setFieldValue('AccountId', value.id)
+                                                        //     setFieldValue('accountDetails',value)
+                                                        // } else if (values.object === 'Deal') {
+                                                        //     // setFieldValue('OpportunityId', value.id)
+                                                        //     setFieldValue('opportunityDetails',value)
+                                                        // } else if (values.object === 'Enquiry') {
+                                                        //     // setFieldValue('LeadId', value.id)
+                                                        //     setFieldValue('leadDetails',value)
+                                                        // }
                                                     }
                                                 }}
                                                 onInputChange={(event, newInputValue) => {
                                                     if (newInputValue.length >= 3) {
                                                         FetchObjectsbyName(newInputValue, url)
                                                     }
-                                                    else  if (newInputValue.length ==0) {
+                                                    else  if (newInputValue.length ===0) {
                                                         FetchObjectsbyName(newInputValue, url)
                                                     }
                                                 }}

@@ -7,8 +7,6 @@ import {
     TextField, Autocomplete, Select,
 } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom"
-// import axios from 'axios'
-// import "../formik/FormStyles.css"
 import ToastNotification from '../toast/ToastNotification';
 import CustomizedSelectForFormik from '../formik/CustomizedSelectForFormik';
 import { RolesCategories, RolesDepartment, UserAccessPicklist, UserRolePicklist } from '../../data/pickLists';
@@ -24,7 +22,6 @@ const RoleDetailPage = ({ item }) => {
 
     const OBJECT_API=OBJECT_API_ROLE
     const URL_postRecords = POST_ROLE
-    const urlSendEmailbulk = `/bulkemail`
 
 
     const [singleRole, setsingleRole] = useState();

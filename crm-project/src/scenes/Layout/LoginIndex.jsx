@@ -35,13 +35,14 @@ function LoginLayoutIndex() {
     
     {/* <AppNavbar /> */}
       <Routes>
-        <Route path="/" exact element={<HomePage />} />
+        <Route path="/" exact element={<ResponsiveAccounts />} />
+        {/* <Route path="/" exact element={<HomePage />} /> */}
         <Route path="/list/account" element={<ResponsiveAccounts />} />
         <Route path="/list/contact" element={<ResponsiveContacts />} />
-        <Route path="/list/opportunity" element={<ResponsiveOpportunities />} />
-        <Route path="/list/lead" element={<ResponsiveLeads />} />
+        <Route path="/list/deal" element={<ResponsiveOpportunities />} />
+        <Route path="/list/enquiry" element={<ResponsiveLeads />} />
         <Route path="/list/inventory" element={<ResponsiveInventories />} />
-        <Route path="/list/task" element={<ResponsiveTasks />} />
+        <Route path="/list/event" element={<ResponsiveTasks />} />
         <Route path="/list/user" element={<ResponsiveUsers />} />
         <Route path="/list/permissions" element={<PermissionSets />} />
         <Route path="/list/role" element={<RoleIndex />} />

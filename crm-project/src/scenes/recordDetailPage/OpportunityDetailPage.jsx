@@ -16,16 +16,15 @@ import { OpportunityInitialValues, OpportunitySavedValues } from '../formik/Inti
 import { apiMethods } from '../api/methods';
 import { apiCheckObjectPermission } from "../Auth/apiCheckObjectPermission";
 import { getLoginUserRoleDept } from "../Auth/userRoleDept";
-import { OBJECT_API_DEAL,POST_DEAL } from '../api/endUrls';
+import { OBJECT_API_DEAL,POST_DEAL,GET_INVENTORY_NAME,GET_ENQUIRY_NAME } from '../api/endUrls';
 
 
 const OpportunityDetailPage = ({ item }) => {
 
     const OBJECT_API = OBJECT_API_DEAL
     const URL_postRecords = POST_DEAL
-    const fetchLeadsbyName = `/LeadsbyName?searchKey=`;
-    const fetchInventoriesbyName = `/InventoryName?searchKey=`;
-
+    const URL_getInventoryLookUpRecords=GET_INVENTORY_NAME
+    const URL_getEnquiryLookUpRecords=GET_ENQUIRY_NAME
 
     const [singleOpportunity, setSinglOpportunity] = useState();
     const location = useLocation();
@@ -170,7 +169,7 @@ const OpportunityDetailPage = ({ item }) => {
     const FetchLeadsbyName = (newInputValue) => {
 
         console.log('newInputValue', newInputValue)
-        RequestServer(apiMethods.post, fetchLeadsbyName + newInputValue)
+        RequestServer(apiMethods.get, URL_getEnquiryLookUpRecords + newInputValue)
             .then((res) => {
                 console.log('res fetchLeadsbyName', res.data)
                 if (res.success) {
@@ -187,7 +186,7 @@ const OpportunityDetailPage = ({ item }) => {
     }
 
     const FetchInventoriesbyName = (newInputValue) => {
-        RequestServer(apiMethods.post, fetchInventoriesbyName + newInputValue)
+        RequestServer(apiMethods.get, URL_getInventoryLookUpRecords + newInputValue)
             .then((res) => {
                 console.log('res fetch Inventoriesby Name', res.data)
                 if (res.success) {

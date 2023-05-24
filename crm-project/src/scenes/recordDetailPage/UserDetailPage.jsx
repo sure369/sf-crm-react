@@ -15,12 +15,12 @@ import { RequestServer } from '../api/HttpReq';
 import { UserInitialValues,UserSavedValues } from '../formik/IntialValues/formValues';
 import { apiMethods } from '../api/methods';
 import queryString from 'query-string';
-import { POST_USER } from '../api/endUrls';
+import { POST_USER ,POST_SEND_BULK_EMAIL,GET_ROLE} from '../api/endUrls';
+
 
 const URL_postRecords = POST_USER
-const fetchUsersbyName = `/usersbyName`
-const urlSendEmailbulk = `/bulkemail`
-const urlgetRolesByDept='/roles'
+const URL_postEmailBulk=POST_SEND_BULK_EMAIL
+const URL_getRoles = GET_ROLE
 
 const UserDetailPage = ({ item }) => {
 
@@ -96,7 +96,7 @@ const UserDetailPage = ({ item }) => {
         formData.append('emailId',obj.emailId)
         // formData.append('file', values.attachments);
 
-        RequestServer(apiMethods.post,urlSendEmailbulk,formData)
+        RequestServer(apiMethods.post,URL_postEmailBulk,formData)
         .then((res)=>{
             console.log("eamil res",res.data)
             if(res.success){
@@ -197,7 +197,7 @@ const UserDetailPage = ({ item }) => {
             role: inputValue
         }
 
-        let url = urlgetRolesByDept + '?' + queryString.stringify(payloadObj);
+        let url = URL_getRoles + '?' + queryString.stringify(payloadObj);
 
         // axios.post(`${urlgetRolesByDept}?searchKey=${newInputValue}`)
         RequestServer(apiMethods.get, url)

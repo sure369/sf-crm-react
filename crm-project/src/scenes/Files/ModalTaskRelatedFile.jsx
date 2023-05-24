@@ -19,7 +19,9 @@ import { apiMethods } from "../api/methods";
 
 const URL_postRecords = POST_FILE
 
-const ModalFileUpload = ({ handleModal }) => {
+const ModalTaskFileUpload = ({record, handleModal }) => {
+
+    console.log(record,"record ModalTaskFileUpload")
 
     const [notify, setNotify] = useState({ isOpen: false, message: "", type: "", });
 
@@ -38,6 +40,8 @@ const ModalFileUpload = ({ handleModal }) => {
 
         selectedFiles.forEach((file) => {
             formData.append("file", file);
+            formData.append("relatedId", record.taskId);
+            formData.append("relatedObject", record.OBJECT_API);
             formData.append("createdDate", dateSeconds)
             formData.append("modifiedDate", dateSeconds)
             formData.append("createdBy", JSON.stringify(userDetails))
@@ -85,6 +89,9 @@ const ModalFileUpload = ({ handleModal }) => {
     };
 
 
+
+    
+      
 
     return (
         <>
@@ -143,4 +150,4 @@ const ModalFileUpload = ({ handleModal }) => {
     );
 
 };
-export default ModalFileUpload;
+export default ModalTaskFileUpload;

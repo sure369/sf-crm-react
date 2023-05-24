@@ -24,11 +24,11 @@ import { apiMethods } from '../api/methods';
 import { apiCheckObjectPermission } from '../Auth/apiCheckObjectPermission';
 import { getLoginUserRoleDept } from '../Auth/userRoleDept';
 import NoAccessCard from '../NoAccess/NoAccessCard';
-import { OBJECT_API_CONTACT,POST_CONTACT } from '../api/endUrls';
+import { OBJECT_API_CONTACT,POST_CONTACT ,GET_ACCOUNT_NAME} from '../api/endUrls';
 
 const OBJECT_API = OBJECT_API_CONTACT
 const URL_postRecords= POST_CONTACT
-const fetchAccountsbyName = `/accountsname?searchKey=`;
+const URL_getAccountLookUpRecords=GET_ACCOUNT_NAME
 
 const ContactDetailPage = ({ item }) => {
 
@@ -159,7 +159,7 @@ const ContactDetailPage = ({ item }) => {
 
     const FetchAccountsbyName = (newInputValue) => {
 
-        RequestServer(apiMethods.post,fetchAccountsbyName + newInputValue)
+        RequestServer(apiMethods.get,URL_getAccountLookUpRecords + newInputValue)
         .then((res)=>{
             if(res.success){
                 if(typeof(res.data)!=='string'){

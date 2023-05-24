@@ -19,16 +19,17 @@ import queryString from 'query-string';
 import { apiMethods } from '../api/methods';
 import { apiCheckObjectPermission } from "../Auth/apiCheckObjectPermission";
 import { getLoginUserRoleDept } from "../Auth/userRoleDept";
-import { OBJECT_API_PERMISSIONS,POST_PERMISSIONS } from '../api/endUrls';
+import { OBJECT_API_PERMISSIONS, POST_PERMISSIONS 
+    ,GET_ROLE,GET_ALL_TABLE_NAME,
+} from '../api/endUrls';
 
 
 const PermissionSetDetailPage = ({ item }) => {
 
     const OBJECT_API = OBJECT_API_PERMISSIONS
-const URL_postRecords = POST_PERMISSIONS
-const urlgetUsersByName = `/getUsers`;
-const urlgetRolesByDept = `/roles`
-const urlGetAllTableNames = `/objects`
+    const URL_postRecords = POST_PERMISSIONS
+    const URL_getRolesRecord=GET_ROLE
+    const URL_getAllTableNames=GET_ALL_TABLE_NAME
 
 
     const [singlePermission, setsinglePermission] = useState();
@@ -40,10 +41,10 @@ const urlGetAllTableNames = `/objects`
     const [roleRecordsByDept, setRoleRecordsByDept] = useState([])
     const [objTableName, setObjTableName] = useState([])
 
-    
+
     const [permissionValues, setPermissionValues] = useState({})
-    const userRoleDpt= getLoginUserRoleDept(OBJECT_API)
-    console.log(userRoleDpt,"userRoleDpt")
+    const userRoleDpt = getLoginUserRoleDept(OBJECT_API)
+    console.log(userRoleDpt, "userRoleDpt")
 
     useEffect(() => {
         console.log('passed record PermissionSetDetailPage', location.state.record.item);
@@ -55,43 +56,44 @@ const urlGetAllTableNames = `/objects`
     }, [])
 
 
-    const fetchObjectPermissions=()=>{
-        if(userRoleDpt){
+    const fetchObjectPermissions = () => {
+        if (userRoleDpt) {
             apiCheckObjectPermission(userRoleDpt)
-            .then(res=>{
-                console.log(res[0].permissions,"apiCheckObjectPermission promise res")
-                setPermissionValues(res[0].permissions)
-            })
-            .catch(err=>{
-                console.log(err,"res apiCheckObjectPermission error")
-                setPermissionValues({})
-            })
+                .then(res => {
+                    console.log(res[0].permissions, "apiCheckObjectPermission promise res")
+                    setPermissionValues(res[0].permissions)
+                })
+                .catch(err => {
+                    console.log(err, "res apiCheckObjectPermission error")
+                    setPermissionValues({})
+                })
         }
     }
 
     const fetchTableNames = () => {
-        RequestServer(apiMethods.get, urlGetAllTableNames)
+        RequestServer(apiMethods.get, URL_getAllTableNames)
             .then(res => {
                 if (res.success) {
-                    console.log(res.data, "urlGetAllTableNames then res")
-                    const objNameChangeArr = res.data.map(item => {
-                        if (item === "Inventory Management") {
-                          return "Inventory";
-                        } else {
-                          return item;
-                        }
-                      });
-                    const tableName = objNameChangeArr.map(i => {
+                    console.log(res.data, "URL_getAllTableNames then res")
+                    // const objNameChangeArr = res.data.map(item => {
+                    //     if (item === "Inventory Management") {
+                    //       return "Inventory";
+                    //     } else {
+                    //       return item;
+                    //     }
+                    //   });
+
+                    const tableName = res.data.map(i => {
                         return i
                     })
                     console.log(tableName, "tableName")
                     setObjTableName(tableName)
                 } else {
-                    console.log(res.error, "urlGetAllTableNames then error")
+                    console.log(res.error, "URL_getAllTableNames then error")
                 }
             })
             .catch(error => {
-                console.log(error, "urlGetAllTableNames catch")
+                console.log(error, "URL_getAllTableNames catch")
             })
     }
 
@@ -142,22 +144,18 @@ const urlGetAllTableNames = `/objects`
 
         let dateSeconds = new Date().getTime();
         let createDateSec = new Date(values.createdDate).getTime()
-        // values.roleDetails = JSON.stringify(values.roleDetails)
         values.permissionSets = JSON.stringify(values.permissionSets)
         if (showNew) {
             values.modifiedDate = dateSeconds;
             values.createdDate = dateSeconds;
             values.createdBy = JSON.parse(sessionStorage.getItem('loggedInUser'))
             values.modifiedBy = JSON.parse(sessionStorage.getItem('loggedInUser'))
-            // delete values.userDetails;
-
         }
         else if (!showNew) {
             values.modifiedDate = dateSeconds;
             values.createdDate = createDateSec;
             values.createdBy = singlePermission.createdBy;
             values.modifiedBy = JSON.parse(sessionStorage.getItem('loggedInUser'))
-            // delete values.userDetails;
         }
         console.log('after change form submission value', values);
 
@@ -212,11 +210,11 @@ const urlGetAllTableNames = `/objects`
             role: inputValue
         }
 
-        let url = urlgetRolesByDept + '?' + queryString.stringify(payloadObj);
+        let url = URL_getRolesRecord + '?' + queryString.stringify(payloadObj);
 
         RequestServer(apiMethods.get, url)
             .then((res) => {
-                console.log(res, " FetchRolesbyName urlgetRolesByDept res")
+                console.log(res, " FetchRolesbyName url_getRolesRecord res")
                 if (res.success) {
                     // const obj={id:res.data._id,roleName:res.data.roleName}
                     if (typeof (res.data) === 'object') {
@@ -225,12 +223,12 @@ const urlGetAllTableNames = `/objects`
                         setRoleRecordsByDept([])
                     }
                 } else {
-                    console.log("urlgetRolesByDept status error", res.error.message)
+                    console.log("url_getRolesRecord status error", res.error.message)
                     setRoleRecordsByDept([])
                 }
             })
             .catch((error) => {
-                console.log("error urlgetRolesByDept", error)
+                console.log("error url_getRolesRecord", error)
                 setRoleRecordsByDept([])
             })
 
@@ -274,7 +272,7 @@ const urlGetAllTableNames = `/objects`
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="permissionName">Permission Set Name <span className="text-danger">*</span></label>
                                             <Field type="text" id="permissionName" name="permissionName" class="form-input"
-                                             disabled={showNew?!permissionValues.create :!permissionValues.edit}
+                                                disabled={showNew ? !permissionValues.create : !permissionValues.edit}
 
                                             />
                                             <div style={{ color: "red" }}>
@@ -285,7 +283,7 @@ const urlGetAllTableNames = `/objects`
                                             <label htmlFor="department">Department</label>
                                             <Field name="department"
                                                 component={CustomizedSelectForFormik}
-                                                 disabled={showNew?!permissionValues.create :!permissionValues.edit}
+                                                disabled={showNew ? !permissionValues.create : !permissionValues.edit}
                                                 className="form-customSelect"
                                                 onChange={(e) => {
                                                     console.log(e.target.value, "event")
@@ -334,7 +332,7 @@ const urlGetAllTableNames = `/objects`
                                                         console.log(values.department, "else ")
                                                     }
                                                 }}
-                                                 disabled={showNew?!permissionValues.create :!permissionValues.edit}
+                                                disabled={showNew ? !permissionValues.create : !permissionValues.edit}
                                                 renderInput={params => (
                                                     // console.log(params,"params")
                                                     <Field component={TextField} {...params} name="roleDetails" />
@@ -382,7 +380,7 @@ const urlGetAllTableNames = `/objects`
                                                                                                         setFieldValue(`permissionSets.${index}.permissions.delete`, e.target.checked)
                                                                                                     }
                                                                                                 }}
-                                                                                             disabled={showNew?!permissionValues.create :!permissionValues.edit}
+                                                                                                disabled={showNew ? !permissionValues.create : !permissionValues.edit}
                                                                                             />
                                                                                         </Grid>
                                                                                         <Grid item xs={3} md={3}>
@@ -401,7 +399,7 @@ const urlGetAllTableNames = `/objects`
                                                                                                         setFieldValue(`permissionSets.${index}.permissions.create`, e.target.checked);
                                                                                                     }
                                                                                                 }}
-                                                                                             disabled={showNew?!permissionValues.create :!permissionValues.edit}
+                                                                                                disabled={showNew ? !permissionValues.create : !permissionValues.edit}
                                                                                             />
                                                                                         </Grid>
 
@@ -422,7 +420,7 @@ const urlGetAllTableNames = `/objects`
                                                                                                         setFieldValue(`permissionSets.${index}.permissions.delete`, e.target.checked)
                                                                                                     }
                                                                                                 }}
-                                                                                             disabled={showNew?!permissionValues.create :!permissionValues.edit}
+                                                                                                disabled={showNew ? !permissionValues.create : !permissionValues.edit}
                                                                                             />
                                                                                         </Grid>
                                                                                         <Grid item xs={3} md={3}>
@@ -444,7 +442,7 @@ const urlGetAllTableNames = `/objects`
                                                                                                         setFieldValue(`permissionSets.${index}.permissions.delete`, e.target.checked);
                                                                                                     }
                                                                                                 }}
-                                                                                             disabled={showNew?!permissionValues.create :!permissionValues.edit}
+                                                                                                disabled={showNew ? !permissionValues.create : !permissionValues.edit}
                                                                                             />
                                                                                         </Grid>
                                                                                     </Grid>

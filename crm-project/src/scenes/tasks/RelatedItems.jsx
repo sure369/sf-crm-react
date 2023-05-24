@@ -1,49 +1,137 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
-  Card, CardContent, Box, Button, Typography, Modal,
-  IconButton, Grid, Accordion, AccordionSummary,
-  AccordionDetails, Pagination, Menu, MenuItem,
+  Typography, Accordion, AccordionSummary, Modal,
+  AccordionDetails, Button, List, ListItem,
+  ListItemButton, ListItemIcon, ListItemText
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import ModalLeadTask from "../tasks/ModalLeadTask";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import PreviewFile from "../formik/PreviewFile";
-import { string } from "yup/lib/locale";
-// import FileUpload from "../fileUpload/FileUpload";
 import RelatedFileUpload from "../fileUpload/ReletedFileUpload";
+import { OBJECT_API_EVENT, GET_FILE, DELETE_FILE } from "../api/endUrls";
+import ModalTaskFileUpload from "../Files/ModalTaskRelatedFile";
+import { RequestServer } from "../api/HttpReq";
+import { apiMethods } from "../api/methods";
+import FilePresentIcon from '@mui/icons-material/FilePresent';
+import DeleteIcon from "@mui/icons-material/Delete";
+import ToastNotification from "../toast/ToastNotification";
+import DeleteConfirmDialog from "../toast/DeleteConfirmDialog";
+
 
 const TaskRelatedItems = ({ item }) => {
 
+  const OBJECT_API = OBJECT_API_EVENT
+  const URL_getRelatedFiles = GET_FILE
+  const URL_deleteRelatedFiles = DELETE_FILE
+
   const navigate = useNavigate();
   const location = useLocation();
-  const [relatedTask, setRelatedTask] = useState([]);
-  const [modalOpen, setModalOpen] = useState(false);
 
-  const [taskRecordId, setTaskRecordId] = useState();
+  const [taskRecord, setTaskRecord] = useState();
+  const [modalFileUpload, setModalFileUpload] = useState(false)
+  const [records, setRecords] = useState([])
+  const [fetchError, setFetchError] = useState(true)
+  const [fetchRecordsLoading, setFetchRecordsLoading] = useState(true)
 
-  const [showAlert, setShowAlert] = useState(false);
-  const [alertMessage, setAlertMessage] = useState();
-  const [alertSeverity, setAlertSeverity] = useState();
-
-  const [itemsPerPage, setItemsPerPage] = useState(2);
-  const [page, setPage] = useState(1);
-  const [noOfPages, setNoOfPages] = useState(0);
-
-  const [resFiles, setResFiles] = useState();
+  const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: "", subTitle: "", });
+  const [notify, setNotify] = useState({ isOpen: false, message: "", type: "", });
 
   useEffect(() => {
-    console.log(" Task RecordId", location.state.record.item);
+    console.log(" Task Related Item", location.state.record.item);
     if (location.state.record.item) {
-      setTaskRecordId(location.state.record.item._id);
-     
+      setTaskRecord({ taskId: location.state.record.item._id, OBJECT_API: OBJECT_API });
     }
+    fetchRelatedFiles()
   }, []);
+
+  const fetchRelatedFiles = () => {
+    RequestServer(apiMethods.get, URL_getRelatedFiles)
+      .then((res) => {
+        console.log(res, "index page res URL_getRelatedFiles");
+        if (res.success) {
+          setRecords(res.data);
+          setFetchError(null);
+        } else {
+          setRecords([]);
+          setFetchError(res.error.message);
+        }
+      })
+      .catch((err) => {
+        setFetchError(err.message);
+      })
+      .finally(() => {
+        setFetchRecordsLoading(false)
+      })
+  }
+
+  const handleAddRecord = () => {
+    setModalFileUpload(true)
+  }
+
+  const handleFileModalClose = () => {
+    setModalFileUpload(false)
+    fetchRelatedFiles()
+  }
+
+  const handleViewFileClick = (item) => {
+    console.log("handleViewFileClick", item)
+    window.open(item.fileUrl, "_blank");
+  }
+  const handleChartFileDelete = (e, recId) => {
+
+    e.stopPropagation();
+    console.log('inside handleReqContactCardDelete fn')
+    setConfirmDialog({
+      isOpen: true,
+      title: `Are you sure to delete this Record ?`,
+      subTitle: "You can't undo this Operation",
+      onConfirm: () => { onConfirmContactCardDelete(recId) }
+    })
+  }
+
+  const onConfirmContactCardDelete = (recId) => {
+    console.log('req delete rec recId', recId);
+
+    RequestServer(apiMethods.delete, URL_deleteRelatedFiles + recId)
+      .then((res) => {
+        if (res.success) {
+          setNotify({
+            isOpen: true,
+            message: res.data,
+            type: 'success'
+          })
+        }
+        else {
+          console.log(res, "error in then")
+          setNotify({
+            isOpen: true,
+            message: res.error.message,
+            type: 'error'
+          })
+        }
+      })
+      .catch((error) => {
+        console.log('api delete error', error);
+        setNotify({
+          isOpen: true,
+          message: error.message,
+          type: 'error'
+        })
+      })
+      .finally(() => {
+        setConfirmDialog({
+          ...confirmDialog,
+          isOpen: false
+        })
+        fetchRelatedFiles()
+      })
+  };
+
 
   return (
     <>
+      <ToastNotification notify={notify} setNotify={setNotify} />
+      <DeleteConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog} />
+
       <div style={{ textAlign: "center", marginBottom: "10px" }}>
         <h2> Related Items </h2>
       </div>
@@ -57,21 +145,84 @@ const TaskRelatedItems = ({ item }) => {
           <Typography variant="h4">Notes and Attachments </Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <RelatedFileUpload taskID={taskRecordId} />
+          <div style={{ textAlign: "end", marginBottom: "5px" }}>
+            <Button
+              variant="contained" color="info"
+              onClick={handleAddRecord}
+            >
+              Upload File
+            </Button>
+          </div>
+          <List sx={{
+            width: '100%',
+            maxWidth: 360,
+            bgcolor: 'background.paper',
+            position: 'relative',
+            overflow: 'auto',
+            maxHeight: 300,
+            '& ul': { padding: 0 },
+          }}>
+            {records && records.map((item, index) => (
+              <ListItem sx={{ maxHeight: "200px", marginTop: "-10px" }}>
+                {index + 1}
+
+                <ListItemButton
+                  onClick={() => handleViewFileClick(item)}
+                  title={`${item.filename}`}
+                >
+                  <ListItemIcon>
+                    <FilePresentIcon />
+                  </ListItemIcon>
+
+                  <ListItemText
+                    sx={{ wordBreak: "break-all" }}
+                    primary={`${item.filename}`}
+                    secondary={`${item.originalname}`}
+                  ></ListItemText>
+
+                </ListItemButton>
+
+                <DeleteIcon
+                  sx={{ cursor: "pointer" }}
+                  onClick={(e) => handleChartFileDelete(e, item._id)}
+                />
+              </ListItem>
+            ))}
+          </List>
         </AccordionDetails>
       </Accordion>
 
-      {/* 
-      <Modal
-        open={modalOpen}
-        onClose={handleModalClose}
+      {/* <Modal
+        open={modalFileUpload}
+        onClose={handleFileModalClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
+        sx={{
+          backdropFilter: "blur(1px)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
       >
-        <div className="modal">
-          <ModalLeadTask handleModal={handleModalClose} />
+        <div className="modalFile" sx={{ maxWidth: "80%", maxHeight: "80%" }}>
+          <ModalTaskFileUpload
+            record={taskRecord}
+            handleModal={handleFileModalClose}
+          />
         </div>
       </Modal> */}
+      <Modal
+        open={modalFileUpload}
+        onClose={handleFileModalClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+        sx={{ backdropFilter: "blur(1px)" }}
+      >
+        <div className="related-modal-box">
+          <ModalTaskFileUpload record={taskRecord} handleModal={handleFileModalClose} />
+        </div>
+      </Modal>
+
     </>
   );
 };

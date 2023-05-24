@@ -261,7 +261,7 @@ export const TaskInitialValues = {
 export const TaskSavedValues = (singleTask) => {
   return {
     subject: singleTask?.subject ?? "",
-    relatedto: singleTask?.relatedto ?? "",
+    relatedTo: singleTask?.relatedTo ?? "",
     assignedTo: singleTask?.assignedTo ?? "",
     description: singleTask?.description ?? "",
     attachments: singleTask?.attachments ?? "",

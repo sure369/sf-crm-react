@@ -19,13 +19,13 @@ import "../indexCSS/muiBoxStyles.css";
 import { apiMethods } from "../api/methods";
 import { apiCheckObjectPermission } from '../Auth/apiCheckObjectPermission'
 import { getLoginUserRoleDept } from '../Auth/userRoleDept';
-import { OBJECT_API_EVENT,GET_EVENT,DELETE_EVENT } from "../api/endUrls";
+import { OBJECT_API_EVENT, GET_EVENT, DELETE_EVENT } from "../api/endUrls";
 
 const Task = () => {
 
   const OBJECT_API = OBJECT_API_EVENT
   const URL_getRecords = GET_EVENT
-  const URL_deleteRecords =DELETE_EVENT
+  const URL_deleteRecords = DELETE_EVENT
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -184,25 +184,55 @@ const Task = () => {
       align: "center",
       flex: 1,
       renderCell: (params) => {
-        if (params.row.object === "Account") {
+        console.log(params, "realatedTo")
+        if(params.row.relatedTo.accountName)
+        {
           return (
             <div className="rowitem">
-              {params.row.accountDetails.accountName}
+              {params.row.relatedTo.accountName}
             </div>
-          );
-        } else if (params.row.object === "Lead") {
-          return (
-            <div className="rowitem">{params.row.leadDetails.leadName}</div>
-          );
-        } else if (params.row.object === "Opportunity") {
+          )
+        }else if(params.row.relatedTo.leadName){
           return (
             <div className="rowitem">
-              {params.row.opportunityDetails.opportunityName}
+              {params.row.relatedTo.leadName}
             </div>
-          );
-        } else {
-          <div className="rowitem">{null}</div>;
+          )
+
+        }else if(params.row.relatedTo.opportunityName){
+          return (
+            <div className="rowitem">
+              {params.row.relatedTo.opportunityName}
+            </div>
+          )
+        }else{
+          return (
+            <div className="rowitem">
+              
+            </div>
+          )
         }
+        
+
+        // if (params.row.object === "Account") {
+        //   return (
+        //     <div className="rowitem">
+        //       {params.row.accountDetails.accountName}
+        //     </div>
+        //   );
+        // } else if (params.row.object === "Lead") {
+        //   return (
+        //     <div className="rowitem">{params.row.leadDetails.leadName}</div>
+        //   );
+        // } else if (params.row.object === "Opportunity") {
+        //   return (
+        //     <div className="rowitem">
+        //       {params.row.opportunityDetails.opportunityName}
+        //     </div>
+        //   );
+        // } else {
+        //   <div className="rowitem">{null}</div>;
+        // }
       },
     },
     {

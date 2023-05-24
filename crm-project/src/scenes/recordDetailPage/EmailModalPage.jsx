@@ -8,22 +8,20 @@ import { convert } from "html-to-text";
 import CustomizedRichTextField from "../formik/CustomizedRichTextField";
 import '../recordDetailPage/Form.css'
 import { RequestServer } from "../api/HttpReq";
+import { RequestServerFiles } from "../api/HttpReqFiles";
 import { apiMethods } from "../api/methods";
+import { POST_SEND_BULK_EMAIL } from "../api/endUrls";
 
-const urlSendEmailbulk = `/bulkemail`
+const URL_postEMAIL = POST_SEND_BULK_EMAIL
 
 const EmailModalPage = ({ data, handleModal, bulkMail }) => {
 
     const [parentRecord, setParentRecord] = useState([]);
-    const navigate = useNavigate();
-    const location = useLocation();
-    // notification
     const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
 
     const HTMLbodyOptions = {
         wordwrap: 130,
-        // ...
-      };
+    };
     useEffect(() => {
         console.log('data', data);
         console.log('bulkMail', bulkMail);
@@ -48,39 +46,39 @@ const EmailModalPage = ({ data, handleModal, bulkMail }) => {
         ,
     })
 
-    const onebyoneMail=(values,element)=>{
-        console.log('values',values);
-        console.log('element',element)
+    const onebyoneMail = (values, element) => {
+        console.log('values', values);
+        console.log('element', element)
 
 
         const convertText = convert(values.htmlBody, HTMLbodyOptions);
-        console.log('convertText',convertText)
+        console.log('convertText', convertText)
 
-        let mergeBody = `Hai ${element.fullName},`+ '\n'+"\n"+ convertText
+        let mergeBody = `Hai ${element.fullName},` + '\n' + "\n" + convertText
 
         let formData = new FormData();
         formData.append('subject', values.subject);
         formData.append('htmlBody', mergeBody);
-        formData.append('emailId',element.email)
-        // formData.append('recordsData', JSON.stringify(element));
+        formData.append('emailId', element.email)
         formData.append('file', values.attachments);
 
-        RequestServer(apiMethods.post,urlSendEmailbulk, formData)
+
+        RequestServerFiles(apiMethods.post, URL_postEMAIL, formData)
             .then((res) => {
                 console.log('email send res', res)
-                if(res.success){
+                if (res.success) {
                     setNotify({
                         isOpen: true,
                         message: "Mail sent Succesfully",
                         type: 'success'
                     })
-                }else{
+                } else {
                     setNotify({
                         isOpen: true,
                         message: res.error.message,
                         type: 'error'
                     })
-                }                   
+                }
             })
             .catch((error) => {
                 console.log('email send error', error);
@@ -90,29 +88,29 @@ const EmailModalPage = ({ data, handleModal, bulkMail }) => {
                     type: 'error'
                 })
             })
-            .finally(()=>{
+            .finally(() => {
                 setTimeout(() => {
                     handleModal(false)
                 }, 2000)
             })
-       
+
     }
 
     const formSubmission = async (values, { resetForm }) => {
         console.log('inside form Submission', values);
-     
+
         values.recordsData = parentRecord;
 
         let arr = [];
         arr.push((values.recordsData));
         console.log('arr', arr);
         let RecordConvert = (values.recordsData.length > 0 ? (values.recordsData) : (arr))
-     
+
         RecordConvert.forEach(element => {
-            onebyoneMail(values,element)
+            onebyoneMail(values, element)
         });
 
-        
+
     }
 
     return (
@@ -128,13 +126,11 @@ const EmailModalPage = ({ data, handleModal, bulkMail }) => {
                     onSubmit={(values, { resetForm }) => formSubmission(values, { resetForm })}
                 >
                     {(props) => {
-                        const {
-                            isSubmitting, setFieldValue
-                        } = props;
+                        const { isSubmitting, setFieldValue } = props;
 
                         return (
                             <>
-
+                                <ToastNotification notify={notify} setNotify={setNotify} />
                                 <Form className="my-form">
                                     <Grid container spacing={2}>
                                         <Grid item xs={12} md={12}>
@@ -145,13 +141,13 @@ const EmailModalPage = ({ data, handleModal, bulkMail }) => {
                                             </div>
                                         </Grid>
                                         <Grid item xs={12} md={12}>
-                                             <label htmlFor="htmlBody">Email Body <span className="text-danger">*</span> </label>
-                                             <Field name="htmlBody" component={CustomizedRichTextField}
-                                             />
-                                             <div style={{ color: 'red' }}>
-                                                 <ErrorMessage name="htmlBody" />
-                                             </div>
-                                       </Grid>
+                                            <label htmlFor="htmlBody">Email Body <span className="text-danger">*</span> </label>
+                                            <Field name="htmlBody" component={CustomizedRichTextField}
+                                            />
+                                            <div style={{ color: 'red' }}>
+                                                <ErrorMessage name="htmlBody" />
+                                            </div>
+                                        </Grid>
                                         <Grid item xs={12} md={12}>
                                             <label htmlFor="attachments">Attachments</label>
                                             <input id="attachments" name="attachments" type="file"
@@ -178,8 +174,6 @@ const EmailModalPage = ({ data, handleModal, bulkMail }) => {
                     }}
                 </Formik>
             </Grid>
-
-            <ToastNotification notify={notify} setNotify={setNotify} />
         </>
     )
 }

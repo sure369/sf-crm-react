@@ -50,7 +50,7 @@ function DashboardIndex() {
   const mobileView = width < breakpoint ? 12 : 6;
 
   
-  const opportunityType = records.reduce((acc, obj) => {
+  const opportunityType = records.length>0 && records.reduce((acc, obj) => {
     const key = obj.stage;
     if (key.length > 0) {
       if (!acc[key]) {      
@@ -62,14 +62,14 @@ function DashboardIndex() {
     return acc;
   }, {});
 
-  const sortedRecords = records.sort((a, b) => {
+  const sortedRecords = records.length>0 && records.sort((a, b) => {
     const aMonth = new Date(a.closeDate).getMonth();
     const bMonth = new Date(b.closeDate).getMonth();
     return aMonth - bMonth;
   });
 
   console.log("sortedRecords is :", sortedRecords);
-  const groupedData1 = sortedRecords
+  const groupedData1 = sortedRecords.length>0 && sortedRecords
     .filter((obj) => obj.stage === "Closed Won")
     .reduce((acc, curr) => {
       console.log("acc is :", acc);
@@ -146,7 +146,7 @@ function DashboardIndex() {
  
 
 
-  let finalArray = records.filter((obj) => obj.stage === "Closed Won");
+  let finalArray = records.length>0 && records.filter((obj) => obj.stage === "Closed Won");
   console.log("finalArray is ", finalArray);
 
 

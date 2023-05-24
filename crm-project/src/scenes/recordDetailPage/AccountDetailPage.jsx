@@ -15,15 +15,14 @@ import { AccountInitialValues,AccountSavedValues } from "../formik/IntialValues/
 import { apiMethods } from "../api/methods";
 import { apiCheckObjectPermission } from "../Auth/apiCheckObjectPermission";
 import { getLoginUserRoleDept } from "../Auth/userRoleDept";
-import {OBJECT_API_ACCOUNT, POST_ACCOUNT } from "../api/endUrls";
+import {OBJECT_API_ACCOUNT, POST_ACCOUNT,GET_INVENTORY_NAME } from "../api/endUrls";
 
 
 const AccountDetailPage = ({ item }) => {
     
 const OBJECT_API = OBJECT_API_ACCOUNT
 const URL_postRecords = POST_ACCOUNT
-const fetchInventoriesbyName = `/InventoryName?searchKey=`;
-
+const URL_getInventoryLookUpRecords=GET_INVENTORY_NAME
 
     const [singleAccount, setsingleAccount] = useState();
     const location = useLocation();
@@ -150,8 +149,9 @@ const fetchInventoriesbyName = `/InventoryName?searchKey=`;
 
     const FetchInventoriesbyName = (newInputValue) => {
         
-        RequestServer(apiMethods.post,fetchInventoriesbyName+newInputValue)
+        RequestServer(apiMethods.get,URL_getInventoryLookUpRecords+newInputValue)
         .then((res)=>{
+            console.log("URL_get_LookUp_Records res", res)
             if(res.success){
                 if(typeof(res.data)!=='string'){
                     setInventoriesRecord(res.data)

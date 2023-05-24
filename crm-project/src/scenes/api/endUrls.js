@@ -17,7 +17,7 @@ export const DELETE_INVENTORY ='/inventory/'
 export const GET_INVENTORY_RELATED_ACCOUNT=`/inventoryRelatedAccount/`;
 export const GET_INVENTORY_RELATED_DEAL=`/inventoryRelatedDeal/`;
 
-export const OBJECT_API_ENQUIRY='Lead'
+export const OBJECT_API_ENQUIRY='Enquiry'
 export const GET_ENQUIRY ='/enquiries'
 export const POST_ENQUIRY ='/enquiry'
 export const DELETE_ENQUIRY ='/enquiry/'
@@ -25,7 +25,7 @@ export const GET_ENQUIRY_BY_MONTH='/enquiries?'
 export const GET_ENQUIRY_RELATED_EVENT=`/enquiryRelatedEvent/`;
 export const GET_ENQUIRY_RELATED_DEAL=`/enquiryRelatedDeal/`;
 
-export const OBJECT_API_DEAL='Opportunity'
+export const OBJECT_API_DEAL='Deal'
 export const GET_DEAL ='/deals'
 export const POST_DEAL ='/deal'
 export const DELETE_DEAL ='/deal/'
@@ -41,7 +41,7 @@ export const GET_ROLE ='/roles'
 export const POST_ROLE='/role'
 export const DELETE_ROLE='role/'
 
-export const OBJECT_API_EVENT='Task'
+export const OBJECT_API_EVENT='Event'
 export const GET_EVENT='/events'
 export const POST_EVENT='/event'
 export const DELETE_EVENT='/event/'
@@ -71,4 +71,17 @@ export const GET_FILE='/files'
 export const POST_FILE='/file'
 export const DELETE_FILE='/file/'
 
+export const GET_FILE_RELATED_EVENT=`/fileRelatedEvent`
+export const POST_SEND_BULK_EMAIL=`/bulkemail`
+export const GET_ALL_TABLE_NAME=`/objects`
 
+export const GET_INVENTORY_NAME = `/inventories/name?searchKey=`;
+export const GET_ACCOUNT_NAME =`/accounts/name?searchKey=`
+export const GET_ENQUIRY_NAME=`/enquiries/name?searchKey=`
+export const GET_DEAL_NAME=`/deals/name?searchKey=`
+
+
+const fetchAccountUrl = `/accountsname`;
+const fetchLeadUrl = `/LeadsbyName`;
+ const fetchOpportunityUrl = `/opportunitiesbyName`;
+// /api/dealsbyName
