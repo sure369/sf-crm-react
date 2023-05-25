@@ -253,3 +253,12 @@ export const TaskStatus=[
   {text:'Working',value:'Working'},
   {text:'Closed',value:'Closed'},
 ]
+
+export const DashboardChartTypePicklist=[  
+  {text:'Bar',value:'Bar'},
+  {text:'Pie',value:'Pie'},
+  {text:'Doughnut',value:'Doughnut'},
+  {text:'Line',value:'Line'},
+  {text:'Polar',value:'Polar'},
+  {text:'Radar',value:'Radar'},
+]

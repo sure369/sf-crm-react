@@ -202,13 +202,17 @@ const UserDetailPage = ({ item }) => {
             .then((res) => {
                 console.log('res FetchRolesbyName', res.data)
                 if (res.success) {
-                    setRoleRecords(res.data)
+                    if(typeof(res.data)==='object'){
+                        setRoleRecords(res.data)
+                    }
                 } else {
                     console.log("FetchRolesbyName status error", res.error.message)
+                    setRoleRecords([])
                 }
             })
             .catch((error) => {
                 console.log('error FetchRolesbyName', error);
+                setRoleRecords([])
             })
     }
 
@@ -309,7 +313,7 @@ const UserDetailPage = ({ item }) => {
                                                     if (!value) {
                                                         console.log('!value', value);
                                                         // setFieldValue("roleDetails", '')
-                                                        setFieldValue("roleDetails", '')
+                                                        setFieldValue("roleDetails", {})
                                                     } else {
                                                         console.log('value', value);
                                                         setFieldValue("roleDetails", value)

@@ -79,7 +79,10 @@ const ModalTaskFileUpload = ({record, handleModal }) => {
                 });
             })
             .finally(()=>{
-                // handleModal()
+                setTimeout(()=>{
+                    handleModal()
+                },2000)
+                
             })
     };
 

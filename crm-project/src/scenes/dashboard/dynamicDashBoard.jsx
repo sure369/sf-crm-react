@@ -18,6 +18,7 @@ import ToastNotification from "../toast/ToastNotification";
 import { Delete, ExpandMore } from "@mui/icons-material";
 import './dashboard.css'
 import { GetTableNames } from "../global/getTableNames";
+import DashboardDetailPage from "./dashboardDetailPage";
 
 function DynamicHomePage() {
     // const URL_get
@@ -62,15 +63,16 @@ function DynamicHomePage() {
 
 
     const fetchTabs = () => {
-        axios
-            .get(urlTabs + `?department=${user.userDepartment}&role=${user.userRoleName}`)
-            .then((res) => {
-                console.log("fetched tabs are :", res);
-                setTabs(res.data);
-            })
-            .catch((err) => {
-                console.log("error fetching tabs ", err);
-            });
+        GetTableNames()
+        .then(res=>{
+          console.log(res,"GetTableNames res in appbar")
+            setTabs(res)
+         
+        })
+        .catch(err=>{
+          console.log(err,"GetTableNames error in appbar")
+          setTabs([])
+        })
     };
 
     const fetchFields = (x) => {
@@ -152,28 +154,6 @@ function DynamicHomePage() {
 
     console.log("dashboardLabel is", dashboardLabel);
 
-    const dashboardDataset = dashboardData && dashboardData.map(item => item.count);
-
-
-    const BarChartData = {
-        labels: label,
-        datasets: [
-            {
-                label: `${selectedObject} - ${selectedFields}`,
-                backgroundColor: [
-                    "#83984d",
-                    "#800020",
-                    "#f0b51f",
-                    "#ea700b",
-                    "#336b8b",
-                    "#423f3f",
-                ],
-                borderColor: "black",
-                data: dashboardDataset,
-            },
-        ],
-    };
-
     const filteredTabs = tabs.filter(
         (item) =>
             item !== "Opportunity Inventory" &&
@@ -231,8 +211,6 @@ function DynamicHomePage() {
     }
 
     const handleChartClear = () => {
-
-
         setDashboardName("");
         setSelectedChart([]);
         setSelectedObject([]);
@@ -325,6 +303,11 @@ function DynamicHomePage() {
 
                                 </AccordionSummary>
                                 <AccordionDetails>
+                                    <DashboardDetailPage/>
+
+                                </AccordionDetails>
+                                {/* <AccordionDetails>
+                                {isLoading && <CircularProgressWithLabel />}
                                     <Box className="new-dashboard-form">
                                         <div
                                             style={{
@@ -416,7 +399,7 @@ function DynamicHomePage() {
                                                             <MenuItem value={item}>{item}</MenuItem>
                                                         ))}
                                                 </Select>
-                                                {isLoading && <CircularProgressWithLabel />}
+                                               
                                             </FormControl>
                                         </div>
                                         <div style={{ display: "flex", justifyContent: "center", marginBottom: "10px", gap: "10px" }}>
@@ -436,7 +419,7 @@ function DynamicHomePage() {
                                             </Button>
                                         </div>
                                     </Box>
-                                </AccordionDetails>
+                                </AccordionDetails> */}
                             </Accordion>
 
 

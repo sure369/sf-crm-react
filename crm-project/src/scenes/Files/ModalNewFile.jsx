@@ -76,7 +76,9 @@ const ModalFileUpload = ({ handleModal }) => {
                 });
             })
             .finally(()=>{
-                // handleModal()
+                setTimeout(()=>{
+                    handleModal()
+                },3000)
             })
     };
 
