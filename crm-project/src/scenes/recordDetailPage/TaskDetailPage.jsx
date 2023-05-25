@@ -5,20 +5,20 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import {    Grid, Button, DialogActions,Autocomplete, TextField ,MenuItem} from "@mui/material";
 import PreviewFile from "../formik/PreviewFile";
 import ToastNotification from "../toast/ToastNotification";
-import { TaskObjectPicklist, TaskSubjectPicklist } from "../../data/pickLists";
+import { TaskObjectPicklist, TaskSubjectPicklist ,TaskStatus} from "../../data/pickLists";
 import CustomizedSelectForFormik from '../formik/CustomizedSelectForFormik';
 import { LocalizationProvider   } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import CustomizedSelectDisableForFormik from "../formik/CustomizedSelectDisableForFormik";
 import './Form.css'
-import { TaskInitialValues, TaskSavedValues } from "../formik/IntialValues/formValues";
+import { TaskInitialValues, TaskSavedValues ,} from "../formik/IntialValues/formValues";
 import { RequestServer } from "../api/HttpReq";
 import { apiMethods } from "../api/methods";
 import { apiCheckObjectPermission } from "../Auth/apiCheckObjectPermission";
 import { getLoginUserRoleDept } from "../Auth/userRoleDept";
 import { OBJECT_API_EVENT ,POST_EVENT,
-    GET_DEAL_NAME,GET_ACCOUNT_NAME,GET_ENQUIRY_NAME
+    GET_DEAL_NAME,GET_ACCOUNT_NAME,GET_ENQUIRY_NAME,GET_USER_NAME
 } from "../api/endUrls";
 
 
@@ -29,6 +29,7 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
     const URL_getAccountLookUpRecords=GET_ACCOUNT_NAME
     const URL_getEnquiryLookUpRecords=GET_ENQUIRY_NAME
     const URL_getDealLookUpRecords=GET_DEAL_NAME
+    const URL_getUserRecords=GET_USER_NAME
 
     const [singleTask, setSingleTask] = useState();
     const [showNew, setshowNew] = useState()
@@ -38,6 +39,8 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
     const location = useLocation();
     const [parentObject, setParentObject] = useState('');
     const [relatedRecNames, setRelatedRecNames] = useState([]);
+    const [relatedUserRecords, setRelatedUserRecords] = useState([]);
+    
     const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
     const [file, setFile] = useState()
     const[showModal1,setShowModal1]=useState(showModel)
@@ -198,6 +201,21 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
                 console.log('error fetchAccountsbyName', error);
             })
     }
+    const fetchUserNames=(newInputValue)=>{
+        RequestServer(apiMethods.get,URL_getUserRecords+newInputValue)
+        .then(res=>{
+            console.log(res,"api res fetchUserNames")
+            if(typeof(res.data)==='object'){
+                setRelatedUserRecords(res.data)
+            }else{                
+            setRelatedUserRecords([])
+            }
+        })
+        .catch(err=>{
+            console.log(err,"api error fetchUserNames")
+            setRelatedUserRecords([])
+        })
+    }
 
     const handleClosePage = () => {
         navigate(-1)
@@ -269,8 +287,6 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
                                                 readOnly={autocompleteReadOnly}
                                                 options={relatedRecNames}
                                                 value={values.relatedTo}
-                                                // value={values.accountDetails ||values.opportunityDetails ||values.leadDetails  }
-
                                                 getOptionLabel={option => option.leadName || option.accountName || option.opportunityName || ''}
                                                 isOptionEqualToValue={(option, value) =>
                                                     option.id === value
@@ -279,31 +295,11 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
                                                     console.log('inside onchange values', value);
                                                     if(!value){                                
                                                         console.log('!value',value);
-                                                        setFieldValue('relatedTo','')
-                                                        // if (values.object === 'Account') {
-                                                        //     // setFieldValue('AccountId', '')
-                                                        //     setFieldValue('accountDetails','')
-                                                        // } else if (values.object === 'Deal') {
-                                                        //     // setFieldValue('OpportunityId', '')
-                                                        //     setFieldValue('opportunityDetails','')
-                                                        // } else if (values.object === 'Enquiry') {
-                                                        //     // setFieldValue('LeadId', '')
-                                                        //     setFieldValue('leadDetails','')
-                                                        // }
+                                                        setFieldValue('relatedTo',{})
                                                     }
                                                     else{
                                                         console.log('autocomplete selected value',value);                                                        
                                                         setFieldValue('relatedTo',value)
-                                                        // if (values.object === 'Account') {
-                                                        //     // setFieldValue('AccountId', value.id)
-                                                        //     setFieldValue('accountDetails',value)
-                                                        // } else if (values.object === 'Deal') {
-                                                        //     // setFieldValue('OpportunityId', value.id)
-                                                        //     setFieldValue('opportunityDetails',value)
-                                                        // } else if (values.object === 'Enquiry') {
-                                                        //     // setFieldValue('LeadId', value.id)
-                                                        //     setFieldValue('leadDetails',value)
-                                                        // }
                                                     }
                                                 }}
                                                 onInputChange={(event, newInputValue) => {
@@ -321,10 +317,50 @@ const TaskDetailPage = ({ item ,handleModal ,showModel }) => {
                                                 />                                         
                                     </Grid>
                                     <Grid item xs={6} md={6}>
-                                        <label htmlFor="assignedTo">Assigned To  </label>
-                                        <Field name="assignedTo" type="text" class="form-input" 
-                                        disabled={showNew ? !permissionValues.create : !permissionValues.edit}
-                                        />
+                                    <label htmlFor="status"> Status  </label> 
+                                    <Field name="status" component={CustomizedSelectForFormik} className="form-customSelect">
+                                            <MenuItem value=""><em>None</em></MenuItem>
+                                            {
+                                                TaskStatus.map((i) => {
+                                                    return <MenuItem value={i.value}>{i.text}</MenuItem>
+                                                })
+                                            }
+                                        </Field>
+                                        </Grid>
+                                    <Grid item xs={6} md={6}>
+                                        <label htmlFor="assignedTo"> Assigned To  </label> 
+                                             <Autocomplete
+                                                name="assignedTo"
+                                                options={relatedUserRecords}
+                                                value={values.assignedTo}
+                                                getOptionLabel={option => option.userName|| ''}
+                                                isOptionEqualToValue={(option, value) =>
+                                                    option.id === value
+                                                }
+                                                onChange={(e, value) => {
+                                                    console.log('inside onchange values', value);
+                                                    if(!value){                                
+                                                        console.log('!value',value);
+                                                        setFieldValue('assignedTo','')
+                                                    }
+                                                    else{
+                                                        console.log('autocomplete selected value',value);                                                        
+                                                        setFieldValue('assignedTo',value)
+                                                    }
+                                                }}
+                                                onInputChange={(event, newInputValue) => {
+                                                    if (newInputValue.length >= 3) {
+                                                        fetchUserNames(newInputValue)
+                                                    }
+                                                    else  if (newInputValue.length ===0) {
+                                                        fetchUserNames(newInputValue)
+                                                    }
+                                                }}
+                                        
+                                                renderInput={params => (
+                                                    <Field component={TextField} {...params} name="assignedTo" />
+                                                )}
+                                                />                                         
                                     </Grid>
                                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                                     <Grid item xs={6} md={6}>

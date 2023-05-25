@@ -6,7 +6,7 @@ import {
     Grid, Button, FormControl, Stack, Alert, DialogActions,
     Autocomplete, TextField, MenuItem
 } from "@mui/material";
-import { TaskSubjectPicklist } from "../../data/pickLists";
+import { TaskStatus, TaskSubjectPicklist } from "../../data/pickLists";
 import CustomizedSelectForFormik from '../formik/CustomizedSelectForFormik';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -16,24 +16,42 @@ import '../recordDetailPage/Form.css'
 import { RequestServer } from '../api/HttpReq';
 import { TaskInitialValues } from '../formik/IntialValues/formValues';
 import { apiMethods } from "../api/methods";
-import { POST_EVENT } from "../api/endUrls";
+import { GET_USER_NAME, POST_EVENT } from "../api/endUrls";
 
 
 const URL_postRecords = POST_EVENT 
+const URL_getUserRecords=GET_USER_NAME
 
 const ModalAccTask = ({ item, handleModal }) => {
 
     const [taskParentRecord, setTaskParentRecord] = useState();
     const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
-
+    const [relatedUserRecNames,setRelatedUserRecords]=useState([])
     const navigate = useNavigate();
     const location = useLocation();
 
     useEffect(() => {
         console.log('passed record', location.state.record.item);
         setTaskParentRecord(location.state.record.item)
-
+        fetchUserNames('')
     }, [])
+
+
+    const fetchUserNames=(newInputValue)=>{
+        RequestServer(apiMethods.get,URL_getUserRecords+newInputValue)
+        .then(res=>{
+            console.log(res,"api res fetchUserNames")
+            if(typeof(res.data)==='object'){
+                setRelatedUserRecords(res.data)
+            }else{                
+            setRelatedUserRecords([])
+            }
+        })
+        .catch(err=>{
+            console.log(err,"api error fetchUserNames")
+            setRelatedUserRecords([])
+        })
+    }
 
     const initialValues = TaskInitialValues
 
@@ -62,9 +80,8 @@ const ModalAccTask = ({ item, handleModal }) => {
         values.modifiedBy = JSON.parse(sessionStorage.getItem('loggedInUser'))
         values.modifiedDate = dateSeconds;
         values.createdDate = dateSeconds;
-        values.AccountId =  taskParentRecord._id;
         values.object = 'Account'
-        values.accountDetails = {
+        values.relatedTo = {
             accountName: taskParentRecord.accountName,
             id: taskParentRecord._id
         }
@@ -145,9 +162,52 @@ const ModalAccTask = ({ item, handleModal }) => {
                                         </div>
                                     </Grid>
                                     <Grid item xs={6} md={6}>
-                                        <label htmlFor="assignedTo">Assigned To  </label>
-                                        <Field name="assignedTo" type="text" class="form-input" />
+                                    <label htmlFor="status"> Status  </label> 
+                                    <Field name="status" component={CustomizedSelectForFormik} className="form-customSelect">
+                                            <MenuItem value=""><em>None</em></MenuItem>
+                                            {
+                                                TaskStatus.map((i) => {
+                                                    return <MenuItem value={i.value}>{i.text}</MenuItem>
+                                                })
+                                            }
+                                        </Field>
+                                        </Grid>
+                                    <Grid item xs={6} md={6}>
+                                        <label htmlFor="assignedTo"> Assigned To  </label> 
+                                             <Autocomplete
+                                                name="assignedTo"
+                                                options={relatedUserRecNames}
+                                                value={values.assignedTo}
+                                                getOptionLabel={option => option.userName|| ''}
+                                                isOptionEqualToValue={(option, value) =>
+                                                    option.id === value
+                                                }
+                                                onChange={(e, value) => {
+                                                    console.log('inside onchange values', value);
+                                                    if(!value){                                
+                                                        console.log('!value',value);
+                                                        setFieldValue('assignedTo','')
+                                                    }
+                                                    else{
+                                                        console.log('autocomplete selected value',value);                                                        
+                                                        setFieldValue('assignedTo',value)
+                                                    }
+                                                }}
+                                                onInputChange={(event, newInputValue) => {
+                                                    if (newInputValue.length >= 3) {
+                                                        fetchUserNames(newInputValue)
+                                                    }
+                                                    else  if (newInputValue.length ===0) {
+                                                        fetchUserNames(newInputValue)
+                                                    }
+                                                }}
+                                        
+                                                renderInput={params => (
+                                                    <Field component={TextField} {...params} name="assignedTo" />
+                                                )}
+                                                />                                         
                                     </Grid>
+
                                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                                         <Grid item xs={6} md={6}>
                                             <label htmlFor="StartDate">Start Date </label> <br />
@@ -172,18 +232,6 @@ const ModalAccTask = ({ item, handleModal }) => {
 
                                         </Grid>
                                     </LocalizationProvider>
-                                    {/* <Grid item xs={12} md={12}>
-                                        <label htmlFor="attachments">Attachments</label>
-                                        <Field name="attacgments" type="file"
-                                            className="form-input"
-                                            onChange={(event) => {
-                                                setFieldValue("attachments", (event.currentTarget.files[0]));
-                                            }}
-                                        />
-                                        <div style={{ color: 'red' }}>
-                                            <ErrorMessage name="attachments" />
-                                        </div>
-                                    </Grid> */}
                                     <Grid item xs={12} md={12}>
                                         <label htmlFor="description">Description</label>
                                         <Field as="textarea" name="description" class="form-input-textarea" style={{width:'100%'}} />

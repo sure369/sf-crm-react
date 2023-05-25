@@ -40,6 +40,7 @@ const ModalFileUpload = ({ handleModal }) => {
             formData.append("file", file);
             formData.append("createdDate", dateSeconds)
             formData.append("modifiedDate", dateSeconds)
+            formData.append("relatedTo",JSON.stringify({}));
             formData.append("createdBy", JSON.stringify(userDetails))
             formData.append("modifiedBy", JSON.stringify(userDetails))
         });
@@ -75,7 +76,7 @@ const ModalFileUpload = ({ handleModal }) => {
                 });
             })
             .finally(()=>{
-                handleModal()
+                // handleModal()
             })
     };
 

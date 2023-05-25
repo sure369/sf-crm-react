@@ -1,14 +1,14 @@
 import {
-    Box, Grid, Paper, Typography,Select, FormControl,
-    InputLabel, MenuItem,SwipeableDrawer,Button, Divider, Accordion,
-    AccordionSummary, AccordionDetails,TextField,InputAdornment,List,ListItemIcon,
-    ListItem,ListItemText,ListItemButton,
+    Box, Grid, Paper, Typography, Select, FormControl,
+    InputLabel, MenuItem, SwipeableDrawer, Button, Divider, Accordion,
+    AccordionSummary, AccordionDetails, TextField, InputAdornment, List, ListItemIcon,
+    ListItem, ListItemText, ListItemButton,
 
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { RequestServer } from "../api/HttpReq";
 import axios from "axios";
-import { Bar, Bubble, Chart,Doughnut,Line, Pie, PolarArea, Radar,} from "react-chartjs-2";
+import { Bar, Bubble, Chart, Doughnut, Line, Pie, PolarArea, Radar, } from "react-chartjs-2";
 import CircularProgressWithLabel from "../styles/CircularProgressWithLabel";
 import "../recordDetailPage/Form.css"
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
@@ -17,12 +17,15 @@ import queryString from "query-string";
 import ToastNotification from "../toast/ToastNotification";
 import { Delete, ExpandMore } from "@mui/icons-material";
 import './dashboard.css'
+import { GetTableNames } from "../global/getTableNames";
 
 function DynamicHomePage() {
+    // const URL_get
     const urlOpportunity = `${process.env.REACT_APP_SERVER_URL}/opportunities`;
     const urlLead = `${process.env.REACT_APP_SERVER_URL}/leads`;
     const urlAccount = `${process.env.REACT_APP_SERVER_URL}/accounts`;
     const urlInventory = `${process.env.REACT_APP_SERVER_URL}/inventories`;
+   
     const urlTabs = `${process.env.REACT_APP_SERVER_URL}/tabs`;
     const urlFields = `${process.env.REACT_APP_SERVER_URL}/fields`;
     const urlDashboard = `${process.env.REACT_APP_SERVER_URL}/dashboardGroup`;
@@ -57,24 +60,6 @@ function DynamicHomePage() {
         fetchDashboardData();
     }, []);
 
-    const fetchRecords = (fetchUrl) => {
-        if (fetchUrl !== "None") {
-
-            setIsLoading(true);
-            axios
-                .post(fetchUrl)
-                .then((res) => {
-                    console.log(res, "Dashboard index page res");
-                    console.log("Dashboard URL Data", res.data);
-                    setRecords(res.data);
-                    console.log("closedate is ", records.closeDate);
-                    setIsLoading(false);
-                })
-                .catch((error) => {
-                    console.log("Dashboard URL Error is :", error);
-                });
-        }
-    };
 
     const fetchTabs = () => {
         axios
@@ -350,7 +335,7 @@ function DynamicHomePage() {
                                                 margin: "15px",
                                             }}
                                         >
-                                            
+
 
                                             <TextField
                                                 value={dashboardName}
@@ -541,7 +526,8 @@ function DynamicHomePage() {
                         <Box display="flex" alignItems="center"></Box>
                         <br />
 
-                        {selectedChart === "Bar" ? (
+                        {/* {BarChartData &&
+                            selectedChart === "Bar" ? (
                             <Bar
                                 id="null"
                                 className="count-bar-chart"
@@ -559,7 +545,7 @@ function DynamicHomePage() {
                             <Radar className="count-bar-chart" data={BarChartData} />
                         ) : (
                             <Bar className="count-bar-chart" data={BarChartData} />
-                        )}
+                        )} */}
 
                     </Grid>
                 </Grid>

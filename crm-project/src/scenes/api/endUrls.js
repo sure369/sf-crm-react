@@ -45,11 +45,13 @@ export const OBJECT_API_EVENT='Event'
 export const GET_EVENT='/events'
 export const POST_EVENT='/event'
 export const DELETE_EVENT='/event/'
+export const GET_EVENT_RELATED_FILE=`/event/related/file/`
 
 export const OBJECT_API_USER='User'
 export const GET_USER='/users'
 export const POST_USER='/user'
 export const DELETE_USER='/user/'
+
 
 export const GET_OBJECT_PERMISSION=`/permissionforobject`
 
@@ -80,4 +82,9 @@ export const GET_INVENTORY_NAME = `/inventories/name?searchKey=`;
 export const GET_ACCOUNT_NAME =`/accounts/name?searchKey=`
 export const GET_ENQUIRY_NAME=`/enquiries/name?searchKey=`
 export const GET_DEAL_NAME=`/deals/name?searchKey=`
+export const GET_USER_NAME =`/users/name?searchKey=`
+
+export const  GET_TABS_Name=`/tabs`
+
+export const OBJECT_API_DASHBOARD ='Dashboard'
 

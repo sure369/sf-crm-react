@@ -6,7 +6,7 @@ import {
     Grid, Button, FormControl, Stack, Alert, DialogActions,
     Autocomplete, TextField, MenuItem
 } from "@mui/material";
-import { TaskSubjectPicklist } from "../../data/pickLists";
+import { TaskSubjectPicklist,TaskStatus } from "../../data/pickLists";
 import CustomizedSelectForFormik from '../formik/CustomizedSelectForFormik';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -16,24 +16,42 @@ import '../recordDetailPage/Form.css'
 import { RequestServer } from '../api/HttpReq';
 import { TaskInitialValues } from '../formik/IntialValues/formValues';
 import { apiMethods } from "../api/methods";
-import { POST_EVENT } from "../api/endUrls";
+import { POST_EVENT,GET_USER_NAME } from "../api/endUrls";
 
-const URL_postRecords = POST_EVENT 
+const URL_postRecords = POST_EVENT
 
+const URL_getUserRecords=GET_USER_NAME
 
 const ModalTask = ({ item, handleModal }) => {
 
     const [taskParentRecord, setTaskParentRecord] = useState();
     const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
-
+    const [relatedUserRecNames,setRelatedUserRecords]=useState([])
+    
     const navigate = useNavigate();
     const location = useLocation();
 
     useEffect(() => {
         console.log('Task parent record', location.state.record.item);
         setTaskParentRecord(location.state.record.item)
-
+        fetchUserNames('')
     }, [])
+
+    const fetchUserNames=(newInputValue)=>{
+        RequestServer(apiMethods.get,URL_getUserRecords+newInputValue)
+        .then(res=>{
+            console.log(res,"api res fetchUserNames")
+            if(typeof(res.data)==='object'){
+                setRelatedUserRecords(res.data)
+            }else{                
+            setRelatedUserRecords([])
+            }
+        })
+        .catch(err=>{
+            console.log(err,"api error fetchUserNames")
+            setRelatedUserRecords([])
+        })
+    }
 
     const initialValues = TaskInitialValues;
 
@@ -61,9 +79,8 @@ const ModalTask = ({ item, handleModal }) => {
         values.modifiedBy = JSON.parse(sessionStorage.getItem('loggedInUser'))
         values.modifiedDate = dateSeconds;
         values.createdDate = dateSeconds;
-        values.LeadId = taskParentRecord._id;
-        values.object = 'Lead'
-        values.leadDetails = {
+        values.object = 'Enquiry'
+        values.relatedTo = {
             leadName: taskParentRecord.fullName,
             id: taskParentRecord._id
         }
@@ -146,8 +163,50 @@ const ModalTask = ({ item, handleModal }) => {
                                         </div>
                                     </Grid>
                                     <Grid item xs={6} md={6}>
-                                        <label htmlFor="assignedTo">Assigned To  </label>
-                                        <Field name="assignedTo" type="text" class="form-input" />
+                                    <label htmlFor="status"> Status  </label> 
+                                    <Field name="status" component={CustomizedSelectForFormik} className="form-customSelect">
+                                            <MenuItem value=""><em>None</em></MenuItem>
+                                            {
+                                                TaskStatus.map((i) => {
+                                                    return <MenuItem value={i.value}>{i.text}</MenuItem>
+                                                })
+                                            }
+                                        </Field>
+                                        </Grid>
+                                    <Grid item xs={6} md={6}>
+                                        <label htmlFor="assignedTo"> Assigned To  </label> 
+                                             <Autocomplete
+                                                name="assignedTo"
+                                                options={relatedUserRecNames}
+                                                value={values.assignedTo}
+                                                getOptionLabel={option => option.userName|| ''}
+                                                isOptionEqualToValue={(option, value) =>
+                                                    option.id === value
+                                                }
+                                                onChange={(e, value) => {
+                                                    console.log('inside onchange values', value);
+                                                    if(!value){                                
+                                                        console.log('!value',value);
+                                                        setFieldValue('assignedTo','')
+                                                    }
+                                                    else{
+                                                        console.log('autocomplete selected value',value);                                                        
+                                                        setFieldValue('assignedTo',value)
+                                                    }
+                                                }}
+                                                onInputChange={(event, newInputValue) => {
+                                                    if (newInputValue.length >= 3) {
+                                                        fetchUserNames(newInputValue)
+                                                    }
+                                                    else  if (newInputValue.length ===0) {
+                                                        fetchUserNames(newInputValue)
+                                                    }
+                                                }}
+                                        
+                                                renderInput={params => (
+                                                    <Field component={TextField} {...params} name="assignedTo" />
+                                                )}
+                                                />                                         
                                     </Grid>
                                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                                         <Grid item xs={6} md={6}>

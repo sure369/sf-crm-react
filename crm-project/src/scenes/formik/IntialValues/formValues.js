@@ -249,9 +249,7 @@ export const TaskInitialValues = {
   description: "",
   attachments: null,
   object: "",
-  AccountId: "",
-  LeadId: "",
-  OpportunityId: "",
+  status:"",
   createdBy: "",
   modifiedBy: "",
   createdDate: "",
@@ -266,9 +264,7 @@ export const TaskSavedValues = (singleTask) => {
     description: singleTask?.description ?? "",
     attachments: singleTask?.attachments ?? "",
     object: singleTask?.object ?? "",
-    AccountId: singleTask?.AccountId ?? "",
-    LeadId: singleTask?.LeadId ?? "",
-    OpportunityId: singleTask?.OpportunityId ?? "",
+    status: singleTask?.status ?? "",
     createdBy: singleTask?.createdBy.userFullName ?? "",
     modifiedBy: singleTask?.modifiedBy.userFullName ?? "",
     createdDate: new Date(singleTask?.createdDate).toLocaleString(),
@@ -276,9 +272,6 @@ export const TaskSavedValues = (singleTask) => {
     _id: singleTask?._id ?? "",
     StartDate: new Date(singleTask?.StartDate),
     EndDate: new Date(singleTask?.EndDate),
-    accountDetails: singleTask?.accountDetails ?? "",
-    leadDetails: singleTask?.leadDetails ?? "",
-    opportunityDetails: singleTask?.opportunityDetails ?? "",
   };
 };
 
@@ -427,3 +420,27 @@ export const LoginInitialValue = {
   userName: "",
   password: "",
 };
+
+export const DashboardInitialValues = {
+  dashboardName: "",
+  chartType:"",
+  objectName:"",
+  fields:[],  
+  createdDate: "",
+  modifiedDate: "",
+  createdBy: "",
+  modifiedBy: "",
+};
+
+export const DashboardSavedValues = (singleDashboard) => {
+  return {
+    dashboardName: singleDashboard?.dashboardName ?? "",
+    chartType: singleDashboard?.chartType ?? "",
+    objectName: singleDashboard?.objectName ?? "",
+    fields: singleDashboard?.fields ?? "",
+    createdDate: singleDashboard?.createdDate ?? "",
+    modifiedDate: singleDashboard?.modifiedDate ?? "",
+    createdBy: singleDashboard?.createdBy.userFullName ?? "",
+    modifiedBy: singleDashboard?.modifiedBy.userFullName ?? "",
+  }
+}

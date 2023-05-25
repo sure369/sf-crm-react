@@ -37,11 +37,11 @@ const ModalTaskFileUpload = ({record, handleModal }) => {
         const formData = new FormData();
         let dateSeconds = new Date().getTime();
         let userDetails = (sessionStorage.getItem("loggedInUser"))
-
+        let relatedObj ={id:record.taskId,object:record.OBJECT_API}
+        console.log(relatedObj,"relatedObj")
         selectedFiles.forEach((file) => {
             formData.append("file", file);
-            formData.append("relatedId", record.taskId);
-            formData.append("relatedObject", record.OBJECT_API);
+            formData.append("relatedTo",JSON.stringify(relatedObj));
             formData.append("createdDate", dateSeconds)
             formData.append("modifiedDate", dateSeconds)
             formData.append("createdBy", JSON.stringify(userDetails))
@@ -79,7 +79,7 @@ const ModalTaskFileUpload = ({record, handleModal }) => {
                 });
             })
             .finally(()=>{
-                handleModal()
+                // handleModal()
             })
     };
 
@@ -96,7 +96,6 @@ const ModalTaskFileUpload = ({record, handleModal }) => {
     return (
         <>
             <ToastNotification notify={notify} setNotify={setNotify} />
-
             <Box sx={{ height: "500px", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", height: "285px" }}>
                 <Typography variant="h4">Upload Files</Typography>
                 <label htmlFor="images" className="input-drop-container">

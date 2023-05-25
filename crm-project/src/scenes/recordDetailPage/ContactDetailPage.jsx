@@ -424,7 +424,7 @@ const ContactDetailPage = ({ item }) => {
                     </Formik>
                 </div>
                 </>
-                : <NoAccessCard/>
+                : null
                 }
 
             </Grid>

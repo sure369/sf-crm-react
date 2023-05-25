@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import RelatedFileUpload from "../fileUpload/ReletedFileUpload";
-import { OBJECT_API_EVENT, GET_FILE, DELETE_FILE } from "../api/endUrls";
+import { OBJECT_API_EVENT, GET_FILE, DELETE_FILE,GET_EVENT_RELATED_FILE } from "../api/endUrls";
 import ModalTaskFileUpload from "../Files/ModalTaskRelatedFile";
 import { RequestServer } from "../api/HttpReq";
 import { apiMethods } from "../api/methods";
@@ -20,8 +20,9 @@ import DeleteConfirmDialog from "../toast/DeleteConfirmDialog";
 const TaskRelatedItems = ({ item }) => {
 
   const OBJECT_API = OBJECT_API_EVENT
-  const URL_getRelatedFiles = GET_FILE
+  const URL_getRelatedFiles = GET_EVENT_RELATED_FILE
   const URL_deleteRelatedFiles = DELETE_FILE
+
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -40,11 +41,11 @@ const TaskRelatedItems = ({ item }) => {
     if (location.state.record.item) {
       setTaskRecord({ taskId: location.state.record.item._id, OBJECT_API: OBJECT_API });
     }
-    fetchRelatedFiles()
+    fetchRelatedFiles(location.state.record.item._id)
   }, []);
 
-  const fetchRelatedFiles = () => {
-    RequestServer(apiMethods.get, URL_getRelatedFiles)
+  const fetchRelatedFiles = (id) => {
+    RequestServer(apiMethods.get, URL_getRelatedFiles + id)
       .then((res) => {
         console.log(res, "index page res URL_getRelatedFiles");
         if (res.success) {

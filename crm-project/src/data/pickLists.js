@@ -247,3 +247,9 @@ export const Objects=[
   { text: "Lead", value: "Lead" },
   { text: "Inventory", value: "Inventory" },
 ]
+
+export const TaskStatus=[
+  {text:'Open',value:'Open'},
+  {text:'Working',value:'Working'},
+  {text:'Closed',value:'Closed'},
+]
