@@ -85,6 +85,11 @@ export const GET_DEAL_NAME=`/deals/name?searchKey=`
 export const GET_USER_NAME =`/users/name?searchKey=`
 
 export const  GET_TABS_Name=`/tabs`
+
 export const OBJECT_API_DASHBOARD ='Dashboard'
+export const GET_DASHBOARD=`/dashboards`
+export const POST_DASHBOARD=`/Dashboard`
+export const DELETE_DASHBOARD=`/dashboard/`
+export const GET_DASHBOARD_OBJECT_FIELD=`/dashboardGroup`
 
 export const GET_FIELDS_BY_OBJECT=`/fields/`

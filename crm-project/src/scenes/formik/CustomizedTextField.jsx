@@ -1,14 +1,10 @@
 import React from "react";
-import {TextField} from "@mui/material";
+import {TextField,InputAdornment} from "@mui/material";
 import "./FormStyles.css"
-
+import DashboardIcon from '@mui/icons-material/Dashboard';
 
 const  CustomizedTextFieldForFormik = ({ children, form, field,...props }) => {
 
-    //  console.log('form',form);
-    //  console.log('field',field);
-    //  console.log('props',props)
-    
      if(props.readOnly){
       console.log('inside read only')
      }
@@ -28,14 +24,18 @@ const  CustomizedTextFieldForFormik = ({ children, form, field,...props }) => {
   return (
     <TextField
       className="form-customSelect"
-      disabled
       name={name}
       value={value}
       onChange={ (e) => {
         changeFunc(e);
-        
-
       }}
+      InputProps={{
+        startAdornment: (
+            <InputAdornment position="start">
+                <DashboardIcon fontSize="small" />
+            </InputAdornment>
+        ),
+    }}
     >
       {children}
     </TextField>

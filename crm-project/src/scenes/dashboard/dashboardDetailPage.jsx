@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useLocation, useNavigate } from 'react-router-dom';
-import {    Grid, Button, DialogActions,Autocomplete, TextField ,MenuItem} from "@mui/material";
+import {    Grid, Button, DialogActions,Autocomplete, TextField ,MenuItem,InputAdornment} from "@mui/material";
 import ToastNotification from "../toast/ToastNotification";
 import CustomizedSelectForFormik from '../formik/CustomizedSelectForFormik';
 import CustomizedMultiSelectForFormik from '../formik/CustomizedMultiSelectForFormik';
@@ -12,19 +12,22 @@ import { RequestServer } from "../api/HttpReq";
 import { apiMethods } from "../api/methods";
 import { apiCheckObjectPermission } from "../Auth/apiCheckObjectPermission";
 import { getLoginUserRoleDept } from "../Auth/userRoleDept";
-import { OBJECT_API_EVENT ,POST_EVENT,
-    GET_DEAL_NAME,GET_ACCOUNT_NAME,GET_ENQUIRY_NAME,GET_FIELDS_BY_OBJECT
+import { OBJECT_API_EVENT ,POST_DASHBOARD,GET_FIELDS_BY_OBJECT
 } from "../api/endUrls";
 import { DashboardInitialValues,DashboardSavedValues } from "../formik/IntialValues/formValues";
 import {DashboardChartTypePicklist} from '../../data/pickLists'
 import { GetTableNames } from "../global/getTableNames";
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import CustomizedTextFieldForFormik from "../formik/CustomizedTextField";
 
 
 const DashboardDetailPage = ({ item ,handleModal ,showModel }) => {
     
     const OBJECT_API = OBJECT_API_EVENT
-    const URL_postRecords = POST_EVENT
+    const URL_postRecords = POST_DASHBOARD
     const URL_getObjectFields=GET_FIELDS_BY_OBJECT
+
+
     const [singleDashboard, setSingleDashboard] = useState();
     const [showNew, setshowNew] = useState(true)
     const location = useLocation();
@@ -77,12 +80,13 @@ const DashboardDetailPage = ({ item ,handleModal ,showModel }) => {
     console.log(initialValues,"initialValues")
     console.log(savedValues,"savedValues")
 
-    const validationSchema = Yup.object({
-        dashboardName: Yup
-            .string()
-            .required('Required'),
-       
-
+    const validationSchema = Yup.object({      
+            dashboardName: Yup.string().required('Required'),
+            chartType: Yup.string().required('Required'),
+            objectName: Yup.string().required('Required'),
+            fields: Yup.array()
+              .min(1, 'Select at least one field')
+              .max(2, 'You can select a maximum of two fields'),
     })
 
     const formSubmission = async (values, { resetForm }) => {
@@ -176,12 +180,6 @@ const DashboardDetailPage = ({ item ,handleModal ,showModel }) => {
 
     return (
         <Grid item xs={12} style={{ margin: "20px" }}>
-            <div style={{ textAlign: "center", marginBottom: "10px" }}>
-                {
-                    showNew ? <h2>New Dashboard</h2> : <h2>Existing Dashboard  </h2>
-                }
-            </div>
-
             <Formik
                 enableReinitialize={true}
                 initialValues={showNew ? initialValues : savedValues}
@@ -189,24 +187,40 @@ const DashboardDetailPage = ({ item ,handleModal ,showModel }) => {
                 onSubmit={(values, { resetForm }) => formSubmission(values, { resetForm })}
             >
                  {(props) => {
-                        const {values,dirty, isSubmitting, handleChange,handleSubmit,handleReset,setFieldValue,errors,touched,} = props;
+                        const {values,dirty, isSubmitting,isValid, handleChange,handleSubmit,handleReset,setFieldValue,errors,touched,} = props;
 
                     return (
                         <>
                             <ToastNotification notify={notify} setNotify={setNotify} />
-                            <Form className="my-form">
+                            <Form className="new-dashboard-form">
                                 <Grid container spacing={2}>
                                     <Grid item xs={6} md={6}>
                                         <label htmlFor="dashboardName">Dashboard Name  <span className="text-danger">*</span></label>
-                                        <Field name="dashboardName" type='text' class="form-input"
+                                        <Field name="dashboardName"                                         
+                                             component={CustomizedTextFieldForFormik}                              
                                         // disabled={showNew ? !permissionValues.create : !permissionValues.edit}
-                                        />
+                                        >
+                                            {/* {({ field }) => (
+                                                <TextField
+                                                    {...field}
+                                                    type="text"
+                                                    className="form-input"
+                                                    InputProps={{
+                                                        startAdornment: (
+                                                            <InputAdornment position="start">
+                                                                <DashboardIcon fontSize="small" />
+                                                            </InputAdornment>
+                                                        ),
+                                                    }}
+                                                />
+                                            )} */}
+                                        </Field>
                                         <div style={{ color: 'red' }}>
                                             <ErrorMessage name="dashboardName" />
                                         </div>
                                     </Grid>                           
                                     <Grid item xs={6} md={6}>
-                                        <label htmlFor="chartType">Chart Type  </label>
+                                        <label htmlFor="chartType">Chart Type <span className="text-danger">*</span> </label>
                                         <Field 
                                             name="chartType"
                                             component={CustomizedSelectForFormik} 
@@ -218,10 +232,13 @@ const DashboardDetailPage = ({ item ,handleModal ,showModel }) => {
                                                     return <MenuItem value={i.value}>{i.text}</MenuItem>
                                                 })
                                               } 
-                                        </Field>
+                                        </Field>                                        
+                                        <div style={{ color: 'red' }}>
+                                            <ErrorMessage name="chartType" />
+                                        </div>
                                     </Grid>
                                     <Grid item xs={6} md={6}>
-                                        <label htmlFor="objectName"> Object Name  </label> 
+                                        <label htmlFor="objectName"> Object Name <span className="text-danger">*</span> </label> 
                                         <Field 
                                             name="objectName"
                                             component={CustomizedSelectForFormik} 
@@ -238,10 +255,13 @@ const DashboardDetailPage = ({ item ,handleModal ,showModel }) => {
                                                     return <MenuItem value={i.value}>{i.text}</MenuItem>
                                                 })
                                               } 
-                                        </Field>                                    
+                                        </Field>                                          
+                                        <div style={{ color: 'red' }}>
+                                            <ErrorMessage name="objectName" />
+                                        </div>                                  
                                     </Grid>
                                     <Grid item xs={6} md={6}>
-                                        <label htmlFor="fields"> Fields </label> 
+                                        <label htmlFor="fields"> Fields <span className="text-danger">*</span> </label> 
                                         <Field 
                                             name="fields"
                                             component={CustomizedMultiSelectForFormik} 
@@ -254,7 +274,10 @@ const DashboardDetailPage = ({ item ,handleModal ,showModel }) => {
                                                     return <MenuItem value={i.value}>{i.text}</MenuItem>
                                                 })
                                               } 
-                                        </Field>                                    
+                                        </Field>                                          
+                                        <div style={{ color: 'red' }}>
+                                            <ErrorMessage name="fields" />
+                                        </div>                                  
                                     </Grid>  
                                     {!showNew && (
                                         <>
@@ -277,7 +300,7 @@ const DashboardDetailPage = ({ item ,handleModal ,showModel }) => {
                                     <DialogActions sx={{ justifyContent: "space-between" }}>
                                         {
                                             showNew ?
-                                                <Button type='success' variant="contained" color="secondary" disabled={isSubmitting || !dirty}>Save</Button>
+                                                <Button type='success' variant="contained" color="secondary" disabled={isSubmitting || !dirty|| !isValid}>Save</Button>
                                                 :
                                                 <Button type='success' variant="contained" color="secondary" disabled={isSubmitting || !dirty}>Update</Button>
                                         }

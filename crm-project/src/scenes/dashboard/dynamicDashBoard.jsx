@@ -304,7 +304,6 @@ function DynamicHomePage() {
                                 </AccordionSummary>
                                 <AccordionDetails>
                                     <DashboardDetailPage/>
-
                                 </AccordionDetails>
                                 {/* <AccordionDetails>
                                 {isLoading && <CircularProgressWithLabel />}
