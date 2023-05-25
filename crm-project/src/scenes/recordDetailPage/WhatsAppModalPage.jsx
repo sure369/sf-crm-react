@@ -8,11 +8,12 @@ import '../recordDetailPage/Form.css'
 import { RequestServer } from "../api/HttpReq";
 import { WhatsappInitialValues } from "../formik/IntialValues/formValues";
 import { apiMethods } from "../api/methods";
+import { POST_SEND_BULK_WHATSAPP } from "../api/endUrls";
 
-const urlSendWhatsAppbulk = `/bulkewhatsapp`
 
 const WhatAppModalPage = ({ data, handleModal, bulkMail }) => {
 
+    const URL_postWhatsApp=POST_SEND_BULK_WHATSAPP
     const [parentRecord, setParentRecord] = useState([]);
     const navigate = useNavigate();
     const location = useLocation();
@@ -66,7 +67,7 @@ const WhatAppModalPage = ({ data, handleModal, bulkMail }) => {
         // formData.append('recordsData', JSON.stringify(RecordConvert));
         formData.append('file', element.attachments);
 
-        RequestServer(apiMethods.post,urlSendWhatsAppbulk, formData)
+        RequestServer(apiMethods.post,URL_postWhatsApp, formData)
             .then((res) => {
                 console.log('email send res', res)
                 if(res.success){

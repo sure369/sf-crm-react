@@ -28,12 +28,11 @@ import PermissionSets from "../permissionSets";
 import RoleDetailPage from "../recordDetailPage/RoleDetailPage";
 import RoleIndex from "../roles";
 import Files from "../Files";
+import DynamicHomePage from "../dashboard/dynamicDashBoard";
 
 function LoginLayoutIndex() {
   return (
     <>
-    
-    {/* <AppNavbar /> */}
       <Routes>
         <Route path="/" exact element={<ResponsiveAccounts />} />
         {/* <Route path="/" exact element={<HomePage />} /> */}
@@ -47,7 +46,7 @@ function LoginLayoutIndex() {
         <Route path="/list/permissions" element={<PermissionSets />} />
         <Route path="/list/role" element={<RoleIndex />} />
         <Route path="/list/files" element={<Files />} />
-        {/* <Route path="/list/files" element={<FileUpload />} /> */}
+        <Route path="/list/dashboard" element={<DynamicHomePage />} />
 
 
         <Route path="/new-contacts" element={<ContactDetailPage />} />

@@ -35,7 +35,6 @@ const UserDetailPage = ({ item }) => {
         console.log('passed record', location.state.record.item);
         setsingleUser(location.state.record.item);
         setshowNew(!location.state.record.item)
-        // FetchUsersbyName('')
     }, [])
 
     const initialValues=UserInitialValues
@@ -199,8 +198,7 @@ const UserDetailPage = ({ item }) => {
 
         let url = URL_getRoles + '?' + queryString.stringify(payloadObj);
 
-        // axios.post(`${urlgetRolesByDept}?searchKey=${newInputValue}`)
-        RequestServer(apiMethods.get, url)
+               RequestServer(apiMethods.get, url)
             .then((res) => {
                 console.log('res FetchRolesbyName', res.data)
                 if (res.success) {

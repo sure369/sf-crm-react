@@ -2,8 +2,8 @@ export const OBJECT_API_ACCOUNT='Account'
 export const GET_ACCOUNT='/accounts'
 export const POST_ACCOUNT='/account'
 export const DELETE_ACCOUNT='/account/'
-export const GET_ACCOUNT_RELATED_EVENT=`/accountRelatedEvent/`;
-export const GET_ACCOUNT_RELATED_CONTACT=`/accountRelatedContact/`;
+export const GET_ACCOUNT_RELATED_EVENT=`/account/related/event/`;
+export const GET_ACCOUNT_RELATED_CONTACT=`/account/related/contact/`;
 
 export const OBJECT_API_CONTACT='Contact'
 export const GET_CONTACT ='/contacts'
@@ -14,22 +14,22 @@ export const OBJECT_API_INVENTORY='Inventory'
 export const GET_INVENTORY ='/inventories'
 export const POST_INVENTORY ='/inventory'
 export const DELETE_INVENTORY ='/inventory/'
-export const GET_INVENTORY_RELATED_ACCOUNT=`/inventoryRelatedAccount/`;
-export const GET_INVENTORY_RELATED_DEAL=`/inventoryRelatedDeal/`;
+export const GET_INVENTORY_RELATED_ACCOUNT=`/inventory/related/account/`;
+export const GET_INVENTORY_RELATED_DEAL=`/inventory/related/deal/`;
 
 export const OBJECT_API_ENQUIRY='Enquiry'
 export const GET_ENQUIRY ='/enquiries'
 export const POST_ENQUIRY ='/enquiry'
 export const DELETE_ENQUIRY ='/enquiry/'
 export const GET_ENQUIRY_BY_MONTH='/enquiries?'
-export const GET_ENQUIRY_RELATED_EVENT=`/enquiryRelatedEvent/`;
-export const GET_ENQUIRY_RELATED_DEAL=`/enquiryRelatedDeal/`;
+export const GET_ENQUIRY_RELATED_EVENT=`/enquiry/related/event/`;
+export const GET_ENQUIRY_RELATED_DEAL=`/enquiry/related/deal/`;
 
 export const OBJECT_API_DEAL='Deal'
 export const GET_DEAL ='/deals'
 export const POST_DEAL ='/deal'
 export const DELETE_DEAL ='/deal/'
-export const GET_DEAL_RELATED_EVENT=`/dealRelatedEvent/`
+export const GET_DEAL_RELATED_EVENT=`/deal/related/event/`
 
 export const OBJECT_API_PERMISSIONS='Permissions'
 export const GET_PERMISSIONS ='/permissions'
@@ -73,6 +73,7 @@ export const DELETE_FILE='/file/'
 
 export const GET_FILE_RELATED_EVENT=`/fileRelatedEvent`
 export const POST_SEND_BULK_EMAIL=`/bulkemail`
+export const POST_SEND_BULK_WHATSAPP=`/bulkewhatsapp`
 export const GET_ALL_TABLE_NAME=`/objects`
 
 export const GET_INVENTORY_NAME = `/inventories/name?searchKey=`;
@@ -80,8 +81,3 @@ export const GET_ACCOUNT_NAME =`/accounts/name?searchKey=`
 export const GET_ENQUIRY_NAME=`/enquiries/name?searchKey=`
 export const GET_DEAL_NAME=`/deals/name?searchKey=`
 
-
-const fetchAccountUrl = `/accountsname`;
-const fetchLeadUrl = `/LeadsbyName`;
- const fetchOpportunityUrl = `/opportunitiesbyName`;
-// /api/dealsbyName

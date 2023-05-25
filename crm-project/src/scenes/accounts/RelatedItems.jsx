@@ -23,14 +23,14 @@ import { apiMethods } from "../api/methods";
 import { getLoginUserRoleDept } from "../Auth/userRoleDept";
 import { apiCheckObjectPermission } from "../Auth/apiCheckObjectPermission";
 import NoAccessCard from '../NoAccess/NoAccessCard'
-import { DELETE_CONTACT, DELETE_EVENT, GET_ACCOUNT_RELATED_EVENT,OBJECT_API_CONTACT,OBJECT_API_EVENT } from "../api/endUrls";
+import { DELETE_CONTACT, DELETE_EVENT, GET_ACCOUNT_RELATED_EVENT,GET_ACCOUNT_RELATED_CONTACT,OBJECT_API_CONTACT,OBJECT_API_EVENT } from "../api/endUrls";
 
 const AccountRelatedItems = ({ item }) => {
 
   const OBJECT_API_task = OBJECT_API_EVENT
   const OBJECT_API_contact = OBJECT_API_CONTACT
   const URL_getRelatedEventRecords = GET_ACCOUNT_RELATED_EVENT
-  const URL_getRelatedContactRecords = GET_ACCOUNT_RELATED_EVENT
+  const URL_getRelatedContactRecords = GET_ACCOUNT_RELATED_CONTACT
   const URL_deleteContactRecord = DELETE_CONTACT
   const URL_deleteEventRecord = DELETE_EVENT
 
