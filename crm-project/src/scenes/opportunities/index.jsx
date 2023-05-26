@@ -22,6 +22,8 @@ import { apiMethods } from "../api/methods";
 import { apiCheckObjectPermission } from '../Auth/apiCheckObjectPermission'
 import { getLoginUserRoleDept } from '../Auth/userRoleDept';
 import { OBJECT_API_DEAL ,GET_DEAL,DELETE_DEAL} from "../api/endUrls";
+import CircularProgress from '@mui/material/CircularProgress';
+
 
 const Opportunities = () => {
 
@@ -35,6 +37,8 @@ const Opportunities = () => {
   const [records, setRecords] = useState([]);
   const [fetchLoading, setFetchLoading] = useState(true);
   const [fetchError, setFetchError] = useState();
+  const [fetchPermissionloading, setFetchPermissionLoading] = useState(true);
+
   const [notify, setNotify] = useState({ isOpen: false, message: "", type: "", });
   const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: "", subTitle: "", });
 
@@ -65,6 +69,9 @@ const Opportunities = () => {
         .catch(err => {
           console.log(err, "res apiCheckObjectPermission")
           setPermissionValues({})
+        })
+        .finally(() => {
+          setFetchPermissionLoading(false)
         })
   }
 
@@ -286,8 +293,17 @@ const Opportunities = () => {
       />
 
       <Box m="20px">
-        {
-          permissionValues.read ?
+        {fetchPermissionloading ? (
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            height="200px"
+          >
+            <CircularProgress />
+          </Box>
+        ) : (
+          permissionValues.read &&(
             <>
 
               <Typography
@@ -296,11 +312,11 @@ const Opportunities = () => {
                 fontWeight="bold"
                 sx={{ m: "0 0 5px 0" }}
               >
-                Opportunities
+                {OBJECT_API}
               </Typography>
               <Box display="flex" justifyContent="space-between">
                 <Typography variant="h5" color={colors.greenAccent[400]}>
-                  List Of {filterOpportunity} Opportunities
+                  List Of {filterOpportunity} {OBJECT_API}
                 </Typography>
 
                 <div
@@ -395,7 +411,7 @@ const Opportunities = () => {
                 />
               </Box>
             </>
-            : null
+          ))
         }
       </Box>
 

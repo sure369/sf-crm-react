@@ -20,7 +20,7 @@ import { apiMethods } from "../api/methods";
 import { apiCheckObjectPermission } from '../Auth/apiCheckObjectPermission'
 import { getLoginUserRoleDept } from '../Auth/userRoleDept';
 import { OBJECT_API_USER,GET_USER,DELETE_USER } from "../api/endUrls";
-
+import CircularProgress from '@mui/material/CircularProgress';
 const Users = () => {
   const OBJECT_API = OBJECT_API_USER
   const URL_getRecords = GET_USER
@@ -33,6 +33,8 @@ const Users = () => {
   const [records, setRecords] = useState([]);
   const [fetchError, setFetchError] = useState();
   const [fetchLoading, setFetchLoading] = useState(true);
+  const [fetchPermissionloading, setFetchPermissionLoading] = useState(true);
+
   const [notify, setNotify] = useState({ isOpen: false, message: "", type: "", });
   const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: "", subTitle: "", });
   const [showDelete, setShowDelete] = useState(false);
@@ -77,6 +79,9 @@ const Users = () => {
         .catch(err => {
           console.log(err, "res apiCheckObjectPermission")
           setPermissionValues({})
+        })
+        .finally(() => {
+          setFetchPermissionLoading(false)
         })
     }
   }
@@ -267,8 +272,17 @@ const Users = () => {
         />
 
         <Box m="20px">
-          {
-            permissionValues.read ?
+          { fetchPermissionloading ? (
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            height="200px"
+          >
+            <CircularProgress />
+          </Box>
+        ) : (
+            permissionValues.read &&(
               <>
                 <Typography
                   variant="h2"
@@ -383,7 +397,8 @@ const Users = () => {
                     onRowClick={(e) => handleOnCellClick(e)}
                   />
                 </Box>
-              </> : null
+              </> 
+            ))
           }
         </Box>
       </>

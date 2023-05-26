@@ -238,8 +238,17 @@ const Files = () => {
       />
 
       <Box m="20px">
-        {
-          permissionValues.read ?
+        {fetchPermissionloading ? (
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            height="200px"
+          >
+            <CircularProgress />
+          </Box>
+        ) : (
+          permissionValues.read &&(
           <>
          
         <Typography
@@ -248,11 +257,11 @@ const Files = () => {
           fontWeight="bold"
           sx={{ m: "0 0 5px 0" }}
         >
-          Files
+          {OBJECT_API}
         </Typography>
         <Box display="flex" justifyContent="space-between">
           <Typography variant="h5" color={colors.greenAccent[400]}>
-            List Of Files
+            List Of {OBJECT_API}
           </Typography>
 
           <div
@@ -354,8 +363,7 @@ const Files = () => {
       </Modal>
 
         </>
-        :null
-        }
+          ))}
       </Box>
       
     </>

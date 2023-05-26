@@ -23,6 +23,7 @@ import { RequestServer } from "../api/HttpReq";
 import "../recordDetailPage/Form.css";
 import { LeadMonthPicklist } from "../../data/pickLists";
 import "../indexCSS/muiBoxStyles.css";
+import CircularProgress from '@mui/material/CircularProgress';
 import { apiMethods } from "../api/methods";
 import { apiCheckObjectPermission } from '../Auth/apiCheckObjectPermission'
 import { getLoginUserRoleDept } from '../Auth/userRoleDept';
@@ -42,6 +43,7 @@ const Leads = () => {
   const [filteredRecord, setFilteredRecord] = useState([]);
   const [fetchError, setFetchError] = useState();
   const [fetchLoading, setFetchLoading] = useState(true);
+  const [fetchPermissionloading, setFetchPermissionLoading] = useState(true);
 
   const [notify, setNotify] = useState({ isOpen: false, message: "", type: "", });
   const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: "", subTitle: "", });
@@ -97,6 +99,9 @@ const Leads = () => {
         .catch(err => {
           console.log(err, "res apiCheckObjectPermission")
           setPermissionValues({})
+        })
+        .finally(() => {
+          setFetchPermissionLoading(false)
         })
     }
   }
@@ -316,8 +321,17 @@ const Leads = () => {
       />
 
       <Box m="20px">
-        {
-          permissionValues.read ?
+        {fetchPermissionloading ? (
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            height="200px"
+          >
+            <CircularProgress />
+          </Box>
+        ) : (
+          permissionValues.read &&(
             <>
               <Typography
                 variant="h2"
@@ -325,11 +339,11 @@ const Leads = () => {
                 fontWeight="bold"
                 sx={{ m: "0 0 5px 0" }}
               >
-                Leads
+                {OBJECT_API}
               </Typography>
               <Box display="flex" justifyContent="space-between">
                 <Typography variant="h5" color={colors.greenAccent[400]}>
-                  <strong>List Of {filterMonth} Leads</strong>
+                  List Of {filterMonth} {OBJECT_API}
                 </Typography>
 
                 <div
@@ -474,7 +488,7 @@ const Leads = () => {
                 />
               </Box>
             </>
-            : null
+          ))
         }
       </Box>
 

@@ -16,6 +16,7 @@ import DeleteConfirmDialog from "../toast/DeleteConfirmDialog";
 import ExcelDownload from "../Excel";
 import { RequestServer } from "../api/HttpReq";
 import "../indexCSS/muiBoxStyles.css";
+import CircularProgress from '@mui/material/CircularProgress';
 import { apiMethods } from "../api/methods";
 import { apiCheckObjectPermission } from '../Auth/apiCheckObjectPermission'
 import { getLoginUserRoleDept } from '../Auth/userRoleDept';
@@ -35,6 +36,9 @@ const Task = () => {
   const [fetchError, setFetchError] = useState();
   const [notify, setNotify] = useState({ isOpen: false, message: "", type: "", });
   const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: "", subTitle: "", });
+
+  const [fetchPermissionloading, setFetchPermissionLoading] = useState(true);
+
 
   const [showDelete, setShowDelete] = useState(false);
   const [selectedRecordIds, setSelectedRecordIds] = useState();
@@ -79,6 +83,9 @@ const Task = () => {
         .catch(err => {
           console.log(err, "res apiCheckObjectPermission")
           setPermissionValues({})
+        })
+        .finally(() => {
+          setFetchPermissionLoading(false)
         })
     }
   }
@@ -279,21 +286,28 @@ const Task = () => {
       />
 
       <Box m="20px">
-        {
-          permissionValues.read ?
+        {fetchPermissionloading ? (
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            height="200px"
+          >
+            <CircularProgress />
+          </Box>
+        ) : (permissionValues.read &&(
             <>
-
               <Typography
                 variant="h2"
                 color={colors.grey[100]}
                 fontWeight="bold"
                 sx={{ m: "0 0 5px 0" }}
               >
-                Task
+                {OBJECT_API}
               </Typography>
               <Box display="flex" justifyContent="space-between">
                 <Typography variant="h5" color={colors.greenAccent[400]}>
-                  List Of Task
+                  List Of {OBJECT_API}
                 </Typography>
                 <div
                   style={{
@@ -383,7 +397,7 @@ const Task = () => {
                 />
               </Box>
             </>
-            : null
+        ))
         }
       </Box>
     </>

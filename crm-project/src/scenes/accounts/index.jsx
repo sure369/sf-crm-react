@@ -302,11 +302,11 @@ const Accounts = () => {
                 fontWeight="bold"
                 sx={{ m: "0 0 5px 0" }}
               >
-                Accounts
+                {OBJECT_API}
               </Typography>
               <Box display="flex" justifyContent="space-between">
                 <Typography variant="h5" color={colors.greenAccent[400]}>
-                  List Of Accounts
+                  List Of {OBJECT_API}
                 </Typography>
   
                 <div

@@ -292,8 +292,17 @@ const Contacts = () => {
       />
 
       <Box m="20px">
-        {
-          permissionValues.read ?
+        {fetchPermissionloading ? (
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            height="200px"
+          >
+            <CircularProgress />
+          </Box>
+        ) :(
+          permissionValues.read &&
           <>
          
         <Typography
@@ -302,11 +311,11 @@ const Contacts = () => {
           fontWeight="bold"
           sx={{ m: "0 0 5px 0" }}
         >
-          Contacts
+          {OBJECT_API}
         </Typography>
         <Box display="flex" justifyContent="space-between">
           <Typography variant="h5" color={colors.greenAccent[400]}>
-            List Of Contacts
+            List Of {OBJECT_API}
           </Typography>
 
           <div
@@ -353,7 +362,7 @@ const Contacts = () => {
             ) : (
               <>
               {
-                permissionValues.create &&
+                permissionValues.create && 
               <>
                 <Button
                   variant="contained"color="info"
@@ -406,12 +415,11 @@ const Contacts = () => {
             }}
             onRowClick={(e) => handleOnCellClick(e)}
           />
-        </Box>
-         
+        </Box>         
         </>
-        :null
-        }
-      </Box>
+  )
+  }
+     
 
       <Modal
         open={emailModalOpen}
@@ -444,6 +452,7 @@ const Contacts = () => {
           />
         </div>
       </Modal>
+       </Box>
     </>
   );
 };

@@ -18,7 +18,7 @@ import { apiMethods } from '../api/methods';
 import { apiCheckObjectPermission } from "../Auth/apiCheckObjectPermission";
 import { getLoginUserRoleDept } from "../Auth/userRoleDept";
 import { OBJECT_API_ROLE,GET_ROLE,DELETE_ROLE } from '../api/endUrls';
-
+import CircularProgress from '@mui/material/CircularProgress';
 
 const RoleIndex = () => {
 
@@ -32,6 +32,8 @@ const RoleIndex = () => {
   const [records, setRecords] = useState([]);
   const [fetchError, setFetchError] = useState()
   const [fetchLoading, setFetchLoading] = useState(true);
+  const [fetchPermissionloading, setFetchPermissionLoading] = useState(true);
+
   // notification
   const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
   //dialog
@@ -83,6 +85,9 @@ const RoleIndex = () => {
         .catch(err => {
           console.log(err, "res apiCheckObjectPermission error")
           setPermissionValues({})
+        })
+        .finally(() => {
+          setFetchPermissionLoading(false)
         })
     }
   }
@@ -215,19 +220,29 @@ const RoleIndex = () => {
       <DeleteConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog} />
 
       <Box m="20px">
-        {
-          permissionValues.read ? <>
+        {fetchPermissionloading ? (
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            height="200px"
+          >
+            <CircularProgress />
+          </Box>
+        ) : (
+          permissionValues.read && (
+             <>
             <Typography
               variant="h2"
               color={colors.grey[100]}
               fontWeight="bold"
               sx={{ m: "0 0 5px 0" }}
             >
-              Roles
+              {OBJECT_API}
             </Typography>
             <Box display="flex" justifyContent="space-between">
               <Typography variant="h5" color={colors.greenAccent[400]}>
-                List Of Roles
+                List Of {OBJECT_API}
               </Typography>
 
 
@@ -311,8 +326,8 @@ const RoleIndex = () => {
                 }}
               />
             </Box>
-          </> : null
-          // <NoAccess />
+          </>
+          ))
         }
       </Box>
     </>

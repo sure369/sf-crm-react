@@ -19,6 +19,8 @@ import { apiMethods } from "../api/methods";
 import { apiCheckObjectPermission } from "../Auth/apiCheckObjectPermission";
 import { getLoginUserRoleDept } from "../Auth/userRoleDept";
 import { OBJECT_API_INVENTORY,GET_INVENTORY,DELETE_INVENTORY } from "../api/endUrls";
+import CircularProgress from '@mui/material/CircularProgress';
+
 
 const Inventories = () => {
 
@@ -34,6 +36,7 @@ const Inventories = () => {
   const [fetchLoading, setFetchLoading] = useState(true);
   const [notify, setNotify] = useState({isOpen: false,message: "",type: "",});
   const [confirmDialog, setConfirmDialog] = useState({isOpen: false,title: "",subTitle: "",});
+  const [fetchPermissionloading, setFetchPermissionLoading] = useState(true);
 
   const [showDelete, setShowDelete] = useState(false);
   const [selectedRecordIds, setSelectedRecordIds] = useState();
@@ -78,6 +81,9 @@ const Inventories = () => {
       .catch(err=>{
         console.log(err,"error apiCheckObjectPermission")
         setPermissionValues({})
+      })
+      .finally(() => {
+        setFetchPermissionLoading(false)
       })
     }
   }
@@ -261,8 +267,17 @@ const Inventories = () => {
       />
 
       <Box m="20px">
-        {
-          permissionValues.read ?
+        {fetchPermissionloading ? (
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            height="200px"
+          >
+            <CircularProgress />
+          </Box>
+        ) : (
+          permissionValues.read && (
           <>         
         <Typography
           variant="h2"
@@ -270,11 +285,11 @@ const Inventories = () => {
           fontWeight="bold"
           sx={{ m: "0 0 5px 0" }}
         >
-          Inventories
+          {OBJECT_API}
         </Typography>
         <Box display="flex" justifyContent="space-between">
           <Typography variant="h5" color={colors.greenAccent[400]}>
-            List Of Inventories
+            List Of {OBJECT_API}
           </Typography>
 
           <div
@@ -366,7 +381,7 @@ const Inventories = () => {
           />
         </Box>
         </>
-        : null
+          ))
         }
       </Box>
     </>
