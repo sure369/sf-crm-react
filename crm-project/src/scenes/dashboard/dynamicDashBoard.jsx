@@ -11,61 +11,26 @@ import axios from "axios";
 import { Bar, Bubble, Chart, Doughnut, Line, Pie, PolarArea, Radar, } from "react-chartjs-2";
 import CircularProgressWithLabel from "../styles/CircularProgressWithLabel";
 import "../recordDetailPage/Form.css"
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import queryString from "query-string";
 import ToastNotification from "../toast/ToastNotification";
 import { Delete, ExpandMore } from "@mui/icons-material";
 import './dashboard.css'
-import { GetTableNames } from "../global/getTableNames";
 import DashboardDetailPage from "./dashboardDetailPage";
 import DashBoardRecords from ".";
 import DashboardCharts from "./dashboardCharts";
 
 function DynamicHomePage() {
-    // const URL_get
-    const urlOpportunity = `${process.env.REACT_APP_SERVER_URL}/opportunities`;
-    const urlLead = `${process.env.REACT_APP_SERVER_URL}/leads`;
-    const urlAccount = `${process.env.REACT_APP_SERVER_URL}/accounts`;
-    const urlInventory = `${process.env.REACT_APP_SERVER_URL}/inventories`;
 
-    const urlTabs = `${process.env.REACT_APP_SERVER_URL}/tabs`;
-    const urlFields = `${process.env.REACT_APP_SERVER_URL}/fields`;
-    const urlDashboard = `${process.env.REACT_APP_SERVER_URL}/dashboardGroup`;
-    const urlPostDashboard = `${process.env.REACT_APP_SERVER_URL}/Dashboard`;
-    const urlGetDashboards = `${process.env.REACT_APP_SERVER_URL}/dashboards`
-    const urlDeleteDashboards = `${process.env.REACT_APP_SERVER_URL}/dashboard/`
-
-    const user = JSON.parse(sessionStorage.getItem('loggedInUser'))
-
-
-    const ChartTypes = [{ chart: "Bar" }, { chart: "Pie" }, { chart: "Doughnut" }, { chart: "Line" }, { chart: "Polar" }, { chart: "Radar" }];
-
-    const [records, setRecords] = useState([]);
-    const [tabs, setTabs] = useState([]);
-    const [selectedObject, setSelectedObject] = useState([]);
-
-    const [selectedUrl, setSelectedUrl] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
-    const [selectedChart, setSelectedChart] = useState("None");
-    const [fields, setFields] = useState();
-    const [selectedFields, setSelectedFields] = useState([]);
     const [notify, setNotify] = useState({ isOpen: false, message: "", type: "", });
-    const [dashboardData, setDashboardData] = useState("");
-    const [dashboardName, setDashboardName] = useState("");
-    const [dashboardFiles, setDashboardFiles] = useState([]);
-    const [chartData, setChartData] = useState({});
-
-
     const [selectedDashboard, setSelectedDashboard] = useState(null);
-
-    // Function to handle row click in DashBoardRecords
+    const [formSubmitted, setFormSubmitted] = useState(false);
+  
     const handleRowClick = (dashboard) => {
-
       setSelectedDashboard(dashboard);
     };
-
-
+  
+    const handleFormSubmission = () => {
+      setFormSubmitted(true);
+    };
 
 
     return (
@@ -76,34 +41,34 @@ function DynamicHomePage() {
                     <Grid item xs={10} lg={4} sm={8} xl={4}>
                         <Box className="filter-box" >
                             <Accordion sx={{ borderRadius: "5px", margin: "10px" }}>
-                                <AccordionSummary
-                                    expandIcon={<ExpandMore />}
-                                    aria-label="Expand"
-                                    aria-controls="-content"
-                                    id="-header"
+                                <AccordionSummary expandIcon={<ExpandMore />}
+                                    aria-label="Expand" aria-controls="-content" id="-header"
                                 >
                                     <Typography variant="h4" fontWeight="bold">
                                         New Dashboard
                                     </Typography>
                                 </AccordionSummary>
                                 <AccordionDetails>
-                                    <DashboardDetailPage dashboard={selectedDashboard} />
+                                    <DashboardDetailPage 
+                                        dashboard={selectedDashboard}
+                                        onFormSubmit={handleFormSubmission} 
+                                    />
                                 </AccordionDetails>
                             </Accordion>
 
                             <Accordion sx={{ borderRadius: "5px", margin: "10px" }}>
-                                <AccordionSummary
-                                    expandIcon={<ExpandMore />}
-                                    aria-label="Expand"
-                                    aria-controls="-content"
-                                    id="-header"
+                                <AccordionSummary  expandIcon={<ExpandMore />}
+                                    aria-label="Expand" aria-controls="-content" id="-header"
                                 >
                                     <Typography variant="h4" fontWeight="bold">
                                         Existing Dashboards
                                     </Typography>
                                 </AccordionSummary>
                                 <AccordionDetails>
-                                    <DashBoardRecords handleRowClick={handleRowClick} />
+                                    <DashBoardRecords 
+                                    handleRowClick={handleRowClick}
+                                    formSubmitted={formSubmitted}
+                                    />
                                 </AccordionDetails>
                             </Accordion>
                         </Box>
@@ -113,11 +78,7 @@ function DynamicHomePage() {
 
                         <Typography
                             variant="h3"
-                            sx={{
-                                textAlign: "center",
-                                fontWeight: "bold",
-                                textShadow: "3px 3px 4px silver",
-                            }}
+                            sx={{textAlign: "center", fontWeight: "bold",textShadow: "3px 3px 4px silver",}}
                         >
                             DashBoard
                         </Typography>

@@ -10,7 +10,7 @@ import { DELETE_DASHBOARD,GET_DASHBOARD } from '../api/endUrls';
 import ToastNotification from "../toast/ToastNotification";
 import DashboardIcon from '@mui/icons-material/Dashboard';
 
-function DashBoardRecords({handleRowClick}) {
+function DashBoardRecords({handleRowClick,formSubmitted}) {
 
     const URL_deleteRecord = DELETE_DASHBOARD
     const URL_getRecords = GET_DASHBOARD
@@ -20,8 +20,12 @@ function DashBoardRecords({handleRowClick}) {
 
     useEffect(()=>{
         fetchRecords()
-    },[])
+        if(formSubmitted){
+            fetchRecords()
+        }
+    },[formSubmitted])
 
+    
     
     const fetchRecords = () => {
 
@@ -62,6 +66,9 @@ function DashBoardRecords({handleRowClick}) {
                     message: err.message,
                     type: "error",
                 })
+            })
+            .finally(()=>{
+                fetchRecords()
             })
     }
 

@@ -1,8 +1,4 @@
-import {
-  Box,
-  Grid,
-  Typography,
-} from "@mui/material";
+import {Box,Grid,Typography,} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { RequestServer } from "../api/HttpReq";
 import ApexCharts from "react-apexcharts";

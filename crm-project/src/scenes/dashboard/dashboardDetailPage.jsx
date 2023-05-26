@@ -21,7 +21,7 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import CustomizedTextFieldForFormik from "../formik/CustomizedTextField";
 
 
-const DashboardDetailPage = ({ dashboard }) => {
+const DashboardDetailPage = ({ dashboard ,onFormSubmit}) => {
     
     console.log(dashboard,"dashboard in detailPage")
 
@@ -155,6 +155,7 @@ const DashboardDetailPage = ({ dashboard }) => {
                     setTimeout(() => {
                         // navigate(-1);
                         resetForm()
+                        onFormSubmit()
                     }, 2000)
                 })
         }

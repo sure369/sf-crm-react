@@ -47,8 +47,8 @@ function LoginLayoutIndex() {
         <Route path="/list/permissions" element={<PermissionSets />} />
         <Route path="/list/role" element={<RoleIndex />} />
         <Route path="/list/files" element={<Files />} />
-        <Route path="/list/dashboard" element={<HomePage />} />
-        {/* <Route path="/list/dashboard" element={<DashboardHarish />} /> */}
+        {/* <Route path="/list/dashboard" element={<HomePage />} /> */}
+        <Route path="/list/dashboard" element={<DynamicHomePage />} />
 
 
         <Route path="/new-contacts" element={<ContactDetailPage />} />
