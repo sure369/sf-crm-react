@@ -19,6 +19,8 @@ import { Delete, ExpandMore } from "@mui/icons-material";
 import './dashboard.css'
 import { GetTableNames } from "../global/getTableNames";
 import DashboardDetailPage from "./dashboardDetailPage";
+import DashBoardRecords from ".";
+import DashboardCharts from "./dashboardCharts";
 
 function DynamicHomePage() {
     // const URL_get
@@ -26,7 +28,7 @@ function DynamicHomePage() {
     const urlLead = `${process.env.REACT_APP_SERVER_URL}/leads`;
     const urlAccount = `${process.env.REACT_APP_SERVER_URL}/accounts`;
     const urlInventory = `${process.env.REACT_APP_SERVER_URL}/inventories`;
-   
+
     const urlTabs = `${process.env.REACT_APP_SERVER_URL}/tabs`;
     const urlFields = `${process.env.REACT_APP_SERVER_URL}/fields`;
     const urlDashboard = `${process.env.REACT_APP_SERVER_URL}/dashboardGroup`;
@@ -55,224 +57,13 @@ function DynamicHomePage() {
     const [chartData, setChartData] = useState({});
 
 
+    const [selectedDashboard, setSelectedDashboard] = useState(null);
 
-    useEffect(() => {
-        fetchTabs();
-        fetchDashboardData();
-    }, []);
+    // Function to handle row click in DashBoardRecords
+    const handleRowClick = (dashboard) => {
 
-
-    const fetchTabs = () => {
-        GetTableNames()
-        .then(res=>{
-          console.log(res,"GetTableNames res in appbar")
-            setTabs(res)
-         
-        })
-        .catch(err=>{
-          console.log(err,"GetTableNames error in appbar")
-          setTabs([])
-        })
+      setSelectedDashboard(dashboard);
     };
-
-    const fetchFields = (x) => {
-        setIsLoading(true);
-        axios
-            .get(urlFields + `/${x}`)
-            .then((res) => {
-                console.log("fetched fields are :", res.data.fieldNames);
-                setFields(res.data.fieldNames);
-                setIsLoading(false);
-            })
-            .catch((err) => {
-                console.log("Error Fetching Fields", err);
-            });
-    };
-
-
-
-
-    const handleObjectChange = (event) => {
-        setSelectedObject(event.target.value);
-        let x = event.target.value;
-        let fetchUrl =
-            x === "Account"
-                ? urlAccount
-                : x === "Opportunity"
-                    ? urlOpportunity
-                    : x === "Lead"
-                        ? urlLead
-                        : x === "Inventory"
-                            ? urlInventory
-                            : x === "None"
-                                ? "None"
-                                : "";
-        console.log("fetch url is ", fetchUrl);
-        setSelectedUrl(fetchUrl);
-        setSelectedFields([])
-        fetchFields(x)
-        // fetchRecords(fetchUrl);
-
-    };
-
-
-
-
-    const handleChartChange = (event) => {
-        console.log('selected chart is :', event.target.value);
-        setSelectedChart(event.target.value);
-    }
-
-    const handleFieldChange = (event) => {
-        console.log("selected field is :", event.target.value);
-        let targetValue = event.target.value;
-        if (targetValue.length <= 2) {
-            setSelectedFields(event.target.value)
-        }
-
-        axios.get(urlDashboard + `?object=${selectedObject}&field=${event.target.value}`)
-            .then((res) => {
-                console.log('Dashboard Data is :', res.data);
-                setDashboardData(res.data)
-
-            })
-            .catch((err) => {
-                console.log('Error getting Dashboard Data :', err);
-            })
-    }
-
-    console.log('dashboardData is ', dashboardData);
-    const dashboardLabel = dashboardData && dashboardData.map(item => item._id)
-    let keyData
-    const label = dashboardLabel && dashboardLabel.map(obj => {
-        console.log('obj is ', obj);
-        keyData = Object.values(obj)
-        return `${Object.values(obj)}`
-    })
-    console.log('label is ', label);
-    console.log(keyData);
-
-    console.log("dashboardLabel is", dashboardLabel);
-
-    const filteredTabs = tabs.filter(
-        (item) =>
-            item !== "Opportunity Inventory" &&
-            item !== "User" &&
-            item !== "Email" &&
-            item !== "Role" &&
-            item !== "Files" &&
-            item !== "Permissions" &&
-            item !== "Dashboard"
-    );
-    console.log("filteredTabs are :", filteredTabs);
-
-
-    const handleDashboardNameChange = (event) => {
-
-        console.log('handleDashboardNameChange is ', event.target.value);
-        setDashboardName(event.target.value);
-    }
-
-    const handleChartSave = () => {
-        console.log('inside handle chart save');
-
-        const obj = { dashboardName: dashboardName, chartType: selectedChart, object: selectedObject, field: selectedFields }
-
-        axios.post(urlPostDashboard, obj)
-            .then(res => {
-                console.log('res is ', res);
-                console.log("New DashBoard Saved Successfully", res.data);
-                if (res.status === 200) {
-                    setNotify({
-                        isOpen: true,
-                        message: res.data,
-                        type: "success",
-                    })
-                } else {
-                    console.log(res, "error in then");
-                    setNotify({
-                        isOpen: true,
-                        message: res.error.message,
-                        type: "error",
-                    })
-                }
-
-                handleChartClear();
-                fetchDashboardData();
-            })
-            .catch(err => {
-                console.log("Error Saving Dashboard", err);
-                setNotify({
-                    isOpen: true,
-                    message: err.message,
-                    type: "error",
-                })
-            })
-    }
-
-    const handleChartClear = () => {
-        setDashboardName("");
-        setSelectedChart([]);
-        setSelectedObject([]);
-        setSelectedFields([]);
-        setFields(null);
-        setDashboardData([]);
-
-
-    }
-
-    const fetchDashboardData = () => {
-
-        axios.get(urlGetDashboards)
-            .then(res => {
-                console.log('fetched Dashboard data is ', res.data);
-                setDashboardFiles(res.data)
-            })
-            .catch(err => {
-                console.log('Error Fetching Dashboard data ', err);
-            })
-    }
-
-    const handleChartFileDelete = (item) => {
-        console.log('inside handle delete chart file');
-        axios.delete(urlDeleteDashboards + `${item._id}`)
-            .then(res => {
-                console.log('DashBoard File Deleted Successfully', res);
-                if (res.status === 200) {
-                    setNotify({
-                        isOpen: true,
-                        message: res.data,
-                        type: "success",
-                    })
-                } else {
-                    console.log(res, "error in then");
-                    setNotify({
-                        isOpen: true,
-                        message: res.error.message,
-                        type: "error",
-                    })
-                }
-                fetchDashboardData();
-            })
-            .catch(err => {
-                console.log('Error deleting Dashboard File ', err);
-            })
-    }
-
-    const handleChartDataClick = (item) => {
-        console.log('inside handle chart data click',);
-        setChartData(item);
-        axios.get(urlDashboard + `?object=${item.object}&field=${item.field}`)
-            .then((res) => {
-                console.log('Dashboard Data is :', res.data);
-                setDashboardData(res.data);
-                setSelectedChart(item.chartType);
-            })
-            .catch((err) => {
-                console.log('Error getting Dashboard Data :', err);
-            })
-    }
-
 
 
 
@@ -280,14 +71,10 @@ function DynamicHomePage() {
     return (
         <>
             <ToastNotification notify={notify} setNotify={setNotify} />
-
             <Box className="box-container">
-
                 <Grid container spacing={2} >
                     <Grid item xs={10} lg={4} sm={8} xl={4}>
-
                         <Box className="filter-box" >
-
                             <Accordion sx={{ borderRadius: "5px", margin: "10px" }}>
                                 <AccordionSummary
                                     expandIcon={<ExpandMore />}
@@ -295,132 +82,14 @@ function DynamicHomePage() {
                                     aria-controls="-content"
                                     id="-header"
                                 >
-
                                     <Typography variant="h4" fontWeight="bold">
                                         New Dashboard
                                     </Typography>
-
-
                                 </AccordionSummary>
                                 <AccordionDetails>
-                                    <DashboardDetailPage/>
+                                    <DashboardDetailPage dashboard={selectedDashboard} />
                                 </AccordionDetails>
-                                {/* <AccordionDetails>
-                                {isLoading && <CircularProgressWithLabel />}
-                                    <Box className="new-dashboard-form">
-                                        <div
-                                            style={{
-                                                display: "flex",
-                                                justifyContent: "flex-start",
-                                                alignItems: "center",
-                                                gap: "20px",
-                                                margin: "15px",
-                                            }}
-                                        >
-
-
-                                            <TextField
-                                                value={dashboardName}
-                                                label="DashBoard Name"
-                                                id="outlined-start-adornment"
-                                                sx={{ m: 1, width: '25ch' }}
-                                                size="small"
-                                                InputProps={{
-                                                    startAdornment: <InputAdornment position="start"><DashboardIcon fontSize="small" /></InputAdornment>,
-                                                }}
-                                                onChange={(event) => handleDashboardNameChange(event)}
-                                            />
-                                            <FormControl sx={{ m: 1, minWidth: 120, width: "25ch" }} size="small">
-                                                <InputLabel id="demo-select-small-label">
-                                                    <b>Select Chart</b>
-                                                </InputLabel>
-                                                <Select
-                                                    value={selectedChart}
-                                                    label="Select Chart"
-                                                    onChange={(event) => handleChartChange(event)}
-                                                >
-                                                    <MenuItem value="None">
-                                                        <em>None</em>
-                                                    </MenuItem>
-                                                    {ChartTypes.sort().map((item) => (
-                                                        <MenuItem value={item.chart}>{item.chart}</MenuItem>
-                                                    ))}
-                                                </Select>
-                                            </FormControl>
-
-                                        </div>
-                                        <div
-                                            style={{
-                                                display: "flex",
-                                                justifyContent: "flex-start",
-                                                alignItems: "center",
-                                                gap: "20px",
-                                                margin: "15px",
-                                            }}
-                                        >
-                                            <FormControl sx={{ m: 1, minWidth: 120, width: "25ch" }} size="small">
-                                                <InputLabel id="demo-select-small-label">
-                                                    <b>Select Object</b>
-                                                </InputLabel>
-                                                <Select
-                                                    value={selectedObject}
-                                                    label="Select Object"
-                                                    onChange={(event) => handleObjectChange(event)}
-
-                                                >
-                                                    <MenuItem value="None">
-                                                        <em>None</em>
-                                                    </MenuItem>
-                                                    {filteredTabs.sort().map((item) => (
-                                                        <MenuItem value={item}>{item}</MenuItem>
-                                                    ))}
-                                                </Select>
-                                            </FormControl>
-                                            <FormControl sx={{ m: 1, minWidth: 120, width: "25ch" }} size="small">
-                                                <InputLabel id="demo-select-small-label">
-                                                    <b>Field</b>
-                                                </InputLabel>
-                                                <Select
-                                                    value={selectedFields}
-                                                    label="Field"
-                                                    onChange={(event) => handleFieldChange(event)}
-                                                    multiple
-                                                    title={selectedFields}
-
-
-                                                >
-                                                    <MenuItem value="None">
-                                                        <em>None</em>
-
-                                                    </MenuItem>
-                                                    {fields &&
-                                                        fields.map((item) => (
-                                                            <MenuItem value={item}>{item}</MenuItem>
-                                                        ))}
-                                                </Select>
-                                               
-                                            </FormControl>
-                                        </div>
-                                        <div style={{ display: "flex", justifyContent: "center", marginBottom: "10px", gap: "10px" }}>
-                                            <Button
-                                                onClick={handleChartSave}
-                                                variant="contained"
-                                                color="secondary"
-                                            >
-                                                Save
-                                            </Button>
-                                            <Button
-                                                onClick={handleChartClear}
-                                                variant="contained"
-                                                type="reset"
-                                            >
-                                                Clear
-                                            </Button>
-                                        </div>
-                                    </Box>
-                                </AccordionDetails> */}
                             </Accordion>
-
 
                             <Accordion sx={{ borderRadius: "5px", margin: "10px" }}>
                                 <AccordionSummary
@@ -434,61 +103,10 @@ function DynamicHomePage() {
                                     </Typography>
                                 </AccordionSummary>
                                 <AccordionDetails>
-                                    <div className="new-dashboard-form">
-
-                                        <>
-                                            <List sx={{
-                                                width: '100%',
-                                                maxWidth: 360,
-                                                bgcolor: 'background.paper',
-                                                position: 'relative',
-                                                overflow: 'auto',
-                                                maxHeight: 250,
-                                                '& ul': { padding: 0 },
-                                            }}>
-                                                {dashboardFiles && dashboardFiles.map((item, index) => (
-                                                    <>
-                                                        <ListItem sx={{ maxHeight: "200px", marginTop: "-10px" }}>
-                                                            {index + 1}
-
-                                                            <ListItemButton
-                                                                onClick={() => handleChartDataClick(item)}
-                                                                title={`${item.object} grouped by ${item.field}`}
-                                                            >
-                                                                <ListItemIcon>
-                                                                    <DashboardIcon />
-                                                                </ListItemIcon>
-
-                                                                <ListItemText
-                                                                    // onMouseOver={() => handleMouseOver(item)}
-                                                                    // onMouseOut={handleMouseOut}
-                                                                    sx={{ wordBreak: "break-all" }}
-                                                                    primary={`${item.dashboardName} (${item.chartType} chart)`}
-                                                                    secondary={`${item.object} grouped by ${item.field}`}
-                                                                ></ListItemText>
-
-                                                            </ListItemButton>
-
-                                                            <Delete
-                                                                sx={{ cursor: "pointer" }}
-                                                                onClick={() => handleChartFileDelete(item)}
-                                                            />
-                                                        </ListItem>
-                                                        <Divider />
-                                                    </>
-                                                ))}
-                                            </List>
-
-                                        </>
-
-
-                                    </div>
+                                    <DashBoardRecords handleRowClick={handleRowClick} />
                                 </AccordionDetails>
                             </Accordion>
-
                         </Box>
-
-
                     </Grid>
 
                     <Grid item xs={10} lg={8} sm={10} xl={8}>
@@ -503,32 +121,9 @@ function DynamicHomePage() {
                         >
                             DashBoard
                         </Typography>
-
-
                         <Box display="flex" alignItems="center"></Box>
                         <br />
-
-                        {/* {BarChartData &&
-                            selectedChart === "Bar" ? (
-                            <Bar
-                                id="null"
-                                className="count-bar-chart"
-                                data={BarChartData}
-                            />
-                        ) : selectedChart === "Pie" ? (
-                            <Pie className="pie-chart" data={BarChartData} />
-                        ) : selectedChart === "Doughnut" ? (
-                            <Doughnut className="pie-chart" data={BarChartData} />
-                        ) : selectedChart === "Line" ? (
-                            <Line className="count-bar-chart" data={BarChartData} />
-                        ) : selectedChart === "Polar" ? (
-                            <PolarArea className="count-bar-chart" data={BarChartData} />
-                        ) : selectedChart === "Radar" ? (
-                            <Radar className="count-bar-chart" data={BarChartData} />
-                        ) : (
-                            <Bar className="count-bar-chart" data={BarChartData} />
-                        )} */}
-
+                        <DashboardCharts dashboard={selectedDashboard} />
                     </Grid>
                 </Grid>
             </Box >

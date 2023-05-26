@@ -21,16 +21,17 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import CustomizedTextFieldForFormik from "../formik/CustomizedTextField";
 
 
-const DashboardDetailPage = ({ item ,handleModal ,showModel }) => {
+const DashboardDetailPage = ({ dashboard }) => {
     
+    console.log(dashboard,"dashboard in detailPage")
+
     const OBJECT_API = OBJECT_API_EVENT
     const URL_postRecords = POST_DASHBOARD
     const URL_getObjectFields=GET_FIELDS_BY_OBJECT
 
 
     const [singleDashboard, setSingleDashboard] = useState();
-    const [showNew, setshowNew] = useState(true)
-    const location = useLocation();
+    const [showNew, setshowNew] = useState(true);
 
     const [objectNames,setObjectName]=useState([])
     const [fieldNamesByObject,setFieldNamesByObject]=useState([])
@@ -42,8 +43,11 @@ const DashboardDetailPage = ({ item ,handleModal ,showModel }) => {
 
     useEffect(() => {      
         fetchTabsName()
-        // fetchObjectPermissions();        
-    }, [])
+        if(dashboard){
+            setshowNew(false)
+            fetchFieldsName(dashboard.objectName)
+        }       
+    }, [dashboard])
 
     const fetchTabsName=()=>{
         GetTableNames()
@@ -75,7 +79,7 @@ const DashboardDetailPage = ({ item ,handleModal ,showModel }) => {
     // }
 
     const initialValues=DashboardInitialValues
-    const savedValues=DashboardSavedValues(singleDashboard)
+    const savedValues=DashboardSavedValues(dashboard)
 
     console.log(initialValues,"initialValues")
     console.log(savedValues,"savedValues")
@@ -116,7 +120,8 @@ const DashboardDetailPage = ({ item ,handleModal ,showModel }) => {
         else if (!showNew) {
             values.modifiedDate = dateSeconds;
             values.createdDate = createDateSec
-            values.createdBy = singleDashboard.createdBy;
+            // values.createdBy = singleDashboard.createdBy;
+            values.createdBy = JSON.parse(sessionStorage.getItem('loggedInUser'))
             values.modifiedBy = JSON.parse(sessionStorage.getItem('loggedInUser'))
         }
         console.log('after change form submission value', values);
@@ -149,12 +154,13 @@ const DashboardDetailPage = ({ item ,handleModal ,showModel }) => {
                 .finally(()=>{
                     setTimeout(() => {
                         // navigate(-1);
+                        resetForm()
                     }, 2000)
                 })
         }
 
         const  handleClosePage=()=>{
-
+                // setshowNew(true)
         }
     
         const fetchFieldsName=(objectName)=>{
@@ -200,20 +206,6 @@ const DashboardDetailPage = ({ item ,handleModal ,showModel }) => {
                                              component={CustomizedTextFieldForFormik}                              
                                         // disabled={showNew ? !permissionValues.create : !permissionValues.edit}
                                         >
-                                            {/* {({ field }) => (
-                                                <TextField
-                                                    {...field}
-                                                    type="text"
-                                                    className="form-input"
-                                                    InputProps={{
-                                                        startAdornment: (
-                                                            <InputAdornment position="start">
-                                                                <DashboardIcon fontSize="small" />
-                                                            </InputAdornment>
-                                                        ),
-                                                    }}
-                                                />
-                                            )} */}
                                         </Field>
                                         <div style={{ color: 'red' }}>
                                             <ErrorMessage name="dashboardName" />
@@ -279,22 +271,22 @@ const DashboardDetailPage = ({ item ,handleModal ,showModel }) => {
                                             <ErrorMessage name="fields" />
                                         </div>                                  
                                     </Grid>  
-                                    {!showNew && (
+                                    {/* {!showNew && (
                                         <>
                                             <Grid container spacing={2} item xs={12} md={12} direction="row">
                                             <Grid item xs={6} md={6}>
                                                 <label htmlFor="createdDate" >Created By</label>
-                                                <Field name='createdDate' type="text" class="form-input" disabled 
+                                                <TextField name='createdDate' type="text"  disabled 
                                                   value={values.createdBy +',  '+values.createdDate} />
                                             </Grid>
                                             <Grid item xs={6} md={6}>
                                                 <label htmlFor="modifiedDate" >Modified By</label>
-                                                <Field name='modifiedDate' type="text" class="form-input" disabled
+                                                <TextField name='modifiedDate' type="text"  disabled
                                                   value={values.modifiedBy +',  '+values.modifiedDate}  />
                                             </Grid>
                                             </Grid>
                                         </>
-                                    )}
+                                    )} */}
                                 </Grid>
                                 <div className='action-buttons'>
                                     <DialogActions sx={{ justifyContent: "space-between" }}>

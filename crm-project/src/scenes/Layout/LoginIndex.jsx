@@ -29,6 +29,7 @@ import RoleDetailPage from "../recordDetailPage/RoleDetailPage";
 import RoleIndex from "../roles";
 import Files from "../Files";
 import DynamicHomePage from "../dashboard/dynamicDashBoard";
+import DashboardHarish from "../dashboard/1";
 
 function LoginLayoutIndex() {
   return (
@@ -47,6 +48,7 @@ function LoginLayoutIndex() {
         <Route path="/list/role" element={<RoleIndex />} />
         <Route path="/list/files" element={<Files />} />
         <Route path="/list/dashboard" element={<DynamicHomePage />} />
+        {/* <Route path="/list/dashboard" element={<DashboardHarish />} /> */}
 
 
         <Route path="/new-contacts" element={<ContactDetailPage />} />

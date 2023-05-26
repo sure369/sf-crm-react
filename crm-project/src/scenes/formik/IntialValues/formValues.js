@@ -437,10 +437,11 @@ export const DashboardSavedValues = (singleDashboard) => {
     dashboardName: singleDashboard?.dashboardName ?? "",
     chartType: singleDashboard?.chartType ?? "",
     objectName: singleDashboard?.objectName ?? "",
-    fields: singleDashboard?.fields ?? "",
+    fields: singleDashboard?.fields ?? [],
     createdDate: singleDashboard?.createdDate ?? "",
     modifiedDate: singleDashboard?.modifiedDate ?? "",
     createdBy: singleDashboard?.createdBy.userFullName ?? "",
     modifiedBy: singleDashboard?.modifiedBy.userFullName ?? "",
+    _id: singleDashboard?._id ?? "",
   }
 }
