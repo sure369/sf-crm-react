@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import {
     Divider, List, ListItemIcon,
     ListItem, ListItemText, ListItemButton,
@@ -6,27 +6,27 @@ import {
 import { Delete, ExpandMore } from "@mui/icons-material";
 import { RequestServer } from '../api/HttpReq';
 import { apiMethods } from '../api/methods';
-import { DELETE_DASHBOARD,GET_DASHBOARD } from '../api/endUrls';
+import { DELETE_DASHBOARD, GET_DASHBOARD } from '../api/endUrls';
 import ToastNotification from "../toast/ToastNotification";
 import DashboardIcon from '@mui/icons-material/Dashboard';
 
-function DashBoardRecords({handleRowClick,formSubmitted}) {
+function DashBoardRecords({ handleRowClick, formSubmitted }) {
 
     const URL_deleteRecord = DELETE_DASHBOARD
     const URL_getRecords = GET_DASHBOARD
 
     const [notify, setNotify] = useState({ isOpen: false, message: "", type: "", });
-    const [records,setRecords]=useState([])
+    const [records, setRecords] = useState([])
 
-    useEffect(()=>{
+    useEffect(() => {
         fetchRecords()
-        if(formSubmitted){
+        if (formSubmitted) {
             fetchRecords()
         }
-    },[formSubmitted])
+    }, [formSubmitted])
 
-    
-    
+
+
     const fetchRecords = () => {
 
         RequestServer(apiMethods.get, URL_getRecords)
@@ -40,8 +40,8 @@ function DashBoardRecords({handleRowClick,formSubmitted}) {
     }
 
     const handleRecordItemDelete = (item) => {
-        console.log('handleRecordItemDelete',item);
-        RequestServer(apiMethods.delete,URL_deleteRecord + `${item._id}`)
+        console.log('handleRecordItemDelete', item);
+        RequestServer(apiMethods.delete, URL_deleteRecord + `${item._id}`)
             .then(res => {
                 console.log('DashBoard File Deleted Successfully', res);
                 if (res.success) {
@@ -67,17 +67,14 @@ function DashBoardRecords({handleRowClick,formSubmitted}) {
                     type: "error",
                 })
             })
-            .finally(()=>{
+            .finally(() => {
                 fetchRecords()
             })
     }
 
-    
-
     return (
         <div className="new-dashboard-form">
- <ToastNotification notify={notify} setNotify={setNotify} />
-
+            <ToastNotification notify={notify} setNotify={setNotify} />
             <>
                 <List sx={{
                     width: '100%',
@@ -94,23 +91,18 @@ function DashBoardRecords({handleRowClick,formSubmitted}) {
                                 {index + 1}
 
                                 <ListItemButton
-                                    onClick={() => handleRowClick(item)} 
+                                    onClick={() => handleRowClick(item)}
                                     title={`${item.object} grouped by ${item.field}`}
                                 >
                                     <ListItemIcon>
                                         <DashboardIcon />
                                     </ListItemIcon>
-
                                     <ListItemText
-                                        // onMouseOver={() => handleMouseOver(item)}
-                                        // onMouseOut={handleMouseOut}
                                         sx={{ wordBreak: "break-all" }}
                                         primary={`${item.dashboardName} (${item.chartType} chart)`}
                                         secondary={`${item.object} grouped by ${item.field}`}
                                     ></ListItemText>
-
                                 </ListItemButton>
-
                                 <Delete
                                     sx={{ cursor: "pointer" }}
                                     onClick={() => handleRecordItemDelete(item)}
@@ -120,10 +112,7 @@ function DashBoardRecords({handleRowClick,formSubmitted}) {
                         </>
                     ))}
                 </List>
-
             </>
-
-
         </div>
     )
 }

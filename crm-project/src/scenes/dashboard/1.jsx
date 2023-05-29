@@ -185,23 +185,6 @@ function DashboardHarish() {
             .catch((err) => {
                 console.log('Error getting Dashboard Data :', err);
             })
-
-
-
-        // console.log(arr1, "new array");
-        // const objSelectedFields = {};
-        // const newArray = selectedFields[0].slice(0, 3).concat(['', '', '']);
-        // newArray.slice(0, 3).forEach((item, index) => {
-        //     objSelectedFields[`field${index + 1}`] = item;
-        // });
-
-        // console.log('selected fields are iterated ', objSelectedFields);
-        // const fieldList = queryString.stringify(objSelectedFields)
-        // console.log((urlDashboard + `?object=${selectedObject}&${fieldList}`), 'fieldURL is');
-
-        // axios.get(urlDashboard + `?object=${selectedObject}&${fieldList}`)
-
-
     }
 
     console.log('dashboardData is ', dashboardData);
@@ -238,28 +221,6 @@ function DashboardHarish() {
             },
         ],
     };
-
-    // if (selectedObject === "Opportunity") {
-    //     BarChartData.datasets[0].data = Object.values(OpportunityBarcounts).map(
-    //         (obj) => obj.count
-    //     );
-    // } else if (selectedObject === "Lead") {
-    //     BarChartData.datasets[0].data = LeadgroupedData.map((g) => g.count);
-    //     BarChartData.labels = LeadgroupedData.map((g) => g.leadStatus);
-    //     BarChartData.datasets[0].label = "Overall Lead";
-    // } else if (selectedObject === "Inventory Management") {
-    //     BarChartData.datasets[0].data = InventorygroupedData.map((g) => g.count);
-    //     BarChartData.labels = InventorygroupedData.map((g) => g.type);
-    //     BarChartData.datasets[0].label = "Overall Properties";
-    // } else if (selectedObject === "Account") {
-    //     BarChartData.datasets[0].data = AccountgroupedData.map((g) => g.count);
-    //     BarChartData.labels = AccountgroupedData.map((g) => g.industry);
-    //     BarChartData.datasets[0].label = "Overall Industries";
-    // } else if (selectedObject === "None") {
-    //     BarChartData.datasets[0].data = [];
-    //     BarChartData.labels = ["0", "0", "0", "0", "0", "0"];
-    //     BarChartData.datasets[0].label = [];
-    // }
 
     const filteredTabs = tabs.filter(
         (item) =>
@@ -422,11 +383,6 @@ function DashboardHarish() {
                                                 margin: "15px",
                                             }}
                                         >
-                                            {/* {
-                                        chartData &&
-                                        <DashboardDetailPage dashboardValues={chartData} />
-                                    } */}
-
                                             <TextField
                                                 value={dashboardName}
                                                 label="DashBoard Name"

@@ -1,176 +1,113 @@
 import React, { useEffect, useState } from 'react';
-import ApexCharts from 'apexcharts';
-import ReactApexChart from 'react-apexcharts';
 import { GET_DASHBOARD_OBJECT_FIELD } from '../api/endUrls';
 import { RequestServer } from '../api/HttpReq';
 import { apiMethods } from '../api/methods';
+import BarChart from './charts/BarChart';
+import DonutChart from './charts/DonutChart';
+import LineChart from './charts/LineChart';
+import PieChart from './charts/PieChart';
+import PolarAreaChart from './charts/PolarAreaChart';
+import RadarChart from './charts/RadarChart';
+import RadialBarChart from './charts/RadialBarChart';
 
-function DashboardCharts({ dashboard }) {
+const DashboardCharts = ({ dashboard,formValues }) => {
+  const [chartType, setChartType] = useState('');
+  const [chartData, setChartData] = useState([]);
+
   const URL_getDashboard = GET_DASHBOARD_OBJECT_FIELD;
-  const [chartType, setChartType] = useState();
-  const [dashboardData, setDashboardData] = useState([]);
-  const [showChart,setShowChart]=useState(false)
 
+  console.log(formValues,"DashboardCharts formValues")
+  console.log(dashboard," DashboardCharts dashboard")
 
   useEffect(() => {
     if (dashboard) {
-      console.log("useEffect")
-      fetchRecords(dashboard);
       setChartType(dashboard.chartType);
+      fetchRecords(dashboard);
     }
-  }, [dashboard]);
+    if(formValues){
+      setChartType(formValues.chartType);
+      fetchRecords(formValues);
+    }
+  }, [dashboard,formValues]);
 
-  console.log(dashboard,"dashboard")
-  
-  const fetchRecords = (item) => {
-    console.log(item, 'fetchRecords item');
-    RequestServer(apiMethods.get, `${URL_getDashboard}?object=${item.objectName}&field=${item.fields}`)
-      .then((res) => {
-        console.log(res, 'fetchRecords');
-        if (res.success) {
-          setDashboardData(res.data);
-        } else {
-          setDashboardData([]);
+
+  const fetchRecords = async (item) => {
+    try {
+      const response = await RequestServer(apiMethods.get, `${URL_getDashboard}?object=${item.objectName}&field=${item.fields}`);
+      if (response.success) {
+        console.log(response.data, 'api res dashboard rec');
+        if(typeof(response.data==='object')){
+          setChartData(response.data);
+        }else{          
+        setChartData([]);
         }
-      })
-      .catch((err) => {
-        setDashboardData([]);
-        console.log(err, 'fetchRecords error');
-      });
+      } else {
+        setChartData([]);
+      }
+    } catch (error) {
+      setChartData([]);
+      console.log(error, 'fetchChartData error');
+    }
   };
 
-  const labels = dashboardData && dashboardData.map((item) => item._id);
-  const dataValues = dashboardData && dashboardData.map((item) => item.count);
-
-  const chartOptions = {
-    options: {
-      chart: {
-        type: chartType,
-      },
-      xaxis: {
-        categories: labels,
-      },
-    },
+  const renderChart = () => {
+    switch (chartType) {
+      case 'line':
+        const lineChartData = chartData.map((dataPoint) => ({
+          x: Object.values(dataPoint._id).join(' - '),
+          y: dataPoint.count,
+          label: Object.keys(dataPoint._id).join(', '),
+        }));
+        return <LineChart chartData={lineChartData} />;
+      case 'bar':
+        const barChartData = chartData.map((dataPoint) => ({
+          x: Object.keys(dataPoint._id).join(' - '),
+          y: dataPoint.count,
+          label: Object.keys(dataPoint._id).join(', '),
+        }));
+        return <BarChart chartData={barChartData} />;
+      case 'pie':
+        const pieChartData = chartData.map((dataPoint) => ({
+          x: Object.values(dataPoint._id).join(' - '),
+          y: dataPoint.count,
+          label: Object.keys(dataPoint._id).join(', '),
+        }));
+        return <PieChart chartData={pieChartData} />;
+      case 'donut':
+        const donutChartData = chartData.map((dataPoint) => ({
+          x: Object.values(dataPoint._id).join(' - '),
+          y: dataPoint.count,
+          label: Object.keys(dataPoint._id).join(', '),
+        }));
+        return <DonutChart chartData={donutChartData} />;
+      case 'radar':
+        const radarChartData = chartData.map((dataPoint) => ({
+          x: Object.values(dataPoint._id).join(' - '),
+          y: dataPoint.count,
+          label: Object.keys(dataPoint._id).join(', '),
+        }));
+        return <RadarChart chartData={radarChartData} />;
+      case 'radialBar':
+        const radialBarChartData = chartData.map((dataPoint) => ({
+          x: Object.values(dataPoint._id).join(' - '),
+          y: dataPoint.count,
+          label: Object.keys(dataPoint._id).join(', '),
+        }));
+        return <RadialBarChart chartData={radialBarChartData} />;
+      case 'polarArea':
+        const polarAreaChartData = chartData.map((dataPoint) => ({
+          x: Object.values(dataPoint._id).join(' - '),
+          y: dataPoint.count,
+          label: Object.keys(dataPoint._id).join(', '),
+        }));
+        return <PolarAreaChart chartData={polarAreaChartData} />;
+      default:
+        return <p>No data available for the selected chart type.</p>;
+    }
   };
   
-  const seriesData = [
-    {
-      name: 'Count',
-      data: dataValues,
-    },
-  ];
+  return <div className="dashboard-charts">{ renderChart()}</div>;
 
-  console.log(chartOptions,"chartOptions")
-  console.log(seriesData,"seriesData")
-
-  return (
-    <>
-    {dashboardData.length > 0 && (
-        <ReactApexChart
-        options={chartOptions.options}
-        series={seriesData}
-        type={chartType}
-        width="100%"
-        height={360}
-      />
-      )}
-    </>
-  );
 }
-
 export default DashboardCharts;
 
-
-// import React, { useEffect, useState } from 'react';
-// import { Bar, Bubble, Doughnut, Line, Pie, PolarArea, Radar } from "react-chartjs-2";
-// import { GET_DASHBOARD_OBJECT_FIELD } from '../api/endUrls';
-// import { RequestServer } from '../api/HttpReq';
-// import { apiMethods } from '../api/methods';
-
-// function DashboardCharts({ dashboard }) {
-//   const URL_getDashboard = GET_DASHBOARD_OBJECT_FIELD;
-//   const [chartType, setChartType] = useState();
-// const [dashboardData,setDashboardData]=useState([])
-
-//   useEffect(() => {
-//     if (dashboard) {
-//       fetchRecords(dashboard);
-//       setChartType(dashboard.object);
-//     }
-//   }, [dashboard]);
-
-//   const fetchRecords = (item) => {
-//     console.log(item,"fetchRecords item")
-//     RequestServer(apiMethods.get, `${URL_getDashboard}?object=${item.objectName}&field=${item.fields}`)
-//       .then((res) => {
-//         console.log(res, "fetchRecords");
-//         if(res.success){
-//             setDashboardData(res.data)
-//         }else{            
-//         setDashboardData([])
-//         }
-//       })
-//       .catch((err) => {
-//         setDashboardData([])
-//         console.log(err, "fetchRecords error");
-//       });
-//   };
-
-//  const dashboardLabel = dashboardData && dashboardData.map((item) => item._id);
-//   let keyData;
-//   const label = dashboardLabel && dashboardLabel.map((obj) => {
-//     console.log('obj is ', obj);
-//     keyData = Object.values(obj);
-//     return `${Object.values(obj)}`;
-//   });
-//   console.log('label is ', label);
-//   console.log(keyData);
-
-//   console.log("dashboardLabel is", dashboardLabel);
-
-//   const dashboardDataset = dashboardData && dashboardData.map((item) => item.count);
-
-//   const BarChartData = {
-//     labels: label,
-//     datasets: [
-//       {
-//         label: `${dashboardData?.object} - `,
-//         backgroundColor: [
-//           "#83984d",
-//           "#800020",
-//           "#f0b51f",
-//           "#ea700b",
-//           "#336b8b",
-//           "#423f3f",
-//         ],
-//         borderColor: "black",
-//         data: dashboardDataset,
-//       },
-//     ],
-//   };
-
-//   console.log(BarChartData, "BarChartData");
-
-//   return (
-//     <>
-
-//       {BarChartData && dashboard?.chartType === "Bar" ? (
-//         <Bar className="count-bar-chart" data={BarChartData} />
-//       ) : dashboard && dashboard?.chartType === "Pie" ? (
-//         <Pie className="pie-chart" data={BarChartData} />
-//       ) : dashboard && dashboard?.chartType === "Doughnut" ? (
-//         <Doughnut className="pie-chart" data={BarChartData} />
-//       ) : dashboard && dashboard?.chartType === "Line" ? (
-//         <Line className="count-bar-chart" data={BarChartData} />
-//       ) : dashboard && dashboard?.chartType === "Polar" ? (
-//         <PolarArea className="count-bar-chart" data={BarChartData} />
-//       ) : dashboard && dashboard?.chartType === "Radar" ? (
-//         <Radar className="count-bar-chart" data={BarChartData} />
-//       ) : (
-//         <Bar className="count-bar-chart" data={BarChartData} />
-//       )}
-//     </>
-//   );
-// }
-
-// export default DashboardCharts;

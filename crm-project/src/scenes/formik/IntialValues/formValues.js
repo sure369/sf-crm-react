@@ -421,16 +421,18 @@ export const LoginInitialValue = {
   password: "",
 };
 
-export const DashboardInitialValues = {
-  dashboardName: "",
-  chartType:"",
-  objectName:"",
-  fields:[],  
-  createdDate: "",
-  modifiedDate: "",
-  createdBy: "",
-  modifiedBy: "",
-};
+export const DashboardInitialValues= (singleDashboard) => {
+  return {
+  dashboardName:singleDashboard?.dashboardName?? "",
+  chartType:singleDashboard?.chartType?? "",
+  objectName:singleDashboard?.objectName?? "",
+  fields:singleDashboard?.fields??[],  
+  createdDate: singleDashboard?.createdDate?? "",
+  modifiedDate:singleDashboard?.modifiedDate?? "",
+  createdBy:singleDashboard?.createdBy?? "",
+  modifiedBy:singleDashboard?.modifiedBy?? "",
+}
+}
 
 export const DashboardSavedValues = (singleDashboard) => {
   return {

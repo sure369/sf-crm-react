@@ -255,10 +255,11 @@ export const TaskStatus=[
 ]
 
 export const DashboardChartTypePicklist=[  
-  {text:'Bar',value:'Bar'},
-  {text:'Pie',value:'Pie'},
-  {text:'Doughnut',value:'Doughnut'},
-  {text:'Line',value:'Line'},
-  {text:'Polar',value:'Polar'},
-  {text:'Radar',value:'Radar'},
+  {text:'Line',value:'line'},
+  {text:'Bar',value:'bar'},
+  {text:'Pie',value:'pie'},
+  {text:'Donut',value:'donut'},
+  {text:'Radar',value:'radar'},
+  {text:'RadialBar',value:'radialBar'},  
+  {text:'PolarArea',value:'polarArea'},  
 ]

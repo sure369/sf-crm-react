@@ -1,15 +1,8 @@
 import {
-    Box, Grid, Paper, Typography, Select, FormControl,
-    InputLabel, MenuItem, SwipeableDrawer, Button, Divider, Accordion,
-    AccordionSummary, AccordionDetails, TextField, InputAdornment, List, ListItemIcon,
-    ListItem, ListItemText, ListItemButton,
-
+    Box, Grid, Typography, Accordion,
+    AccordionSummary, AccordionDetails,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { RequestServer } from "../api/HttpReq";
-import axios from "axios";
-import { Bar, Bubble, Chart, Doughnut, Line, Pie, PolarArea, Radar, } from "react-chartjs-2";
-import CircularProgressWithLabel from "../styles/CircularProgressWithLabel";
 import "../recordDetailPage/Form.css"
 import ToastNotification from "../toast/ToastNotification";
 import { Delete, ExpandMore } from "@mui/icons-material";
@@ -23,15 +16,22 @@ function DynamicHomePage() {
     const [notify, setNotify] = useState({ isOpen: false, message: "", type: "", });
     const [selectedDashboard, setSelectedDashboard] = useState(null);
     const [formSubmitted, setFormSubmitted] = useState(false);
-  
+    const [formValues, setFormValues] = useState({});
+
     const handleRowClick = (dashboard) => {
-      setSelectedDashboard(dashboard);
-    };
-  
-    const handleFormSubmission = () => {
-      setFormSubmitted(true);
+        setFormValues(null)
+        setSelectedDashboard(dashboard);
     };
 
+    const handleFormSubmission = () => {
+        setFormSubmitted(true);
+    };
+
+
+    const handleFormValuesChange = (newFormValues) => {
+        setFormValues(newFormValues);
+        setSelectedDashboard(null)
+    };
 
     return (
         <>
@@ -49,15 +49,16 @@ function DynamicHomePage() {
                                     </Typography>
                                 </AccordionSummary>
                                 <AccordionDetails>
-                                    <DashboardDetailPage 
+                                    <DashboardDetailPage
                                         dashboard={selectedDashboard}
-                                        onFormSubmit={handleFormSubmission} 
+                                        onFormSubmit={handleFormSubmission}
+                                        onFormValuesChange={handleFormValuesChange}
                                     />
                                 </AccordionDetails>
                             </Accordion>
 
                             <Accordion sx={{ borderRadius: "5px", margin: "10px" }}>
-                                <AccordionSummary  expandIcon={<ExpandMore />}
+                                <AccordionSummary expandIcon={<ExpandMore />}
                                     aria-label="Expand" aria-controls="-content" id="-header"
                                 >
                                     <Typography variant="h4" fontWeight="bold">
@@ -65,9 +66,9 @@ function DynamicHomePage() {
                                     </Typography>
                                 </AccordionSummary>
                                 <AccordionDetails>
-                                    <DashBoardRecords 
-                                    handleRowClick={handleRowClick}
-                                    formSubmitted={formSubmitted}
+                                    <DashBoardRecords
+                                        handleRowClick={handleRowClick}
+                                        formSubmitted={formSubmitted}
                                     />
                                 </AccordionDetails>
                             </Accordion>
@@ -75,16 +76,18 @@ function DynamicHomePage() {
                     </Grid>
 
                     <Grid item xs={10} lg={8} sm={10} xl={8}>
-
                         <Typography
                             variant="h3"
-                            sx={{textAlign: "center", fontWeight: "bold",textShadow: "3px 3px 4px silver",}}
+                            sx={{ textAlign: "center", fontWeight: "bold", textShadow: "3px 3px 4px silver", }}
                         >
                             DashBoard
                         </Typography>
                         <Box display="flex" alignItems="center"></Box>
                         <br />
-                        <DashboardCharts dashboard={selectedDashboard} />
+                        <DashboardCharts
+                            dashboard={selectedDashboard}
+                            formValues={formValues}
+                        />
                     </Grid>
                 </Grid>
             </Box >
