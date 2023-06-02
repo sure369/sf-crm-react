@@ -15,6 +15,8 @@ import { apiCheckObjectPermission } from '../Auth/apiCheckObjectPermission';
 import { getLoginUserRoleDept } from '../Auth/userRoleDept';
 import NoAccessCard from '../NoAccess/NoAccessCard';
 import { OBJECT_API_DEAL ,GET_DEAL,DELETE_DEAL} from "../api/endUrls";
+import ErrorComponent from '../Errors';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const OpportunitiesMobile = () => {
   
@@ -42,6 +44,7 @@ const OpportunitiesMobile = () => {
   const [page, setPage] = useState(1);
   const [noOfPages, setNoOfPages] = useState(0);
 
+    const [fetchPermissionloading, setFetchPermissionLoading] = useState(true);
   const [permissionValues, setPermissionValues] = useState({})
   const userRoleDpt = getLoginUserRoleDept(OBJECT_API)
   console.log(userRoleDpt, "userRoleDpt")
@@ -53,6 +56,7 @@ const OpportunitiesMobile = () => {
   );
 
   const fetchRecords = () => {
+    try{
     RequestServer(apiMethods.get, URL_getRecords)
       .then((res) => {
         console.log(res, "index page res")
@@ -73,6 +77,11 @@ const OpportunitiesMobile = () => {
         setFetchLoading(false)
       })
   }
+  catch(error){
+    setFetchError(error.message)
+    setFetchLoading(false)
+  }
+}
 
   const fetchObjectPermissions = () => {
     if (userRoleDpt) {
@@ -83,6 +92,9 @@ const OpportunitiesMobile = () => {
         })
         .catch(err => {
           setPermissionValues({})
+        })
+         .finally(() => {
+          setFetchPermissionLoading(false)
         })
     }
   }
@@ -185,7 +197,20 @@ const OpportunitiesMobile = () => {
 
       <Box m="20px">
         {
-          permissionValues.read ?
+          fetchPermissionloading?(
+              <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            height="200px"
+          >
+            <CircularProgress />
+          </Box>
+          ):
+            fetchError?(
+          <ErrorComponent error={fetchError} retry={fetchRecords} />
+        ): (
+          permissionValues.read &&(
             <>
 
               <Header
@@ -287,7 +312,7 @@ const OpportunitiesMobile = () => {
                 </Box>
               }
             </>
-            : <NoAccessCard/>
+          ))
         }
       </Box>
     </>

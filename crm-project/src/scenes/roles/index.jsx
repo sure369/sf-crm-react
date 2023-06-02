@@ -17,14 +17,15 @@ import '../indexCSS/muiBoxStyles.css'
 import { apiMethods } from '../api/methods';
 import { apiCheckObjectPermission } from "../Auth/apiCheckObjectPermission";
 import { getLoginUserRoleDept } from "../Auth/userRoleDept";
-import { OBJECT_API_ROLE,GET_ROLE,DELETE_ROLE } from '../api/endUrls';
+import { OBJECT_API_ROLE, GET_ROLE, DELETE_ROLE } from '../api/endUrls';
 import CircularProgress from '@mui/material/CircularProgress';
+import ErrorComponent from '../Errors';
 
 const RoleIndex = () => {
 
   const OBJECT_API = OBJECT_API_ROLE
   const URL_getRecords = GET_ROLE
-  const URL_deleteRecords =DELETE_ROLE
+  const URL_deleteRecords = DELETE_ROLE
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -54,25 +55,32 @@ const RoleIndex = () => {
   );
 
   const fetchRecords = () => {
-    RequestServer(apiMethods.get, URL_getRecords)
-      .then((res) => {
-        console.log(res.data, "index page res")
-        if (res.success) {
-          console.log("inside success")
-          setRecords(res.data)
-          setFetchError(null)
+    setFetchLoading(true);
+    try {
+      RequestServer(apiMethods.get, URL_getRecords)
+        .then((res) => {
+          console.log(res.data, "index page res")
+          if (res.success) {
+            console.log("inside success")
+            setRecords(res.data)
+            setFetchError(null)
+            setFetchLoading(false)
+          }
+          else {
+            setRecords([])
+            setFetchError(res.error.message)
+            setFetchLoading(false)
+          }
+        })
+        .catch((err) => {
+          setFetchError(err.message)
           setFetchLoading(false)
-        }
-        else {
-          setRecords([])
-          setFetchError(res.error.message)
-          setFetchLoading(false)
-        }
-      })
-      .catch((err) => {
-        setFetchError(err.message)
-        setFetchLoading(false)
-      })
+        })
+    }
+    catch (error) {
+      setFetchError(error.message);
+      setFetchLoading(false);
+    }
   }
 
   const fetchObjectPermissions = () => {
@@ -127,7 +135,7 @@ const RoleIndex = () => {
   const onebyoneDelete = (row) => {
     console.log('onebyoneDelete rec id', row)
 
-    RequestServer(apiMethods.delete, URL_deleteRecords +row)
+    RequestServer(apiMethods.delete, URL_deleteRecords + row)
       .then((res) => {
         if (res.success) {
           fetchRecords()
@@ -229,104 +237,104 @@ const RoleIndex = () => {
           >
             <CircularProgress />
           </Box>
-        ) : (
+        ) : fetchError ? (<ErrorComponent error={fetchError} retry={fetchRecords} />) : (
           permissionValues.read && (
-             <>
-            <Typography
-              variant="h2"
-              color={colors.grey[100]}
-              fontWeight="bold"
-              sx={{ m: "0 0 5px 0" }}
-            >
-              {OBJECT_API}
-            </Typography>
-            <Box display="flex" justifyContent="space-between">
-              <Typography variant="h5" color={colors.greenAccent[400]}>
-                List Of {OBJECT_API}
+            <>
+              <Typography
+                variant="h2"
+                color={colors.grey[100]}
+                fontWeight="bold"
+                sx={{ m: "0 0 5px 0" }}
+              >
+                {OBJECT_API}
               </Typography>
+              <Box display="flex" justifyContent="space-between">
+                <Typography variant="h5" color={colors.greenAccent[400]}>
+                  List Of {OBJECT_API}
+                </Typography>
 
 
-              <div
-                style={{
-                  display: "flex",
-                  width: "250px",
-                  justifyContent: "space-evenly",
-                  height: '30px',
-                }}
+                <div
+                  style={{
+                    display: "flex",
+                    width: "250px",
+                    justifyContent: "space-evenly",
+                    height: '30px',
+                  }}
+                >
+
+                  {showDelete ? (
+                    <>
+                      {
+                        permissionValues.delete && <>
+
+
+                          <Tooltip title="Delete Selected">
+                            <IconButton>
+                              <DeleteIcon
+                                sx={{ color: "#FF3333" }}
+                                onClick={(e) => onHandleDelete(e, selectedRecordIds)}
+                              />
+                            </IconButton>
+                          </Tooltip>
+                        </>
+                      }</>
+                  ) : (
+                    <>
+                      {
+                        permissionValues.create &&
+                        <>
+
+                          <Button variant="contained" color="info" onClick={handleAddRecord}>
+                            New
+                          </Button>
+
+                          {/* <ExcelDownload data={records} filename={`OpportunityRecords`}/> */}
+
+                        </>
+                      }
+                    </>
+                  )}
+                </div>
+              </Box>
+
+              <Box
+                m="15px 0 0 0"
+                height="380px"
+                className="my-mui-styles"
               >
 
-                {showDelete ? (
-                  <>
-                    {
-                      permissionValues.delete && <>
 
-
-                        <Tooltip title="Delete Selected">
-                          <IconButton>
-                            <DeleteIcon
-                              sx={{ color: "#FF3333" }}
-                              onClick={(e) => onHandleDelete(e, selectedRecordIds)}
-                            />
-                          </IconButton>
-                        </Tooltip>
-                      </>
-                    }</>
-                ) : (
-                  <>
-                    {
-                      permissionValues.create &&
-                      <>
-
-                        <Button variant="contained" color="info" onClick={handleAddRecord}>
-                          New
-                        </Button>
-
-                        {/* <ExcelDownload data={records} filename={`OpportunityRecords`}/> */}
-
-                      </>
-                    }
-                  </>
-                )}
-              </div>
-            </Box>
-
-            <Box
-              m="15px 0 0 0"
-              height="380px"
-              className="my-mui-styles"
-            >
-
-
-              <DataGrid
-                rows={records}
-                columns={columns}
-                getRowId={(row) => row._id}
-                pageSize={7}
-                rowsPerPageOptions={[7]}
-                components={{
-                  Pagination: CustomPagination,
-                  // Toolbar: GridToolbar
-                }}
-                loading={fetchLoading}
-                getRowClassName={(params) =>
-                  params.indexRelativeToCurrentPage % 2 === 0 ? 'C-MuiDataGrid-row-even' : 'C-MuiDataGrid-row-odd'
-                }
-                checkboxSelection
-                disableSelectionOnClick
-                onSelectionModelChange={(ids) => {
-                  var size = Object.keys(ids).length;
-                  size > 0 ? setShowDelete(true) : setShowDelete(false)
-                  console.log('checkbox selection ids', ids);
-                  setSelectedRecordIds(ids)
-                  const selectedIDs = new Set(ids);
-                  const selectedRowRecords = records.filter((row) =>
-                    selectedIDs.has(row._id.toString())
-                  );
-                  setSelectedRecordDatas(selectedRowRecords)
-                }}
-              />
-            </Box>
-          </>
+                <DataGrid
+                  rows={records}
+                  columns={columns}
+                  getRowId={(row) => row._id}
+                  pageSize={7}
+                  rowsPerPageOptions={[7]}
+                  components={{
+                    Pagination: CustomPagination,
+                    // Toolbar: GridToolbar
+                  }}
+                  loading={fetchLoading}
+                  getRowClassName={(params) =>
+                    params.indexRelativeToCurrentPage % 2 === 0 ? 'C-MuiDataGrid-row-even' : 'C-MuiDataGrid-row-odd'
+                  }
+                  checkboxSelection
+                  disableSelectionOnClick
+                  onSelectionModelChange={(ids) => {
+                    var size = Object.keys(ids).length;
+                    size > 0 ? setShowDelete(true) : setShowDelete(false)
+                    console.log('checkbox selection ids', ids);
+                    setSelectedRecordIds(ids)
+                    const selectedIDs = new Set(ids);
+                    const selectedRowRecords = records.filter((row) =>
+                      selectedIDs.has(row._id.toString())
+                    );
+                    setSelectedRecordDatas(selectedRowRecords)
+                  }}
+                />
+              </Box>
+            </>
           ))
         }
       </Box>

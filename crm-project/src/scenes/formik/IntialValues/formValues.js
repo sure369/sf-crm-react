@@ -14,7 +14,7 @@ export const AccountInitialValues = {
   modifiedBy: "",
   createdDate: "",
   modifiedDate: "",
-  InventoryId: "",
+  // InventoryId: "",
   inventoryDetails: "",
 };
 
@@ -43,7 +43,8 @@ export const AccountSavedValues = (singleAccount) => {
 };
 
 export const ContactInitialValues = {
-  AccountId: "",
+  // AccountId: "",
+  accountDetails:"",
   salutation: "",
   firstName: "",
   lastName: "",
@@ -192,8 +193,8 @@ export const LeadSavedValues = (singleLead) => {
 };
 
 export const OpportunityInitialValues = {
-  LeadId: "",
-  InventoryId: "",
+  // LeadId: "",
+  // InventoryId: "",
   opportunityName: "",
   type: "",
   leadSource: "",

@@ -3,11 +3,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 import {
   Typography, Accordion, AccordionSummary, Modal,
   AccordionDetails, Button, List, ListItem,
-  ListItemButton, ListItemIcon, ListItemText
+  ListItemButton, ListItemIcon, ListItemText, Divider, CircularProgress
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import RelatedFileUpload from "../fileUpload/ReletedFileUpload";
-import { OBJECT_API_EVENT, GET_FILE, DELETE_FILE,GET_EVENT_RELATED_FILE } from "../api/endUrls";
+import { OBJECT_API_EVENT, GET_FILE, DELETE_FILE, GET_EVENT_RELATED_FILE } from "../api/endUrls";
 import ModalTaskFileUpload from "../Files/ModalTaskRelatedFile";
 import { RequestServer } from "../api/HttpReq";
 import { apiMethods } from "../api/methods";
@@ -15,6 +15,10 @@ import FilePresentIcon from '@mui/icons-material/FilePresent';
 import DeleteIcon from "@mui/icons-material/Delete";
 import ToastNotification from "../toast/ToastNotification";
 import DeleteConfirmDialog from "../toast/DeleteConfirmDialog";
+import "../recordDetailPage/Form.css"
+import CircularProgressWithLabel from "../styles/CircularProgressWithLabel"
+
+
 
 
 const TaskRelatedItems = ({ item }) => {
@@ -27,6 +31,7 @@ const TaskRelatedItems = ({ item }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const [taskRecordId, setTaskRecordId] = useState()
   const [taskRecord, setTaskRecord] = useState();
   const [modalFileUpload, setModalFileUpload] = useState(false)
   const [records, setRecords] = useState([])
@@ -42,9 +47,11 @@ const TaskRelatedItems = ({ item }) => {
       setTaskRecord({ taskId: location.state.record.item._id, OBJECT_API: OBJECT_API });
     }
     fetchRelatedFiles(location.state.record.item._id)
+    setTaskRecordId(location.state.record.item._id)
   }, []);
 
   const fetchRelatedFiles = (id) => {
+    setFetchRecordsLoading(true)
     RequestServer(apiMethods.get, URL_getRelatedFiles + id)
       .then((res) => {
         console.log(res, "index page res URL_getRelatedFiles");
@@ -69,8 +76,9 @@ const TaskRelatedItems = ({ item }) => {
   }
 
   const handleFileModalClose = () => {
+    console.log(taskRecordId, "id handleFileModalClose");
     setModalFileUpload(false)
-    fetchRelatedFiles()
+    fetchRelatedFiles(taskRecordId)
   }
 
   const handleViewFileClick = (item) => {
@@ -123,7 +131,7 @@ const TaskRelatedItems = ({ item }) => {
           ...confirmDialog,
           isOpen: false
         })
-        fetchRelatedFiles()
+        fetchRelatedFiles(taskRecordId)
       })
   };
 
@@ -154,64 +162,51 @@ const TaskRelatedItems = ({ item }) => {
               Upload File
             </Button>
           </div>
-          <List sx={{
-            width: '100%',
-            maxWidth: 360,
-            bgcolor: 'background.paper',
-            position: 'relative',
-            overflow: 'auto',
-            maxHeight: 300,
-            '& ul': { padding: 0 },
-          }}>
-            {records && records.map((item, index) => (
-              <ListItem sx={{ maxHeight: "200px", marginTop: "-10px" }}>
-                {index + 1}
+          {/* <CircularProgress sx={{ display: 'flex', justifyContent: 'center', width: '100% !important' }} /> */}
+          {fetchRecordsLoading ? <CircularProgress sx={{ display: 'flex', justifyContent: 'center', width: '100% !important' }} /> :
+            <List sx={{
+              width: '100%',
+              maxWidth: 360,
+              bgcolor: 'background.paper',
+              position: 'relative',
+              overflow: 'auto',
+              maxHeight: 300,
+              '& ul': { padding: 0 },
+            }}>
 
-                <ListItemButton
-                  onClick={() => handleViewFileClick(item)}
-                  title={`${item.filename}`}
-                >
-                  <ListItemIcon>
-                    <FilePresentIcon />
-                  </ListItemIcon>
+              {records && records.map((item, index) => (
+                <>
+                  <ListItem sx={{ maxHeight: "200px", marginTop: "-10px" }}>
+                    {index + 1}
 
-                  <ListItemText
-                    sx={{ wordBreak: "break-all" }}
-                    primary={`${item.filename}`}
-                    secondary={`${item.originalname}`}
-                  ></ListItemText>
+                    <ListItemButton
+                      onClick={() => handleViewFileClick(item)}
+                      title={`${item.filename}`}
+                    >
+                      <ListItemIcon>
+                        <FilePresentIcon />
+                      </ListItemIcon>
 
-                </ListItemButton>
+                      <ListItemText
+                        sx={{ wordBreak: "break-all" }}
+                        primary={`${item.filename}`}
+                        secondary={`${item.originalname}`}
+                      ></ListItemText>
 
-                <DeleteIcon
-                  sx={{ cursor: "pointer" }}
-                  onClick={(e) => handleChartFileDelete(e, item._id)}
-                />
-              </ListItem>
-            ))}
-          </List>
+                    </ListItemButton>
+
+                    <DeleteIcon
+                      sx={{ cursor: "pointer" }}
+                      onClick={(e) => handleChartFileDelete(e, item._id)}
+                    />
+                  </ListItem>
+                  <Divider />
+                </>
+              ))}
+            </List>
+          }
         </AccordionDetails>
       </Accordion>
-
-      {/* <Modal
-        open={modalFileUpload}
-        onClose={handleFileModalClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-        sx={{
-          backdropFilter: "blur(1px)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <div className="modalFile" sx={{ maxWidth: "80%", maxHeight: "80%" }}>
-          <ModalTaskFileUpload
-            record={taskRecord}
-            handleModal={handleFileModalClose}
-          />
-        </div>
-      </Modal> */}
       <Modal
         open={modalFileUpload}
         onClose={handleFileModalClose}

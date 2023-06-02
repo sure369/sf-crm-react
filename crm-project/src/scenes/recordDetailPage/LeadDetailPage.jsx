@@ -24,12 +24,14 @@ import ModalOppTask from "../tasks/ModalOppTask";
 import ModalLeadConvertion from "../timeline/ModalLeadConvertion";
 import { apiCheckObjectPermission } from "../Auth/apiCheckObjectPermission";
 import { getLoginUserRoleDept } from "../Auth/userRoleDept";
-import { OBJECT_API_ENQUIRY,POST_ENQUIRY } from "../api/endUrls";
+import { OBJECT_API_ENQUIRY, POST_ENQUIRY } from "../api/endUrls";
+import LeadStepper from "../timeline/LeadStepper";
+import '../timeline/ModalLeadConvertion.css'
 
 const LeadDetailPage = ({ item }) => {
 
-  const OBJECT_API =OBJECT_API_ENQUIRY
-  const URL_postRecords=POST_ENQUIRY
+  const OBJECT_API = OBJECT_API_ENQUIRY
+  const URL_postRecords = POST_ENQUIRY
 
   const [singleLead, setsingleLead] = useState();
   const location = useLocation();
@@ -171,13 +173,14 @@ const LeadDetailPage = ({ item }) => {
       }
       if (item.value === 'Converted') {
         setModalLeadConvertionOpen(true)
+        console.log('opens modal ', modalLeadConvertionOpen);
       } else {
         formSubmission(updateSavedValue)
       }
     }
   }
 
-  const hanldeConvetionModelClose = () => {
+  const hanldeLeadConvert = () => {
     setModalLeadConvertionOpen(false)
     const updateSavedValue = {
       ...savedValues,
@@ -198,7 +201,9 @@ const LeadDetailPage = ({ item }) => {
       {
         !showNew && singleLead &&
         <div className="timeline-track">
-          <TimelineTrack stages={LeadStatusPicklist} activeStage={stageActive} onItemClick={handleTimeLineClick}
+          {/* <TimelineTrack stages={LeadStatusPicklist} activeStage={stageActive} onItemClick={handleTimeLineClick}
+            record={singleLead} /> */}
+          <LeadStepper stages={LeadStatusPicklist} activeStage={stageActive} onItemClick={handleTimeLineClick}
             record={singleLead} />
         </div>
 
@@ -460,8 +465,8 @@ const LeadDetailPage = ({ item }) => {
         aria-describedby="modal-modal-description"
         sx={{ backdropFilter: "blur(1px)" }}
       >
-        <div className="modal">
-          <ModalLeadConvertion handleModal={hanldeConvetionModelClose1} />
+        <div style={{ border: '2px solid' }} className="lead-convert-modal">
+          <ModalLeadConvertion record={singleLead} handleModal={hanldeConvetionModelClose1} leadConvertion={hanldeLeadConvert} />
         </div>
       </Modal>
 

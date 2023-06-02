@@ -35,17 +35,32 @@ const ModalFileUpload = ({ handleModal }) => {
         const formData = new FormData();
         let dateSeconds = new Date().getTime();
         let userDetails = (sessionStorage.getItem("loggedInUser"))
+        let relatedObj = {}
+
+        const commonFormData = new FormData();
+        commonFormData.append("relatedTo", JSON.stringify(relatedObj));
+        commonFormData.append("createdDate", dateSeconds);
+        commonFormData.append("modifiedDate", dateSeconds);
+        commonFormData.append("createdBy", JSON.stringify(userDetails));
+        commonFormData.append("modifiedBy", JSON.stringify(userDetails));
+
 
         selectedFiles.forEach((file) => {
+            const formData = new FormData();
             formData.append("file", file);
-            formData.append("createdDate", dateSeconds)
-            formData.append("modifiedDate", dateSeconds)
-            formData.append("relatedTo",JSON.stringify({}));
-            formData.append("createdBy", JSON.stringify(userDetails))
-            formData.append("modifiedBy", JSON.stringify(userDetails))
+            appendCommonFields(formData, commonFormData);
+            uploadSingleFile(formData);
         });
-        console.log("selected files :", selectedFiles);
 
+    }
+    const appendCommonFields = (formData, commonFormData) => {
+        for (const [key, value] of commonFormData.entries()) {
+            formData.append(key, value);
+        }
+    };
+
+    const uploadSingleFile = (formData) => {
+        console.log(typeof (fromData), 'type of formdata')
         RequestServerFiles(apiMethods.post, URL_postRecords, formData)
             .then(res => {
                 console.log("RequestServerFiles response", res)
@@ -58,16 +73,16 @@ const ModalFileUpload = ({ handleModal }) => {
                         message: "file Uploaded successfully",
                         type: "success",
                     });
-                }else{
-                    console.log("RequestServer file then error",res.error.message)
+                } else {
+                    console.log("RequestServer file then error", res.error.message)
                     setNotify({
                         isOpen: true,
                         message: res.error.message,
                         type: "error",
                     });
-                }                
+                }
             })
-            .catch((error)=>{
+            .catch((error) => {
                 console.log('RequestServer file form Submission  error', error);
                 setNotify({
                     isOpen: true,
@@ -75,10 +90,10 @@ const ModalFileUpload = ({ handleModal }) => {
                     type: "error",
                 });
             })
-            .finally(()=>{
-                setTimeout(()=>{
+            .finally(() => {
+                setTimeout(() => {
                     handleModal()
-                },3000)
+                }, 3000)
             })
     };
 
@@ -92,9 +107,11 @@ const ModalFileUpload = ({ handleModal }) => {
     return (
         <>
             <ToastNotification notify={notify} setNotify={setNotify} />
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                <Typography fontWeight={'bold'} variant="h3">Upload Files</Typography>
+            </Box>
+            <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "start", alignItems: "center", height: "100%", width: '100%', marginTop: '30px' }}>
 
-            <Box sx={{ height: "500px", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", height: "285px" }}>
-                <Typography variant="h4">Upload Files</Typography>
                 <label htmlFor="images" className="input-drop-container">
                     <input
                         className="file-upload-input"
@@ -116,29 +133,33 @@ const ModalFileUpload = ({ handleModal }) => {
                         gap: "5px"
                     }}
                 >
-                    <Button
-                        sx={{ marginTop: "10px" }}
-                        type="success"
-                        variant="contained"
-                        color="secondary"
-                        onClick={handleUploadButtonClick}
-                        startIcon={<FileUploadIcon />}
-                    >
-                        Upload
-                    </Button>
-                    <Button
-                        type="reset"
-                        variant="outlined"
-                        sx={{
-                            marginTop: "10px",
-                            color: "black",
-                            backgroundColor: "whitesmoke",
-                        }}
-                        onClick={() => handleClearInput()}
-                        startIcon={<ClearAllIcon />}
-                    >
-                        Clear
-                    </Button>
+                    {selectedFiles.length > 0 &&
+                        <>
+                            <Button
+                                sx={{ marginTop: "10px" }}
+                                type="success"
+                                variant="contained"
+                                color="secondary"
+                                onClick={handleUploadButtonClick}
+                                startIcon={<FileUploadIcon />}
+                            >
+                                Upload
+                            </Button>
+                            <Button
+                                type="reset"
+                                variant="outlined"
+                                sx={{
+                                    marginTop: "10px",
+                                    color: "black",
+                                    backgroundColor: "whitesmoke",
+                                }}
+                                onClick={() => handleClearInput()}
+                                startIcon={<ClearAllIcon />}
+                            >
+                                Clear
+                            </Button>
+                        </>
+                    }
                 </Box>
 
             </Box>

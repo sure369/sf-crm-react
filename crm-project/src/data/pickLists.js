@@ -132,7 +132,7 @@ export const LeadStatusPicklist = [
 
   { text: "Open", value: "Open" },
   { text: "Working", value: "Working" },
-  { text: "Not-Convert", value: "Not-Convert" },
+  { text: "Not-Converted", value: "Not-Converted" },
   { text: "Converted", value: "Converted" },
 ];
 

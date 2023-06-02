@@ -21,14 +21,15 @@ import '../indexCSS/muiBoxStyles.css'
 import { apiMethods } from "../api/methods";
 import { apiCheckObjectPermission } from '../Auth/apiCheckObjectPermission'
 import { getLoginUserRoleDept } from '../Auth/userRoleDept';
-import { OBJECT_API_PERMISSIONS,GET_PERMISSIONS,DELETE_PERMISSIONS } from "../api/endUrls";
+import { OBJECT_API_PERMISSIONS, GET_PERMISSIONS, DELETE_PERMISSIONS } from "../api/endUrls";
 import CircularProgress from '@mui/material/CircularProgress';
+import ErrorComponent from "../Errors";
 
 const PermissionSets = () => {
 
   const OBJECT_API = OBJECT_API_PERMISSIONS
   const URL_getRecords = GET_PERMISSIONS
-  const URL_deleteRecords =DELETE_PERMISSIONS
+  const URL_deleteRecords = DELETE_PERMISSIONS
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -45,7 +46,7 @@ const PermissionSets = () => {
   const [showDelete, setShowDelete] = useState(false);
   const [selectedRecordIds, setSelectedRecordIds] = useState();
   const [selectedRecordDatas, setSelectedRecordDatas] = useState();
-  
+
   const [permissionValues, setPermissionValues] = useState({})
   const userRoleDpt = getLoginUserRoleDept(OBJECT_API)
   console.log(userRoleDpt, "userRoleDpt")
@@ -56,27 +57,34 @@ const PermissionSets = () => {
   }, []);
 
   const fetchRecords = () => {
+    setFetchLoading(true);
     // RequestServer(apiMethods.get,URL_getRecords+'/access=read')
-    RequestServer(apiMethods.get,URL_getRecords)
-    .then((res) => {
-        console.log(res, "index page res")
-        if (res.success) {
-          setRecords(res.data)
-          setFetchError(null)
+    try {
+      RequestServer(apiMethods.get, URL_getRecords)
+        .then((res) => {
+          console.log(res, "index page res")
+          if (res.success) {
+            setRecords(res.data)
+            setFetchError(null)
+            setFetchLoading(false)
+          } else {
+            setRecords([])
+            setFetchError(res.error.message)
+            setFetchLoading(false)
+          }
+        })
+        .catch((error) => {
+          setFetchError(error.message)
           setFetchLoading(false)
-        } else {
-          setRecords([])
-          setFetchError(res.error.message)
-          setFetchLoading(false)
-        }
-      })
-      .catch((error) => {
-        setFetchError(error.message)
-        setFetchLoading(false)
-      })
+        })
+    }
+    catch (error) {
+      setFetchError(error.message);
+      setFetchLoading(false);
+    }
   };
 
-  const fetchObjectPermissions=()=>{
+  const fetchObjectPermissions = () => {
     if (userRoleDpt) {
       apiCheckObjectPermission(userRoleDpt)
         .then(res => {
@@ -131,7 +139,7 @@ const PermissionSets = () => {
   const onebyoneDelete = (row) => {
     console.log("onebyoneDelete rec id", row);
 
-    RequestServer(apiMethods.delete,URL_deleteRecords + row)
+    RequestServer(apiMethods.delete, URL_deleteRecords + row)
       .then((res) => {
         if (res.success) {
           fetchRecords()
@@ -244,7 +252,7 @@ const PermissionSets = () => {
       />
 
       <Box m="20px">
-        { fetchPermissionloading ? (
+        {fetchPermissionloading ? (
           <Box
             display="flex"
             justifyContent="center"
@@ -253,8 +261,8 @@ const PermissionSets = () => {
           >
             <CircularProgress />
           </Box>
-        ) : (
-           permissionValues.read &&(
+        ) : fetchError ? (<ErrorComponent error={fetchError} retry={fetchRecords} />) : (
+          permissionValues.read && (
             <>
               <Typography
                 variant="h2"
@@ -298,7 +306,7 @@ const PermissionSets = () => {
                   ) : (
                     <>
                       {
-                         permissionValues.create &&
+                        permissionValues.create &&
                         <>
                           <Button variant="contained" color="info" onClick={handleAddRecord}>
                             New
@@ -351,7 +359,7 @@ const PermissionSets = () => {
               </Box>
 
             </>
-           ))}
+          ))}
       </Box>
 
 

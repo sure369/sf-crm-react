@@ -27,7 +27,8 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { apiMethods } from "../api/methods";
 import { apiCheckObjectPermission } from '../Auth/apiCheckObjectPermission'
 import { getLoginUserRoleDept } from '../Auth/userRoleDept';
-import { OBJECT_API_ENQUIRY,GET_ENQUIRY,DELETE_ENQUIRY,GET_ENQUIRY_BY_MONTH } from "../api/endUrls";
+import { OBJECT_API_ENQUIRY, GET_ENQUIRY, DELETE_ENQUIRY, GET_ENQUIRY_BY_MONTH } from "../api/endUrls";
+import ErrorComponent from "../Errors";
 
 const Leads = () => {
 
@@ -69,24 +70,30 @@ const Leads = () => {
   }, []);
 
   const fetchRecords = () => {
-    RequestServer(apiMethods.get, URL_getRecords)
-      .then((res) => {
-        console.log(res, "index page res");
-        if (res.success) {
-          setRecords(res.data);
-          setFilteredRecord(res.data);
+    try {
+      RequestServer(apiMethods.get, URL_getRecords)
+        .then((res) => {
+          console.log(res, "index page res");
+          if (res.success) {
+            setRecords(res.data);
+            setFilteredRecord(res.data);
+            setFetchLoading(false);
+            setFetchError(null);
+          } else {
+            setRecords([]);
+            setFetchError(res.error.message);
+            setFetchLoading(false);
+          }
+        })
+        .catch((err) => {
+          setFetchError(err.message);
           setFetchLoading(false);
-          setFetchError(null);
-        } else {
-          setRecords([]);
-          setFetchError(res.error.message);
-          setFetchLoading(false);
-        }
-      })
-      .catch((err) => {
-        setFetchError(err.message);
-        setFetchLoading(false);
-      });
+        });
+    }
+    catch (error) {
+      setFetchError(error.message);
+      setFetchLoading(false);
+    }
   };
 
   const fetchObjectPermissions = () => {
@@ -143,38 +150,43 @@ const Leads = () => {
 
   const onebyoneDelete = (row) => {
     console.log("onebyoneDelete rec id", row);
-    RequestServer(apiMethods.delete, URL_deleteRecords + row)
-      .then((res) => {
-        if (res.success) {
-          fetchRecords();
+    try {
+      RequestServer(apiMethods.delete, URL_deleteRecords + row)
+        .then((res) => {
+          if (res.success) {
+            fetchRecords();
+            setNotify({
+              isOpen: true,
+              message: res.data,
+              type: "success",
+            });
+          } else {
+            console.log(res, "error in then");
+            setNotify({
+              isOpen: true,
+              message: res.error.message,
+              type: "error",
+            });
+          }
+        })
+        .catch((error) => {
+          console.log("api delete error", error);
           setNotify({
             isOpen: true,
-            message: res.data,
-            type: "success",
-          });
-        } else {
-          console.log(res, "error in then");
-          setNotify({
-            isOpen: true,
-            message: res.error.message,
+            message: error.message,
             type: "error",
           });
-        }
-      })
-      .catch((error) => {
-        console.log("api delete error", error);
-        setNotify({
-          isOpen: true,
-          message: error.message,
-          type: "error",
+        })
+        .finally(() => {
+          setConfirmDialog({
+            ...confirmDialog,
+            isOpen: false,
+          });
         });
-      })
-      .finally(() => {
-        setConfirmDialog({
-          ...confirmDialog,
-          isOpen: false,
-        });
-      });
+    }
+    catch (error) {
+      setFetchError(error.message);
+    }
   };
 
   const handleImportModalOpen = () => {
@@ -222,7 +234,7 @@ const Leads = () => {
     console.log("inside handleLeadFilterChange ")
     const value = e.target.value;
     const label = e.target.name;
-    const obj ={[label]:value,}
+    const obj = { [label]: value, }
     setFilterMonth(value);
     // console.log(`${urlSearchLead}${label}=${value}`);
     if (e.target.value === null) {
@@ -230,7 +242,7 @@ const Leads = () => {
       fetchRecords();
     } else {
       // console.log( URL_getRecords_Monthwise + queryString(obj),"else part")
-      RequestServer(apiMethods.get, URL_getRecords_Monthwise +`${label}=${value}`)
+      RequestServer(apiMethods.get, URL_getRecords_Monthwise + `${label}=${value}`)
         .then((res) => {
           console.log("Searched Month res ", res);
           if (res.success) {
@@ -330,8 +342,8 @@ const Leads = () => {
           >
             <CircularProgress />
           </Box>
-        ) : (
-          permissionValues.read &&(
+        ) : fetchError ? (<ErrorComponent error={fetchError} retry={fetchRecords} />) : (
+          permissionValues.read && (
             <>
               <Typography
                 variant="h2"

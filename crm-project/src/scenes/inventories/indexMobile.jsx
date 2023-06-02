@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   Box, Button, useTheme, Card, CardContent, IconButton,
-  Pagination, Tooltip, Menu, MenuItem, Grid
+  Pagination, Tooltip, Menu, MenuItem, Grid, CircularProgress
 } from "@mui/material";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
@@ -13,13 +13,14 @@ import { RequestServer } from '../api/HttpReq';
 import { apiMethods } from '../api/methods';
 import { apiCheckObjectPermission } from '../Auth/apiCheckObjectPermission';
 import { getLoginUserRoleDept } from '../Auth/userRoleDept';
-import { OBJECT_API_INVENTORY,GET_INVENTORY,DELETE_INVENTORY } from "../api/endUrls";
+import { OBJECT_API_INVENTORY, GET_INVENTORY, DELETE_INVENTORY } from "../api/endUrls";
+import ErrorComponent from '../Errors';
 
 const InventoriesMobile = () => {
 
   const OBJECT_API = OBJECT_API_INVENTORY
-  const URL_getRecords= GET_INVENTORY
-  const URL_deleteRecords= DELETE_INVENTORY
+  const URL_getRecords = GET_INVENTORY
+  const URL_deleteRecords = DELETE_INVENTORY
 
 
   const theme = useTheme();
@@ -38,7 +39,7 @@ const InventoriesMobile = () => {
   const [itemsPerPage, setItemsPerPage] = useState(3);
   const [page, setPage] = useState(1);
   const [noOfPages, setNoOfPages] = useState(0);
-
+  const [fetchPermissionloading, setFetchPermissionLoading] = useState(true);
   const [permissionValues, setPermissionValues] = useState({})
   const userRoleDpt = getLoginUserRoleDept(OBJECT_API)
   console.log(userRoleDpt, "userRoleDpt")
@@ -49,26 +50,32 @@ const InventoriesMobile = () => {
   }, []);
 
   const fetchRecords = () => {
-
-    RequestServer(apiMethods.get, URL_getRecords)
-      .then((res) => {
-        console.log(res, "api res index page")
-        if (res.success) {
-          setRecords(res.data)
+    setFetchLoading(true);
+    try {
+      RequestServer(apiMethods.get, URL_getRecords)
+        .then((res) => {
+          console.log(res, "api res index page")
+          if (res.success) {
+            setRecords(res.data)
+            setFetchLoading(false)
+            setFetchError(null)
+            setNoOfPages(Math.ceil(res.data.length / itemsPerPage))
+          }
+          else {
+            setRecords([])
+            setFetchLoading(false)
+            setFetchError(res.error.message)
+          }
+        })
+        .catch((err) => {
+          setFetchError(err.message)
           setFetchLoading(false)
-          setFetchError(null)
-          setNoOfPages(Math.ceil(res.data.length / itemsPerPage))
-        }
-        else {
-          setRecords([])
-          setFetchLoading(false)
-          setFetchError(res.error.message)
-        }
-      })
-      .catch((err) => {
-        setFetchError(err.message)
-        setFetchLoading(false)
-      })
+        })
+    }
+    catch (error) {
+      setFetchError(error.message)
+      setFetchLoading(false)
+    }
   }
 
   const fetchObjectPermissions = () => {
@@ -81,6 +88,9 @@ const InventoriesMobile = () => {
         .catch(err => {
           console.log(err, "error in apiCheckPermission")
           setPermissionValues({})
+        })
+        .finally(() => {
+          setFetchPermissionLoading(false)
         })
     }
   }
@@ -189,107 +199,117 @@ const InventoriesMobile = () => {
 
       <Box m="20px">
         {
-          permissionValues.read ?
-            <>
-              <Header
-                title="Inventories"
-                subtitle="List of Inventory"
-              />
-              {
-                permissionValues.create &&
-                <div className='btn-test'>
-                  <Button variant="contained" color="info" onClick={handleAddRecord}>
-                    New
-                  </Button>
-                </div>
-              }
-
-              <Card dense compoent="span" sx={{ bgcolor: "white" }}>
-                {records.length > 0 ?
-                  records
-                    .slice((page - 1) * itemsPerPage, page * itemsPerPage)
-                    .map((item) => {
-                      return (
-                        <div>
-                          <CardContent sx={{ bgcolor: "aliceblue", m: "20px" }}>
-                            <div
-                              key={item._id}
-                            >
-                              <Grid container spacing={2}>
-                                <Grid item xs={10} md={10}>
-                                  <div>PropertyName : {item.propertyName} </div>
-                                  <div>projectName :{item.projectName} </div>
-                                  <div>Status : {item.status} </div>
-                                  <div>Type : {item.type} </div>
-                                  <div>City : {item.city} </div>
-                                </Grid>
-                                <Grid item xs={2} md={2}>
-                                  <IconButton>
-                                    <MoreVertIcon onClick={(event) => handleTaskMoreMenuClick(item, event)} />
-                                    <Menu
-                                      anchorEl={anchorEl}
-                                      open={menuOpen}
-                                      onClose={handleMoreMenuClose}
-                                      anchorOrigin={{
-                                        vertical: 'top',
-                                        horizontal: 'left',
-                                      }}
-                                      transformOrigin={{
-                                        vertical: 'top',
-                                        horizontal: 'left',
-                                      }}
-                                    >
-                                      {
-                                        permissionValues.edit ?
-                                          <MenuItem onClick={() => handleCardEdit(menuSelectRec)}>Edit</MenuItem>
-                                          :
-                                          <MenuItem onClick={() => handleCardEdit(menuSelectRec)}>View</MenuItem>
-                                      }
-                                      {
-                                        permissionValues.delete &&
-                                        <MenuItem onClick={(e) => handleCardDelete(e, menuSelectRec)}>Delete</MenuItem>
-                                      }
-                                    </Menu>
-                                  </IconButton>
-                                </Grid>
-                              </Grid>
-                            </div>
-                          </CardContent>
-                        </div>
-                      );
-                    })
-                  :
-                  <>
-                    <CardContent sx={{ bgcolor: "aliceblue", m: "20px" }}>
-                      <div>No Records Found</div>
-                    </CardContent>
-                  </>
-
+          fetchPermissionloading ? (
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              height="200px"
+            >
+              <CircularProgress />
+            </Box>
+          ) : fetchError ? (<ErrorComponent error={fetchError} retry={fetchRecords} />) : (
+            permissionValues.read && (
+              <>
+                <Header
+                  title="Inventories"
+                  subtitle="List of Inventory"
+                />
+                {
+                  permissionValues.create &&
+                  <div className='btn-test'>
+                    <Button variant="contained" color="info" onClick={handleAddRecord}>
+                      New
+                    </Button>
+                  </div>
                 }
-              </Card>
-              {records.length > 0 &&
-                <Box
-                  sx={{
-                    margin: "auto",
-                    width: "fit-content",
-                    alignItems: "center",
-                    // justifyContent:'space-between'
-                  }}>
-                  <Pagination
-                    count={noOfPages}
-                    page={page}
-                    onChange={handleChangePage}
-                    defaultPage={1}
-                    color="primary"
-                    size="large"
-                    showFirstButton
-                    showLastButton
-                    sx={{ justifyContent: 'center' }}
-                  />
-                </Box>
-              }
-            </> 
-            : null
+
+                <Card dense compoent="span" sx={{ bgcolor: "white" }}>
+                  {records.length > 0 ?
+                    records
+                      .slice((page - 1) * itemsPerPage, page * itemsPerPage)
+                      .map((item) => {
+                        return (
+                          <div>
+                            <CardContent sx={{ bgcolor: "aliceblue", m: "20px" }}>
+                              <div
+                                key={item._id}
+                              >
+                                <Grid container spacing={2}>
+                                  <Grid item xs={10} md={10}>
+                                    <div>PropertyName : {item.propertyName} </div>
+                                    <div>projectName :{item.projectName} </div>
+                                    <div>Status : {item.status} </div>
+                                    <div>Type : {item.type} </div>
+                                    <div>City : {item.city} </div>
+                                  </Grid>
+                                  <Grid item xs={2} md={2}>
+                                    <IconButton>
+                                      <MoreVertIcon onClick={(event) => handleTaskMoreMenuClick(item, event)} />
+                                      <Menu
+                                        anchorEl={anchorEl}
+                                        open={menuOpen}
+                                        onClose={handleMoreMenuClose}
+                                        anchorOrigin={{
+                                          vertical: 'top',
+                                          horizontal: 'left',
+                                        }}
+                                        transformOrigin={{
+                                          vertical: 'top',
+                                          horizontal: 'left',
+                                        }}
+                                      >
+                                        {
+                                          permissionValues.edit ?
+                                            <MenuItem onClick={() => handleCardEdit(menuSelectRec)}>Edit</MenuItem>
+                                            :
+                                            <MenuItem onClick={() => handleCardEdit(menuSelectRec)}>View</MenuItem>
+                                        }
+                                        {
+                                          permissionValues.delete &&
+                                          <MenuItem onClick={(e) => handleCardDelete(e, menuSelectRec)}>Delete</MenuItem>
+                                        }
+                                      </Menu>
+                                    </IconButton>
+                                  </Grid>
+                                </Grid>
+                              </div>
+                            </CardContent>
+                          </div>
+                        );
+                      })
+                    :
+                    <>
+                      <CardContent sx={{ bgcolor: "aliceblue", m: "20px" }}>
+                        <div>No Records Found</div>
+                      </CardContent>
+                    </>
+
+                  }
+                </Card>
+                {records.length > 0 &&
+                  <Box
+                    sx={{
+                      margin: "auto",
+                      width: "fit-content",
+                      alignItems: "center",
+                      // justifyContent:'space-between'
+                    }}>
+                    <Pagination
+                      count={noOfPages}
+                      page={page}
+                      onChange={handleChangePage}
+                      defaultPage={1}
+                      color="primary"
+                      size="large"
+                      showFirstButton
+                      showLastButton
+                      sx={{ justifyContent: 'center' }}
+                    />
+                  </Box>
+                }
+              </>
+            ))
         }
       </Box>
     </>

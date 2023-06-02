@@ -17,25 +17,24 @@ import ModalFileUpload from "../dataLoader/ModalFileUpload";
 import ExcelDownload from "../Excel";
 import { RequestServer } from "../api/HttpReq";
 import "../indexCSS/muiBoxStyles.css";
-import { useFetchRecords } from "../customHooks/useFetchRecords";
-import ApiError from "../Errors/APIError";
 import { apiMethods } from "../api/methods";
 import { apiCheckObjectPermission } from '../Auth/apiCheckObjectPermission'
 import { getLoginUserRoleDept } from '../Auth/userRoleDept';
 import CircularProgress from '@mui/material/CircularProgress';
-import { OBJECT_API_ACCOUNT,GET_ACCOUNT,DELETE_ACCOUNT } from "../api/endUrls";
+import { OBJECT_API_ACCOUNT, GET_ACCOUNT, DELETE_ACCOUNT } from "../api/endUrls";
+import ErrorComponent from "../Errors";
 
 const Accounts = () => {
 
   const OBJECT_API = OBJECT_API_ACCOUNT
-  const URL_getRecords= GET_ACCOUNT
-  const URL_deleteRecords= DELETE_ACCOUNT
+  const URL_getRecords = GET_ACCOUNT
+  const URL_deleteRecords = DELETE_ACCOUNT
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
   const [records, setRecords] = useState([]);
-  const [fetchError, setFetchError] = useState({});
+  const [fetchError, setFetchError] = useState(null);
   const [fetchRecordsLoading, setFetchRecordsLoading] = useState(true);
   const [fetchPermissionloading, setFetchPermissionLoading] = useState(true);
 
@@ -58,23 +57,29 @@ const Accounts = () => {
 
   const fetchRecords = () => {
     setFetchRecordsLoading(true)
-    RequestServer(apiMethods.get, URL_getRecords)
-      .then((res) => {
-        console.log(res, "index page res");
-        if (res.success) {
-          setRecords(res.data);
-          setFetchError(null);
-        } else {
-          setRecords([]);
-          setFetchError(res.error);
-        }
-      })
-      .catch((err) => {
-        setFetchError(err);
-      })
-      .finally(() => {
-        setFetchRecordsLoading(false)
-      })
+    try {
+      RequestServer(apiMethods.get, URL_getRecords)
+        .then((res) => {
+          console.log(res, "index page res");
+          if (res.success) {
+            setRecords(res.data);
+            setFetchError(null);
+          } else {
+            setRecords([]);
+            setFetchError(res.error.message);
+          }
+        })
+        .catch((err) => {
+          setFetchError(err.message);
+        })
+        .finally(() => {
+          setFetchRecordsLoading(false)
+        })
+    }
+    catch (error) {
+      setFetchError(error.message);
+      setFetchRecordsLoading(false);
+    }
   };
 
   const fetchObjectPermissions = () => {
@@ -282,9 +287,9 @@ const Accounts = () => {
         confirmDialog={confirmDialog}
         setConfirmDialog={setConfirmDialog}
       />
-  
+
       <Box m="20px">
-        { fetchPermissionloading ? (
+        {fetchPermissionloading && fetchPermissionloading ? (
           <Box
             display="flex"
             justifyContent="center"
@@ -293,7 +298,7 @@ const Accounts = () => {
           >
             <CircularProgress />
           </Box>
-        ) : (
+        ) : fetchError ? (<ErrorComponent error={fetchError} retry={fetchRecords} />) : (
           permissionValues.read && (
             <>
               <Typography
@@ -308,7 +313,7 @@ const Accounts = () => {
                 <Typography variant="h5" color={colors.greenAccent[400]}>
                   List Of {OBJECT_API}
                 </Typography>
-  
+
                 <div
                   style={{
                     display: "flex",
@@ -350,7 +355,7 @@ const Accounts = () => {
                           >
                             Import
                           </Button>
-  
+
                           <Button
                             variant="contained"
                             color="info"
@@ -358,7 +363,7 @@ const Accounts = () => {
                           >
                             New
                           </Button>
-  
+
                           <ExcelDownload data={records} filename={`AccountRecords`} />
                         </>
                       )}
@@ -366,7 +371,7 @@ const Accounts = () => {
                   )}
                 </div>
               </Box>
-  
+
               <Box m="15px 0 0 0" height="380px" className="my-mui-styles">
                 <DataGrid
                   sx={{
@@ -406,7 +411,7 @@ const Accounts = () => {
             </>
           )
         )}
-  
+
         <Modal
           open={importModalOpen}
           onClose={handleImportModalClose}
@@ -421,7 +426,7 @@ const Accounts = () => {
       </Box>
     </>
   );
-  
+
 };
 
 export default Accounts;

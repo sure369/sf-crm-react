@@ -18,10 +18,12 @@ import { apiMethods } from "../api/methods";
 import { getLoginUserRoleDept } from "../Auth/userRoleDept";
 import { apiCheckObjectPermission } from "../Auth/apiCheckObjectPermission";
 import NoAccessCard from '../NoAccess/NoAccessCard'
-import { OBJECT_API_DEAL,OBJECT_API_EVENT,
-GET_ENQUIRY_RELATED_DEAL,GET_ENQUIRY_RELATED_EVENT,
-DELETE_EVENT,DELETE_DEAL } 
-from "../api/endUrls";
+import {
+  OBJECT_API_DEAL, OBJECT_API_EVENT,
+  GET_ENQUIRY_RELATED_DEAL, GET_ENQUIRY_RELATED_EVENT,
+  DELETE_EVENT, DELETE_DEAL
+}
+  from "../api/endUrls";
 
 const LeadRelatedItems = ({ item }) => {
 

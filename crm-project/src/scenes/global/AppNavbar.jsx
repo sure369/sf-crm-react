@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   AppBar, Box, Toolbar, Typography, IconButton, Menu, Container,
-  Avatar, Tooltip, MenuItem, Button, Popover, ListItemButton,
+  Avatar, Tooltip, MenuItem, Button, Popover, ListItemButton, useTheme
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Link, NavLink, useNavigate } from "react-router-dom";
@@ -32,7 +32,7 @@ const StyledMenu = styled((props) => (
     }}
     {...props}
   />
-  ))
+))
   (({ theme }) => ({
     "& .MuiPaper-root": {
       borderRadius: 8,
@@ -75,7 +75,11 @@ const colors = [
   { label: "Blue Grey", color: "#507C85" },
 ];
 
-function AppNavbar({setIsLoggedIn}) {
+// const colors = [{ label: "Default", color: 'light' }, { label: "Dark", color: 'dark' }, { label: "Light", color: 'light' }]
+
+function AppNavbar({ setIsLoggedIn }) {
+
+  const theme = useTheme();
 
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
@@ -87,41 +91,41 @@ function AppNavbar({setIsLoggedIn}) {
 
   const [anchorElPallete, setAnchorElPallete] = useState(null);
   const PalleteOpen = Boolean(anchorElPallete);
-  const navigate = useNavigate();  
+  const navigate = useNavigate();
   const [tableNamearr, settableNameArr] = useState([]);
-  const [fetchTableNamesLoading,setFetchTableNameLoading]=useState(true)
+  const [fetchTableNamesLoading, setFetchTableNameLoading] = useState(true)
   const loggedInUserData = JSON.parse(sessionStorage.getItem("loggedInUser"));
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchTableNames()
-  },[])
+  }, [])
 
-  const fetchTableNames=()=>{
+  const fetchTableNames = () => {
     GetTableNames()
-    .then(res=>{
-      console.log(res,"GetTableNames res in appbar")
+      .then(res => {
+        console.log(res, "GetTableNames res in appbar")
 
-      const updateArr = res.map(item => {
-        let title = item;
-        let toNav = 'list/' + item.toLowerCase().replace(' ', '');
-        
-        if (item === 'Inventory Management') {
-          title = 'Inventory';
-          toNav = 'list/inventory';
-        }
-      
-        return { title, toNav };
-      }); 
-      console.log(updateArr,"settableNameArr")
-      settableNameArr(updateArr)
-      setFetchTableNameLoading(false)
-    })
-    .catch(err=>{
-      console.log(err,"GetTableNames error in appbar")
-    })
+        const updateArr = res.map(item => {
+          let title = item;
+          let toNav = 'list/' + item.toLowerCase().replace(' ', '');
+
+          if (item === 'Inventory Management') {
+            title = 'Inventory';
+            toNav = 'list/inventory';
+          }
+
+          return { title, toNav };
+        });
+        console.log(updateArr, "settableNameArr")
+        settableNameArr(updateArr)
+        setFetchTableNameLoading(false)
+      })
+      .catch(err => {
+        console.log(err, "GetTableNames error in appbar")
+      })
   }
 
- 
+
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -145,7 +149,7 @@ function AppNavbar({setIsLoggedIn}) {
 
   const handleUserLogout = () => {
     console.log("handleUserLogout");
-    RequestServer(apiMethods.post,URL_postLogout)
+    RequestServer(apiMethods.post, URL_postLogout)
       .then((res) => {
         if (res.success) {
           sessionStorage.clear();
@@ -184,6 +188,10 @@ function AppNavbar({setIsLoggedIn}) {
     setAnchorElPallete(event.currentTarget);
   };
 
+  const changeTheme = (paletteType) => {
+    theme.palette.mode = paletteType;
+  };
+
   const handleColorChange = (colorName) => {
     console.log("color name is ", colorName);
     setSelectedColor(colorName);
@@ -199,242 +207,249 @@ function AppNavbar({setIsLoggedIn}) {
 
   return (
     <>
-    {   fetchTableNamesLoading ? (
-       <Box
-       display="flex"
-       justifyContent="center"
-       alignItems="center"
-       height="200px"
-     >
-       <CircularProgress />
-     </Box>
-      // <div style={{ display: 'flex', alignItems: 'center' }}>
-      // <CircularProgress size={24} />
-      // <Typography variant="body1" sx={{ marginLeft: '10px' }}>
-      //   Loading...
-      // </Typography>
-    // </div>
-  ) : (
-    <>
-    <AppBar id="navBar" position="sticky" sx={{ backgroundColor: navBarStyle }}>
-      <Container maxWidth="xl">
-        <Toolbar disableGutters>     
-          <Box className="CRM-Title-Box">
-            <Typography
-              className="CRM-Title"
-              variant="h2"
-              noWrap
-              component="a"
-              href="/"
-              sx={{
-                mr: 2,
-                display: { xs: "none", md: "flex" },
-                letterSpacing: ".1rem",
+      {fetchTableNamesLoading ? (
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          height="200px"
+        >
+          <CircularProgress />
+        </Box>
+        // <div style={{ display: 'flex', alignItems: 'center' }}>
+        // <CircularProgress size={24} />
+        // <Typography variant="body1" sx={{ marginLeft: '10px' }}>
+        //   Loading...
+        // </Typography>
+        // </div>
+      ) : (
+        <>
+          <AppBar id="navBar" position="sticky" sx={{ backgroundColor: navBarStyle }}>
+            <Container maxWidth="xl">
+              <Toolbar disableGutters>
+                <Box className="CRM-Title-Box">
+                  <Typography
+                    className="CRM-Title"
+                    variant="h2"
+                    noWrap
+                    component="a"
+                    href="/"
+                    sx={{
+                      mr: 2,
+                      display: { xs: "none", md: "flex" },
+                      letterSpacing: ".1rem",
 
-                textDecoration: "none",
-              }}
-            >
-              CLOUDDESK
-            </Typography>
-            <Typography
-              className="CRM-Title"
-              sx={{
-                display: { xs: "none", md: "flex" },
-                fontFamily: "Cambria",
-                letterSpacing: ".1rem",
-                marginLeft: "75px",
-              }}
-            >
-              CRM
-            </Typography>
-          </Box>
-          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleOpenNavMenu}
-              color="inherit"
-            >
-              <MenuIcon />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "left",
-              }}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
-              sx={{
-                display: { xs: "block", md: "none" },
-              }}
-            >
-              {tableNamearr.map((page, index) => (
-                <MenuItem
-                  key={page.title}
-                  onClick={() => handleMenuItemClick(page)}
-                  active={selected === page.title}
-                  sx={
-                    selected === page.title
-                      ? { bgcolor: "#BAD8FF", borderRadius: "5px" }
-                      : {}
-                  }
-                >
-                  <Typography>{page.title} </Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
-          
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href=""
-            sx={{
-              mr: 2,
-              display: { xs: "flex", md: "none" },
-              flexGrow: 1,
-              fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
-              fontFamily: "sans-serif",
-              textshadow: "0 0 4px silver",
-            }}
-          >
-            Clouddesk
-          </Typography>
-
-          <Box
-            sx={{
-              flexGrow: 1,
-              display: { xs: "none", md: "flex" },
-              justifyContent: "space-evenly",
-            }}
-          >
-            {visiblePages.map((page, index) => (
-              <MenuItem
-                key={page.title}
-                onClick={() => handleMenuItemClick(page)}
-                active={selected === page.title}
-                sx={{ borderRadius: "5px" }}
-                className={
-                  selected === page.title
-                    ? "selected-app-menuItem"
-                    : "app-nav-css"
-                }
-              >                
-                <Typography variant="h6">{page.title} </Typography>
-              </MenuItem>
-            ))}
-
-            <MenuItem
-              id="selected"
-              onClick={handleMoreClick}
-              className="app-nav-css"
-            >
-              More
-              <ArrowDropDownIcon />
-            </MenuItem>
-          </Box>
-
-          {/* <StyledMenu
-            id="demo-customized-menu"
-            MenuListProps={{
-              "aria-labelledby": "demo-customized-button",
-            }}
-            anchorEl={anchorElPallete}
-            open={PalleteOpen}
-            onClose={handleClose}
-          >
-            {colors.map((item) => (
-              <ListItemButton onClick={() => handleColorChange(item.color)}>
-                {item.label}
-              </ListItemButton>
-            ))}
-          </StyledMenu> */}
-
-          <StyledMenu
-            id="demo-customized-menu"
-            MenuListProps={{
-              "aria-labelledby": "demo-customized-button",
-            }}
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleClose}
-          >
-            {hiddenPages.map((item) => (
-              <ListItemButton
-                onClick={() => handleMenuItemClick(item)}
-                key={item.title}
-                active={selected === item.title}
-                sx={
-                  selected === item.title
-                    ? { bgcolor: "#BAD8FF", borderRadius: "5px" }
-                    : {}
-                }
-              >                
-                <Typography>{item.title}</Typography>
-              </ListItemButton>
-            ))}
-          </StyledMenu>
-
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src={mainLogo} />
-              </IconButton>
-            </Tooltip>
-            <Popover
-              // id={id}
-              open={dialogOpen}
-              anchorEl={anchorElUser}
-              onClose={handleOpenUserMenu}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "center",
-              }}
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "center",
-              }}
-            >
-              <div style={{ padding: "16px" }}>
-                <Typography variant="h5">
-                  <strong>Hi, {loggedInUserData?.userFullName}</strong>
-                </Typography>
-                <Typography variant="subtitle1">
-                  {loggedInUserData?.userName}
-                </Typography>
-                <div style={{ marginTop: "10px" }}>
-                  <Button
-                    variant="contained"
-                    size="medium"
-                    onClick={handleUserLogout}
-                    endIcon={<PowerSettingsNewIcon />}
+                      textDecoration: "none",
+                    }}
                   >
-                    Logout
-                  </Button>
-                </div>
-              </div>
-            </Popover>           
-          </Box>
-   
-        </Toolbar>
-      </Container>
-    </AppBar>
-    </>
-    )
-}</>
+                    CLOUDDESK
+                  </Typography>
+                  <Typography
+                    className="CRM-Title"
+                    sx={{
+                      display: { xs: "none", md: "flex" },
+                      fontFamily: "Cambria",
+                      letterSpacing: ".1rem",
+                      marginLeft: "75px",
+                    }}
+                  >
+                    CRM
+                  </Typography>
+                </Box>
+                <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+                  <IconButton
+                    size="large"
+                    aria-label="account of current user"
+                    aria-controls="menu-appbar"
+                    aria-haspopup="true"
+                    onClick={handleOpenNavMenu}
+                    color="inherit"
+                  >
+                    <MenuIcon />
+                  </IconButton>
+                  <Menu
+                    id="menu-appbar"
+                    anchorEl={anchorElNav}
+                    anchorOrigin={{
+                      vertical: "bottom",
+                      horizontal: "left",
+                    }}
+                    keepMounted
+                    transformOrigin={{
+                      vertical: "top",
+                      horizontal: "left",
+                    }}
+                    open={Boolean(anchorElNav)}
+                    onClose={handleCloseNavMenu}
+                    sx={{
+                      display: { xs: "block", md: "none" },
+                    }}
+                  >
+                    {tableNamearr.map((page, index) => (
+                      <MenuItem
+                        key={page.title}
+                        onClick={() => handleMenuItemClick(page)}
+                        active={selected === page.title}
+                        sx={
+                          selected === page.title
+                            ? { bgcolor: "#BAD8FF", borderRadius: "5px" }
+                            : {}
+                        }
+                      >
+                        <Typography>{page.title} </Typography>
+                      </MenuItem>
+                    ))}
+                  </Menu>
+                </Box>
+
+                <Typography
+                  variant="h5"
+                  noWrap
+                  component="a"
+                  href=""
+                  sx={{
+                    mr: 2,
+                    display: { xs: "flex", md: "none" },
+                    flexGrow: 1,
+                    fontWeight: 700,
+                    letterSpacing: ".3rem",
+                    color: "inherit",
+                    textDecoration: "none",
+                    fontFamily: "sans-serif",
+                    textshadow: "0 0 4px silver",
+                  }}
+                >
+                  Clouddesk
+                </Typography>
+
+                <Box
+                  sx={{
+                    flexGrow: 1,
+                    display: { xs: "none", md: "flex" },
+                    justifyContent: "space-evenly",
+                  }}
+                >
+                  {visiblePages.map((page, index) => (
+                    <MenuItem
+                      key={page.title}
+                      onClick={() => handleMenuItemClick(page)}
+                      active={selected === page.title}
+                      sx={{ borderRadius: "5px" }}
+                      className={
+                        selected === page.title
+                          ? "selected-app-menuItem"
+                          : "app-nav-css"
+                      }
+                    >
+                      <Typography variant="h6">{page.title} </Typography>
+                    </MenuItem>
+                  ))}
+
+                  <MenuItem
+                    id="selected"
+                    onClick={handleMoreClick}
+                    className="app-nav-css"
+                    sx={{ borderRadius: '5px' }}
+                  >
+                    More
+                    <ArrowDropDownIcon />
+                  </MenuItem>
+
+                  {/* <IconButton onClick={(event) => handlePaletteClick(event)}>
+                    <PaletteTwoTone />
+                  </IconButton> */}
+                </Box>
+
+
+
+                {/* <StyledMenu
+                  id="demo-customized-menu"
+                  MenuListProps={{
+                    "aria-labelledby": "demo-customized-button",
+                  }}
+                  anchorEl={anchorElPallete}
+                  open={PalleteOpen}
+                  onClose={handleClose}
+                >
+                  {colors.map((item) => (
+                    <ListItemButton onClick={() => handleColorChange(item.color)}>
+                      {item.label}
+                    </ListItemButton>
+                  ))}
+                </StyledMenu> */}
+
+                <StyledMenu
+                  id="demo-customized-menu"
+                  MenuListProps={{
+                    "aria-labelledby": "demo-customized-button",
+                  }}
+                  anchorEl={anchorEl}
+                  open={open}
+                  onClose={handleClose}
+                >
+                  {hiddenPages.map((item) => (
+                    <ListItemButton
+                      onClick={() => handleMenuItemClick(item)}
+                      key={item.title}
+                      active={selected === item.title}
+                      sx={
+                        selected === item.title
+                          ? { bgcolor: "#BAD8FF", borderRadius: "5px" }
+                          : {}
+                      }
+                    >
+                      <Typography>{item.title}</Typography>
+                    </ListItemButton>
+                  ))}
+                </StyledMenu>
+
+                <Box sx={{ flexGrow: 0 }}>
+                  <Tooltip title="Open settings">
+                    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                      <Avatar alt="Remy Sharp" src={mainLogo} />
+                    </IconButton>
+                  </Tooltip>
+                  <Popover
+                    // id={id}
+                    open={dialogOpen}
+                    anchorEl={anchorElUser}
+                    onClose={handleOpenUserMenu}
+                    anchorOrigin={{
+                      vertical: "bottom",
+                      horizontal: "center",
+                    }}
+                    transformOrigin={{
+                      vertical: "top",
+                      horizontal: "center",
+                    }}
+                  >
+                    <div style={{ padding: "16px" }}>
+                      <Typography variant="h5">
+                        <strong>Hi, {loggedInUserData?.userFullName}</strong>
+                      </Typography>
+                      <Typography variant="subtitle1">
+                        {loggedInUserData?.userName}
+                      </Typography>
+                      <div style={{ marginTop: "10px" }}>
+                        <Button
+                          variant="contained"
+                          size="medium"
+                          onClick={handleUserLogout}
+                          endIcon={<PowerSettingsNewIcon />}
+                        >
+                          Logout
+                        </Button>
+                      </div>
+                    </div>
+                  </Popover>
+                </Box>
+
+              </Toolbar>
+            </Container>
+          </AppBar>
+        </>
+      )
+      }</>
   );
 
 }

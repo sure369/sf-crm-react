@@ -19,9 +19,9 @@ import { apiMethods } from "../api/methods";
 
 const URL_postRecords = POST_FILE
 
-const ModalTaskFileUpload = ({record, handleModal }) => {
+const ModalTaskFileUpload = ({ record, handleModal }) => {
 
-    console.log(record,"record ModalTaskFileUpload")
+    console.log(record, "record ModalTaskFileUpload")
 
     const [notify, setNotify] = useState({ isOpen: false, message: "", type: "", });
 
@@ -37,17 +37,32 @@ const ModalTaskFileUpload = ({record, handleModal }) => {
         const formData = new FormData();
         let dateSeconds = new Date().getTime();
         let userDetails = (sessionStorage.getItem("loggedInUser"))
-        let relatedObj ={id:record.taskId,object:record.OBJECT_API}
-        console.log(relatedObj,"relatedObj")
+        let relatedObj = { id: record.taskId, object: record.OBJECT_API }
+        console.log(relatedObj, "relatedObj")
+
+        const commonFormData = new FormData();
+        commonFormData.append("relatedTo", JSON.stringify(relatedObj));
+        commonFormData.append("createdDate", dateSeconds);
+        commonFormData.append("modifiedDate", dateSeconds);
+        commonFormData.append("createdBy", JSON.stringify(userDetails));
+        commonFormData.append("modifiedBy", JSON.stringify(userDetails));
+
         selectedFiles.forEach((file) => {
+            const formData = new FormData();
             formData.append("file", file);
-            formData.append("relatedTo",JSON.stringify(relatedObj));
-            formData.append("createdDate", dateSeconds)
-            formData.append("modifiedDate", dateSeconds)
-            formData.append("createdBy", JSON.stringify(userDetails))
-            formData.append("modifiedBy", JSON.stringify(userDetails))
+            appendCommonFields(formData, commonFormData);
+            uploadSingleFile(formData);
         });
-        console.log("selected files :", selectedFiles);
+
+    }
+    const appendCommonFields = (formData, commonFormData) => {
+        for (const [key, value] of commonFormData.entries()) {
+            formData.append(key, value);
+        }
+    };
+
+
+    const uploadSingleFile = (formData) => {
 
         RequestServerFiles(apiMethods.post, URL_postRecords, formData)
             .then(res => {
@@ -61,16 +76,16 @@ const ModalTaskFileUpload = ({record, handleModal }) => {
                         message: "file Uploaded successfully",
                         type: "success",
                     });
-                }else{
-                    console.log("RequestServer file then error",res.error.message)
+                } else {
+                    console.log("RequestServer file then error", res.error.message)
                     setNotify({
                         isOpen: true,
                         message: res.error.message,
                         type: "error",
                     });
-                }                
+                }
             })
-            .catch((error)=>{
+            .catch((error) => {
                 console.log('RequestServer file form Submission  error', error);
                 setNotify({
                     isOpen: true,
@@ -78,11 +93,11 @@ const ModalTaskFileUpload = ({record, handleModal }) => {
                     type: "error",
                 });
             })
-            .finally(()=>{
-                setTimeout(()=>{
-                    handleModal()
-                },2000)
-                
+            .finally(() => {
+                setTimeout(() => {
+                    handleModal(record._id)
+                }, 2000)
+
             })
     };
 
@@ -93,14 +108,17 @@ const ModalTaskFileUpload = ({record, handleModal }) => {
 
 
 
-    
-      
+
+
 
     return (
         <>
             <ToastNotification notify={notify} setNotify={setNotify} />
-            <Box sx={{ height: "500px", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", height: "285px" }}>
-                <Typography variant="h4">Upload Files</Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                <Typography fontWeight={'bold'} variant="h3">Upload Files</Typography>
+            </Box>
+            <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "start", alignItems: "center", height: "100%", width: '100%', marginTop: '30px' }}>
+
                 <label htmlFor="images" className="input-drop-container">
                     <input
                         className="file-upload-input"
@@ -122,29 +140,33 @@ const ModalTaskFileUpload = ({record, handleModal }) => {
                         gap: "5px"
                     }}
                 >
-                    <Button
-                        sx={{ marginTop: "10px" }}
-                        type="success"
-                        variant="contained"
-                        color="secondary"
-                        onClick={handleUploadButtonClick}
-                        startIcon={<FileUploadIcon />}
-                    >
-                        Upload
-                    </Button>
-                    <Button
-                        type="reset"
-                        variant="outlined"
-                        sx={{
-                            marginTop: "10px",
-                            color: "black",
-                            backgroundColor: "whitesmoke",
-                        }}
-                        onClick={() => handleClearInput()}
-                        startIcon={<ClearAllIcon />}
-                    >
-                        Clear
-                    </Button>
+                    {selectedFiles.length > 0 &&
+                        <>
+                            <Button
+                                sx={{ marginTop: "10px" }}
+                                type="success"
+                                variant="contained"
+                                color="secondary"
+                                onClick={handleUploadButtonClick}
+                                startIcon={<FileUploadIcon />}
+                            >
+                                Upload
+                            </Button>
+                            <Button
+                                type="reset"
+                                variant="outlined"
+                                sx={{
+                                    marginTop: "10px",
+                                    color: "black",
+                                    backgroundColor: "whitesmoke",
+                                }}
+                                onClick={() => handleClearInput()}
+                                startIcon={<ClearAllIcon />}
+                            >
+                                Clear
+                            </Button>
+                        </>
+                    }
                 </Box>
 
             </Box>

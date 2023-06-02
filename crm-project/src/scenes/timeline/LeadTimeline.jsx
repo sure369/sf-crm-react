@@ -23,11 +23,13 @@ const StyledButton = styled(Button)(({ theme, isActive }) => ({
     const [selectedStage,setSelectedState]=useState()
 
     const handleItemClick = (stage) => {
-        setSelectedState(stage)
+        setSelectedState(stage);
+        console.log('selecetedStage is ',stage);
         onItemClick(stage);
     };
 
     const handleConvertClick=(stage)=>{
+        console.log('stage is ',stage);
         const obj ={...stage,
         convert:true
     }

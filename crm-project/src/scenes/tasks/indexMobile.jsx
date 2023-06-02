@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   Box, Button, useTheme, Card, CardContent, IconButton,
-  Pagination, Tooltip, Grid, MenuItem, Menu
+  Pagination, Tooltip, Grid, MenuItem, Menu, CircularProgress
 } from "@mui/material";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
@@ -13,13 +13,14 @@ import { RequestServer } from '../api/HttpReq';
 import { apiMethods } from '../api/methods';
 import { apiCheckObjectPermission } from '../Auth/apiCheckObjectPermission';
 import { getLoginUserRoleDept } from '../Auth/userRoleDept';
-import { OBJECT_API_EVENT,GET_EVENT,DELETE_EVENT } from "../api/endUrls";
+import { OBJECT_API_EVENT, GET_EVENT, DELETE_EVENT } from "../api/endUrls";
+import ErrorComponent from '../Errors';
 
 const TaskMobile = () => {
 
   const OBJECT_API = OBJECT_API_EVENT
   const URL_getRecords = GET_EVENT
-  const URL_deleteRecords =DELETE_EVENT
+  const URL_deleteRecords = DELETE_EVENT
 
 
   const theme = useTheme();
@@ -40,7 +41,7 @@ const TaskMobile = () => {
   const [itemsPerPage, setItemsPerPage] = useState(3);
   const [page, setPage] = useState(1);
   const [noOfPages, setNoOfPages] = useState(0);
-
+  const [fetchPermissionloading, setFetchPermissionLoading] = useState(true);
   const [permissionValues, setPermissionValues] = useState({})
   const userRoleDpt = getLoginUserRoleDept(OBJECT_API)
   console.log(userRoleDpt, "userRoleDpt")
@@ -53,25 +54,32 @@ const TaskMobile = () => {
   );
 
   const fetchRecords = () => {
-    RequestServer(apiMethods.get, URL_getRecords)
-      .then((res) => {
-        console.log(res, "index page res")
-        if (res.success) {
-          setRecords(res.data)
+    setFetchLoading(true);
+    try {
+      RequestServer(apiMethods.get, URL_getRecords)
+        .then((res) => {
+          console.log(res, "index page res")
+          if (res.success) {
+            setRecords(res.data)
+            setFetchLoading(false)
+            setFetchError(null)
+            setNoOfPages(Math.ceil(res.data.length / itemsPerPage));
+          }
+          else {
+            setRecords([])
+            setFetchError(res.error.message)
+            setFetchLoading(false)
+          }
+        })
+        .catch((err) => {
+          setFetchError(err.message)
           setFetchLoading(false)
-          setFetchError(null)
-          setNoOfPages(Math.ceil(res.data.length / itemsPerPage));
-        }
-        else {
-          setRecords([])
-          setFetchError(res.error.message)
-          setFetchLoading(false)
-        }
-      })
-      .catch((err) => {
-        setFetchError(err.message)
-        setFetchLoading(false)
-      })
+        })
+    }
+    catch (error) {
+      setFetchError(error.message)
+      setFetchLoading(false)
+    }
   }
 
   const fetchObjectPermissions = () => {
@@ -83,6 +91,9 @@ const TaskMobile = () => {
         })
         .catch(err => {
           setPermissionValues({})
+        })
+        .finally(() => {
+          setFetchPermissionLoading(false)
         })
     }
   }
@@ -189,124 +200,137 @@ const TaskMobile = () => {
 
       <Box m="20px">
         {
-          permissionValues.read ?
-            <>
-              <Header
-                title="Tasks"
-                subtitle="List of Task"
-              />
-
-              <div className='btn-test'>
-                {
-                  permissionValues.create &&
-                  <Button variant="contained" color="info" onClick={handleAddRecord}>
-                    New
-                  </Button>
-                }
-              </div>
-
-              <Card dense compoent="span" sx={{ bgcolor: "white" }}>
-                {records.length > 0 ?
-                  records
-                    .slice((page - 1) * itemsPerPage, page * itemsPerPage)
-                    .map((item) => {
-                      let starDateConvert
-                      if (item.StartDate) {
-                        starDateConvert = new Date(item.StartDate).getUTCFullYear()
-                          + '-' + ('0' + (new Date(item.StartDate).getUTCMonth() + 1)).slice(-2)
-                          + '-' + ('0' + (new Date(item.StartDate).getUTCDate())).slice(-2) || ''
-                      }
-                      let related;
-                      if (item.object === 'Account' && item.Accountdetails.length > 0) {
-                        related = item.Accountdetails[0].accountName
-                      }
-                      else if (item.object === 'Lead' && item.Leaddetails.length > 0) {
-                        related = item.Leaddetails[0].fullName
-                      }
-                      else if (item.object === 'Opportunity' && item.Opportunitydetails.length > 0) {
-                        related = item.Opportunitydetails[0].opportunityName
-                      }
-
-
-                      return (
-                        <div>
-                          <CardContent sx={{ bgcolor: "aliceblue", m: "20px" }}>
-                            <div
-                              key={item._id}
-                            >
-                              <Grid container spacing={2}>
-                                <Grid item xs={10} md={10}>
-                                  <div>Subject : {item.subject} </div>
-                                  <div>Object :{item.object} </div>
-                                  <div>Related Rec: {related}</div>
-                                  <div>Date : {starDateConvert} </div>
-                                </Grid>
-                                <Grid item xs={2} md={2}>
-                                  <IconButton>
-                                    <MoreVertIcon onClick={(event) => handleTaskMoreMenuClick(item, event)} />
-                                    <Menu
-                                      anchorEl={anchorEl}
-                                      open={menuOpen}
-                                      onClose={handleMoreMenuClose}
-                                      anchorOrigin={{
-                                        vertical: 'top',
-                                        horizontal: 'left',
-                                      }}
-                                      transformOrigin={{
-                                        vertical: 'top',
-                                        horizontal: 'left',
-                                      }}
-                                    >
-                                      {
-                                        permissionValues.edit ?
-                                          <MenuItem onClick={() => handleCardEdit(menuSelectRec)}>Edit</MenuItem>
-                                          :
-                                          <MenuItem onClick={() => handleCardEdit(menuSelectRec)}>View</MenuItem>
-                                      }
-                                      {
-                                        permissionValues.delete &&
-                                        <MenuItem onClick={(e) => handleCardDelete(e, menuSelectRec)}>Delete</MenuItem>
-                                      }
-
-                                    </Menu>
-                                  </IconButton>
-                                </Grid>
-                              </Grid>
-                            </div>
-                          </CardContent>
-                        </div>
-                      );
-                    })
-                  :
-                  <>
-                    <CardContent sx={{ bgcolor: "aliceblue", m: "20px" }}>
-                      <div>No Records Found</div>
-                    </CardContent>
-                  </>
-                }
-              </Card>
-              {records.length > 0 &&
-                <Box
-                  sx={{
-                    margin: "auto",
-                    width: "fit-content",
-                    alignItems: "center",
-                    // justifyContent:'space-between'
-                  }}>
-                  <Pagination
-                    count={noOfPages}
-                    page={page}
-                    onChange={handleChangePage}
-                    defaultPage={1}
-                    color="primary"
-                    size="large"
-                    showFirstButton
-                    showLastButton
-                    sx={{ justifyContent: 'center' }}
+          fetchPermissionloading ? (
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              height="200px"
+            >
+              <CircularProgress />
+            </Box>
+          ) :
+            fetchError ? (
+              <ErrorComponent error={fetchError} retry={fetchRecords} />
+            ) : (
+              permissionValues.read && (
+                <>
+                  <Header
+                    title="Tasks"
+                    subtitle="List of Task"
                   />
-                </Box>
-              }</>
-            : null
+
+                  <div className='btn-test'>
+                    {
+                      permissionValues.create &&
+                      <Button variant="contained" color="info" onClick={handleAddRecord}>
+                        New
+                      </Button>
+                    }
+                  </div>
+
+                  <Card dense compoent="span" sx={{ bgcolor: "white" }}>
+                    {records.length > 0 ?
+                      records
+                        .slice((page - 1) * itemsPerPage, page * itemsPerPage)
+                        .map((item) => {
+                          let starDateConvert
+                          if (item.StartDate) {
+                            starDateConvert = new Date(item.StartDate).getUTCFullYear()
+                              + '-' + ('0' + (new Date(item.StartDate).getUTCMonth() + 1)).slice(-2)
+                              + '-' + ('0' + (new Date(item.StartDate).getUTCDate())).slice(-2) || ''
+                          }
+                          let related;
+                          if (item.object === 'Account' && item.Accountdetails.length > 0) {
+                            related = item.Accountdetails[0].accountName
+                          }
+                          else if (item.object === 'Lead' && item.Leaddetails.length > 0) {
+                            related = item.Leaddetails[0].fullName
+                          }
+                          else if (item.object === 'Opportunity' && item.Opportunitydetails.length > 0) {
+                            related = item.Opportunitydetails[0].opportunityName
+                          }
+
+
+                          return (
+                            <div>
+                              <CardContent sx={{ bgcolor: "aliceblue", m: "20px" }}>
+                                <div
+                                  key={item._id}
+                                >
+                                  <Grid container spacing={2}>
+                                    <Grid item xs={10} md={10}>
+                                      <div>Subject : {item.subject} </div>
+                                      <div>Object :{item.object} </div>
+                                      <div>Related Rec: {related}</div>
+                                      <div>Date : {starDateConvert} </div>
+                                    </Grid>
+                                    <Grid item xs={2} md={2}>
+                                      <IconButton>
+                                        <MoreVertIcon onClick={(event) => handleTaskMoreMenuClick(item, event)} />
+                                        <Menu
+                                          anchorEl={anchorEl}
+                                          open={menuOpen}
+                                          onClose={handleMoreMenuClose}
+                                          anchorOrigin={{
+                                            vertical: 'top',
+                                            horizontal: 'left',
+                                          }}
+                                          transformOrigin={{
+                                            vertical: 'top',
+                                            horizontal: 'left',
+                                          }}
+                                        >
+                                          {
+                                            permissionValues.edit ?
+                                              <MenuItem onClick={() => handleCardEdit(menuSelectRec)}>Edit</MenuItem>
+                                              :
+                                              <MenuItem onClick={() => handleCardEdit(menuSelectRec)}>View</MenuItem>
+                                          }
+                                          {
+                                            permissionValues.delete &&
+                                            <MenuItem onClick={(e) => handleCardDelete(e, menuSelectRec)}>Delete</MenuItem>
+                                          }
+
+                                        </Menu>
+                                      </IconButton>
+                                    </Grid>
+                                  </Grid>
+                                </div>
+                              </CardContent>
+                            </div>
+                          );
+                        })
+                      :
+                      <>
+                        <CardContent sx={{ bgcolor: "aliceblue", m: "20px" }}>
+                          <div>No Records Found</div>
+                        </CardContent>
+                      </>
+                    }
+                  </Card>
+                  {records.length > 0 &&
+                    <Box
+                      sx={{
+                        margin: "auto",
+                        width: "fit-content",
+                        alignItems: "center",
+                        // justifyContent:'space-between'
+                      }}>
+                      <Pagination
+                        count={noOfPages}
+                        page={page}
+                        onChange={handleChangePage}
+                        defaultPage={1}
+                        color="primary"
+                        size="large"
+                        showFirstButton
+                        showLastButton
+                        sx={{ justifyContent: 'center' }}
+                      />
+                    </Box>
+                  }</>
+              ))
         }
       </Box>
     </>

@@ -11,6 +11,7 @@ import { tokens } from "../../theme";
 import { useNavigate } from "react-router-dom";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import ErrorComponent from "../Errors";
 import ToastNotification from "../toast/ToastNotification";
 import DeleteConfirmDialog from "../toast/DeleteConfirmDialog";
 import ModalFileUpload from "../dataLoader/ModalFileUpload";
@@ -76,6 +77,7 @@ const Opportunities = () => {
   }
 
   const fetchRecords = () => {
+    try{
     RequestServer(apiMethods.get, URL_getRecords)
       .then((res) => {
         console.log(res, "index page res");
@@ -93,6 +95,11 @@ const Opportunities = () => {
         setFetchError(error.message);
         setFetchLoading(false);
       });
+    }
+    catch(error){
+      setFetchError(error.message)
+      setFetchLoading(false)
+    }
   };
 
   const totalRevenue = useMemo(() => {
@@ -212,10 +219,10 @@ const Opportunities = () => {
       align: "center",
       flex: 1,
       renderCell: (params) => {
-        if (params.row.Inventorydetails.length > 0) {
+        if (params.row?.Inventorydetails?.length > 0) {
           return (
             <div className="rowitem">
-              {params.row.Inventorydetails[0].propertyName}
+              {params.row?.Inventorydetails[0]?.propertyName}
             </div>
           );
         } else {
@@ -241,7 +248,7 @@ const Opportunities = () => {
           style: "currency",
           currency: "USD",
         });
-        return <>{formatCurrency.format(params.row.amount)}</>;
+        return <>{formatCurrency.format(params.row?.amount)}</>;
       },
     },
     {
@@ -302,7 +309,11 @@ const Opportunities = () => {
           >
             <CircularProgress />
           </Box>
-        ) : (
+        ) :
+        fetchError?(
+          <ErrorComponent error={fetchError} retry={fetchRecords} />
+        ):   
+        (
           permissionValues.read &&(
             <>
 

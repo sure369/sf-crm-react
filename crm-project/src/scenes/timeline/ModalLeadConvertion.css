@@ -1,0 +1,32 @@
+.modal-lead-accordion{
+    border-radius: 10px !important;
+    margin-bottom: 10px;
+}
+
+.lead-boxes{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 100px;
+    width: 100%;
+    margin: 5px;
+}
+
+.lead-convert-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: fit-content;
+    height: fit-content;
+    box-shadow: 0 0 10px rgba(254, 252,255, );
+    background-color: rgba(254, 252,255);
+    border-radius: 12px;
+}
+
+@media(max-width:600px) {
+    .lead-convert-modal{
+        width: 100%;
+        
+    }
+}

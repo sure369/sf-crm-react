@@ -19,12 +19,13 @@ import "../indexCSS/muiBoxStyles.css";
 import { apiMethods } from "../api/methods";
 import { apiCheckObjectPermission } from '../Auth/apiCheckObjectPermission'
 import { getLoginUserRoleDept } from '../Auth/userRoleDept';
-import { OBJECT_API_USER,GET_USER,DELETE_USER } from "../api/endUrls";
+import { OBJECT_API_USER, GET_USER, DELETE_USER } from "../api/endUrls";
 import CircularProgress from '@mui/material/CircularProgress';
+import ErrorComponent from "../Errors";
 const Users = () => {
   const OBJECT_API = OBJECT_API_USER
   const URL_getRecords = GET_USER
-  const URL_deleteRecords =DELETE_USER
+  const URL_deleteRecords = DELETE_USER
 
 
   const theme = useTheme();
@@ -51,23 +52,30 @@ const Users = () => {
   }, []);
 
   const fetchRecords = () => {
-    RequestServer(apiMethods.get, URL_getRecords)
-      .then((res) => {
-        console.log(res, "index page res");
-        if (res.success) {
-          setRecords(res.data);
-          setFetchError(null);
+    setFetchLoading(true);
+    try {
+      RequestServer(apiMethods.get, URL_getRecords)
+        .then((res) => {
+          console.log(res, "index page res");
+          if (res.success) {
+            setRecords(res.data);
+            setFetchError(null);
+            setFetchLoading(false);
+          } else {
+            setRecords([]);
+            setFetchError(res.error.message);
+            setFetchLoading(false);
+          }
+        })
+        .catch((err) => {
+          setFetchError(err.message);
           setFetchLoading(false);
-        } else {
-          setRecords([]);
-          setFetchError(res.error.message);
-          setFetchLoading(false);
-        }
-      })
-      .catch((err) => {
-        setFetchError(err.message);
-        setFetchLoading(false);
-      });
+        });
+    }
+    catch (error) {
+      setFetchError(error.message);
+      setFetchLoading(false);
+    }
   };
   const fetchObjectPermissions = () => {
     if (userRoleDpt) {
@@ -257,7 +265,9 @@ const Users = () => {
                 </>
               ) : (null)}
             </>
-          )}},
+          )
+        }
+      },
     )
   }
 
@@ -272,17 +282,17 @@ const Users = () => {
         />
 
         <Box m="20px">
-          { fetchPermissionloading ? (
-          <Box
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            height="200px"
-          >
-            <CircularProgress />
-          </Box>
-        ) : (
-            permissionValues.read &&(
+          {fetchPermissionloading ? (
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              height="200px"
+            >
+              <CircularProgress />
+            </Box>
+          ) : fetchError ? (<ErrorComponent error={fetchError} retry={fetchRecords} />) : (
+            permissionValues.read && (
               <>
                 <Typography
                   variant="h2"
@@ -397,7 +407,7 @@ const Users = () => {
                     onRowClick={(e) => handleOnCellClick(e)}
                   />
                 </Box>
-              </> 
+              </>
             ))
           }
         </Box>
