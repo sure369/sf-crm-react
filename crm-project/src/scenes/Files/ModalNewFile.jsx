@@ -15,6 +15,7 @@ import { useMediaQuery } from "react-responsive";
 import { POST_FILE } from "../api/endUrls";
 import { RequestServerFiles } from "../api/HttpReqFiles";
 import { apiMethods } from "../api/methods";
+import { CloudUpload } from "@mui/icons-material";
 
 
 const URL_postRecords = POST_FILE
@@ -141,7 +142,7 @@ const ModalFileUpload = ({ handleModal }) => {
                                 variant="contained"
                                 color="secondary"
                                 onClick={handleUploadButtonClick}
-                                startIcon={<FileUploadIcon />}
+                                startIcon={<CloudUpload />}
                             >
                                 Upload
                             </Button>

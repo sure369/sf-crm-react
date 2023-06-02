@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   AppBar, Box, Toolbar, Typography, IconButton, Menu, Container,
-  Avatar, Tooltip, MenuItem, Button, Popover, ListItemButton, useTheme
+  Avatar, Tooltip, MenuItem, Button, Popover, ListItemButton, useTheme, createTheme
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Link, NavLink, useNavigate } from "react-router-dom";
@@ -64,6 +64,42 @@ const StyledMenu = styled((props) => (
   }));
 
 
+const highContrastTheme = createTheme({
+  palette: {
+    type: 'light',
+    primary: {
+      main: '#2196f3',
+    },
+    secondary: {
+      main: '#f50057',
+    },
+    contrastThreshold: 3,
+    tonalOffset: 0.2,
+  },
+});
+
+const transparentTheme = createTheme({
+  palette: {
+    type: 'light',
+    background: {
+      default: 'transparent',
+    },
+  },
+});
+
+const vibrantTheme = createTheme({
+  palette: {
+    type: 'light',
+    primary: {
+      main: '#ff9800',
+    },
+    secondary: {
+      main: '#e91e63',
+    },
+  },
+});
+
+
 const colors = [
   { label: "Default", color: "#5C5CFF" },
   { label: "Purple", color: "purple" },
@@ -74,10 +110,19 @@ const colors = [
   { label: "Orange", color: "#F3BA5B" },
   { label: "Blue Grey", color: "#507C85" },
 ];
+// const colors = [
+//   { label: "Default", color: "#5C5CFF", headerFooterColor: "", oddRow: "", evenRow: "" },
+//   { label: "Purple", color: "#800080", headerFooterColor: "#bf7fbf", oddRow: "#f2e5f2", evenRow: "#d8b2d8" },
+//   { label: "CornBlue", color: "#6495ED", headerFooterColor: "#a2bff4", oddRow: "#eff4fd", evenRow: "#d0dff9" },
+//   { label: "Grey", color: "#808080", headerFooterColor: "#b2b2b2", oddRow: "#f2f2f2", evenRow: "#d8d8d8" },
+//   { label: "Gold Green", color: "#ADB73D", headerFooterColor: "#cdd38a", oddRow: "#f6f7eb", evenRow: "#e6e9c4" },
+//   { label: "Light Gold", color: "#D5D57D", headerFooterColor: "#e5e5b1", oddRow: "#fafaf2", evenRow: "#eeeecb" },
+//   { label: "Orange", color: "#F3BA5B", headerFooterColor: "#f6ce8c", oddRow: "#fcf1de", evenRow: "#fae3bd" },
+//   { label: "Blue Grey", color: "#507C85", headerFooterColor: "#84a3a9", oddRow: "#edf1f2", evenRow: "#cad7da" },
+// ];
+// const colors = [{ label: "Default", theme: "" }, { label: "Contrast", color: "" }, { label: "Light", color: 'light' }]
 
-// const colors = [{ label: "Default", color: 'light' }, { label: "Dark", color: 'dark' }, { label: "Light", color: 'light' }]
-
-function AppNavbar({ setIsLoggedIn }) {
+function AppNavbar({ setIsLoggedIn, fnfromApp }) {
 
   const theme = useTheme();
 
@@ -194,8 +239,30 @@ function AppNavbar({ setIsLoggedIn }) {
 
   const handleColorChange = (colorName) => {
     console.log("color name is ", colorName);
+    console.log("color name is ", (colorName));
+    console.log('colors ', colors);
+    // setSelectedColor(colorName);
+    const lgColor = colors.filter((item) => item.color === colorName);
+    console.log('lgcolor is ', lgColor[0]);
+
+    const dataGridHeaderColor = document.querySelector(".MuiDataGrid-columnHeaders");
+    dataGridHeaderColor.style.backgroundColor = lgColor[0].headerFooterColor;
+
+    const dataGridEvenRowColorall = document.querySelectorAll(".C-MuiDataGrid-row-even");
+    dataGridEvenRowColorall.forEach(item => item.style.backgroundColor = lgColor[0].evenRow)
+
+    const dataGridOddRowColorall = document.querySelectorAll(".C-MuiDataGrid-row-odd");
+    dataGridOddRowColorall.forEach(item => item.style.backgroundColor = lgColor[0].oddRow)
+
+    const dataGridFooterColor = document.querySelector(".MuiDataGrid-footerContainer");
+    dataGridFooterColor.style.backgroundColor = lgColor[0].headerFooterColor;
     setSelectedColor(colorName);
+
   };
+
+
+
+
 
   const navBarStyle = {
     backgroundColor: selectedColor,

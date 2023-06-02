@@ -9,26 +9,27 @@ import PieChart from './charts/PieChart';
 import PolarAreaChart from './charts/PolarAreaChart';
 import RadarChart from './charts/RadarChart';
 import RadialBarChart from './charts/RadialBarChart';
+import Typography from '@mui/material/Typography'
 
-const DashboardCharts = ({ dashboard,formValues }) => {
+const DashboardCharts = ({ dashboard, formValues }) => {
   const [chartType, setChartType] = useState('');
   const [chartData, setChartData] = useState([]);
 
   const URL_getDashboard = GET_DASHBOARD_OBJECT_FIELD;
 
-  console.log(formValues,"DashboardCharts formValues")
-  console.log(dashboard," DashboardCharts dashboard")
+  console.log(formValues, "DashboardCharts formValues")
+  console.log(dashboard, " DashboardCharts dashboard")
 
   useEffect(() => {
     if (dashboard) {
       setChartType(dashboard.chartType);
       fetchRecords(dashboard);
     }
-    if(formValues){
+    if (formValues) {
       setChartType(formValues.chartType);
       fetchRecords(formValues);
     }
-  }, [dashboard,formValues]);
+  }, [dashboard, formValues]);
 
 
   const fetchRecords = async (item) => {
@@ -36,10 +37,10 @@ const DashboardCharts = ({ dashboard,formValues }) => {
       const response = await RequestServer(apiMethods.get, `${URL_getDashboard}?object=${item.objectName}&field=${item.fields}`);
       if (response.success) {
         console.log(response.data, 'api res dashboard rec');
-        if(typeof(response.data==='object')){
+        if (typeof (response.data === 'object')) {
           setChartData(response.data);
-        }else{          
-        setChartData([]);
+        } else {
+          setChartData([]);
         }
       } else {
         setChartData([]);
@@ -102,11 +103,11 @@ const DashboardCharts = ({ dashboard,formValues }) => {
         }));
         return <PolarAreaChart chartData={polarAreaChartData} />;
       default:
-        return <p>No data available for the selected chart type.</p>;
+        return <Typography textAlign={'center'} variant="h4" color="initial"> No data available for the selected chart type.</Typography>
     }
   };
-  
-  return <div className="dashboard-charts">{ renderChart()}</div>;
+
+  return <div className="dashboard-charts">{renderChart()}</div>;
 
 }
 export default DashboardCharts;
