@@ -429,3 +429,12 @@
    }
 
  }
+
+ .css-1elwnq4-MuiPaper-root-MuiAccordion-root:before{
+  opacity: 0 !important;
+ }
+
+.MuiAccordion-root{
+  margin-bottom: 5px !important;
+  border-radius: 8px !important;
+}

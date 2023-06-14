@@ -1,4 +1,4 @@
-import {Box,Grid,Typography,} from "@mui/material";
+import { Box, Grid, Typography, } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { RequestServer } from "../api/HttpReq";
 import ApexCharts from "react-apexcharts";
@@ -7,6 +7,8 @@ import { apiMethods } from "../api/methods";
 import useViewport from "../../utility/useViewPort";
 import CircularProgress from "@mui/material/CircularProgress";
 import { GET_DEAL } from "../api/endUrls";
+import BarChartSkeleton from "../../Skeletons/BarChartSkeleton";
+import PieChartSkeleton from "../../Skeletons/PieChartSkeleton";
 
 function DashboardIndex() {
   const URL_getRecords = GET_DEAL;
@@ -100,7 +102,7 @@ function DashboardIndex() {
         type: "donut",
       },
       colors: ["#007BFF", "#28A745", "#FFA500", "#DC3545",
-       "#6C63FF", "#6C757D",],
+        "#6C63FF", "#6C757D",],
       labels: Object.keys(opportunityType),
     },
     series: Object.values(opportunityType).map((obj) => obj.count),
@@ -126,13 +128,13 @@ function DashboardIndex() {
         bar: {
           distributed: true
         }
-      } , 
+      },
       xaxis: {
         categories: labels,
       },
       colors: [
         "#000080", "#32CD32", "#FF7F50",
-        "#DC143C", "#DA70D6","#708090",
+        "#DC143C", "#DA70D6", "#708090",
       ],
     },
     series: [
@@ -152,7 +154,9 @@ function DashboardIndex() {
           alignItems="center"
           height="200px"
         >
-          <CircularProgress />
+          <div style={{ marginTop: '200px', display: 'flex', gap: '250px' }}>
+            <PieChartSkeleton /><BarChartSkeleton />
+          </div>
         </Box>
       ) : (
         <Box className="box-container">

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import {
   Box, Button, useTheme, IconButton, Pagination, Tooltip,
-  Grid, Modal, Typography,
+  Grid, Modal, Typography, Skeleton
 } from "@mui/material";
 import {
   DataGrid, GridToolbar, gridPageCountSelector,
@@ -23,6 +23,9 @@ import { getLoginUserRoleDept } from '../Auth/userRoleDept';
 import CircularProgress from '@mui/material/CircularProgress';
 import { OBJECT_API_ACCOUNT, GET_ACCOUNT, DELETE_ACCOUNT } from "../api/endUrls";
 import ErrorComponent from "../Errors";
+import DataGridSkeleton from "../../Skeletons/DataGrid";
+import DataGridSkeletons from "../../Skeletons/DataGridSkeleton";
+
 
 const Accounts = () => {
 
@@ -280,6 +283,8 @@ const Accounts = () => {
     )
   }
 
+
+
   return (
     <>
       <ToastNotification notify={notify} setNotify={setNotify} />
@@ -296,7 +301,7 @@ const Accounts = () => {
             alignItems="center"
             height="200px"
           >
-            <CircularProgress />
+            <DataGridSkeletons />
           </Box>
         ) : fetchError ? (<ErrorComponent error={fetchError} retry={fetchRecords} />) : (
           permissionValues.read && (
