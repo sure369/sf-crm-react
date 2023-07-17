@@ -14,7 +14,7 @@ import { RequestServer } from '../api/HttpReq'
 import { apiMethods } from '../api/methods'
 import { POST_ACCOUNT, POST_CONTACT, POST_DEAL } from '../api/endUrls'
 import ToastNotification from '../toast/ToastNotification'
-import validator from 'validator'
+
 
 
 const ratings = ['Hot', 'Cold', 'Warm']

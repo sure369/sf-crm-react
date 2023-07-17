@@ -1,6 +1,6 @@
 import {
     Box, Grid, Typography, Accordion,
-    AccordionSummary, AccordionDetails,
+    AccordionSummary, AccordionDetails, IconButton, Tooltip,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import "../recordDetailPage/Form.css"
@@ -10,6 +10,7 @@ import './dashboard.css'
 import DashboardDetailPage from "./dashboardDetailPage";
 import DashBoardRecords from ".";
 import DashboardCharts from "./dashboardCharts";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 function DynamicHomePage() {
 
@@ -49,6 +50,14 @@ function DynamicHomePage() {
                                     </Typography>
                                 </AccordionSummary>
                                 <AccordionDetails>
+                                    {
+                                        selectedDashboard &&
+                                        <Tooltip title='For New'>
+                                            <IconButton onClick={() => setSelectedDashboard(null)}>
+                                                <ArrowBackIcon />
+                                            </IconButton>
+                                        </Tooltip>
+                                    }
                                     <DashboardDetailPage
                                         dashboard={selectedDashboard}
                                         onFormSubmit={handleFormSubmission}

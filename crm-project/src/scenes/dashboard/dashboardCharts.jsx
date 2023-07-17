@@ -21,7 +21,7 @@ const DashboardCharts = ({ dashboard, formValues }) => {
   console.log(dashboard, " DashboardCharts dashboard")
 
   useEffect(() => {
-    if (dashboard) {
+    if (dashboard) {      
       setChartType(dashboard.chartType);
       fetchRecords(dashboard);
     }
