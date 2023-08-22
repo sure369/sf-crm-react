@@ -51,11 +51,13 @@ function PreviewUpsert({ data, file, ModalClose, object }) {
 
   }
   const hanldeSave = () => {
+console.log(sessionStorage.getItem("loggedInUser"),"get value");
+console.log(JSON.parse(sessionStorage.getItem("loggedInUser")),"get value 1");
 
     let formData = new FormData();
     formData.append('file', file)
-    formData.append('createdBy',JSON.parse(sessionStorage.getItem("loggedInUser")))
-    formData.append('modifiedBy',JSON.parse(sessionStorage.getItem("loggedInUser")))
+    formData.append('createdBy',(sessionStorage.getItem("loggedInUser")))
+    formData.append('modifiedBy',(sessionStorage.getItem("loggedInUser")))
     RequestServerFiles(apiMethods.post, upsertUrl, formData)
 
       .then((res) => {
