@@ -77,7 +77,7 @@ console.log('fileUploadRes',fileUploadRes)
         let formData = new FormData();
         // formData.append('name',values.name);
         // formData.append('email',values.email);
-        formData.append('file',values.photo);
+        .append('file',values.photo);
 
 
         await axios.post(UpsertUrl, formData ,{

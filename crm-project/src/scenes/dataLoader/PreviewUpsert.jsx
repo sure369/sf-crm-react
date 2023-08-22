@@ -15,7 +15,7 @@ const URL_postBulkEnquiry =POST_DATALOADER_ENQUIRY
 
 function PreviewUpsert({ data, file, ModalClose, object }) {
 
-  console.log(object, "object")
+  console.log(object, "object PreviewUpsert")
   const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
 
   const [upsertUrl, setUpsertUrl] = useState()
@@ -27,21 +27,21 @@ function PreviewUpsert({ data, file, ModalClose, object }) {
       if (object === 'Account') {
         setUpsertUrl(URL_postBulkAccount)
       }
-      else if (object === 'Lead') {
+      else if (object === '"Deal"') {
         setUpsertUrl(URL_postBulkDeal)
       }
-      else if (object === 'Opportunity') {
+      else if (object === 'Enquiry') {
         setUpsertUrl(URL_postBulkEnquiry)
       }
     }
     else {     
-      if (window.location.href.includes('opportunity')) {
+      if (window.location.href.includes('enquiry')) {
         setUpsertUrl(URL_postBulkEnquiry)
       }
       else if (window.location.href.includes('account')) {
         setUpsertUrl(URL_postBulkAccount)
       }
-      else if (window.location.href.includes('lead')) {
+      else if (window.location.href.includes('deal')) {
         setUpsertUrl(URL_postBulkDeal)
       }
     }

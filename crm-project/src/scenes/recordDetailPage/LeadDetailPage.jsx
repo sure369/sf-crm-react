@@ -114,10 +114,14 @@ const LeadDetailPage = ({ item }) => {
       values.modifiedDate = dateSeconds;
       values.createdDate = dateSeconds;
       values.appointmentDate = appointmentDateSec;
+      values.createdBy = JSON.parse(sessionStorage.getItem('loggedInUser'))
+      values.modifiedBy = JSON.parse(sessionStorage.getItem('loggedInUser'))
     } else if (!showNew) {
       values.modifiedDate = dateSeconds;
       values.createdDate = createDateSec;
       values.appointmentDate = appointmentDateSec;
+      values.createdBy = singleLead.createdBy;
+      values.modifiedBy = JSON.parse(sessionStorage.getItem('loggedInUser'))
     }
     console.log("after change form submission value", values);
 
@@ -233,7 +237,7 @@ const LeadDetailPage = ({ item }) => {
                       </div>
                     </Grid>
                     <Grid item xs={6} md={6}>
-                      <label htmlFor="companyName">Company Name</label>
+                      <label htmlFor="companyName">Company Name <span className="text-danger">*</span></label>
                       <Field name="companyName" type="text" class="form-input"
                         disabled={showNew ? !permissionValues.create : !permissionValues.edit}
                       />
@@ -410,16 +414,19 @@ const LeadDetailPage = ({ item }) => {
                     {!showNew && (
                       <>
                         <Grid item xs={6} md={6}>
-                          <label htmlFor="createdDate">Created Date</label>
+                          <label htmlFor="createdDate">Created By</label>
                           <Field name="createdDate" type="text"
                             class="form-input" disabled
+                            value={values.createdBy + ',  ' + values.createdDate}
                           />
                         </Grid>
                         <Grid item xs={6} md={6}>
-                          <label htmlFor="modifiedDate">Modified Date</label>
+                          <label htmlFor="modifiedDate">Modified By</label>
                           <Field
                             name="modifiedDate" type="text"
-                            class="form-input" disabled
+                            class="form-input" 
+                            value={values.modifiedBy + ',  ' + values.modifiedDate} 
+                            disabled
                           />
                         </Grid>
                       </>

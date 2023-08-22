@@ -16,6 +16,7 @@ import { UserInitialValues,UserSavedValues } from '../formik/IntialValues/formVa
 import { apiMethods } from '../api/methods';
 import queryString from 'query-string';
 import { POST_USER ,POST_SEND_BULK_EMAIL,GET_ROLE} from '../api/endUrls';
+import { RequestServerFiles } from '../api/HttpReqFiles';
 
 
 const URL_postRecords = POST_USER
@@ -95,7 +96,7 @@ const UserDetailPage = ({ item }) => {
         formData.append('emailId',obj.emailId)
         // formData.append('file', values.attachments);
 
-        RequestServer(apiMethods.post,URL_postEmailBulk,formData)
+        RequestServerFiles(apiMethods.post,URL_postEmailBulk,formData)
         .then((res)=>{
             console.log("eamil res",res.data)
             if(res.success){

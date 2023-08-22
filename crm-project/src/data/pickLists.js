@@ -18,15 +18,16 @@ export const AccTypePickList = [
 
 export const IndustryPickList = [
   // {text:'None',value:''},
-
   { text: "AutoMobile", value: "AutoMobile" },
-  { text: "Construction", value: "Construction" },
-  { text: "Manufacturing", value: "Manufacturing" },
-  { text: "Hospitality", value: "Hospitality" },
-  { text: "Hospitals", value: "Hospitals" },
-  { text: "HealthCare", value: "HealthCare" },
+  { text: "Construction", value: "Construction" },   
+  { text: "Education", value: "Education" }, 
+  { text: "FoodBeverage", value: "FoodBeverage" }, 
   { text: "RealEstate", value: "RealEstate" },
-  { text: "Networking", value: "Networking" },
+  { text: "Lease", value: "Lease" },
+  { text: "Pharmaceutical", value: "Pharmaceutical" },
+  { text: "Hospitals", value: "Hospitals" },
+  { text: "HealthCare", value: "HealthCare" },  
+  { text: "Hospitality", value: "Hospitality" },
   { text: "Other", value: "Other" },
 ];
 
@@ -70,9 +71,9 @@ export const NameSalutionPickList = [
 export const LeadSourcePickList = [
   // {text:'None',value:''},
   { text: "Web", value: "Web" },
-  { text: "Phone Inquiry", value: "Phone Inquiry" },
-  { text: "Partner Referral", value: "Partner Referral" },
-  { text: "Purchased List", value: "Purchased List" },
+  { text: "Phone Inquiry", value: "PhoneInquiry" },
+  { text: "Partner Referral", value: "PartnerReferral" },
+  { text: "Purchased List", value: "PurchasedList" },
   { text: "Other", value: "Other" },
 ];
 
